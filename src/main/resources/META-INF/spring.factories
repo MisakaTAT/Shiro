@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.mikuac.shiro.boot.ShiroAutoConfiguration
