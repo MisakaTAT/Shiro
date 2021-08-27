@@ -62,7 +62,7 @@ public class ExamplePlugin extends BotPlugin {
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         // 构建消息
-      MsgUtils msgUtils = MsgUtils().builder().at(event.getUserId()).face(66).text("Hello, this is shiro demo.");
+        MsgUtils msgUtils = MsgUtils().builder().at(event.getUserId()).face(66).text("Hello, this is shiro demo.");
         // 发送群消息
         bot.sendGroupMsg(event.getGroupId(), msgUtils.build(), false);
         // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
