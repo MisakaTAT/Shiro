@@ -94,6 +94,24 @@ public class Bot {
     }
 
     /**
+     * 获取消息
+     *
+     * @param msgId 消息id
+     * @return 消息内容
+     */
+    public ActionData<GetMsgResp> getMsg(int msgId) {
+        ActionPathEnum action = ActionPathEnum.GET_MSG;
+        JSONObject params = new JSONObject();
+        params.put("message_id", msgId);
+        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        if (result != null) {
+            return result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
+            });
+        }
+        return null;
+    }
+
+    /**
      * 撤回消息
      *
      * @param msgId 消息ID
