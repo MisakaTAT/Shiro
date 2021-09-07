@@ -1,3 +1,7 @@
+<p align="center">
+  <a href="https://mikuac.com/archives/675"><img src="https://mikuac.com/images/yuri.jpg" width="200" height="200" alt="Yuri"></a>
+</p>
+
 <div align="center">
 
 # Shiro
@@ -12,7 +16,7 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
     <a href="https://github.com/MisakaTAT/Shiro/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MisakaTAT/Shiro?style=flat-square" alt="license"></a>
     <img src="https://img.shields.io/badge/JDK-15+-brightgreen.svg?style=flat-square" alt="jdk-version">
     <a href="https://qm.qq.com/cgi-bin/qm/qr?k=Fl3-G9irYp84ng7LAFlTvqrOGIFHdufR&jump_from=webapi"><img src="https://img.shields.io/badge/QQ群-204219849-brightgreen.svg?style=flat-square" alt="qq-group"></a>
-    <a href="https://github.com/howmanybots/onebot"><img src="https://img.shields.io/badge/OneBot-v11-blue?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAIVBMVEUAAAAAAAADAwMHBwceHh4UFBQNDQ0ZGRkoKCgvLy8iIiLWSdWYAAAAAXRSTlMAQObYZgAAAQVJREFUSMftlM0RgjAQhV+0ATYK6i1Xb+iMd0qgBEqgBEuwBOxU2QDKsjvojQPvkJ/ZL5sXkgWrFirK4MibYUdE3OR2nEpuKz1/q8CdNxNQgthZCXYVLjyoDQftaKuniHHWRnPh2GCUetR2/9HsMAXyUT4/3UHwtQT2AggSCGKeSAsFnxBIOuAggdh3AKTL7pDuCyABcMb0aQP7aM4AnAbc/wHwA5D2wDHTTe56gIIOUA/4YYV2e1sg713PXdZJAuncdZMAGkAukU9OAn40O849+0ornPwT93rphWF0mgAbauUrEOthlX8Zu7P5A6kZyKCJy75hhw1Mgr9RAUvX7A3csGqZegEdniCx30c3agAAAABJRU5ErkJggg==" alt="cqhttp"></a>
+    <a href="https://github.com/howmanybots/onebot"><img src="https://img.shields.io/badge/OneBot-v11-blue?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAIVBMVEUAAAAAAAADAwMHBwceHh4UFBQNDQ0ZGRkoKCgvLy8iIiLWSdWYAAAAAXRSTlMAQObYZgAAAQVJREFUSMftlM0RgjAQhV+0ATYK6i1Xb+iMd0qgBEqgBEuwBOxU2QDKsjvojQPvkJ/ZL5sXkgWrFirK4MibYUdE3OR2nEpuKz1/q8CdNxNQgthZCXYVLjyoDQftaKuniHHWRnPh2GCUetR2/9HsMAXyUT4/3UHwtQT2AggSCGKeSAsFnxBIOuAggdh3AKTL7pDuCyABcMb0aQP7aM4AnAbc/wHwA5D2wDHTTe56gIIOUA/4YYV2e1sg713PXdZJAuncdZMAGkAukU9OAn40O849+0ornPwT93rphWF0mgAbauUrEOthlX8Zu7P5A6kZyKCJy75hhw1Mgr9RAUvX7A3csGqZegEdniCx30c3agAAAABJRU5ErkJggg=="></a>
 </p>
 
 <p align="center">
@@ -26,34 +30,33 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 </p>
 
 # QuickStart
-
+请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro
+) 查看最新版本，并替换 version 内的 latest version
 ```xml
-<!-- 导入Maven依赖 -->
+
 <dependency>
-    <groupId>com.mikuac</groupId>
-    <artifactId>shiro</artifactId>
-    <version>1.1.1</version>
+  <groupId>com.mikuac</groupId>
+  <artifactId>shiro</artifactId>
+  <version>latest version</version>
 </dependency>
 ```
 
+基础配置文件，或详见 [高级自定义配置](https://misakatat.github.io/shiro-docs/quickstart/#%E9%AB%98%E7%BA%A7%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
 ```yaml
 # 修改application.yaml
 server:
   port: 5555
 
 shiro:
-  # 全局限速器 (基于令牌桶算法)，无需该配置字段可删除，将使用默认值（默认禁用）
-  limiter:
-    enable: false
-    permits-per-second: 1
   # Webscoket连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
-  ws-config:
-    ws-url: "/ws/shiro"
+  # ws-config:
+  #   ws-url: "/ws/shiro"
   # 插件列表 (顺序执行，如果前一个插件返回了MESSAGE_BLOCK，将不会执行后续插件)
   plugin-list:
     - com.mikuac.bot.plugins.ExamplePlugin
 ```
 
+示例插件
 ```java
 // 继承BotPlugin开始编写插件
 @Component
