@@ -1,6 +1,5 @@
 package com.mikuac.shiro.enums;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
@@ -8,8 +7,7 @@ import lombok.Getter;
  */
 
 @Getter
-@AllArgsConstructor
-public enum ActionPathEnum {
+public enum ActionPathEnum implements ActionPath {
     /**
      * 发送私聊消息
      */
@@ -147,5 +145,28 @@ public enum ActionPathEnum {
      */
     SEND_GROUP_FORWARD_MSG("send_group_forward_msg");
 
+    /**
+     * 请求路径
+     */
     private final String path;
+
+    /**
+     * 枚举构造函数
+     *
+     * @param path 请求路径
+     */
+    ActionPathEnum(String path) {
+        this.path = path;
+    }
+
+    /**
+     * 获取请求路径
+     *
+     * @return 请求路径
+     */
+    @Override
+    public String getPath() {
+        return this.path;
+    }
+
 }

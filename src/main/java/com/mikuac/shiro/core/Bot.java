@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
+import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import lombok.Getter;
@@ -772,6 +773,19 @@ public class Bot {
             return result.toJavaObject(ActionRaw.class);
         }
         return null;
+    }
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return 结果
+     */
+    @SuppressWarnings("rawtypes")
+    public ActionData customRequest(ActionPath action, JSONObject params) {
+        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        return result != null ? result.toJavaObject(ActionData.class) : null;
     }
 
 }

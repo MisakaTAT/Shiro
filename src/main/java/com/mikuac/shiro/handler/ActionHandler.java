@@ -3,7 +3,7 @@ package com.mikuac.shiro.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.mikuac.shiro.common.limit.ActionRateLimiter;
 import com.mikuac.shiro.common.utils.ActionSendUtils;
-import com.mikuac.shiro.enums.ActionPathEnum;
+import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.properties.ActionLimiterProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -74,7 +74,7 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 结果
      */
-    public JSONObject doActionRequest(WebSocketSession session, ActionPathEnum action, JSONObject params) {
+    public JSONObject doActionRequest(WebSocketSession session, ActionPath action, JSONObject params) {
         if (actionLimiterProperties.isEnable() && !actionRateLimiter.tryAcquire()) {
             log.warn("触发限流策略，本次请求将被忽略");
             return null;
@@ -106,7 +106,7 @@ public class ActionHandler {
      * @param params 请求参数
      * @return json
      */
-    private JSONObject generateReqJson(ActionPathEnum action, JSONObject params) {
+    private JSONObject generateReqJson(ActionPath action, JSONObject params) {
         JSONObject reqJson = new JSONObject();
         reqJson.put("action", action.getPath());
         if (params != null) {

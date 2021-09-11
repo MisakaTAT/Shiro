@@ -12,21 +12,21 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ShiroUtilsEnum {
     /**
-     * 《关于阿里规范扫描插件及JavaDoc插件非要我加注释这件事》
+     * CQ码分割
      */
-    CQ_CODE_SPLIT("\\[CQ:", "CQ码分割"),
+    CQ_CODE_SPLIT("\\[CQ:"),
     /**
-     * 《关于阿里规范扫描插件及JavaDoc插件非要我加注释这件事》
+     * 全体at CQ码
      */
-    AT_ALL_CQ_CODE("[CQ:at,qq=all]", "全体at CQ码"),
+    AT_ALL_CQ_CODE("[CQ:at,qq=all]"),
     /**
-     * 《关于阿里规范扫描插件及JavaDoc插件非要我加注释这件事》
+     * 链接提取正则
      */
-    GET_URL_REGEX("(http|https)://[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-.,@?^=%&:/~+#]*[\\w\\-@?^=%&/~+#])?", "链接提取正则"),
+    GET_URL_REGEX("(http|https)://[\\w\\-_]+(\\.[\\w\\-_]+)+([\\w\\-.,@?^=%&:/~+#]*[\\w\\-@?^=%&/~+#])?"),
     /**
-     * 《关于阿里规范扫描插件及JavaDoc插件非要我加注释这件事》
+     * at对象提取正则
      */
-    GET_AT_USER_ID_REGEX("at,qq=(.*)\\]", "at对象提取正则");
+    GET_AT_USER_ID_REGEX("at,qq=(.*)\\]");
+
     private final String value;
-    private final String desc;
 }
