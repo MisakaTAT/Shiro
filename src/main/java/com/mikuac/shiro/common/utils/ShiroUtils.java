@@ -48,7 +48,7 @@ public class ShiroUtils {
         List<String> imgUrlList = new ArrayList<>();
         for (String i : msg.split(ShiroUtilsEnum.CQ_CODE_SPLIT.getValue())) {
             if (i.startsWith("image")) {
-                imgUrlList.add(RegexUtils.regex(ShiroUtilsEnum.GET_URL_REGEX.getValue(), msg));
+                imgUrlList.add(RegexUtils.regex(ShiroUtilsEnum.GET_URL_REGEX.getValue(), i));
             }
         }
         return imgUrlList;
@@ -64,7 +64,7 @@ public class ShiroUtils {
         List<String> videoUrlList = new ArrayList<>();
         for (String i : msg.split(ShiroUtilsEnum.CQ_CODE_SPLIT.getValue())) {
             if (i.startsWith("video")) {
-                videoUrlList.add(RegexUtils.regex(ShiroUtilsEnum.GET_URL_REGEX.getValue(), msg));
+                videoUrlList.add(RegexUtils.regex(ShiroUtilsEnum.GET_URL_REGEX.getValue(), i));
             }
         }
         return videoUrlList;
