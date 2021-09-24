@@ -29,6 +29,9 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
   <a href="">参与贡献</a>
 </p>
 
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FMisakaTAT%2FShiro.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FMisakaTAT%2FShiro?ref=badge_large)
+
 # QuickStart
 请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro
 ) 查看最新版本，并替换 version 内的 latest version
@@ -122,4 +125,4 @@ Thanks [JetBrains](https://www.jetbrains.com/?from=mirai) Provide Free License S
 
 ## Stargazers over time
 
-[![Stargazers over time](https://starchart.cc/MisakaTAT/Shiro.svg)](https://starchart.cc/MisakaTAT/Shiro)
+[![Stargazers over time](https://starchart.cc/MisakaTAT/Shiro.svg)](https://starchart.cc/MisakaTAT/Shiro)[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FMisakaTAT%2FShiro.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2FMisakaTAT%2FShiro?ref=badge_shield)
