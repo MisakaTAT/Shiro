@@ -65,11 +65,8 @@ public class Bot {
         params.put("message", msg);
         params.put("auto_escape", autoEscape);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
+        }) : null;
     }
 
     /**
@@ -87,11 +84,8 @@ public class Bot {
         params.put("message", msg);
         params.put("auto_escape", autoEscape);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
+        }) : null;
     }
 
     /**
@@ -105,11 +99,8 @@ public class Bot {
         JSONObject params = new JSONObject();
         params.put("message_id", msgId);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
+        }) : null;
     }
 
     /**
@@ -123,10 +114,7 @@ public class Bot {
         JSONObject params = new JSONObject();
         params.put("message_id", msgId);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -144,10 +132,7 @@ public class Bot {
         params.put("user_id", userId);
         params.put("reject_add_request", rejectAddRequest);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -165,10 +150,7 @@ public class Bot {
         params.put("user_id", userId);
         params.put("duration", duration);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -184,10 +166,7 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("enable", enable);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -205,10 +184,7 @@ public class Bot {
         params.put("user_id", userId);
         params.put("enable", enable);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -224,10 +200,7 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("enable", enable);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -245,10 +218,7 @@ public class Bot {
         params.put("user_id", userId);
         params.put("card", card);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -264,10 +234,7 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("group_name", groupName);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -283,10 +250,7 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("is_dismiss", isDismiss);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -306,10 +270,7 @@ public class Bot {
         params.put("special_title", specialTitle);
         params.put("duration", duration);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -327,10 +288,7 @@ public class Bot {
         params.put("approve", approve);
         params.put("remark", remark);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -350,10 +308,7 @@ public class Bot {
         params.put("approve", approve);
         params.put("reason", reason);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -364,11 +319,8 @@ public class Bot {
     public ActionData<LoginInfoResp> getLoginInfo() {
         ActionPathEnum action = ActionPathEnum.GET_LOGIN_INFO;
         JSONObject result = actionHandler.doActionRequest(session, action, null);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<LoginInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<LoginInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -384,11 +336,8 @@ public class Bot {
         params.put("user_id", userId);
         params.put("no_cache", noCache);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<StrangerInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<StrangerInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -399,11 +348,8 @@ public class Bot {
     public ActionList<FriendInfoResp> getFriendList() {
         ActionPathEnum action = ActionPathEnum.GET_FRIEND_LIST;
         JSONObject result = actionHandler.doActionRequest(session, action, null);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionList<FriendInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionList<FriendInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -417,10 +363,7 @@ public class Bot {
         JSONObject params = new JSONObject();
         params.put("friend_id", friendId);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -436,11 +379,8 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("no_cache", noCache);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<GroupInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -451,11 +391,8 @@ public class Bot {
     public ActionList<GroupInfoResp> getGroupList() {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_LIST;
         JSONObject result = actionHandler.doActionRequest(session, action, null);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionList<GroupInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -473,11 +410,8 @@ public class Bot {
         params.put("user_id", userId);
         params.put("no_cache", noCache);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<GroupMemberInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupMemberInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -491,11 +425,8 @@ public class Bot {
         JSONObject params = new JSONObject();
         params.put("group_id", groupId);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionList<GroupMemberInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupMemberInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -511,11 +442,8 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("type", type);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<GroupHonorInfoResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupHonorInfoResp>>() {
+        }) : null;
     }
 
     /**
@@ -526,11 +454,8 @@ public class Bot {
     public ActionData<BooleanResp> canSendImage() {
         ActionPathEnum action = ActionPathEnum.CAN_SEND_IMAGE;
         JSONObject result = actionHandler.doActionRequest(session, action, null);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
+        }) : null;
     }
 
     /**
@@ -541,11 +466,8 @@ public class Bot {
     public ActionData<BooleanResp> canSendRecord() {
         ActionPathEnum action = ActionPathEnum.CAN_SEND_RECORD;
         JSONObject result = actionHandler.doActionRequest(session, action, null);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
+        }) : null;
     }
 
     /**
@@ -564,10 +486,7 @@ public class Bot {
         params.put("file", file);
         params.put("cache", cache);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -582,11 +501,8 @@ public class Bot {
         JSONObject params = new JSONObject();
         params.put("url", url);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
+        }) : null;
     }
 
     /**
@@ -602,10 +518,7 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("content", content);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -619,11 +532,8 @@ public class Bot {
         JSONObject params = new JSONObject();
         params.put("group_id", groupId);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
+        }) : null;
     }
 
     /**
@@ -645,10 +555,7 @@ public class Bot {
         params.put("name", name);
         params.put("folder", folder);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -668,10 +575,7 @@ public class Bot {
         params.put("file", file);
         params.put("name", name);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -689,10 +593,7 @@ public class Bot {
         params.put("anonymous", anonymous);
         params.put("duration", duration);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
@@ -710,14 +611,11 @@ public class Bot {
         params.put("flag", flag);
         params.put("duration", duration);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
-     * 调用go-cqhttp下载文件
+     * 调用 go cq http 下载文件
      *
      * @param url         链接地址
      * @param threadCount 下载线程数
@@ -731,15 +629,12 @@ public class Bot {
         params.put("thread_count", threadCount);
         params.put("headers", headers);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
+        }) : null;
     }
 
     /**
-     * 调用go-cqhttp下载文件
+     * 调用 go cq http 下载文件
      *
      * @param url 链接地址
      * @return {@link ActionData<DownloadFileResp>}
@@ -749,11 +644,9 @@ public class Bot {
         JSONObject params = new JSONObject();
         params.put("url", url);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
-            });
-        }
-        return null;
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
+        }) : null;
+
     }
 
     /**
@@ -769,10 +662,7 @@ public class Bot {
         params.put("group_id", groupId);
         params.put("messages", msg.toString());
         JSONObject result = actionHandler.doActionRequest(session, action, params);
-        if (result != null) {
-            return result.toJavaObject(ActionRaw.class);
-        }
-        return null;
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
     /**
