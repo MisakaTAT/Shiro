@@ -29,7 +29,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         return MESSAGE_IGNORE;
@@ -40,7 +40,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         return MESSAGE_IGNORE;
@@ -51,7 +51,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupUploadNotice(@NotNull Bot bot, @NotNull GroupUploadNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -62,7 +62,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupAdminNotice(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -73,7 +73,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupDecreaseNotice(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -84,7 +84,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupIncreaseNotice(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -95,7 +95,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupBanNotice(@NotNull Bot bot, @NotNull GroupBanNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -106,7 +106,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onFriendAddNotice(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -117,7 +117,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupMsgDeleteNotice(@NotNull Bot bot, @NotNull GroupMsgDeleteNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -128,7 +128,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onPrivateMsgDeleteNotice(@NotNull Bot bot, @NotNull PrivateMsgDeleteNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -139,7 +139,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupPokeNotice(@NotNull Bot bot, @NotNull PokeNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -150,7 +150,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onPrivatePokeNotice(@NotNull Bot bot, @NotNull PokeNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -161,7 +161,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupLuckyKingNotice(@NotNull Bot bot, @NotNull GroupLuckyKingNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -172,7 +172,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupHonorChangeNotice(@NotNull Bot bot, @NotNull GroupHonorChangeNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -183,7 +183,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupCardChangeNotice(@NotNull Bot bot, @NotNull GroupCardChangeNotice event) {
         return MESSAGE_IGNORE;
@@ -194,7 +194,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onReceiveOfflineFilesNotice(@NotNull Bot bot, @NotNull ReceiveOfflineFilesNoticeEvent event) {
         return MESSAGE_IGNORE;
@@ -205,7 +205,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onFriendAddRequest(@NotNull Bot bot, @NotNull FriendAddRequestEvent event) {
         return MESSAGE_IGNORE;
@@ -216,7 +216,7 @@ public class BotPlugin {
      *
      * @param bot   bot对象
      * @param event 上报事件
-     * @return 结果
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGroupAddRequest(@NotNull Bot bot, @NotNull GroupAddRequestEvent event) {
         return MESSAGE_IGNORE;
