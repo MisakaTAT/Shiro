@@ -36,7 +36,7 @@ public class ActionSendUtils extends Thread {
      * @param apiJson 请求的Json参数
      * @return respJson
      * @throws IOException          IO异常
-     * @throws InterruptedException InterruptedException
+     * @throws InterruptedException Interrupted Exception
      */
     public JSONObject doRequest(JSONObject apiJson) throws IOException, InterruptedException {
         synchronized (session) {
