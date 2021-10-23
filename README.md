@@ -64,20 +64,32 @@ public class ExamplePlugin extends BotPlugin {
 
     @Override
     public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
-        // 构建消息
-        MsgUtils msgUtils = MsgUtils().builder().face(66).text("Hello, this is shiro demo.");
-        // 发送私聊消息
-        bot.sendPrivateMsg(event.getUserId(), msgUtils.build(), false);
+        String msg = event.getMessage();
+        if ("hi".equals(msg)) {
+          // 构建消息
+          String sendMsg = MsgUtils.builder()
+                  .face(66)
+                  .text("Hello, this is shiro demo.")
+                  .build();
+          // 发送私聊消息
+          bot.sendPrivateMsg(event.getUserId(), sendMsg, false);
+        }
         // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
         return MESSAGE_IGNORE;
     }
-
+  
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
-        // 构建消息
-        MsgUtils msgUtils = MsgUtils().builder().at(event.getUserId()).face(66).text("Hello, this is shiro demo.");
-        // 发送群消息
-        bot.sendGroupMsg(event.getGroupId(), msgUtils.build(), false);
+        String msg = event.getMessage();
+        if ("hi".equals(msg)) {
+          // 构建消息
+          MsgUtils sendMsg = MsgUtils.builder()
+                  .at(event.getUserId())
+                  .face(66)
+                  .text("Hello, this is shiro demo.");
+          // 发送群消息
+          bot.sendGroupMsg(event.getGroupId(), sendMsg.build(), false);
+        }
         // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
         return MESSAGE_IGNORE;
     }
