@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.lang.annotation.Annotation;
 
 /**
  * 事件处理器
