@@ -21,6 +21,8 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Set;
 
+import static com.mikuac.shiro.injection.privateMessage.injectPrivateMessage;
+
 /**
  * 事件处理器
  *
@@ -71,34 +73,7 @@ public class EventHandler {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
 
-                    Method[] methods = pluginClass.getMethods();
-                    for (Method m:methods){
-                        if (m.isAnnotationPresent(PrivateMessageHandler.class)){
-                        PrivateMessageHandler privateMessageHandler=m.getAnnotation(PrivateMessageHandler.class);
-                            Class<?>[] parameterTypes = m.getParameterTypes();
-                            Set<Class<?>> set=new HashSet<Class<?>>() {
-                                {
-                                    add(Bot.class);
-                                    add(PrivateMessageEvent.class);
-                                }
-                            };
-                            Object[] objects = new Object[parameterTypes.length];
-                            for (int i = 0; i < parameterTypes.length; i++) {
-                                Class<?> parameterType = parameterTypes[i];
-
-                                if (set.contains(parameterType)){
-                                    objects[i]=bot;
-                                    set.remove(parameterType);
-                                }
-
-                            }
-                            try {
-                                m.invoke(pluginClass.getDeclaredConstructor().newInstance(),objects);
-                            } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
+                    injectPrivateMessage(bot,event,pluginClass);
 
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;

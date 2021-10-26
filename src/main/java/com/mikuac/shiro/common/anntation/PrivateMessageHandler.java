@@ -10,14 +10,9 @@ import java.lang.annotation.*;
 @Documented
 public @interface PrivateMessageHandler {
 
-    /**
-     * 匹配正则
-     */
     String regex() default "none";
 
-    /**
-     * 限制发言人
-     */
+
     long[] senderIds() default {};
 
     long[] excludeSenderIds() default {};
