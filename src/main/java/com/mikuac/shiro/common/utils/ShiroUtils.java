@@ -1,9 +1,11 @@
 package com.mikuac.shiro.common.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mikuac.shiro.enums.ShiroUtilsEnum;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2021/8/10.
@@ -90,6 +92,17 @@ public class ShiroUtils {
      */
     public static String getUserAvatar(long userId, int size) {
         return String.format("https://q2.qlogo.cn/headimg_dl?dst_uin=%s&spec=%s", userId, size);
+    }
+
+    /**
+     * 消息链转换
+     *
+     * @param msg 需要修改客户端消息上报类型为 array
+     * @return 消息链
+     */
+    @SuppressWarnings("rawtypes")
+    public static List<Map> getMsgChain(String msg) {
+        return JSONObject.parseArray(msg, Map.class);
     }
 
 }
