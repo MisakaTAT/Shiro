@@ -32,7 +32,6 @@ public class MessageHandlerImpl implements BaseHandler {
         MultiValueMap<Class<? extends Annotation>, Method> methods = bot.getMethods();
         List<Method> methodList = methods.get(PrivateMessageHandler.class);
         for (Method m:methodList){
-            //判断成员方法是否有注解
                 PrivateMessageHandler pmh=m.getAnnotation(PrivateMessageHandler.class);
 
                 if (pmh.excludeSenderIds().length>0&&ArrayUtils.contain(pmh.excludeSenderIds(),event.getUserId()))
@@ -40,7 +39,6 @@ public class MessageHandlerImpl implements BaseHandler {
 
                 if (pmh.excludeSenderIds().length>0&&!ArrayUtils.contain(pmh.senderIds(),event.getUserId()))
                     return;
-
                 Map<Class<?>,Object> argMap= new HashMap<>();
                 if (!"none".equals(pmh.regex())){
                     Matcher matcher = RegexUtils.regexMacher(pmh.regex(), event.getRawMessage());
@@ -48,11 +46,9 @@ public class MessageHandlerImpl implements BaseHandler {
                         return;
                     argMap.put(Matcher.class,matcher);
                 }
-
                 argMap.put(Bot.class,bot);
                 argMap.put(PrivateMessageEvent.class,event) ;
                 Class<?>[] parameterTypes = m.getParameterTypes();
-
                 Object[] objects = new Object[parameterTypes.length];
                 for (int i = 0; i < parameterTypes.length; i++) {
                     Class<?> parameterType = parameterTypes[i];

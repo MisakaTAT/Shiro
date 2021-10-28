@@ -71,9 +71,8 @@ public class EventHandler {
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
+                messageHandler.invokeEvent(bot,event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-
-                    messageHandler.invokeEvent(bot,event);
 
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -84,6 +83,8 @@ public class EventHandler {
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+
+
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
                     }
