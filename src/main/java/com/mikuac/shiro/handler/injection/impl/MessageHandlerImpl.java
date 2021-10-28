@@ -1,12 +1,15 @@
-package com.mikuac.shiro.injection;
+package com.mikuac.shiro.handler.injection.impl;
 
-import com.mikuac.shiro.common.anntation.PrivateMessageHandler;
+import com.mikuac.shiro.dto.action.anntation.PrivateMessageHandler;
 import com.mikuac.shiro.common.utils.ArrayUtils;
 import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import com.mikuac.shiro.handler.injection.BaseHandler;
+import org.springframework.util.MultiValueMap;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -15,20 +18,21 @@ import java.util.regex.Matcher;
 /**
  * @author meme
  * @version V0.0.1
- * @Package com.mikuac.shiro.injection
+ * @Package com.mikuac.shiro.handler.injection
  * @Description:
  * @date 2021/10/26 21:24
  */
 
-public class privateMessage {
+public class MessageHandlerImpl implements BaseHandler {
 
-    public static void injectPrivateMessage(Bot bot, PrivateMessageEvent event,Class<? extends BotPlugin> pluginClass ){
+    public  void invokeEvent(Bot bot, PrivateMessageEvent event){
         //获取所有成员方法
-        Method[] methods = pluginClass.getMethods();
+//        Method[] methods = pluginClass.getMethods();
 
-        for (Method m:methods){
+        MultiValueMap<Class<? extends Annotation>, Method> methods = bot.getMethods();
+        List<Method> methodList = methods.get(PrivateMessageHandler.class);
+        for (Method m:methodList){
             //判断成员方法是否有注解
-            if (m.isAnnotationPresent(PrivateMessageHandler.class)){
                 PrivateMessageHandler pmh=m.getAnnotation(PrivateMessageHandler.class);
 
                 if (pmh.excludeSenderIds().length>0&&ArrayUtils.contain(pmh.excludeSenderIds(),event.getUserId()))
@@ -44,11 +48,10 @@ public class privateMessage {
                         return;
                     argMap.put(Matcher.class,matcher);
                 }
+
                 argMap.put(Bot.class,bot);
                 argMap.put(PrivateMessageEvent.class,event) ;
                 Class<?>[] parameterTypes = m.getParameterTypes();
-
-
 
                 Object[] objects = new Object[parameterTypes.length];
                 for (int i = 0; i < parameterTypes.length; i++) {
@@ -58,11 +61,11 @@ public class privateMessage {
                     }
                 }
                 try {
-                    m.invoke(pluginClass.getDeclaredConstructor().newInstance(),objects);
-                } catch (IllegalAccessException | InvocationTargetException | InstantiationException | NoSuchMethodException e) {
+                    m.invoke(m.getDeclaringClass(),objects);
+                } catch (IllegalAccessException | InvocationTargetException e) {
                     e.printStackTrace();
                 }
-            }
+
         }
     }
 }

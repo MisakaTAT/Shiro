@@ -1,27 +1,22 @@
 package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mikuac.shiro.common.anntation.PrivateMessageHandler;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
-import com.mikuac.shiro.dto.event.methodargs.PrivateMessageArgs;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
+import com.mikuac.shiro.handler.injection.BaseHandler;
+import com.mikuac.shiro.handler.injection.impl.MessageHandlerImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.HashSet;
-import java.util.Set;
 
-import static com.mikuac.shiro.injection.privateMessage.injectPrivateMessage;
 
 /**
  * 事件处理器
@@ -33,6 +28,11 @@ import static com.mikuac.shiro.injection.privateMessage.injectPrivateMessage;
 public class EventHandler {
 
     BotPlugin defaultPlugin = new BotPlugin();
+
+
+    BaseHandler messageHandler=new MessageHandlerImpl();
+
+
 
     @Resource
     private ApplicationContext applicationContext;
@@ -73,7 +73,7 @@ public class EventHandler {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
 
-                    injectPrivateMessage(bot,event,pluginClass);
+                    messageHandler.invokeEvent(bot,event);
 
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -268,6 +268,7 @@ public class EventHandler {
 
     private BotPlugin getPlugin(Class<? extends BotPlugin> pluginClass) {
         try {
+
             return applicationContext.getBean(pluginClass);
         } catch (Exception e) {
             log.warn("插件 {} 已被跳过，请检查 @Component 注解", pluginClass.getSimpleName());
