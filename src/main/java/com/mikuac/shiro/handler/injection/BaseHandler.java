@@ -7,4 +7,5 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 public interface BaseHandler {
 
      void invokeEvent(Bot bot, PrivateMessageEvent event) ;
+
 }
