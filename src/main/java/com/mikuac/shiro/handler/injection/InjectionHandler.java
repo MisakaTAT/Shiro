@@ -17,6 +17,7 @@ import com.mikuac.shiro.dto.event.notice.GroupUploadNoticeEvent;
 import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 import com.mikuac.shiro.enums.AtEnum;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.annotation.Annotation;
@@ -35,6 +36,8 @@ import java.util.regex.Matcher;
  * @date 2021/10/26 21:24
  */
 
+
+@Component
 public class InjectionHandler  {
 
     public  void invokeGroupMessage(@NotNull Bot bot, GroupMessageEvent event){
@@ -192,7 +195,7 @@ public class InjectionHandler  {
 
 
 
-    private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> argMap) {
+    public void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> argMap) {
         Class<?>[] parameterTypes = handlerMethod.getMethod().getParameterTypes();
         Object[] objects = new Object[parameterTypes.length];
         for (int i = 0; i < parameterTypes.length; i++) {
