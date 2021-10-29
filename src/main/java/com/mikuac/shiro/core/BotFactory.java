@@ -2,8 +2,11 @@ package com.mikuac.shiro.core;
 
 
 import com.mikuac.shiro.dto.HandlerMethod;
+import com.mikuac.shiro.dto.action.anntation.GroupAdminHandler;
 import com.mikuac.shiro.dto.action.anntation.GroupMessageHandler;
+import com.mikuac.shiro.dto.action.anntation.GroupUploadHandler;
 import com.mikuac.shiro.dto.action.anntation.PrivateMessageHandler;
+import com.mikuac.shiro.dto.event.notice.GroupUploadNoticeEvent;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
 import org.springframework.context.ApplicationContext;
@@ -64,7 +67,18 @@ public class BotFactory {
                 if (method.isAnnotationPresent(GroupMessageHandler.class)){
                     handlers.add(GroupMessageHandler.class,handlerMethod);
 
-                }}
+                }
+
+                if (method.isAnnotationPresent(GroupAdminHandler.class)){
+                    handlers.add(GroupAdminHandler.class,handlerMethod);
+
+                }
+
+                if (method.isAnnotationPresent(GroupUploadHandler.class)){
+                    handlers.add(GroupUploadHandler.class,handlerMethod);
+
+                }
+            }
             );
         }
 
