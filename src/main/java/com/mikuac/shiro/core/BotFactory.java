@@ -1,13 +1,9 @@
 package com.mikuac.shiro.core;
 
 
-import com.google.common.base.CaseFormat;
-import com.mikuac.shiro.common.utils.ArrayUtils;
+import com.mikuac.shiro.dto.HandlerMethod;
 import com.mikuac.shiro.dto.action.anntation.GroupMessageHandler;
 import com.mikuac.shiro.dto.action.anntation.PrivateMessageHandler;
-import com.mikuac.shiro.dto.action.common.HandlerMethod;
-import com.mikuac.shiro.dto.action.common.HandlerMethodCollection;
-import com.mikuac.shiro.enums.MethodEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
 import org.springframework.context.ApplicationContext;
@@ -18,7 +14,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -38,10 +33,6 @@ public class BotFactory {
     private PluginProperties pluginProperties;
 
 
-    private static final Map<String, List<HandlerMethod>> handlerMethodMap=new HashMap<>();;
-
-
-
    @Resource
     private ApplicationContext appContext;
 
@@ -57,33 +48,29 @@ public class BotFactory {
 
 //        HandlerMethodCollection handlerMethodCollection =new HandlerMethodCollection();
 
-        MultiValueMap<Class<? extends Annotation>, Method> methods= new LinkedMultiValueMap<>();
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers= new LinkedMultiValueMap<>();
 
 
         for (Object bean : beansOfType.values()) {
             Class<?> beanClass = bean.getClass();
             Arrays.stream(beanClass.getMethods()).forEach(method ->
-            {
+            {      HandlerMethod handlerMethod=new HandlerMethod();
+                    handlerMethod.setMethod(method);
+                    handlerMethod.setType(beanClass);
+                    handlerMethod.setObject(bean);
                 if (method.isAnnotationPresent(PrivateMessageHandler.class)){
-                    methods.add(PrivateMessageHandler.class,method);
+                    handlers.add(PrivateMessageHandler.class,handlerMethod);
                 }
                 if (method.isAnnotationPresent(GroupMessageHandler.class)){
-                    methods.add(GroupMessageHandler.class,method);
+                    handlers.add(GroupMessageHandler.class,handlerMethod);
 
                 }}
             );
         }
 
 
-        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(),methods);
+        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(),handlers);
     }
 
-    public static Set<HandlerMethod> getHandlerMethodListByAnnotation(String botName, Predicate<? super HandlerMethod> predicate) {
-        List<HandlerMethod> handlerMethods = handlerMethodMap.get(botName);
-        if (handlerMethods == null || handlerMethods.isEmpty()) {
-            return new HashSet<>();
-        }
-        return handlerMethods.stream().filter(predicate).collect(Collectors.toSet());
-    }
 
 }

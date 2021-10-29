@@ -1,4 +1,4 @@
-package com.mikuac.shiro.dto.action.common;
+package com.mikuac.shiro.dto;
 
 import lombok.Data;
 

@@ -2,6 +2,7 @@ package com.mikuac.shiro.dto.action.anntation;
 
 
 import com.mikuac.shiro.enums.AtEnum;
+import com.mikuac.shiro.enums.IgnoreItselfEnum;
 
 import java.lang.annotation.*;
 
@@ -46,5 +47,6 @@ public @interface GroupMessageHandler {
 //    /**
 //     * 忽略自身
 //     */
-//    IgnoreItselfEnum ignoreItself() default IgnoreItselfEnum.IGNORE_ITSELF;
+//
+   IgnoreItselfEnum ignoreItself() default IgnoreItselfEnum.IGNORE_ITSELF;
 }
