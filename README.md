@@ -113,7 +113,10 @@ Shiro 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/spe
 
 * [OneBot](https://github.com/botuniverse/onebot)
 * [pbbot-spring-boot-starter](https://github.com/ProtobufBot/pbbot-spring-boot-starter)
-  Shiro开发时的参考实现，感谢 [lz1998](https://github.com/lz1998) 大佬的开源项目，本项目众多灵感正来源于此。
+  
+# Contributors
+
+[![contributors](https://contributors-img.web.app/image?repo=MisakaTAT/Shiro)](https://github.com/MisakaTAT/Shiro/graphs/contributors)
 
 # License
 
