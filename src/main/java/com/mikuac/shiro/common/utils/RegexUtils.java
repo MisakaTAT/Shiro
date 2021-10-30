@@ -28,10 +28,11 @@ public class RegexUtils {
     public static Matcher regexMacher(String regex, String text) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
+        if (matcher.lookingAt()) {
             return matcher;
+        } else {
+            return null;
         }
-        return null;
     }
 
     /**
@@ -47,8 +48,8 @@ public class RegexUtils {
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
             return matcher.group(groupId);
-        }
+        }else {
         return null;
-    }
+    }}
 
 }

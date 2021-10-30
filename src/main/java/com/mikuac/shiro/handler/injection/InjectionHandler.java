@@ -147,6 +147,7 @@ public class InjectionHandler  {
 
             Map<Class<?>,Object> argMap= new HashMap<>();
             if (!"none".equals(handler.regex())){
+
                 Matcher matcher = RegexUtils.regexMacher(handler.regex(), event.getFile().getName());
                 if (matcher==null)
                     return;
