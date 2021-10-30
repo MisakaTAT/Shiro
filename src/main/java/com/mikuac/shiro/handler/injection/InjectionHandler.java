@@ -46,6 +46,8 @@ public class InjectionHandler  {
 
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getHandler();
         List<HandlerMethod> handlerMethodList = handlers.get(GroupMessageHandler.class);
+        if (handlerMethodList==null)
+            return;
         for (HandlerMethod handlerMethod:handlerMethodList){
             GroupMessageHandler gmh=handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
 
@@ -97,6 +99,8 @@ public class InjectionHandler  {
 
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getHandler();
         List<HandlerMethod> handlerMethods = handlers.get(PrivateMessageHandler.class);
+        if (handlerMethods==null)
+            return;
         for (HandlerMethod handlerMethod:handlerMethods){
             PrivateMessageHandler pmh=handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
 
@@ -130,6 +134,8 @@ public class InjectionHandler  {
 
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupUploadHandler.class);
+        if (handlerMethods==null)
+            return;
         for (HandlerMethod handlerMethod:handlerMethods){
             GroupUploadHandler handler=handlerMethod.getMethod().getAnnotation(GroupUploadHandler.class);
 
@@ -163,6 +169,8 @@ public class InjectionHandler  {
 
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupAdminHandler.class);
+        if (handlerMethods==null)
+            return;
         for (HandlerMethod handlerMethod:handlerMethods){
             GroupAdminHandler handler=handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class);
 
