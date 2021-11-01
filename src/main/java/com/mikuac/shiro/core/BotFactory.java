@@ -2,11 +2,10 @@ package com.mikuac.shiro.core;
 
 
 import com.mikuac.shiro.dto.HandlerMethod;
-import com.mikuac.shiro.dto.action.anntation.GroupAdminHandler;
-import com.mikuac.shiro.dto.action.anntation.GroupMessageHandler;
-import com.mikuac.shiro.dto.action.anntation.GroupUploadHandler;
-import com.mikuac.shiro.dto.action.anntation.PrivateMessageHandler;
-import com.mikuac.shiro.dto.event.notice.GroupUploadNoticeEvent;
+import com.mikuac.shiro.dto.action.annotation.GroupAdminHandler;
+import com.mikuac.shiro.dto.action.annotation.GroupMessageHandler;
+import com.mikuac.shiro.dto.action.annotation.GroupUploadHandler;
+import com.mikuac.shiro.dto.action.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
 import org.springframework.context.ApplicationContext;
@@ -18,8 +17,6 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2021/7/7.

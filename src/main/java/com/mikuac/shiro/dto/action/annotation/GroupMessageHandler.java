@@ -1,4 +1,4 @@
-package com.mikuac.shiro.dto.action.anntation;
+package com.mikuac.shiro.dto.action.annotation;
 
 
 import com.mikuac.shiro.enums.AtEnum;

@@ -1,16 +1,18 @@
-package com.mikuac.shiro.dto.action.anntation;
+package com.mikuac.shiro.dto.action.annotation;
 
-
-import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 
 import java.lang.annotation.*;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-public @interface GroupAdminHandler {
+public @interface GroupUploadHandler {
 
-    AdminNoticeTypeEnum TYPE_ENUM()default AdminNoticeTypeEnum.ON;
+
+    /**
+     * 匹配正则
+     */
+    String regex() default "none";
 
     /**
      * 限制某个群
@@ -21,5 +23,10 @@ public @interface GroupAdminHandler {
      * 排除某个群
      */
     long[] excludeGroupIds() default {};
+
+    /**
+     * 是否下载
+     */
+//    boolean needDownload() default false;
 
 }
