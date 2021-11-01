@@ -1,11 +1,25 @@
 package com.mikuac.shiro.core;
 
+
+import com.mikuac.shiro.dto.HandlerMethod;
+import com.mikuac.shiro.dto.action.anntation.GroupAdminHandler;
+import com.mikuac.shiro.dto.action.anntation.GroupMessageHandler;
+import com.mikuac.shiro.dto.action.anntation.GroupUploadHandler;
+import com.mikuac.shiro.dto.action.anntation.PrivateMessageHandler;
+import com.mikuac.shiro.dto.event.notice.GroupUploadNoticeEvent;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
+import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
+import java.lang.annotation.Annotation;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2021/7/7.
@@ -21,6 +35,10 @@ public class BotFactory {
     @Resource
     private PluginProperties pluginProperties;
 
+
+   @Resource
+    private ApplicationContext appContext;
+
     /**
      * 创建Bot对象
      *
@@ -29,7 +47,44 @@ public class BotFactory {
      * @return Bot对象
      */
     public Bot createBot(long selfId, WebSocketSession session) {
-        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList());
+        Map<String, BotPlugin> beansOfType = appContext.getBeansOfType(BotPlugin.class);
+
+//        HandlerMethodCollection handlerMethodCollection =new HandlerMethodCollection();
+
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers= new LinkedMultiValueMap<>();
+
+
+        for (Object bean : beansOfType.values()) {
+            Class<?> beanClass = bean.getClass();
+            Arrays.stream(beanClass.getMethods()).forEach(method ->
+            {      HandlerMethod handlerMethod=new HandlerMethod();
+                    handlerMethod.setMethod(method);
+                    handlerMethod.setType(beanClass);
+                    handlerMethod.setObject(bean);
+                if (method.isAnnotationPresent(PrivateMessageHandler.class)){
+                    handlers.add(PrivateMessageHandler.class,handlerMethod);
+                }
+                if (method.isAnnotationPresent(GroupMessageHandler.class)){
+                    handlers.add(GroupMessageHandler.class,handlerMethod);
+
+                }
+
+                if (method.isAnnotationPresent(GroupAdminHandler.class)){
+                    handlers.add(GroupAdminHandler.class,handlerMethod);
+
+                }
+
+                if (method.isAnnotationPresent(GroupUploadHandler.class)){
+                    handlers.add(GroupUploadHandler.class,handlerMethod);
+
+                }
+            }
+            );
+        }
+
+
+        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(),handlers);
     }
+
 
 }
