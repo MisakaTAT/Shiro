@@ -24,6 +24,17 @@ public class RegexUtils {
         return null;
     }
 
+
+    public static Matcher regexMacher(String regex, String text) {
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+        if (matcher.lookingAt()) {
+            return matcher;
+        } else {
+            return null;
+        }
+    }
+
     /**
      * 取正则分组匹配内容
      *
@@ -37,8 +48,8 @@ public class RegexUtils {
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
             return matcher.group(groupId);
-        }
+        }else {
         return null;
-    }
+    }}
 
 }

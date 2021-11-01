@@ -3,15 +3,20 @@ package com.mikuac.shiro.core;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
+import com.mikuac.shiro.dto.HandlerMethod;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.ActionPathEnum;
+import com.mikuac.shiro.enums.MethodEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.util.List;
 
 /**
@@ -34,6 +39,10 @@ public class Bot {
     @Getter
     @Setter
     private List<Class<? extends BotPlugin>> pluginList;
+    @Getter
+    @Setter
+
+    private MultiValueMap<Class<? extends Annotation>, HandlerMethod> handler;
 
     /**
      * 构造函数
@@ -43,11 +52,13 @@ public class Bot {
      * @param actionHandler shiroActionHandler
      * @param pluginList    插件列表
      */
-    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList) {
+    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList,
+               MultiValueMap<Class<? extends Annotation>,HandlerMethod> handler) {
         this.selfId = selfId;
         this.session = session;
         this.actionHandler = actionHandler;
         this.pluginList = pluginList;
+        this.handler=handler;
     }
 
     /**
