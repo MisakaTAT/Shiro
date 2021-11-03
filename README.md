@@ -56,7 +56,7 @@ shiro:
     - com.mikuac.bot.plugins.ExamplePlugin
 ```
 
-示例插件
+示例插件I：以重写的父类方法的方式使用
 ```java
 // 继承BotPlugin开始编写插件
 @Component
@@ -93,6 +93,41 @@ public class ExamplePlugin extends BotPlugin {
         // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
         return MESSAGE_IGNORE;
     }
+
+}
+```
+
+
+示例插件II：以注解的方式使用
+
+```java
+import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+
+// 继承BotPlugin开始编写插件
+@Component
+public class ExamplePlugin extends BotPlugin {
+
+  //符合regex的正则表达式的消息会被接受
+  //senderIds是消息白名单
+  //excludeSenderId是消息黑名单
+  @PrivateMessageHandler(regex = "(hi)", senderIds = 123456, excludeSenderIds = 789654)
+  public void PrivateMessageAnnotation(@NotNull Bot bot, @NotNull PrivateMessageEvent event, Matcher matcher) {
+    //matcher是已经匹配到的消息
+    // 构建消息
+    MsgUtils msgUtils = MsgUtils().builder().face(66).text("Hello, this is shiro demo.");
+    // 发送私聊消息
+    bot.sendPrivateMsg(event.getUserId(), msgUtils.build(), false);
+
+  }
+
+  @GroupMessageHandler(regex = "(hi)", senderIds = 123456, excludeSenderIds = 789654)
+  public void GroupMessageAnnotation(@NotNull GroupMessageEvent event) {
+    //以注解的方式使用插件，你可以根据自己的需要来为方法设定参数，
+    //例如私人信息可以传递bot，event，matcher,多余的参数会被设定为null
+    System.out.println(event.getRawMessage());
+    
+  }
+
 
 }
 ```
