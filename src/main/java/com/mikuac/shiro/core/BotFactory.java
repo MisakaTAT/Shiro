@@ -2,10 +2,6 @@ package com.mikuac.shiro.core;
 
 
 import com.mikuac.shiro.dto.HandlerMethod;
-import com.mikuac.shiro.dto.action.annotation.GroupAdminHandler;
-import com.mikuac.shiro.dto.action.annotation.GroupMessageHandler;
-import com.mikuac.shiro.dto.action.annotation.GroupUploadHandler;
-import com.mikuac.shiro.dto.action.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
 import org.springframework.context.ApplicationContext;
@@ -13,10 +9,10 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
-
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
 import java.util.*;
+
 
 /**
  * Created on 2021/7/7.
