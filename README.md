@@ -46,7 +46,7 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 基础配置文件，或详见 [高级自定义配置](https://misakatat.github.io/shiro-docs/quickstart/#%E9%AB%98%E7%BA%A7%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
 
 ```yaml
-# 修改application.yaml
+# 修改 application.yml
 server:
   port: 5555
 
@@ -59,7 +59,7 @@ shiro:
     - com.mikuac.bot.plugins.ExamplePlugin
 ```
 
-示例插件I：以重写的父类方法的方式使用
+示例插件I：重写父类方法（需要在 application.yml 文件 plugin-list 定义插件）
 
 ```java
 // 继承BotPlugin开始编写插件
@@ -101,7 +101,7 @@ public class ExamplePlugin extends BotPlugin {
 }
 ```
 
-示例插件II：以注解的方式使用
+示例插件II：注解调用
 
 ```java
 @Component
