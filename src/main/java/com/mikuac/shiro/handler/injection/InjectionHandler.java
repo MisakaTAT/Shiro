@@ -52,22 +52,22 @@ public class InjectionHandler {
         for (HandlerMethod handlerMethod : handlerMethodList) {
             GroupMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
             if (!groupCheck(gmh.groupBlackList(), gmh.groupWhiteList(), event.getGroupId())) {
-                return;
+                continue;
             }
             if (!userCheck(gmh.userBlackList(), gmh.userWhiteList(), event.getUserId())) {
-                return;
+                continue;
             }
             List<String> atList = ShiroUtils.getAtList(event.getRawMessage());
             val selfId = String.valueOf(event.getSelfId());
             if (gmh.at() == AtEnum.NEED && !atList.contains(selfId)) {
-                return;
+                continue;
             }
             if (gmh.at() == AtEnum.NOT_NEED && atList.contains(selfId)) {
-                return;
+                continue;
             }
             Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getRawMessage());
             if (argsMap == null) {
-                return;
+                continue;
             }
             argsMap.put(Bot.class, bot);
             argsMap.put(GroupMessageEvent.class, event);
@@ -90,11 +90,11 @@ public class InjectionHandler {
         for (HandlerMethod handlerMethod : handlerMethods) {
             PrivateMessageHandler pmh = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
             if (!userCheck(pmh.userBlackList(), pmh.userWhiteList(), event.getUserId())) {
-                return;
+                continue;
             }
             Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getRawMessage());
             if (argsMap == null) {
-                return;
+                continue;
             }
             argsMap.put(PrivateMessageEvent.PrivateSender.class, event.getPrivateSender());
             argsMap.put(Bot.class, bot);
@@ -112,23 +112,23 @@ public class InjectionHandler {
         for (HandlerMethod handlerMethod : handlerMethods) {
             GroupAdminHandler handler = handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class);
             if (handler.groupBlackList().length > 0 && ArrayUtils.contain(handler.groupBlackList(), event.getGroupId())) {
-                return;
+                continue;
             }
             if (handler.groupWhiteList().length > 0 && !ArrayUtils.contain(handler.groupWhiteList(), event.getGroupId())) {
-                return;
+                continue;
             }
             switch (handler.type()) {
                 case OFF:
-                    return;
+                    continue;
                 case ALL:
                     break;
                 case UNSET:
                     if (!"unset".equals(event.getSubType())) {
-                        return;
+                        continue;
                     }
                 case SET:
                     if (!"set".equals(event.getSubType())) {
-                        return;
+                        continue;
                     }
                 default:
             }
