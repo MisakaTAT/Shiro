@@ -30,8 +30,10 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 </p>
 
 # QuickStart
+
 请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro
 ) 查看最新版本，并替换 version 内的 latest version
+
 ```xml
 
 <dependency>
@@ -42,6 +44,7 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 ```
 
 基础配置文件，或详见 [高级自定义配置](https://misakatat.github.io/shiro-docs/quickstart/#%E9%AB%98%E7%BA%A7%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
+
 ```yaml
 # 修改application.yaml
 server:
@@ -57,6 +60,7 @@ shiro:
 ```
 
 示例插件I：以重写的父类方法的方式使用
+
 ```java
 // 继承BotPlugin开始编写插件
 @Component
@@ -97,37 +101,33 @@ public class ExamplePlugin extends BotPlugin {
 }
 ```
 
-
 示例插件II：以注解的方式使用
 
 ```java
-import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
-
-// 继承BotPlugin开始编写插件
 @Component
-public class ExamplePlugin extends BotPlugin {
+public class DemoPlugin extends BotPlugin {
 
-  //符合regex的正则表达式的消息会被接受
-  //senderIds是消息白名单
-  //excludeSenderId是消息黑名单
-  @PrivateMessageHandler(regex = "(hi)", senderIds = 123456, excludeSenderIds = 789654)
-  public void PrivateMessageAnnotation(@NotNull Bot bot, @NotNull PrivateMessageEvent event, Matcher matcher) {
-    //matcher是已经匹配到的消息
-    // 构建消息
-    MsgUtils msgUtils = MsgUtils().builder().face(66).text("Hello, this is shiro demo.");
-    // 发送私聊消息
-    bot.sendPrivateMsg(event.getUserId(), msgUtils.build(), false);
+    // 符合 cmd 正则表达式的消息会被响应
+    // userBlackList 为用户黑名单数组，处于黑名单内的用户消息不会被响应
+    // userWhiteList 为用户白名单数组，只有处于白名单内的用户消息会被响应
+    @PrivateMessageHandler(cmd = "hi", userWhiteList = {111111, 222222})
+    public void fun1(@NotNull Bot bot, @NotNull PrivateMessageEvent event, @NotNull Matcher matcher) {
+        // 构建消息
+        MsgUtils msgUtils = MsgUtils.builder().face(66).text("Hello, this is shiro demo.");
+        // 发送私聊消息
+        bot.sendPrivateMsg(event.getUserId(), msgUtils.build(), false);
+    }
 
-  }
-
-  @GroupMessageHandler(regex = "(hi)", senderIds = 123456, excludeSenderIds = 789654)
-  public void GroupMessageAnnotation(@NotNull GroupMessageEvent event) {
-    //以注解的方式使用插件，你可以根据自己的需要来为方法设定参数，
-    //例如私人信息可以传递bot，event，matcher,多余的参数会被设定为null
-    System.out.println(event.getRawMessage());
-    
-  }
-
+    // 其它参数或具体内容可自行查看注解源码内的注释
+    // groupBlackList 为群组黑名单数组，处于黑名单内的群组消息不会被响应
+    // groupWhiteList 为群组白名单数组，只有处于白名单内的群组消息会被响应
+    // at 如果参数设定为 AtEnum.NEED 则只有 at 了机器人的消息会被响应，若参数为 NOT_NEED，消息内如果 at 机器人则会忽略此消息
+    @GroupMessageHandler(cmd = "hi", userWhiteList = {111, 22}, groupWhiteList = {111, 222}, at = AtEnum.OFF)
+    public void fun2(@NotNull GroupMessageEvent event) {
+        // 以注解方式调用可以根据自己的需要来为方法设定参数
+        // 例如群组消息可以传递 GroupMessageEvent event, Bot bot, Matcher matcher 多余的参数会被设定为 null
+        System.out.println(event.getMessage());
+    }
 
 }
 ```
@@ -148,7 +148,7 @@ Shiro 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/spe
 
 * [OneBot](https://github.com/botuniverse/onebot)
 * [pbbot-spring-boot-starter](https://github.com/ProtobufBot/pbbot-spring-boot-starter)
-  
+
 # Contributors
 
 [![contributors](https://contributors-img.web.app/image?repo=MisakaTAT/Shiro)](https://github.com/MisakaTAT/Shiro/graphs/contributors)

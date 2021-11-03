@@ -24,8 +24,15 @@ public class RegexUtils {
         return null;
     }
 
-
-    public static Matcher regexMacher(String regex, String text) {
+    /**
+     * 部分匹配
+     * 总是从第一个字符进行匹配，匹配成功了不再继续匹配，匹配失败也不继续匹配
+     *
+     * @param regex 正则表达式
+     * @param text  匹配内容
+     * @return Matcher
+     */
+    public static Matcher regexMatcher(String regex, String text) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
         if (matcher.lookingAt()) {
@@ -48,8 +55,9 @@ public class RegexUtils {
         Matcher matcher = pattern.matcher(text);
         if (matcher.find()) {
             return matcher.group(groupId);
-        }else {
-        return null;
-    }}
+        } else {
+            return null;
+        }
+    }
 
 }
