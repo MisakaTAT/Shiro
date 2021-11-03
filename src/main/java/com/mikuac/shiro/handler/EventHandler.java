@@ -28,16 +28,13 @@ public class EventHandler {
 
     BotPlugin defaultPlugin = new BotPlugin();
 
-
-    InjectionHandler injectionHandler=new InjectionHandler();
-
-
+    InjectionHandler injectionHandler = new InjectionHandler();
 
     @Resource
     private ApplicationContext applicationContext;
 
     /**
-     * 事件处理器
+     * 元事件处理器
      *
      * @param bot       bot对象
      * @param eventJson 响应数据
@@ -65,14 +62,19 @@ public class EventHandler {
         }
     }
 
+    /**
+     * 消息事件处理器
+     *
+     * @param bot       bot对象
+     * @param eventJson 响应数据
+     */
     private void handleMessage(Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
-                injectionHandler.invokePrivateMessage(bot,event);
+                injectionHandler.invokePrivateMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
                     }
@@ -81,7 +83,7 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
-                injectionHandler.invokeGroupMessage(bot,event);
+                injectionHandler.invokeGroupMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -93,12 +95,17 @@ public class EventHandler {
         }
     }
 
+    /**
+     * 提醒事件处理器
+     *
+     * @param bot       bot对象
+     * @param eventJson 响应数据
+     */
     private void handleNotice(Bot bot, @NotNull JSONObject eventJson) {
         String noticeType = eventJson.getString("notice_type");
         switch (noticeType) {
             case "group_upload": {
                 GroupUploadNoticeEvent event = eventJson.toJavaObject(GroupUploadNoticeEvent.class);
-                injectionHandler.invokeGroupUpload(bot,event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupUploadNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -107,9 +114,8 @@ public class EventHandler {
                 break;
             }
             case "group_admin": {
-
                 GroupAdminNoticeEvent event = eventJson.toJavaObject(GroupAdminNoticeEvent.class);
-                injectionHandler.invokeGroupAdmin(bot,event);
+                injectionHandler.invokeGroupAdmin(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupAdminNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -197,6 +203,12 @@ public class EventHandler {
         }
     }
 
+    /**
+     * 通知事件处理器
+     *
+     * @param bot       bot对象
+     * @param eventJson 响应数据
+     */
     private void handleNotify(Bot bot, @NotNull JSONObject eventJson) {
         String subType = eventJson.getString("sub_type");
         switch (subType) {
@@ -240,6 +252,12 @@ public class EventHandler {
         }
     }
 
+    /**
+     * 请求事件处理器
+     *
+     * @param bot       bot对象
+     * @param eventJson 响应数据
+     */
     private void handleRequest(Bot bot, @NotNull JSONObject eventJson) {
         String requestType = eventJson.getString("request_type");
         switch (requestType) {
