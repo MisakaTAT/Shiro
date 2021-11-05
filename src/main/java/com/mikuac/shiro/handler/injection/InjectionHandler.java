@@ -40,8 +40,8 @@ public class InjectionHandler {
     /**
      * 群聊消息
      *
-     * @param bot   Bot 对象
-     * @param event GroupMessageEvent 类
+     * @param bot   Bot
+     * @param event GroupMessageEvent
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -51,10 +51,10 @@ public class InjectionHandler {
         }
         for (HandlerMethod handlerMethod : handlerMethodList) {
             GroupMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
-            if (!groupCheck(gmh.groupBlackList(), gmh.groupWhiteList(), event.getGroupId())) {
+            if (groupCheck(gmh.groupBlackList(), gmh.groupWhiteList(), event.getGroupId())) {
                 continue;
             }
-            if (!userCheck(gmh.userBlackList(), gmh.userWhiteList(), event.getUserId())) {
+            if (userCheck(gmh.userBlackList(), gmh.userWhiteList(), event.getUserId())) {
                 continue;
             }
             List<String> atList = ShiroUtils.getAtList(event.getRawMessage());
@@ -78,8 +78,8 @@ public class InjectionHandler {
     /**
      * 私聊消息
      *
-     * @param bot   Bot 对象
-     * @param event PrivateMessageEvent 类
+     * @param bot   Bot
+     * @param event PrivateMessageEvent
      */
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -89,7 +89,7 @@ public class InjectionHandler {
         }
         for (HandlerMethod handlerMethod : handlerMethods) {
             PrivateMessageHandler pmh = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
-            if (!userCheck(pmh.userBlackList(), pmh.userWhiteList(), event.getUserId())) {
+            if (userCheck(pmh.userBlackList(), pmh.userWhiteList(), event.getUserId())) {
                 continue;
             }
             Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getRawMessage());
@@ -103,6 +103,12 @@ public class InjectionHandler {
         }
     }
 
+    /**
+     * 管理员变动事件
+     *
+     * @param bot   Bot
+     * @param event GroupAdminNoticeEvent
+     */
     public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupAdminHandler.class);
@@ -157,24 +163,47 @@ public class InjectionHandler {
         }
     }
 
+    /**
+     * 群组黑白名单检查
+     *
+     * @param groupBlackList 黑名单群组（long类型数组）
+     * @param groupWhiteList 白名单群组（long类型数组）
+     * @param groupId        当前群号
+     * @return 返回后的值无需取反
+     */
     private boolean groupCheck(long[] groupBlackList, long[] groupWhiteList, long groupId) {
-        // 黑名单不为空，且存在于黑名单内
+        // 如果群组黑名单不为空且当前群组存在于黑名单中返回 true
         if (groupBlackList.length > 0 && ArrayUtils.contain(groupBlackList, groupId)) {
-            return false;
+            return true;
         }
-        // 白名单不为空，且不存在于白名单内
-        return groupWhiteList.length <= 0 || ArrayUtils.contain(groupWhiteList, groupId);
+        // 如果群组白名单不为空且当前群组不存在于白名单中返回 true
+        return groupWhiteList.length > 0 && !ArrayUtils.contain(groupWhiteList, groupId);
     }
 
+    /**
+     * 用户黑白名单检查
+     *
+     * @param userBlackList 黑名单用户（long类型数组）
+     * @param userWhiteList 白名单用户（long类型数组）
+     * @param userId        当前用户
+     * @return 返回后的值无需取反
+     */
     private boolean userCheck(long[] userBlackList, long[] userWhiteList, long userId) {
-        // 黑名单不为空，且存在于黑名单内
+        // 如果用户黑名单不为空且当前发送者存在于黑名单中返回 true
         if (userBlackList.length > 0 && ArrayUtils.contain(userBlackList, userId)) {
-            return false;
+            return true;
         }
-        // 白名单不为空，且不存在于白名单内
-        return userWhiteList.length <= 0 || ArrayUtils.contain(userWhiteList, userId);
+        // 如果用户白名单不为空且当前发送者不存在于白名单中返回 true
+        return userWhiteList.length > 0 && !ArrayUtils.contain(userWhiteList, userId);
     }
 
+    /**
+     * 返回匹配的消息Matcher类
+     *
+     * @param cmd 正则表达式
+     * @param msg 消息内容
+     * @return argsMap
+     */
     private Map<Class<?>, Object> matcher(String cmd, String msg) {
         String defCommand = "none";
         Map<Class<?>, Object> argsMap = new ConcurrentHashMap<>(16);
