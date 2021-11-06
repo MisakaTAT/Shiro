@@ -8,11 +8,7 @@ import java.lang.reflect.Method;
  * HandlerMethod
  *
  * @author meme
- * @version V0.0.1
- * @Package com.mikuac.shiro.bean
- * @date 2021/10/26 21:24
  */
-
 @Data
 public class HandlerMethod {
 

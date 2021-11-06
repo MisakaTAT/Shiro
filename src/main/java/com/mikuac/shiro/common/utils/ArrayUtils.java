@@ -6,13 +6,14 @@ import java.lang.annotation.Annotation;
  * ArrayUtils
  *
  * @author meme
- * @version V0.0.1
- * @Package com.mikuac.shiro.handler.injection
- * @date 2021/10/26 21:24
  */
-
 public class ArrayUtils {
 
+    /**
+     * @param sources 数组
+     * @param value   值
+     * @return 是否存在
+     */
     public static boolean contain(long[] sources, long value) {
         for (long source : sources) {
             if (source == value) {
@@ -22,6 +23,11 @@ public class ArrayUtils {
         return false;
     }
 
+    /**
+     * @param sources 数组
+     * @param value   值
+     * @return 是否存在
+     */
     public static boolean contain(Long[] sources, Long value) {
         for (Long source : sources) {
             if (source.equals(value)) {
@@ -31,6 +37,11 @@ public class ArrayUtils {
         return false;
     }
 
+    /**
+     * @param sources 数组
+     * @param value   值
+     * @return 是否存在
+     */
     public static boolean contain(Object[] sources, Object value) {
         for (Object source : sources) {
             if (source == value) {
@@ -40,6 +51,11 @@ public class ArrayUtils {
         return false;
     }
 
+    /**
+     * @param sources 数组
+     * @param value   值
+     * @return 是否存在
+     */
     public static boolean containAnnotation(Annotation[] sources, Class<Annotation> value) {
         for (Annotation source : sources) {
             if (source.getClass() == value) {

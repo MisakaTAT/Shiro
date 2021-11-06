@@ -288,10 +288,9 @@ public class EventHandler {
 
     private BotPlugin getPlugin(Class<? extends BotPlugin> pluginClass) {
         try {
-
             return applicationContext.getBean(pluginClass);
         } catch (Exception e) {
-            log.warn("插件 {} 已被跳过，请检查 @Component 注解", pluginClass.getSimpleName());
+            log.warn("Plugin {} skip, Please check @Component annotation.", pluginClass.getSimpleName());
             return defaultPlugin;
         }
     }

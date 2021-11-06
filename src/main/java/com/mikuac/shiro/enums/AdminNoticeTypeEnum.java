@@ -4,11 +4,7 @@ package com.mikuac.shiro.enums;
  * 群管理员变动类型枚举
  *
  * @author meme
- * @version V0.0.1
- * @Package com.mikuac.shiro.enums
- * @date 2021/10/26 21:24
  */
-
 public enum AdminNoticeTypeEnum {
 
     /**

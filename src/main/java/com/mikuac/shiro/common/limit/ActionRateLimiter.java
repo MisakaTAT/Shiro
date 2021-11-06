@@ -34,7 +34,8 @@ public class ActionRateLimiter {
         if (actionLimiterProperties.isEnable()) {
             int permitsPerSecond = actionLimiterProperties.getPermitsPerSecond();
             rateLimiter = RateLimiter.create(permitsPerSecond);
-            log.info("全局限速器已启用，当前每秒生成令牌数为 [{}]", permitsPerSecond);
+            log.info("Global rate limiter enable");
+            log.info("The current permits per second [{}]", permitsPerSecond);
         }
     }
 

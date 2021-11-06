@@ -29,11 +29,7 @@ import java.util.regex.Matcher;
  * InjectionHandler
  *
  * @author meme
- * @version V0.0.1
- * @Package com.mikuac.shiro.handler.injection
- * @date 2021/10/26 21:24
  */
-
 @Component
 public class InjectionHandler {
 

@@ -76,7 +76,7 @@ public class ActionHandler {
      */
     public JSONObject doActionRequest(WebSocketSession session, ActionPath action, JSONObject params) {
         if (actionLimiterProperties.isEnable() && !actionRateLimiter.tryAcquire()) {
-            log.warn("触发限流策略，本次请求将被忽略");
+            log.warn("Token get failed, Ignored this action.");
             return null;
         }
         if (!session.isOpen()) {
@@ -90,7 +90,7 @@ public class ActionHandler {
         try {
             result = actionSendUtils.doRequest(reqJson);
         } catch (Exception e) {
-            log.error("do action request failed: {}", e.getMessage());
+            log.error("Do action request failed: {}", e.getMessage());
             result = new JSONObject();
             result.put("status", "failed");
             result.put("retcode", -1);

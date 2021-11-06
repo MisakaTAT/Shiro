@@ -6,7 +6,7 @@
 
     <groupId>com.mikuac</groupId>
     <artifactId>shiro</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.5</version>
     <name>Shiro</name>
     <url>https://mikuac.com</url>
     <description>基于OneBot协议的QQ机器人快速开发框架</description>
@@ -58,20 +58,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.3.1</version>
-                <configuration>
-                    <tags>
-                        <tag>
-                            <name>Package</name>
-                            <placement>a</placement>
-                            <head>包</head>
-                        </tag>
-                        <tag>
-                            <name>date</name>
-                            <placement>a</placement>
-                            <head>更新日期</head>
-                        </tag>
-                    </tags>
-                </configuration>
                 <executions>
                     <execution>
                         <phase>package</phase>

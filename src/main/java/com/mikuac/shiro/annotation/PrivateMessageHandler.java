@@ -6,11 +6,7 @@ import java.lang.annotation.*;
  * 私聊事件注解
  *
  * @author meme
- * @version V0.0.1
- * @Package com.mikuac.shiro.annotation
- * @date 2021/10/26 21:24
  */
-
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
