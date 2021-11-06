@@ -25,6 +25,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private final static String API_RESULT_KEY = "echo";
 
+    private static final String FAILED_STATUS = "failed";
+
+    private static final String RESULT_STATUS_KEY = "status";
+
     private final EventHandler eventHandler;
 
     private final BotFactory botFactory;
@@ -67,16 +71,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         long xSelfId = parseSelfId(session);
         if (xSelfId == 0L) {
-            log.error("x-self-id get failed, close session");
+            log.error("Get x-self-id failed, close session.");
             try {
                 session.close();
             } catch (Exception e) {
-                log.error("x-self-id is null, websocket session close exception");
+                log.error("Websocket session close exception");
             }
             return;
         }
         botContainer.robots.put(xSelfId, botFactory.createBot(xSelfId, session));
-        log.info("account {} connected", xSelfId);
+        log.info("Account {} connected", xSelfId);
     }
 
     @Override
@@ -86,14 +90,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
             return;
         }
         botContainer.robots.remove(xSelfId);
-        log.info("account {} disconnected", xSelfId);
+        log.info("Account {} disconnected", xSelfId);
     }
 
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) {
         long xSelfId = parseSelfId(session);
         Bot bot = botContainer.robots.get(xSelfId);
-
         if (bot == null) {
             bot = botFactory.createBot(xSelfId, session);
             botContainer.robots.put(xSelfId, bot);
@@ -102,6 +105,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         JSONObject result = JSON.parseObject(message.getPayload());
         // 如果返回的Json中含有echo字段说明是api响应，否则当作事件上报处理
         if (result.containsKey(API_RESULT_KEY)) {
+            if (FAILED_STATUS.equals(result.get(RESULT_STATUS_KEY))) {
+                log.error("Message send failed: {}", result.get("wording"));
+            }
             actionHandler.onReceiveActionResp(result);
         } else {
             shiroAsyncTask.execHandlerMsg(eventHandler, xSelfId, result);
