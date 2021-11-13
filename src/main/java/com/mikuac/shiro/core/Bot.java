@@ -676,6 +676,38 @@ public class Bot {
     }
 
     /**
+     * 获取群根目录文件列表
+     *
+     * @param groupId 群号
+     * @return {@link ActionData<GroupFilesResp>}
+     */
+    public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
+        ActionPathEnum action = ActionPathEnum.GET_GROUP_ROOT_FILES;
+        JSONObject params = new JSONObject();
+        params.put("group_id", groupId);
+        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
+        }) : null;
+    }
+
+    /**
+     * 获取群子目录文件列表
+     *
+     * @param groupId  群号
+     * @param folderId 文件夹ID 参考 Folder 对象
+     * @return {@link ActionData<GroupFilesResp>}
+     */
+    public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
+        ActionPathEnum action = ActionPathEnum.GET_GROUP_FILES_BY_FOLDER;
+        JSONObject params = new JSONObject();
+        params.put("group_id", groupId);
+        params.put("folder_id", folderId);
+        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
+        }) : null;
+    }
+
+    /**
      * 自定义请求
      *
      * @param action 请求路径

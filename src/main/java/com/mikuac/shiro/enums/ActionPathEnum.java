@@ -143,7 +143,15 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 发送合并转发 (群)
      */
-    SEND_GROUP_FORWARD_MSG("send_group_forward_msg");
+    SEND_GROUP_FORWARD_MSG("send_group_forward_msg"),
+    /**
+     * 获取群根目录文件列表
+     */
+    GET_GROUP_ROOT_FILES("get_group_root_files"),
+    /**
+     * 获取群子目录文件列表
+     */
+    GET_GROUP_FILES_BY_FOLDER("get_group_files_by_folder");
 
     /**
      * 请求路径
