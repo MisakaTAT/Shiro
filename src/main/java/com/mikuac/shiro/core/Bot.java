@@ -66,7 +66,7 @@ public class Bot {
      * @param userId     对方 QQ 号
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return {@link ActionData<MsgId>}
+     * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long userId, String msg, boolean autoEscape) {
         ActionPathEnum action = ActionPathEnum.SEND_PRIVATE_MSG;
@@ -85,7 +85,7 @@ public class Bot {
      * @param groupId    群号
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return {@link ActionData<MsgId>}
+     * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendGroupMsg(long groupId, String msg, boolean autoEscape) {
         ActionPathEnum action = ActionPathEnum.SEND_GROUP_MSG;
@@ -102,7 +102,7 @@ public class Bot {
      * 获取消息
      *
      * @param msgId 消息 ID
-     * @return {@link ActionData<GetMsgResp>}
+     * @return {@link ActionData} of {@link GetMsgResp}
      */
     public ActionData<GetMsgResp> getMsg(int msgId) {
         ActionPathEnum action = ActionPathEnum.GET_MSG;
@@ -324,7 +324,7 @@ public class Bot {
     /**
      * 获取登录号信息
      *
-     * @return {@link ActionData<LoginInfoResp>}
+     * @return {@link ActionData} of @{@link LoginInfoResp}
      */
     public ActionData<LoginInfoResp> getLoginInfo() {
         ActionPathEnum action = ActionPathEnum.GET_LOGIN_INFO;
@@ -338,7 +338,7 @@ public class Bot {
      *
      * @param userId  QQ 号
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
-     * @return {@link ActionData<StrangerInfoResp>}
+     * @return {@link ActionData} of {@link StrangerInfoResp}
      */
     public ActionData<StrangerInfoResp> getStrangerInfo(long userId, boolean noCache) {
         ActionPathEnum action = ActionPathEnum.GET_STRANGER_INFO;
@@ -353,7 +353,7 @@ public class Bot {
     /**
      * 获取好友列表
      *
-     * @return {@link ActionList<FriendInfoResp>}
+     * @return {@link ActionList} of {@link FriendInfoResp}
      */
     public ActionList<FriendInfoResp> getFriendList() {
         ActionPathEnum action = ActionPathEnum.GET_FRIEND_LIST;
@@ -381,7 +381,7 @@ public class Bot {
      *
      * @param groupId 群号
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
-     * @return {@link ActionData<GroupInfoResp>}
+     * @return {@link ActionData} of {@link GroupInfoResp}
      */
     public ActionData<GroupInfoResp> getGroupInfo(long groupId, boolean noCache) {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_INFO;
@@ -396,7 +396,7 @@ public class Bot {
     /**
      * 获取群列表
      *
-     * @return {@link ActionList<GroupInfoResp>}
+     * @return {@link ActionList} of {@link GroupInfoResp}
      */
     public ActionList<GroupInfoResp> getGroupList() {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_LIST;
@@ -411,7 +411,7 @@ public class Bot {
      * @param groupId 群号
      * @param userId  QQ 号
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
-     * @return {@link ActionData<GroupMemberInfoResp>}
+     * @return {@link ActionData} of {@link GroupMemberInfoResp}
      */
     public ActionData<GroupMemberInfoResp> getGroupMemberInfo(long groupId, long userId, boolean noCache) {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_MEMBER_INFO;
@@ -428,7 +428,7 @@ public class Bot {
      * 获取群成员列表
      *
      * @param groupId 群号
-     * @return {@link ActionList<GroupMemberInfoResp>}
+     * @return {@link ActionList} of {@link GroupMemberInfoResp}
      */
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId) {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_MEMBER_LIST;
@@ -444,7 +444,7 @@ public class Bot {
      *
      * @param groupId 群号
      * @param type    要获取的群荣誉类型, 可传入 talkative performer legend strong_newbie emotion 以分别获取单个类型的群荣誉数据, 或传入 all 获取所有数据
-     * @return {@link ActionData<GroupHonorInfoResp>}
+     * @return {@link ActionData} of {@link GroupHonorInfoResp}
      */
     public ActionData<GroupHonorInfoResp> getGroupHonorInfo(long groupId, String type) {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_HONOR_INFO;
@@ -459,7 +459,7 @@ public class Bot {
     /**
      * 检查是否可以发送图片
      *
-     * @return {@link ActionData<BooleanResp>}
+     * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendImage() {
         ActionPathEnum action = ActionPathEnum.CAN_SEND_IMAGE;
@@ -471,7 +471,7 @@ public class Bot {
     /**
      * 检查是否可以发送语音
      *
-     * @return {@link ActionData<BooleanResp>}
+     * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendRecord() {
         ActionPathEnum action = ActionPathEnum.CAN_SEND_RECORD;
@@ -504,7 +504,7 @@ public class Bot {
      * 安全等级, 1: 安全 2: 未知 3: 危险
      *
      * @param url 需要检查的链接
-     * @return {@link ActionData<CheckUrlSafelyResp>}
+     * @return {@link ActionData} of {@link CheckUrlSafelyResp}
      */
     public ActionData<CheckUrlSafelyResp> checkUrlSafely(String url) {
         ActionPathEnum action = ActionPathEnum.CHECK_URL_SAFELY;
@@ -535,7 +535,7 @@ public class Bot {
      * 获取群 @全体成员 剩余次数
      *
      * @param groupId 群号
-     * @return {@link ActionData<GroupAtAllRemainResp>}
+     * @return {@link ActionData} of {@link GroupAtAllRemainResp}
      */
     public ActionData<GroupAtAllRemainResp> getGroupAtAllRemain(long groupId) {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_AT_ALL_REMAIN;
@@ -630,7 +630,7 @@ public class Bot {
      * @param url         链接地址
      * @param threadCount 下载线程数
      * @param headers     自定义请求头
-     * @return {@link ActionData<DownloadFileResp>}
+     * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url, int threadCount, String headers) {
         ActionPathEnum action = ActionPathEnum.DOWNLOAD_FILE;
@@ -647,7 +647,7 @@ public class Bot {
      * 调用 go cq http 下载文件
      *
      * @param url 链接地址
-     * @return {@link ActionData<DownloadFileResp>}
+     * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url) {
         ActionPathEnum action = ActionPathEnum.DOWNLOAD_FILE;
@@ -679,7 +679,7 @@ public class Bot {
      * 获取群根目录文件列表
      *
      * @param groupId 群号
-     * @return {@link ActionData<GroupFilesResp>}
+     * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_ROOT_FILES;
@@ -695,7 +695,7 @@ public class Bot {
      *
      * @param groupId  群号
      * @param folderId 文件夹ID 参考 Folder 对象
-     * @return {@link ActionData<GroupFilesResp>}
+     * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
         ActionPathEnum action = ActionPathEnum.GET_GROUP_FILES_BY_FOLDER;

@@ -15,6 +15,9 @@ public class GroupFilesResp {
 
     private List<Folders> folders;
 
+    /**
+     * 群文件
+     */
     @Data
     public static class Files {
 
@@ -48,6 +51,9 @@ public class GroupFilesResp {
 
     }
 
+    /**
+     * 群文件夹
+     */
     @Data
     public static class Folders {
 
