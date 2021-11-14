@@ -1,11 +1,13 @@
 package com.mikuac.shiro.common.utils;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.enums.ShiroUtilsEnum;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created on 2021/8/10.
@@ -121,14 +123,49 @@ public class ShiroUtils {
     }
 
     /**
-     * 消息链转换
+     * array 消息上报转消息链
      *
      * @param msg 需要修改客户端消息上报类型为 array
      * @return 消息链
      */
-    @SuppressWarnings("rawtypes")
-    public static List<Map> getMsgChain(String msg) {
-        return JSONObject.parseArray(msg, Map.class);
+    public static List<MsgChainBean> arrayToMsgChain(String msg) {
+        return JSONObject.parseArray(msg, MsgChainBean.class);
+    }
+
+    /**
+     * string 消息上报转消息链
+     * TODO: 非法 CQ 码处理
+     *
+     * @param msg 需要修改客户端消息上报类型为 string
+     * @return 消息链
+     */
+    public static List<MsgChainBean> stringToMsgChain(String msg) {
+        String splitRegex = "\\[|]";
+        JSONArray array = new JSONArray();
+        for (String s1 : msg.split(splitRegex)) {
+            if (s1.isEmpty()) {
+                continue;
+            }
+            JSONObject object = new JSONObject();
+            JSONObject params = new JSONObject();
+            if (!s1.startsWith("CQ:")) {
+                object.put("type", "text");
+                params.put("text", s1);
+            } else {
+                String[] s2 = s1.split(",");
+                object.put("type", s2[0].substring(s2[0].indexOf(":") + 1));
+                Arrays.stream(s2).filter((it) ->
+                        !it.startsWith("CQ:")
+                ).forEach((it) -> {
+                    String key = it.substring(0, it.indexOf("="));
+                    String value = ShiroUtils.unescape(it.substring(it.indexOf("=") + 1));
+                    params.put(key, value);
+                });
+            }
+            object.put("data", params);
+            array.add(object);
+        }
+        return array.toJavaList(MsgChainBean.class);
     }
 
 }
