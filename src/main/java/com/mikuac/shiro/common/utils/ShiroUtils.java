@@ -95,6 +95,32 @@ public class ShiroUtils {
     }
 
     /**
+     * 消息解码
+     *
+     * @param string 需要解码的内容
+     * @return 解码处理后的字符串
+     */
+    public static String unescape(String string) {
+        return string.replace("&#44;", ",")
+                .replace("&#91;", "[")
+                .replace("&#93;", "]")
+                .replace("&amp;", "&");
+    }
+
+    /**
+     * 消息编码
+     *
+     * @param string 需要编码的内容
+     * @return 编码处理后的字符串
+     */
+    public static String escape(String string) {
+        return string.replace("&", "&amp;")
+                .replace(",", "&#44;")
+                .replace("[", "&#91;")
+                .replace("]", "&#93;");
+    }
+
+    /**
      * 消息链转换
      *
      * @param msg 需要修改客户端消息上报类型为 array

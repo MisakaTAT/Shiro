@@ -9,20 +9,6 @@ public class MsgUtils {
 
     StringBuffer stringBuffer = new StringBuffer();
 
-    private static String unescape(String string) {
-        return string.replace("&#44;", ",")
-                .replace("&#91;", "[")
-                .replace("&#93;", "]")
-                .replace("&amp;", "&");
-    }
-
-    private static String escape(String string) {
-        return string.replace("&", "&amp;")
-                .replace(",", "&#44;")
-                .replace("[", "&#91;")
-                .replace("]", "&#93;");
-    }
-
     /**
      * 消息构建对象
      *
@@ -50,7 +36,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils img(String url) {
-        String imgCode = String.format("[CQ:image,file=%s]", escape(url));
+        String imgCode = String.format("[CQ:image,file=%s]", ShiroUtils.escape(url));
         stringBuffer.append(imgCode);
         return this;
     }
@@ -63,7 +49,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils video(String video, String cover) {
-        String videoCode = String.format("[CQ:video,file=%s,cover=%s]", escape(video), escape(cover));
+        String videoCode = String.format("[CQ:video,file=%s,cover=%s]", ShiroUtils.escape(video), ShiroUtils.escape(cover));
         stringBuffer.append(videoCode);
         return this;
     }
@@ -75,7 +61,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils flashImg(String img) {
-        String flashImgCode = String.format("[CQ:image,type=flash,file=%s]", escape(img));
+        String flashImgCode = String.format("[CQ:image,type=flash,file=%s]", ShiroUtils.escape(img));
         stringBuffer.append(flashImgCode);
         return this;
     }
@@ -101,7 +87,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils record(String record) {
-        String recordCode = String.format("[CQ:record,file=%s]", escape(record));
+        String recordCode = String.format("[CQ:record,file=%s]", ShiroUtils.escape(record));
         stringBuffer.append(recordCode);
         return this;
     }
@@ -211,7 +197,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils json(String data) {
-        String ttsCode = String.format("[CQ:json,data=%s]", escape(data));
+        String ttsCode = String.format("[CQ:json,data=%s]", ShiroUtils.escape(data));
         stringBuffer.append(ttsCode);
         return this;
     }
@@ -225,7 +211,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils json(String data, int resId) {
-        String ttsCode = String.format("[CQ:json,data=%s,resid=%s]", escape(data), resId);
+        String ttsCode = String.format("[CQ:json,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
         stringBuffer.append(ttsCode);
         return this;
     }
@@ -239,7 +225,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils cardImage(String file) {
-        String ttsCode = String.format("[CQ:cardimage,file=%s]", escape(file));
+        String ttsCode = String.format("[CQ:cardimage,file=%s]", ShiroUtils.escape(file));
         stringBuffer.append(ttsCode);
         return this;
     }
@@ -259,7 +245,7 @@ public class MsgUtils {
      */
     public MsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source, String icon) {
         String ttsCode = String.format("[CQ:cardimage,file=%s,minwidth=%s,minheight=%s,maxwidth=%s,maxheight=%s,source=%s,icon=%s]",
-                escape(file), minWidth, minHeight, maxWidth, maxHeight, source, escape(icon));
+                ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, source, ShiroUtils.escape(icon));
         stringBuffer.append(ttsCode);
         return this;
     }
