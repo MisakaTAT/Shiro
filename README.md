@@ -58,6 +58,23 @@ shiro:
   plugin-list:
     - com.mikuac.bot.plugins.ExamplePlugin
 ```
+支持 String 消息转换为 Array 消息 ( v1.1.7 及以上版本 )
+```java
+@Component
+public class ExamplePlugin extends BotPlugin {
+    
+    @Override
+    public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
+        event.getArrayMsg().stream().filter(b ->
+                "image".equals(b.getType())
+        ).forEach(b ->
+                System.out.println(b.getData().get("url"))
+        );
+        return MESSAGE_IGNORE;
+    }
+    
+}
+```
 
 示例插件I：重写父类方法（需要在 application.yml 文件 plugin-list 定义插件）
 
