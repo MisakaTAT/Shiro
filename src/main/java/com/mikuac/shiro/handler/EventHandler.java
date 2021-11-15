@@ -1,6 +1,7 @@
 package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
@@ -73,6 +74,7 @@ public class EventHandler {
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
+                event.setArrayMsg(ShiroUtils.stringToMsgChain(event.getMessage()));
                 injectionHandler.invokePrivateMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -83,6 +85,7 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
+                event.setArrayMsg(ShiroUtils.stringToMsgChain(event.getMessage()));
                 injectionHandler.invokeGroupMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {

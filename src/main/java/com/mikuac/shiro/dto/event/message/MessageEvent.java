@@ -1,12 +1,15 @@
 package com.mikuac.shiro.dto.event.message;
 
 import com.alibaba.fastjson.annotation.JSONField;
+import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.dto.event.Event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+
+import java.util.List;
 
 /**
  * @author zero
@@ -35,5 +38,7 @@ public class MessageEvent extends Event {
 
     @JSONField(name = "font")
     private int font;
+
+    private List<MsgChainBean> arrayMsg;
 
 }
