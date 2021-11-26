@@ -125,9 +125,7 @@ public class ExamplePlugin extends BotPlugin {
 public class DemoPlugin extends BotPlugin {
 
     // 符合 cmd 正则表达式的消息会被响应
-    // userBlackList 为用户黑名单数组，处于黑名单内的用户消息不会被响应
-    // userWhiteList 为用户白名单数组，只有处于白名单内的用户消息会被响应
-    @PrivateMessageHandler(cmd = "hi", userWhiteList = {111111, 222222})
+    @PrivateMessageHandler(cmd = "hi")
     public void fun1(@NotNull Bot bot, @NotNull PrivateMessageEvent event, @NotNull Matcher matcher) {
         // 构建消息
         MsgUtils msgUtils = MsgUtils.builder().face(66).text("Hello, this is shiro demo.");
@@ -135,15 +133,23 @@ public class DemoPlugin extends BotPlugin {
         bot.sendPrivateMsg(event.getUserId(), msgUtils.build(), false);
     }
 
-    // 其它参数或具体内容可自行查看注解源码内的注释
-    // groupBlackList 为群组黑名单数组，处于黑名单内的群组消息不会被响应
-    // groupWhiteList 为群组白名单数组，只有处于白名单内的群组消息会被响应
     // at 如果参数设定为 AtEnum.NEED 则只有 at 了机器人的消息会被响应，若参数为 NOT_NEED，消息内如果 at 机器人则会忽略此消息
-    @GroupMessageHandler(cmd = "hi", userWhiteList = {111, 22}, groupWhiteList = {111, 222}, at = AtEnum.OFF)
+    @GroupMessageHandler(cmd = "hi", at = AtEnum.OFF)
     public void fun2(@NotNull GroupMessageEvent event) {
         // 以注解方式调用可以根据自己的需要来为方法设定参数
         // 例如群组消息可以传递 GroupMessageEvent event, Bot bot, Matcher matcher 多余的参数会被设定为 null
         System.out.println(event.getMessage());
+    }
+
+    // 同时监听群组及私聊消息
+    @MessageHandler
+    public void fun3(Bot bot, WholeMessageEvent event) {
+        if ("private".equals(event.getMessageType())) {
+            bot.sendMsg(event.getMessageType(), event.getUserId(), event.getMessage(), false);
+        }
+        if ("group".equals(event.getMessageType())) {
+            bot.sendMsg(event.getMessageType(), event.getGroupId(), event.getMessage(), false);
+        }
     }
 
 }

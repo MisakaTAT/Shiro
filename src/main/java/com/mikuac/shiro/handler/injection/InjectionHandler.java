@@ -35,7 +35,7 @@ import java.util.regex.Matcher;
 public class InjectionHandler {
 
     /**
-     * 消息兼容
+     * 监听全部消息
      *
      * @param bot   Bot
      * @param event WholeMessageEvent
