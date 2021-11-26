@@ -143,7 +143,7 @@ public class DemoPlugin extends BotPlugin {
 
     // 同时监听群组及私聊消息
     @MessageHandler
-    public void fun3(Bot bot, WholeMessageEvent event) {
+    public void fun3(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
         if ("private".equals(event.getMessageType())) {
             bot.sendMsg(event.getMessageType(), event.getUserId(), event.getMessage(), false);
         }
