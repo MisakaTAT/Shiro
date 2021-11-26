@@ -61,6 +61,30 @@ public class Bot {
     }
 
     /**
+     * 发送消息
+     *
+     * @param messageType 消息类型 可填入 event.getMessageType()
+     * @param targetId    发送的目标 根据 messageType 自动判断
+     *                    如果 messageType 为 private 则 targetId 作为发送的QQ号
+     *                    如果 messageType 为 group 则 targetId 作为发送的群号
+     * @param msg         要发送的内容
+     * @param autoEscape  消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return {@link ActionData} of {@link MsgId}
+     */
+    public ActionData<MsgId> sendMsg(String messageType, long targetId, String msg, boolean autoEscape) {
+        switch (messageType) {
+            case "private": {
+                return sendPrivateMsg(targetId, msg, autoEscape);
+            }
+            case "group": {
+                return sendGroupMsg(targetId, msg, autoEscape);
+            }
+            default:
+        }
+        return null;
+    }
+
+    /**
      * 发送私聊消息
      *
      * @param userId     对方 QQ 号

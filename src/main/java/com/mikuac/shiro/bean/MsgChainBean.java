@@ -11,7 +11,7 @@ import java.util.Map;
 public class MsgChainBean {
 
     private String type;
-    
+
     private Map<String, String> data;
 
 }

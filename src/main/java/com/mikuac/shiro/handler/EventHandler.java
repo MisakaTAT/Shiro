@@ -1,11 +1,13 @@
 package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
@@ -16,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
+import java.util.List;
 
 
 /**
@@ -74,8 +77,10 @@ public class EventHandler {
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
-                event.setArrayMsg(ShiroUtils.stringToMsgChain(event.getMessage()));
+                List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+                event.setArrayMsg(arrayMsg);
                 injectionHandler.invokePrivateMessage(bot, event);
+                pushWholeMessageEvent(bot, eventJson, arrayMsg);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -85,8 +90,10 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
-                event.setArrayMsg(ShiroUtils.stringToMsgChain(event.getMessage()));
+                List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+                event.setArrayMsg(arrayMsg);
                 injectionHandler.invokeGroupMessage(bot, event);
+                pushWholeMessageEvent(bot, eventJson, arrayMsg);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -287,6 +294,12 @@ public class EventHandler {
     }
 
     private void handleMetaEvent(Bot bot, JSONObject eventJson) {
+    }
+
+    private void pushWholeMessageEvent(Bot bot, JSONObject eventJson, List<MsgChainBean> arrayMsg) {
+        WholeMessageEvent event = eventJson.toJavaObject(WholeMessageEvent.class);
+        event.setArrayMsg(arrayMsg);
+        injectionHandler.invokeWholeMessage(bot, event);
     }
 
     private BotPlugin getPlugin(Class<? extends BotPlugin> pluginClass) {

@@ -2,6 +2,7 @@ package com.mikuac.shiro.handler.injection;
 
 import com.mikuac.shiro.annotation.GroupAdminHandler;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
+import com.mikuac.shiro.annotation.MessageHandler;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.RegexUtils;
@@ -9,6 +10,7 @@ import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent;
 import com.mikuac.shiro.enums.AtEnum;
 import lombok.val;
@@ -33,6 +35,51 @@ import java.util.regex.Matcher;
 public class InjectionHandler {
 
     /**
+     * 消息兼容
+     *
+     * @param bot   Bot
+     * @param event WholeMessageEvent
+     */
+    public void invokeWholeMessage(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
+        List<HandlerMethod> handlerMethods = handlers.get(MessageHandler.class);
+        if (handlerMethods != null && handlerMethods.size() > 0) {
+            for (HandlerMethod handlerMethod : handlerMethods) {
+                MessageHandler mh = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
+                if ("group".equals(event.getMessageType())) {
+                    if (checkAt(event.getRawMessage(), event.getSelfId(), mh.at())) {
+                        continue;
+                    }
+                }
+                Map<Class<?>, Object> argsMap = matcher(mh.cmd(), event.getRawMessage());
+                if (argsMap == null) {
+                    continue;
+                }
+                argsMap.put(Bot.class, bot);
+                argsMap.put(WholeMessageEvent.class, event);
+                invokeMethod(handlerMethod, argsMap);
+            }
+        }
+    }
+
+    /**
+     * at 检查
+     *
+     * @param rawMessage 原始消息
+     * @param selfId     机器人QQ
+     * @param at         at枚举
+     * @return boolean
+     */
+    private boolean checkAt(String rawMessage, long selfId, AtEnum at) {
+        List<String> atList = ShiroUtils.getAtList(rawMessage);
+        val id = String.valueOf(selfId);
+        if (at == AtEnum.NEED && !atList.contains(id)) {
+            return true;
+        }
+        return at == AtEnum.NOT_NEED && atList.contains(id);
+    }
+
+    /**
      * 群聊消息
      *
      * @param bot   Bot
@@ -40,27 +87,21 @@ public class InjectionHandler {
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        List<HandlerMethod> handlerMethodList = handlers.get(GroupMessageHandler.class);
-        if (handlerMethodList == null) {
-            return;
-        }
-        for (HandlerMethod handlerMethod : handlerMethodList) {
-            GroupMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
-            List<String> atList = ShiroUtils.getAtList(event.getRawMessage());
-            val selfId = String.valueOf(event.getSelfId());
-            if (gmh.at() == AtEnum.NEED && !atList.contains(selfId)) {
-                continue;
+        List<HandlerMethod> handlerMethods = handlers.get(GroupMessageHandler.class);
+        if (handlerMethods != null && handlerMethods.size() > 0) {
+            for (HandlerMethod handlerMethod : handlerMethods) {
+                GroupMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
+                if (checkAt(event.getRawMessage(), event.getSelfId(), gmh.at())) {
+                    continue;
+                }
+                Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getRawMessage());
+                if (argsMap == null) {
+                    continue;
+                }
+                argsMap.put(Bot.class, bot);
+                argsMap.put(GroupMessageEvent.class, event);
+                invokeMethod(handlerMethod, argsMap);
             }
-            if (gmh.at() == AtEnum.NOT_NEED && atList.contains(selfId)) {
-                continue;
-            }
-            Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getRawMessage());
-            if (argsMap == null) {
-                continue;
-            }
-            argsMap.put(Bot.class, bot);
-            argsMap.put(GroupMessageEvent.class, event);
-            invokeMethod(handlerMethod, argsMap);
         }
     }
 
@@ -73,19 +114,18 @@ public class InjectionHandler {
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(PrivateMessageHandler.class);
-        if (handlerMethods == null) {
-            return;
-        }
-        for (HandlerMethod handlerMethod : handlerMethods) {
-            PrivateMessageHandler pmh = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
-            Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getRawMessage());
-            if (argsMap == null) {
-                continue;
+        if (handlerMethods != null && handlerMethods.size() > 0) {
+            for (HandlerMethod handlerMethod : handlerMethods) {
+                PrivateMessageHandler pmh = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
+                Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getRawMessage());
+                if (argsMap == null) {
+                    continue;
+                }
+                argsMap.put(PrivateMessageEvent.PrivateSender.class, event.getPrivateSender());
+                argsMap.put(Bot.class, bot);
+                argsMap.put(PrivateMessageEvent.class, event);
+                invokeMethod(handlerMethod, argsMap);
             }
-            argsMap.put(PrivateMessageEvent.PrivateSender.class, event.getPrivateSender());
-            argsMap.put(Bot.class, bot);
-            argsMap.put(PrivateMessageEvent.class, event);
-            invokeMethod(handlerMethod, argsMap);
         }
     }
 
@@ -98,30 +138,29 @@ public class InjectionHandler {
     public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupAdminHandler.class);
-        if (handlerMethods == null) {
-            return;
-        }
-        for (HandlerMethod handlerMethod : handlerMethods) {
-            GroupAdminHandler handler = handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class);
-            switch (handler.type()) {
-                case OFF:
-                    continue;
-                case ALL:
-                    break;
-                case UNSET:
-                    if (!"unset".equals(event.getSubType())) {
+        if (handlerMethods != null && handlerMethods.size() > 0) {
+            for (HandlerMethod handlerMethod : handlerMethods) {
+                GroupAdminHandler handler = handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class);
+                switch (handler.type()) {
+                    case OFF:
                         continue;
-                    }
-                case SET:
-                    if (!"set".equals(event.getSubType())) {
-                        continue;
-                    }
-                default:
+                    case ALL:
+                        break;
+                    case UNSET:
+                        if (!"unset".equals(event.getSubType())) {
+                            continue;
+                        }
+                    case SET:
+                        if (!"set".equals(event.getSubType())) {
+                            continue;
+                        }
+                    default:
+                }
+                Map<Class<?>, Object> argsMap = new HashMap<>(16);
+                argsMap.put(Bot.class, bot);
+                argsMap.put(GroupAdminNoticeEvent.class, event);
+                invokeMethod(handlerMethod, argsMap);
             }
-            Map<Class<?>, Object> argsMap = new HashMap<>(16);
-            argsMap.put(Bot.class, bot);
-            argsMap.put(GroupAdminNoticeEvent.class, event);
-            invokeMethod(handlerMethod, argsMap);
         }
     }
 
