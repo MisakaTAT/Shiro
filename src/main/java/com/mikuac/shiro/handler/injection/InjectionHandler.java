@@ -4,7 +4,6 @@ import com.mikuac.shiro.annotation.GroupAdminHandler;
 import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.bean.HandlerMethod;
-import com.mikuac.shiro.common.utils.ArrayUtils;
 import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
@@ -47,12 +46,6 @@ public class InjectionHandler {
         }
         for (HandlerMethod handlerMethod : handlerMethodList) {
             GroupMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
-            if (groupCheck(gmh.groupBlackList(), gmh.groupWhiteList(), event.getGroupId())) {
-                continue;
-            }
-            if (userCheck(gmh.userBlackList(), gmh.userWhiteList(), event.getUserId())) {
-                continue;
-            }
             List<String> atList = ShiroUtils.getAtList(event.getRawMessage());
             val selfId = String.valueOf(event.getSelfId());
             if (gmh.at() == AtEnum.NEED && !atList.contains(selfId)) {
@@ -85,9 +78,6 @@ public class InjectionHandler {
         }
         for (HandlerMethod handlerMethod : handlerMethods) {
             PrivateMessageHandler pmh = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
-            if (userCheck(pmh.userBlackList(), pmh.userWhiteList(), event.getUserId())) {
-                continue;
-            }
             Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getRawMessage());
             if (argsMap == null) {
                 continue;
@@ -113,12 +103,6 @@ public class InjectionHandler {
         }
         for (HandlerMethod handlerMethod : handlerMethods) {
             GroupAdminHandler handler = handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class);
-            if (handler.groupBlackList().length > 0 && ArrayUtils.contain(handler.groupBlackList(), event.getGroupId())) {
-                continue;
-            }
-            if (handler.groupWhiteList().length > 0 && !ArrayUtils.contain(handler.groupWhiteList(), event.getGroupId())) {
-                continue;
-            }
             switch (handler.type()) {
                 case OFF:
                     continue;
@@ -157,40 +141,6 @@ public class InjectionHandler {
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * 群组黑白名单检查
-     *
-     * @param groupBlackList 黑名单群组（long类型数组）
-     * @param groupWhiteList 白名单群组（long类型数组）
-     * @param groupId        当前群号
-     * @return 返回后的值无需取反
-     */
-    private boolean groupCheck(long[] groupBlackList, long[] groupWhiteList, long groupId) {
-        // 如果群组黑名单不为空且当前群组存在于黑名单中返回 true
-        if (groupBlackList.length > 0 && ArrayUtils.contain(groupBlackList, groupId)) {
-            return true;
-        }
-        // 如果群组白名单不为空且当前群组不存在于白名单中返回 true
-        return groupWhiteList.length > 0 && !ArrayUtils.contain(groupWhiteList, groupId);
-    }
-
-    /**
-     * 用户黑白名单检查
-     *
-     * @param userBlackList 黑名单用户（long类型数组）
-     * @param userWhiteList 白名单用户（long类型数组）
-     * @param userId        当前用户
-     * @return 返回后的值无需取反
-     */
-    private boolean userCheck(long[] userBlackList, long[] userWhiteList, long userId) {
-        // 如果用户黑名单不为空且当前发送者存在于黑名单中返回 true
-        if (userBlackList.length > 0 && ArrayUtils.contain(userBlackList, userId)) {
-            return true;
-        }
-        // 如果用户白名单不为空且当前发送者不存在于白名单中返回 true
-        return userWhiteList.length > 0 && !ArrayUtils.contain(userWhiteList, userId);
     }
 
     /**

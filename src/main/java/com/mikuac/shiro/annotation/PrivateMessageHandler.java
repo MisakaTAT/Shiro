@@ -19,18 +19,4 @@ public @interface PrivateMessageHandler {
      */
     String cmd() default "none";
 
-    /**
-     * 用户白名单（仅响应白名单内用户的消息）
-     *
-     * @return 用户白名单数组
-     */
-    long[] userWhiteList() default {};
-
-    /**
-     * 用户黑名单（仅响应不在黑名单内用户的消息）
-     *
-     * @return 群组黑名单数组
-     */
-    long[] userBlackList() default {};
-
 }
