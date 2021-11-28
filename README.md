@@ -121,6 +121,8 @@ public class ExamplePlugin extends BotPlugin {
 示例插件II：注解调用
 
 ```java
+import org.jetbrains.annotations.NotNull;
+
 @Component
 public class DemoPlugin extends BotPlugin {
 
@@ -141,15 +143,10 @@ public class DemoPlugin extends BotPlugin {
         System.out.println(event.getMessage());
     }
 
-    // 同时监听群组及私聊消息
+    // 同时监听群组及私聊消息 并根据消息类型（私聊，群聊）回复
     @MessageHandler
     public void fun3(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
-        if ("private".equals(event.getMessageType())) {
-            bot.sendMsg(event.getMessageType(), event.getUserId(), event.getMessage(), false);
-        }
-        if ("group".equals(event.getMessageType())) {
-            bot.sendMsg(event.getMessageType(), event.getGroupId(), event.getMessage(), false);
-        }
+        bot.sendMsg(event, "hello", false);
     }
 
 }
