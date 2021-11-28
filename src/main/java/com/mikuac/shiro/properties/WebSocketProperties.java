@@ -15,6 +15,11 @@ import org.springframework.stereotype.Component;
 public class WebSocketProperties {
 
     /**
+     * 访问密钥, 强烈推荐在公网的服务器设置
+     */
+    private String accessToken = "";
+
+    /**
      * 超时回收，10秒
      */
     private Long doRequestTimeout = 10 * 1000L;

@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
+import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
@@ -13,7 +14,8 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import java.util.Objects;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * Created on 2021/7/16.
@@ -39,6 +41,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private final BotContainer botContainer;
 
+    @Resource
+    private WebSocketProperties webSocketProperties;
+
     /**
      * 构造函数
      *
@@ -57,26 +62,54 @@ public class WebSocketHandler extends TextWebSocketHandler {
         this.botContainer = botContainer;
     }
 
+    /**
+     * 获取连接的 QQ 号
+     *
+     * @param session WebSocketSession
+     * @return QQ 号
+     */
     private long parseSelfId(WebSocketSession session) {
-        long xSelfId;
-        try {
-            xSelfId = Long.parseLong(Objects.requireNonNull(session.getHandshakeHeaders().get("x-self-id")).get(0));
-        } catch (Exception e) {
-            xSelfId = 0L;
+        String key = "x-self-id";
+        List<String> list = session.getHandshakeHeaders().get(key);
+        if (list == null || list.size() <= 0) {
+            return 0L;
         }
-        return xSelfId;
+        return Long.parseLong(list.get(0));
+    }
+
+    /**
+     * 访问密钥检查
+     *
+     * @param session WebSocketSession
+     * @return 是否验证通过
+     */
+    private boolean checkToken(WebSocketSession session) {
+        String token = webSocketProperties.getAccessToken();
+        if (token.isEmpty()) {
+            return true;
+        }
+        String key = "authorization";
+        List<String> list = session.getHandshakeHeaders().get(key);
+        if (list == null || list.size() <= 0) {
+            return false;
+        }
+        return list.get(0).contains(token);
     }
 
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         long xSelfId = parseSelfId(session);
         if (xSelfId == 0L) {
-            log.error("Get x-self-id failed, close session.");
+            log.error("Close session, get x-self-id failed.");
             try {
                 session.close();
             } catch (Exception e) {
                 log.error("Websocket session close exception");
             }
+            return;
+        }
+        if (!checkToken(session)) {
+            log.error("Access token check failed");
             return;
         }
         botContainer.robots.put(xSelfId, botFactory.createBot(xSelfId, session));
@@ -90,7 +123,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             return;
         }
         botContainer.robots.remove(xSelfId);
-        log.info("Account {} disconnected", xSelfId);
+        log.warn("Account {} disconnected", xSelfId);
     }
 
     @Override
