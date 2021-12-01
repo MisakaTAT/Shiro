@@ -134,17 +134,20 @@ public class ShiroUtils {
 
     /**
      * string 消息上报转消息链
-     * TODO: 非法 CQ 码处理
      *
      * @param msg 需要修改客户端消息上报类型为 string
      * @return 消息链
      */
     public static List<MsgChainBean> stringToMsgChain(String msg) {
-        String splitRegex = "\\[|]";
+        String splitRegex = "(?<=\\[CQ:[^]]+])|(?=\\[CQ:[^]]+])";
+        String cqCodeCheckRegex = "\\[CQ:(?:[^,\\[\\]]+)(?:(?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
         JSONArray array = new JSONArray();
         for (String s1 : msg.split(splitRegex)) {
             if (s1.isEmpty()) {
                 continue;
+            }
+            if (s1.matches(cqCodeCheckRegex)) {
+                s1 = s1.substring(1, s1.length() - 1);
             }
             JSONObject object = new JSONObject();
             JSONObject params = new JSONObject();
