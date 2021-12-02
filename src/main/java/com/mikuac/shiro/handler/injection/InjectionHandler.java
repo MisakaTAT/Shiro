@@ -5,6 +5,7 @@ import com.mikuac.shiro.annotation.GroupMessageHandler;
 import com.mikuac.shiro.annotation.MessageHandler;
 import com.mikuac.shiro.annotation.PrivateMessageHandler;
 import com.mikuac.shiro.bean.HandlerMethod;
+import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
@@ -13,7 +14,6 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent;
 import com.mikuac.shiro.enums.AtEnum;
-import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
@@ -47,11 +47,11 @@ public class InjectionHandler {
             for (HandlerMethod handlerMethod : handlerMethods) {
                 MessageHandler mh = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
                 if ("group".equals(event.getMessageType())) {
-                    if (checkAt(event.getRawMessage(), event.getSelfId(), mh.at())) {
+                    if (checkAt(event.getArrayMsg(), event.getSelfId(), mh.at())) {
                         continue;
                     }
                 }
-                Map<Class<?>, Object> argsMap = matcher(mh.cmd(), event.getRawMessage());
+                Map<Class<?>, Object> argsMap = matcher(mh.cmd(), event.getMessage());
                 if (argsMap == null) {
                     continue;
                 }
@@ -65,18 +65,17 @@ public class InjectionHandler {
     /**
      * at 检查
      *
-     * @param rawMessage 原始消息
-     * @param selfId     机器人QQ
-     * @param at         at枚举
+     * @param arrayMsg 消息链
+     * @param selfId   机器人QQ
+     * @param at       at枚举
      * @return boolean
      */
-    private boolean checkAt(String rawMessage, long selfId, AtEnum at) {
-        List<String> atList = ShiroUtils.getAtList(rawMessage);
-        val id = String.valueOf(selfId);
-        if (at == AtEnum.NEED && !atList.contains(id)) {
+    private boolean checkAt(List<MsgChainBean> arrayMsg, long selfId, AtEnum at) {
+        List<Long> atList = ShiroUtils.getAtList(arrayMsg);
+        if (at == AtEnum.NEED && !atList.contains(selfId)) {
             return true;
         }
-        return at == AtEnum.NOT_NEED && atList.contains(id);
+        return at == AtEnum.NOT_NEED && atList.contains(selfId);
     }
 
     /**
@@ -91,10 +90,10 @@ public class InjectionHandler {
         if (handlerMethods != null && handlerMethods.size() > 0) {
             for (HandlerMethod handlerMethod : handlerMethods) {
                 GroupMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
-                if (checkAt(event.getRawMessage(), event.getSelfId(), gmh.at())) {
+                if (checkAt(event.getArrayMsg(), event.getSelfId(), gmh.at())) {
                     continue;
                 }
-                Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getRawMessage());
+                Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getMessage());
                 if (argsMap == null) {
                     continue;
                 }
@@ -117,7 +116,7 @@ public class InjectionHandler {
         if (handlerMethods != null && handlerMethods.size() > 0) {
             for (HandlerMethod handlerMethod : handlerMethods) {
                 PrivateMessageHandler pmh = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
-                Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getRawMessage());
+                Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getMessage());
                 if (argsMap == null) {
                     continue;
                 }

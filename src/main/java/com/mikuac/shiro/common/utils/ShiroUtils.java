@@ -29,49 +29,43 @@ public class ShiroUtils {
     /**
      * 获取消息内所有at对象账号
      *
-     * @param msg 消息
+     * @param arrayMsg 消息链
      * @return at对象列表
      */
-    public static List<String> getAtList(String msg) {
-        List<String> atList = new ArrayList<>();
-        for (String i : msg.split(ShiroUtilsEnum.CQ_CODE_SPLIT.getValue())) {
-            if (i.startsWith("at")) {
-                atList.add(RegexUtils.regexGroup(ShiroUtilsEnum.GET_AT_USER_ID_REGEX.getValue(), i, 1));
-            }
-        }
+    public static List<Long> getAtList(List<MsgChainBean> arrayMsg) {
+        List<Long> atList = new ArrayList<>();
+        arrayMsg.stream().filter((it) ->
+                "at".equals(it.getType()) && !"all".equals(it.getData().get("qq"))
+        ).forEach((it) -> atList.add(Long.parseLong(it.getData().get("qq"))));
         return atList;
     }
 
     /**
      * 获取消息内所有图片链接
      *
-     * @param msg 消息
+     * @param arrayMsg 消息链
      * @return 图片链接列表
      */
-    public static List<String> getMsgImgUrlList(String msg) {
+    public static List<String> getMsgImgUrlList(List<MsgChainBean> arrayMsg) {
         List<String> imgUrlList = new ArrayList<>();
-        for (String i : msg.split(ShiroUtilsEnum.CQ_CODE_SPLIT.getValue())) {
-            if (i.startsWith("image")) {
-                imgUrlList.add(RegexUtils.regex(ShiroUtilsEnum.GET_URL_REGEX.getValue(), i));
-            }
-        }
+        arrayMsg.stream().filter((it) ->
+                "image".equals(it.getType())
+        ).forEach((it) -> imgUrlList.add(it.getData().get("url")));
         return imgUrlList;
     }
 
     /**
      * 获取消息内所有视频链接
      *
-     * @param msg 消息
+     * @param arrayMsg 消息链
      * @return 视频链接列表
      */
-    public static List<String> getMsgVideoUrlList(String msg) {
-        List<String> videoUrlList = new ArrayList<>();
-        for (String i : msg.split(ShiroUtilsEnum.CQ_CODE_SPLIT.getValue())) {
-            if (i.startsWith("video")) {
-                videoUrlList.add(RegexUtils.regex(ShiroUtilsEnum.GET_URL_REGEX.getValue(), i));
-            }
-        }
-        return videoUrlList;
+    public static List<String> getMsgVideoUrlList(List<MsgChainBean> arrayMsg) {
+        List<String> imgUrlList = new ArrayList<>();
+        arrayMsg.stream().filter((it) ->
+                "video".equals(it.getType())
+        ).forEach((it) -> imgUrlList.add(it.getData().get("url")));
+        return imgUrlList;
     }
 
     /**
@@ -134,12 +128,14 @@ public class ShiroUtils {
 
     /**
      * string 消息上报转消息链
+     * 建议传入 event.getMessage 而非 event.getRawMessage
+     * 例如 gocqhttp rawMessage 不包含图片 url
      *
      * @param msg 需要修改客户端消息上报类型为 string
      * @return 消息链
      */
     public static List<MsgChainBean> stringToMsgChain(String msg) {
-        String splitRegex = "(?<=\\[CQ:[^]]+])|(?=\\[CQ:[^]]+])";
+        String splitRegex = "(?<=\\[CQ:[^]]{0,}])|(?=\\[CQ:[^]]+])";
         String cqCodeCheckRegex = "\\[CQ:(?:[^,\\[\\]]+)(?:(?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
         JSONArray array = new JSONArray();
         for (String s1 : msg.split(splitRegex)) {
