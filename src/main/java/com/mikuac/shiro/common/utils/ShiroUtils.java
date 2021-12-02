@@ -34,9 +34,9 @@ public class ShiroUtils {
      */
     public static List<Long> getAtList(List<MsgChainBean> arrayMsg) {
         List<Long> atList = new ArrayList<>();
-        arrayMsg.stream().filter((it) ->
+        arrayMsg.stream().filter(it ->
                 "at".equals(it.getType()) && !"all".equals(it.getData().get("qq"))
-        ).forEach((it) -> atList.add(Long.parseLong(it.getData().get("qq"))));
+        ).forEach(it -> atList.add(Long.parseLong(it.getData().get("qq"))));
         return atList;
     }
 
@@ -48,9 +48,9 @@ public class ShiroUtils {
      */
     public static List<String> getMsgImgUrlList(List<MsgChainBean> arrayMsg) {
         List<String> imgUrlList = new ArrayList<>();
-        arrayMsg.stream().filter((it) ->
+        arrayMsg.stream().filter(it ->
                 "image".equals(it.getType())
-        ).forEach((it) -> imgUrlList.add(it.getData().get("url")));
+        ).forEach(it -> imgUrlList.add(it.getData().get("url")));
         return imgUrlList;
     }
 
@@ -62,9 +62,9 @@ public class ShiroUtils {
      */
     public static List<String> getMsgVideoUrlList(List<MsgChainBean> arrayMsg) {
         List<String> imgUrlList = new ArrayList<>();
-        arrayMsg.stream().filter((it) ->
+        arrayMsg.stream().filter(it ->
                 "video".equals(it.getType())
-        ).forEach((it) -> imgUrlList.add(it.getData().get("url")));
+        ).forEach(it -> imgUrlList.add(it.getData().get("url")));
         return imgUrlList;
     }
 
@@ -153,9 +153,9 @@ public class ShiroUtils {
             } else {
                 String[] s2 = s1.split(",");
                 object.put("type", s2[0].substring(s2[0].indexOf(":") + 1));
-                Arrays.stream(s2).filter((it) ->
+                Arrays.stream(s2).filter(it ->
                         !it.startsWith("CQ:")
-                ).forEach((it) -> {
+                ).forEach(it -> {
                     String key = it.substring(0, it.indexOf("="));
                     String value = ShiroUtils.unescape(it.substring(it.indexOf("=") + 1));
                     params.put(key, value);

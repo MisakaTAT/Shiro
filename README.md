@@ -65,10 +65,10 @@ public class ExamplePlugin extends BotPlugin {
     
     @Override
     public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
-        event.getArrayMsg().stream().filter(b ->
-                "image".equals(b.getType())
-        ).forEach(b ->
-                System.out.println(b.getData().get("url"))
+        event.getArrayMsg().stream().filter(it ->
+                "image".equals(it.getType())
+        ).forEach(it ->
+                System.out.println(it.getData().get("url"))
         );
         return MESSAGE_IGNORE;
     }
