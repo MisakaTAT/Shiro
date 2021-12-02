@@ -51,10 +51,13 @@ server:
   port: 5555
 
 shiro:
-  # Webscoket连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
-  # ws-config:
-  #   ws-url: "/ws/shiro"
+  ws-config:
+    # 反向 Webscoket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
+    ws-url: "/ws/shiro"
+    # 访问密钥，强烈推荐在公网的服务器设置
+    access-token: ""
   # 插件列表 (顺序执行，如果前一个插件返回了MESSAGE_BLOCK，将不会执行后续插件)
+  # 注解方式无需在此定义插件
   plugin-list:
     - com.mikuac.bot.plugins.ExamplePlugin
 ```
@@ -121,8 +124,6 @@ public class ExamplePlugin extends BotPlugin {
 示例插件II：注解调用
 
 ```java
-import org.jetbrains.annotations.NotNull;
-
 @Component
 public class DemoPlugin extends BotPlugin {
 
