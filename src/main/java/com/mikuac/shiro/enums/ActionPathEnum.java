@@ -151,8 +151,19 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 获取群子目录文件列表
      */
-    GET_GROUP_FILES_BY_FOLDER("get_group_files_by_folder");
-
+    GET_GROUP_FILES_BY_FOLDER("get_group_files_by_folder"),
+    /**
+     * 设置精华消息
+     */
+    SET_ESSENCE_MSG("set_essence_msg"),
+    /**
+     * 移出精华消息
+     */
+    DELETE_ESSENCE_MSG("delete_essence_msg"),
+    /**
+     * 获取精华消息列表
+     */
+    GET_ESSENCE_MSG_LIST("get_essence_msg_list");
     /**
      * 请求路径
      */

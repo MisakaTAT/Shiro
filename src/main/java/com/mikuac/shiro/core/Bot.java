@@ -742,4 +742,47 @@ public class Bot {
         return result != null ? result.toJavaObject(ActionData.class) : null;
     }
 
+    /**
+     * 获取精华消息列表
+     *
+     * @param groupId 群号
+     * @return {@link ActionList} of {@link EssenceMsgResp}
+     */
+    public ActionList<EssenceMsgResp> getEssenceMsgList(long groupId) {
+        ActionPathEnum action = ActionPathEnum.GET_ESSENCE_MSG_LIST;
+        JSONObject params = new JSONObject();
+        params.put("group_id", groupId);
+        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        return result != null ? result.toJavaObject(new TypeReference<ActionList<EssenceMsgResp>>() {
+        }) : null;
+    }
+
+    /**
+     * 设置精华消息
+     *
+     * @param msgId 消息 ID
+     * @return {@link ActionRaw}
+     */
+    public ActionRaw setEssenceMsg(int msgId) {
+        ActionPathEnum action = ActionPathEnum.SET_ESSENCE_MSG;
+        JSONObject params = new JSONObject();
+        params.put("message_id", msgId);
+        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+    }
+
+    /**
+     * 移出精华消息
+     *
+     * @param msgId 消息 ID
+     * @return {@link ActionRaw}
+     */
+    public ActionRaw deleteEssenceMsg(int msgId) {
+        ActionPathEnum action = ActionPathEnum.DELETE_ESSENCE_MSG;
+        JSONObject params = new JSONObject();
+        params.put("message_id", msgId);
+        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+    }
+
 }
