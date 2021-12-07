@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.enums.ShiroUtilsEnum;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,6 +15,7 @@ import java.util.List;
  *
  * @author Zero
  */
+@Slf4j
 public class ShiroUtils {
 
     /**
@@ -135,34 +137,47 @@ public class ShiroUtils {
      * @return 消息链
      */
     public static List<MsgChainBean> stringToMsgChain(String msg) {
-        String splitRegex = "(?<=\\[CQ:[^]]{0,}])|(?=\\[CQ:[^]]+])";
-        String cqCodeCheckRegex = "\\[CQ:(?:[^,\\[\\]]+)(?:(?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
         JSONArray array = new JSONArray();
-        for (String s1 : msg.split(splitRegex)) {
-            if (s1.isEmpty()) {
-                continue;
+        try {
+            // 换行转义符
+            String newLine = "&br;";
+            msg = msg.replaceAll("\\r\\n|\\n|\\r", newLine);
+            // Java 零宽断言不支持 + , 故使用 {1,99999} 代替
+            String cqCodeRegex = "\\[CQ:[^]]{1,99999}]";
+            String splitRegex = "(?<=" + cqCodeRegex + ")|(?=" + cqCodeRegex + ")";
+            String cqCodeCheckRegex = "\\[CQ:(?:[^,\\[\\]]+)(?:(?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
+            for (String s1 : msg.split(splitRegex)) {
+                if (s1.isEmpty()) {
+                    continue;
+                }
+                if (s1.matches(cqCodeCheckRegex)) {
+                    s1 = s1.substring(1, s1.length() - 1);
+                }
+                JSONObject object = new JSONObject();
+                JSONObject params = new JSONObject();
+                if (s1.equals(newLine)) {
+                    object.put("type", "text");
+                    params.put("text", "\n");
+                } else if (!s1.startsWith("CQ:")) {
+                    object.put("type", "text");
+                    params.put("text", s1.replaceAll(newLine, "\n"));
+                } else {
+                    String[] s2 = s1.split(",");
+                    object.put("type", s2[0].substring(s2[0].indexOf(":") + 1));
+                    Arrays.stream(s2).filter(it ->
+                            !it.startsWith("CQ:")
+                    ).forEach(it -> {
+                        String key = it.substring(0, it.indexOf("="));
+                        String value = ShiroUtils.unescape(it.substring(it.indexOf("=") + 1));
+                        params.put(key, value);
+                    });
+                }
+                object.put("data", params);
+                array.add(object);
             }
-            if (s1.matches(cqCodeCheckRegex)) {
-                s1 = s1.substring(1, s1.length() - 1);
-            }
-            JSONObject object = new JSONObject();
-            JSONObject params = new JSONObject();
-            if (!s1.startsWith("CQ:")) {
-                object.put("type", "text");
-                params.put("text", s1);
-            } else {
-                String[] s2 = s1.split(",");
-                object.put("type", s2[0].substring(s2[0].indexOf(":") + 1));
-                Arrays.stream(s2).filter(it ->
-                        !it.startsWith("CQ:")
-                ).forEach(it -> {
-                    String key = it.substring(0, it.indexOf("="));
-                    String value = ShiroUtils.unescape(it.substring(it.indexOf("=") + 1));
-                    params.put(key, value);
-                });
-            }
-            object.put("data", params);
-            array.add(object);
+        } catch (Exception e) {
+            log.error("String msg convert to array msg failed: {}", e.getMessage());
+            return null;
         }
         return array.toJavaList(MsgChainBean.class);
     }
