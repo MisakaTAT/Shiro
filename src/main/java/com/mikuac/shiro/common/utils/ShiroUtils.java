@@ -139,10 +139,7 @@ public class ShiroUtils {
     public static List<MsgChainBean> stringToMsgChain(String msg) {
         JSONArray array = new JSONArray();
         try {
-            // 换行转义符
-            String newLine = "&br;";
-            msg = msg.replaceAll("\\r\\n|\\n|\\r", newLine);
-            // Java 零宽断言不支持 + , 故使用 {1,99999} 代替
+            // Java 1.8 零宽断言不支持无限匹配 , 使用 {1,99999} 代替
             String cqCodeRegex = "\\[CQ:[^]]{1,99999}]";
             String splitRegex = "(?<=" + cqCodeRegex + ")|(?=" + cqCodeRegex + ")";
             String cqCodeCheckRegex = "\\[CQ:(?:[^,\\[\\]]+)(?:(?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
@@ -155,12 +152,9 @@ public class ShiroUtils {
                 }
                 JSONObject object = new JSONObject();
                 JSONObject params = new JSONObject();
-                if (s1.equals(newLine)) {
+                if (!s1.startsWith("CQ:")) {
                     object.put("type", "text");
-                    params.put("text", "\n");
-                } else if (!s1.startsWith("CQ:")) {
-                    object.put("type", "text");
-                    params.put("text", s1.replaceAll(newLine, "\n"));
+                    params.put("text", s1);
                 } else {
                     String[] s2 = s1.split(",");
                     object.put("type", s2[0].substring(s2[0].indexOf(":") + 1));
