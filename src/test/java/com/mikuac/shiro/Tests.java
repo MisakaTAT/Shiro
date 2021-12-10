@@ -1,6 +1,7 @@
 package com.mikuac.shiro;
 
 import com.mikuac.shiro.bean.MsgChainBean;
+import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import junit.framework.TestCase;
 import org.junit.Test;
@@ -18,6 +19,16 @@ public class Tests {
         List<MsgChainBean> list = ShiroUtils.stringToMsgChain(stringMsg);
         TestCase.assertNotNull(list);
         TestCase.assertEquals(arrayMsg, list.toString());
+    }
+
+    @Test
+    public void testMsgUtils() {
+        MsgUtils msgUtils = MsgUtils.builder()
+                .at(1140667337L)
+                .text("Hello")
+                .img("https://test.com/1.jpg");
+        String buildMsg = "[CQ:at,qq=1140667337]Hello[CQ:image,file=https://test.com/1.jpg]";
+        TestCase.assertEquals(buildMsg, msgUtils.build());
     }
 
 }
