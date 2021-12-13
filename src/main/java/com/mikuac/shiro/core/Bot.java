@@ -692,7 +692,7 @@ public class Bot {
         ActionPathEnum action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
         JSONObject params = new JSONObject();
         params.put("group_id", groupId);
-        params.put("messages", msg.toString());
+        params.put("messages", msg);
         JSONObject result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
