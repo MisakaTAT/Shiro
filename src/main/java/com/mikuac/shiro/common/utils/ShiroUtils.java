@@ -176,4 +176,28 @@ public class ShiroUtils {
         return array.toJavaList(MsgChainBean.class);
     }
 
+    /**
+     * 创建自定义消息合并转发
+     *
+     * @param uin     发送者QQ号
+     * @param name    发送者显示名字
+     * @param msgList 消息列表，每个元素视为一个消息节点
+     *                https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91
+     * @return 转发消息
+     */
+    public static JSONArray generateForwardMsg(long uin, String name, ArrayList<String> msgList) {
+        JSONArray nodeList = new JSONArray();
+        for (String msg : msgList) {
+            JSONObject node = new JSONObject();
+            node.put("type", "node");
+            JSONObject data = new JSONObject();
+            data.put("name", name);
+            data.put("uin", uin);
+            data.put("content", msg);
+            node.put("data", data);
+            nodeList.add(node);
+        }
+        return nodeList;
+    }
+
 }
