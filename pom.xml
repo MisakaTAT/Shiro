@@ -6,7 +6,7 @@
 
     <groupId>com.mikuac</groupId>
     <artifactId>shiro</artifactId>
-    <version>1.2.2</version>
+    <version>1.2.3</version>
     <name>Shiro</name>
     <url>https://mikuac.com</url>
     <description>基于OneBot协议的QQ机器人快速开发框架</description>
@@ -120,12 +120,6 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-configuration-processor</artifactId>
-            <version>2.6.1</version>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
             <version>2.6.1</version>
         </dependency>
@@ -133,7 +127,7 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>1.18.22</version>
-            <optional>true</optional>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
