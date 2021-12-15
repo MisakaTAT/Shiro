@@ -1,6 +1,5 @@
 package com.mikuac.shiro.core;
 
-import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.TypeReference;
 import com.mikuac.shiro.bean.HandlerMethod;
@@ -685,10 +684,11 @@ public class Bot {
      * 发送合并转发 (群)
      *
      * @param groupId 群号
-     * @param msg     自定义转发消息, 具体看 https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91
+     * @param msg     自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
+     *                自定义构建详见 https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91
      * @return {@link ActionRaw}
      */
-    public ActionRaw sendGroupForwardMsg(long groupId, JSONArray msg) {
+    public ActionRaw sendGroupForwardMsg(long groupId, List<Object> msg) {
         ActionPathEnum action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
         JSONObject params = new JSONObject();
         params.put("group_id", groupId);

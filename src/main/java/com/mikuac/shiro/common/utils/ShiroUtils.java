@@ -6,9 +6,7 @@ import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.enums.ShiroUtilsEnum;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created on 2021/8/10.
@@ -185,12 +183,12 @@ public class ShiroUtils {
      *                https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91
      * @return 转发消息
      */
-    public static JSONArray generateForwardMsg(long uin, String name, ArrayList<String> msgList) {
-        JSONArray nodeList = new JSONArray();
+    public static List<Object> generateForwardMsg(long uin, String name, ArrayList<String> msgList) {
+        List<Object> nodeList = new ArrayList<>();
         for (String msg : msgList) {
-            JSONObject node = new JSONObject();
+            Map<String, Object> node = new HashMap<>(5);
             node.put("type", "node");
-            JSONObject data = new JSONObject();
+            Map<String, Object> data = new HashMap<>(5);
             data.put("name", name);
             data.put("uin", uin);
             data.put("content", msg);
