@@ -28,6 +28,6 @@ public class EssenceMsgResp {
     private String operatorTime;
 
     @JSONField(name = "message_id")
-    private String messageId;
+    private int messageId;
 
 }
