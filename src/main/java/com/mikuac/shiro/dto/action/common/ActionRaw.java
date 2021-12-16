@@ -15,7 +15,7 @@ public class ActionRaw {
     private String status;
 
     @JSONField(name = "retcode")
-    private int retcode;
+    private int retCode;
 
     @JSONField(name = "echo")
     private long echo;

@@ -13,7 +13,7 @@ public class ActionData<T> {
     private String status;
 
     @JSONField(name = "retcode")
-    private int retcode;
+    private int retCode;
 
     @JSONField(name = "data")
     private T data;
