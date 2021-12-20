@@ -135,6 +135,7 @@ public class EventHandler {
             }
             case "group_decrease": {
                 GroupDecreaseNoticeEvent event = eventJson.toJavaObject(GroupDecreaseNoticeEvent.class);
+                injectionHandler.invokeGroupDecrease(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupDecreaseNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -144,6 +145,7 @@ public class EventHandler {
             }
             case "group_increase": {
                 GroupIncreaseNoticeEvent event = eventJson.toJavaObject(GroupIncreaseNoticeEvent.class);
+                injectionHandler.invokeGroupIncrease(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupIncreaseNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;

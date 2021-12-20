@@ -1,9 +1,6 @@
 package com.mikuac.shiro.handler.injection;
 
-import com.mikuac.shiro.annotation.GroupAdminHandler;
-import com.mikuac.shiro.annotation.GroupMessageHandler;
-import com.mikuac.shiro.annotation.MessageHandler;
-import com.mikuac.shiro.annotation.PrivateMessageHandler;
+import com.mikuac.shiro.annotation.*;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.common.utils.RegexUtils;
@@ -13,6 +10,8 @@ import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent;
+import com.mikuac.shiro.dto.event.notice.GroupDecreaseNoticeEvent;
+import com.mikuac.shiro.dto.event.notice.GroupIncreaseNoticeEvent;
 import com.mikuac.shiro.enums.AtEnum;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -35,10 +34,32 @@ import java.util.regex.Matcher;
 public class InjectionHandler {
 
     /**
+     * 入群提醒
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupIncreaseNoticeEvent}
+     */
+    public void invokeGroupIncrease(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
+        setArgs(handlers.get(GroupIncreaseHandler.class), bot, event);
+    }
+
+    /**
+     * 退群提醒
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupDecreaseNoticeEvent}
+     */
+    public void invokeGroupDecrease(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
+        setArgs(handlers.get(GroupDecreaseHandler.class), bot, event);
+    }
+
+    /**
      * 监听全部消息
      *
-     * @param bot   Bot
-     * @param event WholeMessageEvent
+     * @param bot   {@link Bot}
+     * @param event {@link WholeMessageEvent}
      */
     public void invokeWholeMessage(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -81,8 +102,8 @@ public class InjectionHandler {
     /**
      * 群聊消息
      *
-     * @param bot   Bot
-     * @param event GroupMessageEvent
+     * @param bot   {@link Bot}
+     * @param event {@link GroupMessageEvent}
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -107,8 +128,8 @@ public class InjectionHandler {
     /**
      * 私聊消息
      *
-     * @param bot   Bot
-     * @param event PrivateMessageEvent
+     * @param bot   {@link Bot}
+     * @param event {@link PrivateMessageEvent}
      */
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -131,8 +152,8 @@ public class InjectionHandler {
     /**
      * 管理员变动事件
      *
-     * @param bot   Bot
-     * @param event GroupAdminNoticeEvent
+     * @param bot   {@link Bot}
+     * @param event {@link GroupAdminNoticeEvent}
      */
     public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -178,6 +199,29 @@ public class InjectionHandler {
             handlerMethod.getMethod().invoke(handlerMethod.getObject(), objects);
         } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * 参数设置
+     *
+     * @param handlerMethods Annotation methods
+     * @param bot            {@link Bot}
+     * @param event          Object
+     */
+    private void setArgs(List<HandlerMethod> handlerMethods, Bot bot, Object event) {
+        if (handlerMethods != null && handlerMethods.size() > 0) {
+            for (HandlerMethod handlerMethod : handlerMethods) {
+                Map<Class<?>, Object> argsMap = new HashMap<>(16);
+                argsMap.put(Bot.class, bot);
+                if (event instanceof GroupIncreaseNoticeEvent) {
+                    argsMap.put(GroupIncreaseNoticeEvent.class, event);
+                }
+                if (event instanceof GroupDecreaseNoticeEvent) {
+                    argsMap.put(GroupDecreaseNoticeEvent.class, event);
+                }
+                invokeMethod(handlerMethod, argsMap);
+            }
         }
     }
 

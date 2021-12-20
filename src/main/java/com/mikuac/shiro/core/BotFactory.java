@@ -1,10 +1,7 @@
 package com.mikuac.shiro.core;
 
 
-import com.mikuac.shiro.annotation.GroupAdminHandler;
-import com.mikuac.shiro.annotation.GroupMessageHandler;
-import com.mikuac.shiro.annotation.MessageHandler;
-import com.mikuac.shiro.annotation.PrivateMessageHandler;
+import com.mikuac.shiro.annotation.*;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
@@ -69,6 +66,12 @@ public class BotFactory {
                         }
                         if (method.isAnnotationPresent(MessageHandler.class)) {
                             annotationHandler.add(MessageHandler.class, handlerMethod);
+                        }
+                        if (method.isAnnotationPresent(GroupIncreaseHandler.class)) {
+                            annotationHandler.add(GroupIncreaseHandler.class, handlerMethod);
+                        }
+                        if (method.isAnnotationPresent(GroupDecreaseHandler.class)) {
+                            annotationHandler.add(GroupDecreaseHandler.class, handlerMethod);
                         }
                     }
             );
