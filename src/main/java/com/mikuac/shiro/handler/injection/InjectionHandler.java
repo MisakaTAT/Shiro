@@ -40,8 +40,7 @@ public class InjectionHandler {
      * @param event {@link GroupIncreaseNoticeEvent}
      */
     public void invokeGroupIncrease(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        setArgs(handlers.get(GroupIncreaseHandler.class), bot, event);
+        setArgs(bot.getAnnotationHandler().get(GroupIncreaseHandler.class), bot, event);
     }
 
     /**
@@ -51,8 +50,7 @@ public class InjectionHandler {
      * @param event {@link GroupDecreaseNoticeEvent}
      */
     public void invokeGroupDecrease(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        setArgs(handlers.get(GroupDecreaseHandler.class), bot, event);
+        setArgs(bot.getAnnotationHandler().get(GroupDecreaseHandler.class), bot, event);
     }
 
     /**
