@@ -164,6 +164,7 @@ public class EventHandler {
             }
             case "friend_add": {
                 FriendAddNoticeEvent event = eventJson.toJavaObject(FriendAddNoticeEvent.class);
+                injectionHandler.invokeFriendAdd(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onFriendAddNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;

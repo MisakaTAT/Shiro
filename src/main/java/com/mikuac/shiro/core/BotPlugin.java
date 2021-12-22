@@ -102,7 +102,7 @@ public class BotPlugin {
     }
 
     /**
-     * 好友添加请求
+     * 好友添加事件
      *
      * @param bot   bot对象
      * @param event 上报事件

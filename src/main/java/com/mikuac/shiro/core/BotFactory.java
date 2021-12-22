@@ -73,6 +73,9 @@ public class BotFactory {
                         if (method.isAnnotationPresent(GroupDecreaseHandler.class)) {
                             annotationHandler.add(GroupDecreaseHandler.class, handlerMethod);
                         }
+                        if (method.isAnnotationPresent(FriendAddHandler.class)) {
+                            annotationHandler.add(FriendAddHandler.class, handlerMethod);
+                        }
                     }
             );
         }

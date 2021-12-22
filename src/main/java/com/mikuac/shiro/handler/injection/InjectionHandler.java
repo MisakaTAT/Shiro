@@ -9,6 +9,7 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
+import com.mikuac.shiro.dto.event.notice.FriendAddNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.GroupDecreaseNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.GroupIncreaseNoticeEvent;
@@ -34,7 +35,17 @@ import java.util.regex.Matcher;
 public class InjectionHandler {
 
     /**
-     * 入群提醒
+     * 好友添加事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link FriendAddNoticeEvent}
+     */
+    public void invokeFriendAdd(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
+        setArgs(bot.getAnnotationHandler().get(FriendAddHandler.class), bot, event);
+    }
+
+    /**
+     * 入群事件
      *
      * @param bot   {@link Bot}
      * @param event {@link GroupIncreaseNoticeEvent}
@@ -44,7 +55,7 @@ public class InjectionHandler {
     }
 
     /**
-     * 退群提醒
+     * 退群事件
      *
      * @param bot   {@link Bot}
      * @param event {@link GroupDecreaseNoticeEvent}
