@@ -202,7 +202,6 @@ public class MsgUtils {
         return this;
     }
 
-
     /**
      * JSON 消息
      *
@@ -215,7 +214,6 @@ public class MsgUtils {
         stringBuffer.append(ttsCode);
         return this;
     }
-
 
     /**
      * 一种xml的图片消息
@@ -247,6 +245,55 @@ public class MsgUtils {
         String ttsCode = String.format("[CQ:cardimage,file=%s,minwidth=%s,minheight=%s,maxwidth=%s,maxheight=%s,source=%s,icon=%s]",
                 ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, source, ShiroUtils.escape(icon));
         stringBuffer.append(ttsCode);
+        return this;
+    }
+
+    /**
+     * 音乐分享
+     *
+     * @param type qq 163 xm (分别表示使用 QQ 音乐、网易云音乐、虾米音乐)
+     * @param id   歌曲 ID
+     * @return CQ码
+     */
+    public MsgUtils music(String type, String id) {
+        String musicCode = String.format("[CQ:music,type=%s,id=%s]", type, id);
+        stringBuffer.append(musicCode);
+        return this;
+    }
+
+    /**
+     * 音乐自定义分享
+     *
+     * @param url     点击后跳转目标 URL
+     * @param audio   音乐 URL
+     * @param title   标题
+     * @param content 发送时可选，内容描述
+     * @param image   发送时可选，图片 URL
+     * @return CQ码
+     */
+    public MsgUtils customMusic(String url, String audio, String title, String content, String image) {
+        String customMusicCode = String.format(
+                "[CQ:music,type=custom,url=%s,audio=%s,title=%s,content=%s,image=%s]",
+                ShiroUtils.escape(url), ShiroUtils.escape(audio), title, content, ShiroUtils.escape(image)
+        );
+        stringBuffer.append(customMusicCode);
+        return this;
+    }
+
+    /**
+     * 音乐自定义分享
+     *
+     * @param url   点击后跳转目标 URL
+     * @param audio 音乐 URL
+     * @param title 标题
+     * @return CQ码
+     */
+    public MsgUtils customMusic(String url, String audio, String title) {
+        String customMusicCode = String.format(
+                "[CQ:music,type=custom,url=%s,audio=%s,title=%s]",
+                ShiroUtils.escape(url), ShiroUtils.escape(audio), title
+        );
+        stringBuffer.append(customMusicCode);
         return this;
     }
 
