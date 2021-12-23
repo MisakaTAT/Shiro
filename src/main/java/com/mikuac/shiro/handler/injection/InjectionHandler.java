@@ -229,6 +229,9 @@ public class InjectionHandler {
                 if (event instanceof GroupDecreaseNoticeEvent) {
                     argsMap.put(GroupDecreaseNoticeEvent.class, event);
                 }
+                if (event instanceof FriendAddNoticeEvent) {
+                    argsMap.put(FriendAddNoticeEvent.class, event);
+                }
                 invokeMethod(handlerMethod, argsMap);
             }
         }
