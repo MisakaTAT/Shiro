@@ -183,18 +183,20 @@ public class ShiroUtils {
      *                https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91
      * @return 转发消息
      */
-    public static List<Object> generateForwardMsg(long uin, String name, ArrayList<String> msgList) {
+    public static List<Object> generateForwardMsg(long uin, String name, List<String> msgList) {
         List<Object> nodeList = new ArrayList<>();
-        for (String msg : msgList) {
-            Map<String, Object> node = new HashMap<>(5);
-            node.put("type", "node");
-            Map<String, Object> data = new HashMap<>(5);
-            data.put("name", name);
-            data.put("uin", uin);
-            data.put("content", msg);
-            node.put("data", data);
-            nodeList.add(node);
-        }
+        msgList.forEach(msg ->
+                {
+                    Map<String, Object> node = new HashMap<>(5);
+                    node.put("type", "node");
+                    Map<String, Object> data = new HashMap<>(5);
+                    data.put("name", name);
+                    data.put("uin", uin);
+                    data.put("content", msg);
+                    node.put("data", data);
+                    nodeList.add(node);
+                }
+        );
         return nodeList;
     }
 
