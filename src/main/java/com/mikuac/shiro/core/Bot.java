@@ -16,6 +16,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2021/7/7.
@@ -688,7 +689,7 @@ public class Bot {
      *                自定义构建详见 https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91
      * @return {@link ActionRaw}
      */
-    public ActionRaw sendGroupForwardMsg(long groupId, List<Object> msg) {
+    public ActionRaw sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
         ActionPathEnum action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
         JSONObject params = new JSONObject();
         params.put("group_id", groupId);
