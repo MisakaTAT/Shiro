@@ -1,2 +1,7 @@
 server:
   port: 5555
+
+shiro:
+  limiter:
+    enable: true
+    permits-per-second: 1

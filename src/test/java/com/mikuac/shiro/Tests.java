@@ -1,16 +1,37 @@
 package com.mikuac.shiro;
 
 import com.mikuac.shiro.bean.MsgChainBean;
+import com.mikuac.shiro.common.limit.ActionRateLimiter;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import junit.framework.TestCase;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
 import java.util.List;
 
-@SpringBootTest
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class Tests {
+
+    @Resource
+    private ActionRateLimiter actionRateLimiter;
+
+    @Test
+    public void testRateLimiter() throws Exception {
+        double a = actionRateLimiter.acquire();
+        TestCase.assertEquals(a, 0.00);
+        double b = actionRateLimiter.acquire();
+        if (b <= 0) {
+            TestCase.fail("TokenBucket test failed.");
+        }
+        Thread.sleep(1000);
+        double c = actionRateLimiter.acquire();
+        TestCase.assertEquals(c, 0.00);
+    }
 
     @Test
     public void testStringToMsgChain() {
