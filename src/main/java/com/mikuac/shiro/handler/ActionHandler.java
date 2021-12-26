@@ -75,9 +75,9 @@ public class ActionHandler {
      * @return 结果
      */
     public JSONObject doActionRequest(WebSocketSession session, ActionPath action, JSONObject params) {
-        if (actionLimiterProperties.isEnable() && !actionRateLimiter.tryAcquire()) {
-            log.warn("Token get failed, Ignored this action.");
-            return null;
+        if (actionLimiterProperties.isEnable()) {
+            // 阻塞当前线程直到获取令牌成功
+            actionRateLimiter.acquire();
         }
         if (!session.isOpen()) {
             return null;
@@ -115,6 +115,5 @@ public class ActionHandler {
         reqJson.put("echo", echo++);
         return reqJson;
     }
-
 
 }

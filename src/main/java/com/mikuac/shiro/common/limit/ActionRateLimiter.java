@@ -3,10 +3,10 @@ package com.mikuac.shiro.common.limit;
 import com.google.common.util.concurrent.RateLimiter;
 import com.mikuac.shiro.properties.ActionLimiterProperties;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.stereotype.Service;
+import org.springframework.boot.ApplicationArguments;
+import org.springframework.boot.ApplicationRunner;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 
 /**
@@ -15,8 +15,8 @@ import javax.annotation.Resource;
  * @author Zero
  */
 @Slf4j
-@Service
-public class ActionRateLimiter {
+@Component
+public class ActionRateLimiter implements ApplicationRunner {
 
     @Resource
     private ActionLimiterProperties actionLimiterProperties;
@@ -25,17 +25,18 @@ public class ActionRateLimiter {
     private RateLimiter rateLimiter;
 
     /**
-     * 创建限速器
+     * 初始化限速器
+     *
+     * @param args ApplicationArguments
      */
-    @PostConstruct
-    @DependsOn("actionLimiterProperties")
+    @Override
     @SuppressWarnings("UnstableApiUsage")
-    private void createRateLimiter() {
+    public void run(ApplicationArguments args) {
         if (actionLimiterProperties.isEnable()) {
             int permitsPerSecond = actionLimiterProperties.getPermitsPerSecond();
             rateLimiter = RateLimiter.create(permitsPerSecond);
-            log.info("Global rate limiter enable");
-            log.info("The current permits per second [{}]", permitsPerSecond);
+            log.info("Enable global action rate limiter");
+            log.info("Current permits per second [{}]", permitsPerSecond);
         }
     }
 
