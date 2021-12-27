@@ -1,8 +1,8 @@
 package com.mikuac.shiro.core;
 
-
 import com.mikuac.shiro.annotation.*;
 import com.mikuac.shiro.bean.HandlerMethod;
+import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
 import org.springframework.context.ApplicationContext;
@@ -15,7 +15,6 @@ import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Map;
-
 
 /**
  * Created on 2021/7/7.
@@ -30,7 +29,6 @@ public class BotFactory {
 
     @Resource
     private PluginProperties pluginProperties;
-
 
     @Resource
     private ApplicationContext appContext;
@@ -48,7 +46,14 @@ public class BotFactory {
         // 一键多值 注解为 Key 存放所有包含某个注解的方法
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
         for (Object bean : beansOfType.values()) {
-            Class<?> beanClass = bean.getClass();
+            Object target;
+            try {
+                target = AopTargetUtils.getTarget(bean);
+            } catch (Exception e) {
+                e.printStackTrace();
+                continue;
+            }
+            Class<?> beanClass = target.getClass();
             Arrays.stream(beanClass.getMethods()).forEach(method ->
                     {
                         HandlerMethod handlerMethod = new HandlerMethod();
