@@ -38,7 +38,7 @@ public class ActionHandler {
      * 限速器配置
      */
     @Resource
-    private ActionLimiterProperties actionLimiterProperties;
+    private ActionLimiterProperties limiterProp;
 
     /**
      * 限速器
@@ -75,9 +75,14 @@ public class ActionHandler {
      * @return 结果
      */
     public JSONObject doActionRequest(WebSocketSession session, ActionPath action, JSONObject params) {
-        if (actionLimiterProperties.isEnable()) {
-            // 阻塞当前线程直到获取令牌成功
-            actionRateLimiter.acquire();
+        if (limiterProp.isEnable()) {
+            if (ActionRateLimiter.ACQUIRE.equals(limiterProp.getMode())) {
+                // 阻塞当前线程直到获取令牌成功
+                actionRateLimiter.acquire();
+            }
+            if (ActionRateLimiter.TRY_ACQUIRE.equals(limiterProp.getMode()) && !actionRateLimiter.tryAcquire()) {
+                return null;
+            }
         }
         if (!session.isOpen()) {
             return null;

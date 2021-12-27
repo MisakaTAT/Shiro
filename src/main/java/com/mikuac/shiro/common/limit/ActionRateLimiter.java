@@ -18,8 +18,12 @@ import javax.annotation.Resource;
 @Component
 public class ActionRateLimiter implements ApplicationRunner {
 
+    public static final String ACQUIRE = "acquire";
+
+    public static final String TRY_ACQUIRE = "tryAcquire";
+
     @Resource
-    private ActionLimiterProperties actionLimiterProperties;
+    private ActionLimiterProperties limiterProp;
 
     @SuppressWarnings("UnstableApiUsage")
     private RateLimiter rateLimiter;
@@ -32,10 +36,10 @@ public class ActionRateLimiter implements ApplicationRunner {
     @Override
     @SuppressWarnings("UnstableApiUsage")
     public void run(ApplicationArguments args) {
-        if (actionLimiterProperties.isEnable()) {
-            int permitsPerSecond = actionLimiterProperties.getPermitsPerSecond();
+        if (limiterProp.isEnable()) {
+            int permitsPerSecond = limiterProp.getPermitsPerSecond();
             rateLimiter = RateLimiter.create(permitsPerSecond);
-            log.info("Enable global action rate limiter");
+            log.info("Enable global action rate limiter, Current mode is {}", limiterProp.getMode());
             log.info("Current permits per second [{}]", permitsPerSecond);
         }
     }
