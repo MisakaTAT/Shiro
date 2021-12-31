@@ -77,10 +77,14 @@ public class EventHandler {
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
-                List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-                event.setArrayMsg(arrayMsg);
+                try {
+                    List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+                    event.setArrayMsg(arrayMsg);
+                    pushWholeMessageEvent(bot, eventJson, arrayMsg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 injectionHandler.invokePrivateMessage(bot, event);
-                pushWholeMessageEvent(bot, eventJson, arrayMsg);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -90,10 +94,14 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
-                List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-                event.setArrayMsg(arrayMsg);
+                try {
+                    List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+                    event.setArrayMsg(arrayMsg);
+                    pushWholeMessageEvent(bot, eventJson, arrayMsg);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 injectionHandler.invokeGroupMessage(bot, event);
-                pushWholeMessageEvent(bot, eventJson, arrayMsg);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;

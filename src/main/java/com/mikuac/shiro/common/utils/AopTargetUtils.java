@@ -14,8 +14,9 @@ public class AopTargetUtils {
     /**
      * 获取目标对象
      *
-     * @param proxy 代理对象
-     * @return 目标对象
+     * @param proxy ProxyObject
+     * @return TargetObject
+     * @throws Exception exception
      */
     public static Object getTarget(Object proxy) throws Exception {
         if (!AopUtils.isAopProxy(proxy)) {
