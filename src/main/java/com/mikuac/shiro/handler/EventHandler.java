@@ -303,6 +303,11 @@ public class EventHandler {
         WholeMessageEvent event = eventJson.toJavaObject(WholeMessageEvent.class);
         event.setArrayMsg(arrayMsg);
         injectionHandler.invokeWholeMessage(bot, event);
+        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+            if (getPlugin(pluginClass).onWholeMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+                break;
+            }
+        }
     }
 
     private BotPlugin getPlugin(Class<? extends BotPlugin> pluginClass) {
