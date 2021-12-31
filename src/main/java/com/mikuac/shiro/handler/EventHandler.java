@@ -43,23 +43,23 @@ public class EventHandler {
      * @param bot       bot对象
      * @param eventJson 响应数据
      */
-    public void handle(Bot bot, @NotNull JSONObject eventJson) {
+    public void handler(Bot bot, @NotNull JSONObject eventJson) {
         String postType = eventJson.getString("post_type");
         switch (postType) {
             case "meta_event": {
-                handleMetaEvent(bot, eventJson);
+                handlerMetaEvent(bot, eventJson);
                 break;
             }
             case "message": {
-                handleMessage(bot, eventJson);
+                handlerMessage(bot, eventJson);
                 break;
             }
             case "notice": {
-                handleNotice(bot, eventJson);
+                handlerNotice(bot, eventJson);
                 break;
             }
             case "request": {
-                handleRequest(bot, eventJson);
+                handlerRequest(bot, eventJson);
                 break;
             }
             default:
@@ -72,7 +72,7 @@ public class EventHandler {
      * @param bot       bot对象
      * @param eventJson 响应数据
      */
-    private void handleMessage(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
         switch (messageType) {
             case "private": {
@@ -111,7 +111,7 @@ public class EventHandler {
      * @param bot       bot对象
      * @param eventJson 响应数据
      */
-    private void handleNotice(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerNotice(Bot bot, @NotNull JSONObject eventJson) {
         String noticeType = eventJson.getString("notice_type");
         switch (noticeType) {
             case "group_upload": {
@@ -209,7 +209,7 @@ public class EventHandler {
                 break;
             }
             case "notify": {
-                handleNotify(bot, eventJson);
+                handlerNotify(bot, eventJson);
                 break;
             }
             default:
@@ -222,7 +222,7 @@ public class EventHandler {
      * @param bot       bot对象
      * @param eventJson 响应数据
      */
-    private void handleNotify(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerNotify(Bot bot, @NotNull JSONObject eventJson) {
         String subType = eventJson.getString("sub_type");
         switch (subType) {
             case "poke": {
@@ -271,7 +271,7 @@ public class EventHandler {
      * @param bot       bot对象
      * @param eventJson 响应数据
      */
-    private void handleRequest(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerRequest(Bot bot, @NotNull JSONObject eventJson) {
         String requestType = eventJson.getString("request_type");
         switch (requestType) {
             case "friend": {
@@ -296,7 +296,7 @@ public class EventHandler {
         }
     }
 
-    private void handleMetaEvent(Bot bot, JSONObject eventJson) {
+    private void handlerMetaEvent(Bot bot, JSONObject eventJson) {
     }
 
     private void pushWholeMessageEvent(Bot bot, JSONObject eventJson, List<MsgChainBean> arrayMsg) {
