@@ -11,22 +11,7 @@ import java.util.regex.Pattern;
 public class RegexUtils {
 
     /**
-     * @param regex 正则表达式
-     * @param text  匹配内容
-     * @return 返回匹配内容
-     */
-    public static String regex(String regex, String text) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            return matcher.group();
-        }
-        return null;
-    }
-
-    /**
-     * 部分匹配
-     * 总是从第一个字符进行匹配，匹配成功了不再继续匹配，匹配失败也不继续匹配
+     * 消息正则匹配
      *
      * @param regex 正则表达式
      * @param text  匹配内容
@@ -35,26 +20,8 @@ public class RegexUtils {
     public static Matcher regexMatcher(String regex, String text) {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
-        if (matcher.lookingAt()) {
+        if (matcher.matches()) {
             return matcher;
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 取正则分组匹配内容
-     *
-     * @param regex   正则表达式
-     * @param text    匹配内容
-     * @param groupId 组ID
-     * @return 匹配内容
-     */
-    public static String regexGroup(String regex, String text, int groupId) {
-        Pattern pattern = Pattern.compile(regex);
-        Matcher matcher = pattern.matcher(text);
-        if (matcher.find()) {
-            return matcher.group(groupId);
         } else {
             return null;
         }
