@@ -74,7 +74,7 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 结果
      */
-    public JSONObject doActionRequest(WebSocketSession session, ActionPath action, JSONObject params) {
+    public JSONObject doActionRequest(WebSocketSession session, ActionPath action, Map<String, Object> params) {
         if (limiterProp.isEnable()) {
             if (ActionRateLimiter.ACQUIRE.equals(limiterProp.getMode())) {
                 // 阻塞当前线程直到获取令牌成功
@@ -111,14 +111,14 @@ public class ActionHandler {
      * @param params 请求参数
      * @return json
      */
-    private JSONObject generateReqJson(ActionPath action, JSONObject params) {
-        JSONObject reqJson = new JSONObject();
-        reqJson.put("action", action.getPath());
-        if (params != null) {
-            reqJson.put("params", params);
-        }
-        reqJson.put("echo", echo++);
-        return reqJson;
+    private JSONObject generateReqJson(ActionPath action, Map<String, Object> params) {
+        return new JSONObject() {{
+            put("action", action.getPath());
+            if (params != null) {
+                put("params", params);
+            }
+            put("echo", echo++);
+        }};
     }
 
 }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
  * @author Zero
  */
 @Component
+@SuppressWarnings("unused")
 public class BotPlugin {
 
     /**

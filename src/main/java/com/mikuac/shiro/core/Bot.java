@@ -11,6 +11,7 @@ import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.val;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -23,6 +24,7 @@ import java.util.Map;
  *
  * @author Zero
  */
+@SuppressWarnings("unused")
 public class Bot {
 
     private final ActionHandler actionHandler;
@@ -91,12 +93,13 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long userId, String msg, boolean autoEscape) {
-        ActionPathEnum action = ActionPathEnum.SEND_PRIVATE_MSG;
-        JSONObject params = new JSONObject();
-        params.put("user_id", userId);
-        params.put("message", msg);
-        params.put("auto_escape", autoEscape);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SEND_PRIVATE_MSG;
+        val params = new JSONObject() {{
+            put("user_id", userId);
+            put("message", msg);
+            put("auto_escape", autoEscape);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
         }) : null;
     }
@@ -110,12 +113,13 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendGroupMsg(long groupId, String msg, boolean autoEscape) {
-        ActionPathEnum action = ActionPathEnum.SEND_GROUP_MSG;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("message", msg);
-        params.put("auto_escape", autoEscape);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SEND_GROUP_MSG;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("message", msg);
+            put("auto_escape", autoEscape);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
         }) : null;
     }
@@ -127,10 +131,11 @@ public class Bot {
      * @return {@link ActionData} of {@link GetMsgResp}
      */
     public ActionData<GetMsgResp> getMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.GET_MSG;
-        JSONObject params = new JSONObject();
-        params.put("message_id", msgId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_MSG;
+        val params = new JSONObject() {{
+            put("message_id", msgId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
         }) : null;
     }
@@ -142,10 +147,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_MSG;
-        JSONObject params = new JSONObject();
-        params.put("message_id", msgId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.DELETE_MSG;
+        val params = new JSONObject() {{
+            put("message_id", msgId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -158,12 +164,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupKick(long groupId, long userId, boolean rejectAddRequest) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_KICK;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("user_id", userId);
-        params.put("reject_add_request", rejectAddRequest);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_KICK;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("user_id", userId);
+            put("reject_add_request", rejectAddRequest);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -176,12 +183,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupBan(long groupId, long userId, int duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_BAN;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("user_id", userId);
-        params.put("duration", duration);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_BAN;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("user_id", userId);
+            put("duration", duration);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -193,11 +201,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupWholeBan(long groupId, boolean enable) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_WHOLE_BAN;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("enable", enable);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_WHOLE_BAN;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("enable", enable);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -210,12 +219,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAdmin(long groupId, long userId, boolean enable) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ADMIN;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("user_id", userId);
-        params.put("enable", enable);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_ADMIN;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("user_id", userId);
+            put("enable", enable);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -227,11 +237,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymous(long groupId, boolean enable) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("enable", enable);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_ANONYMOUS;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("enable", enable);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -244,12 +255,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupCard(long groupId, long userId, String card) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_CARD;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("user_id", userId);
-        params.put("card", card);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_CARD;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("user_id", userId);
+            put("card", card);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -261,11 +273,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupName(long groupId, String groupName) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_NAME;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("group_name", groupName);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_NAME;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("group_name", groupName);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -277,11 +290,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupLeave(long groupId, boolean isDismiss) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_LEAVE;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("is_dismiss", isDismiss);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_LEAVE;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("is_dismiss", isDismiss);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -295,13 +309,14 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupSpecialTitle(long groupId, long userId, String specialTitle, int duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_SPECIAL_TITLE;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("user_id", userId);
-        params.put("special_title", specialTitle);
-        params.put("duration", duration);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_SPECIAL_TITLE;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("user_id", userId);
+            put("special_title", specialTitle);
+            put("duration", duration);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -314,12 +329,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setFriendAddRequest(String flag, boolean approve, String remark) {
-        ActionPathEnum action = ActionPathEnum.SET_FRIEND_ADD_REQUEST;
-        JSONObject params = new JSONObject();
-        params.put("flag", flag);
-        params.put("approve", approve);
-        params.put("remark", remark);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_FRIEND_ADD_REQUEST;
+        val params = new JSONObject() {{
+            put("flag", flag);
+            put("approve", approve);
+            put("remark", remark);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -333,13 +349,14 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAddRequest(String flag, String subType, boolean approve, String reason) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ADD_REQUEST;
-        JSONObject params = new JSONObject();
-        params.put("flag", flag);
-        params.put("sub_type", subType);
-        params.put("approve", approve);
-        params.put("reason", reason);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_ADD_REQUEST;
+        val params = new JSONObject() {{
+            put("flag", flag);
+            put("sub_type", subType);
+            put("approve", approve);
+            put("reason", reason);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -349,8 +366,8 @@ public class Bot {
      * @return {@link ActionData} of @{@link LoginInfoResp}
      */
     public ActionData<LoginInfoResp> getLoginInfo() {
-        ActionPathEnum action = ActionPathEnum.GET_LOGIN_INFO;
-        JSONObject result = actionHandler.doActionRequest(session, action, null);
+        val action = ActionPathEnum.GET_LOGIN_INFO;
+        val result = actionHandler.doActionRequest(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<LoginInfoResp>>() {
         }) : null;
     }
@@ -363,11 +380,12 @@ public class Bot {
      * @return {@link ActionData} of {@link StrangerInfoResp}
      */
     public ActionData<StrangerInfoResp> getStrangerInfo(long userId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_STRANGER_INFO;
-        JSONObject params = new JSONObject();
-        params.put("user_id", userId);
-        params.put("no_cache", noCache);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_STRANGER_INFO;
+        val params = new JSONObject() {{
+            put("user_id", userId);
+            put("no_cache", noCache);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<StrangerInfoResp>>() {
         }) : null;
     }
@@ -378,8 +396,8 @@ public class Bot {
      * @return {@link ActionList} of {@link FriendInfoResp}
      */
     public ActionList<FriendInfoResp> getFriendList() {
-        ActionPathEnum action = ActionPathEnum.GET_FRIEND_LIST;
-        JSONObject result = actionHandler.doActionRequest(session, action, null);
+        val action = ActionPathEnum.GET_FRIEND_LIST;
+        val result = actionHandler.doActionRequest(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<FriendInfoResp>>() {
         }) : null;
     }
@@ -391,10 +409,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteFriend(long friendId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_FRIEND;
-        JSONObject params = new JSONObject();
-        params.put("friend_id", friendId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.DELETE_FRIEND;
+        val params = new JSONObject() {{
+            put("friend_id", friendId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -406,11 +425,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupInfoResp}
      */
     public ActionData<GroupInfoResp> getGroupInfo(long groupId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_INFO;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("no_cache", noCache);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_GROUP_INFO;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("no_cache", noCache);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupInfoResp>>() {
         }) : null;
     }
@@ -421,8 +441,8 @@ public class Bot {
      * @return {@link ActionList} of {@link GroupInfoResp}
      */
     public ActionList<GroupInfoResp> getGroupList() {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_LIST;
-        JSONObject result = actionHandler.doActionRequest(session, action, null);
+        val action = ActionPathEnum.GET_GROUP_LIST;
+        val result = actionHandler.doActionRequest(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupInfoResp>>() {
         }) : null;
     }
@@ -436,12 +456,13 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupMemberInfoResp}
      */
     public ActionData<GroupMemberInfoResp> getGroupMemberInfo(long groupId, long userId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_MEMBER_INFO;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("user_id", userId);
-        params.put("no_cache", noCache);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_GROUP_MEMBER_INFO;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("user_id", userId);
+            put("no_cache", noCache);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupMemberInfoResp>>() {
         }) : null;
     }
@@ -453,10 +474,11 @@ public class Bot {
      * @return {@link ActionList} of {@link GroupMemberInfoResp}
      */
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_MEMBER_LIST;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_GROUP_MEMBER_LIST;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupMemberInfoResp>>() {
         }) : null;
     }
@@ -469,11 +491,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupHonorInfoResp}
      */
     public ActionData<GroupHonorInfoResp> getGroupHonorInfo(long groupId, String type) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_HONOR_INFO;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("type", type);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_GROUP_HONOR_INFO;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("type", type);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupHonorInfoResp>>() {
         }) : null;
     }
@@ -484,8 +507,8 @@ public class Bot {
      * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendImage() {
-        ActionPathEnum action = ActionPathEnum.CAN_SEND_IMAGE;
-        JSONObject result = actionHandler.doActionRequest(session, action, null);
+        val action = ActionPathEnum.CAN_SEND_IMAGE;
+        val result = actionHandler.doActionRequest(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
         }) : null;
     }
@@ -496,8 +519,8 @@ public class Bot {
      * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendRecord() {
-        ActionPathEnum action = ActionPathEnum.CAN_SEND_RECORD;
-        JSONObject result = actionHandler.doActionRequest(session, action, null);
+        val action = ActionPathEnum.CAN_SEND_RECORD;
+        val result = actionHandler.doActionRequest(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
         }) : null;
     }
@@ -512,12 +535,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupPortrait(long groupId, String file, int cache) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_PORTRAIT;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("file", file);
-        params.put("cache", cache);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_PORTRAIT;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("file", file);
+            put("cache", cache);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -529,10 +553,11 @@ public class Bot {
      * @return {@link ActionData} of {@link CheckUrlSafelyResp}
      */
     public ActionData<CheckUrlSafelyResp> checkUrlSafely(String url) {
-        ActionPathEnum action = ActionPathEnum.CHECK_URL_SAFELY;
-        JSONObject params = new JSONObject();
-        params.put("url", url);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.CHECK_URL_SAFELY;
+        val params = new JSONObject() {{
+            put("url", url);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
         }) : null;
     }
@@ -545,11 +570,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw sendGroupNotice(long groupId, String content) {
-        ActionPathEnum action = ActionPathEnum.SEN_GROUP_NOTICE;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("content", content);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SEN_GROUP_NOTICE;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("content", content);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -560,10 +586,11 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupAtAllRemainResp}
      */
     public ActionData<GroupAtAllRemainResp> getGroupAtAllRemain(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_AT_ALL_REMAIN;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_GROUP_AT_ALL_REMAIN;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
         }) : null;
     }
@@ -580,13 +607,14 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name, String folder) {
-        ActionPathEnum action = ActionPathEnum.UPLOAD_GROUP_FILE;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("file", file);
-        params.put("name", name);
-        params.put("folder", folder);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.UPLOAD_GROUP_FILE;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("file", file);
+            put("name", name);
+            put("folder", folder);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -601,12 +629,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name) {
-        ActionPathEnum action = ActionPathEnum.UPLOAD_GROUP_FILE;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("file", file);
-        params.put("name", name);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.UPLOAD_GROUP_FILE;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("file", file);
+            put("name", name);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -619,12 +648,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, boolean duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("anonymous", anonymous);
-        params.put("duration", duration);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("anonymous", anonymous);
+            put("duration", duration);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -637,12 +667,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymousBan(long groupId, String flag, boolean duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("flag", flag);
-        params.put("duration", duration);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("flag", flag);
+            put("duration", duration);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -655,12 +686,13 @@ public class Bot {
      * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url, int threadCount, String headers) {
-        ActionPathEnum action = ActionPathEnum.DOWNLOAD_FILE;
-        JSONObject params = new JSONObject();
-        params.put("url", url);
-        params.put("thread_count", threadCount);
-        params.put("headers", headers);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.DOWNLOAD_FILE;
+        val params = new JSONObject() {{
+            put("url", url);
+            put("thread_count", threadCount);
+            put("headers", headers);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
         }) : null;
     }
@@ -672,10 +704,11 @@ public class Bot {
      * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url) {
-        ActionPathEnum action = ActionPathEnum.DOWNLOAD_FILE;
-        JSONObject params = new JSONObject();
-        params.put("url", url);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.DOWNLOAD_FILE;
+        val params = new JSONObject() {{
+            put("url", url);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
         }) : null;
 
@@ -690,11 +723,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
-        ActionPathEnum action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("messages", msg);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("messages", msg);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -705,10 +739,11 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_ROOT_FILES;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_GROUP_ROOT_FILES;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
         }) : null;
     }
@@ -721,11 +756,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_FILES_BY_FOLDER;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        params.put("folder_id", folderId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_GROUP_FILES_BY_FOLDER;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("folder_id", folderId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
         }) : null;
     }
@@ -738,8 +774,8 @@ public class Bot {
      * @return {@link ActionData}
      */
     @SuppressWarnings("rawtypes")
-    public ActionData customRequest(ActionPath action, JSONObject params) {
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+    public ActionData customRequest(ActionPath action, Map<String, Object> params) {
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionData.class) : null;
     }
 
@@ -750,10 +786,11 @@ public class Bot {
      * @return {@link ActionList} of {@link EssenceMsgResp}
      */
     public ActionList<EssenceMsgResp> getEssenceMsgList(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_ESSENCE_MSG_LIST;
-        JSONObject params = new JSONObject();
-        params.put("group_id", groupId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.GET_ESSENCE_MSG_LIST;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<EssenceMsgResp>>() {
         }) : null;
     }
@@ -765,10 +802,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setEssenceMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.SET_ESSENCE_MSG;
-        JSONObject params = new JSONObject();
-        params.put("message_id", msgId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.SET_ESSENCE_MSG;
+        val params = new JSONObject() {{
+            put("message_id", msgId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -779,10 +817,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteEssenceMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_ESSENCE_MSG;
-        JSONObject params = new JSONObject();
-        params.put("message_id", msgId);
-        JSONObject result = actionHandler.doActionRequest(session, action, params);
+        val action = ActionPathEnum.DELETE_ESSENCE_MSG;
+        val params = new JSONObject() {{
+            put("message_id", msgId);
+        }};
+        val result = actionHandler.doActionRequest(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
