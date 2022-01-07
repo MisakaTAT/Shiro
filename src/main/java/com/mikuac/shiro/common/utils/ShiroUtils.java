@@ -19,8 +19,18 @@ public class ShiroUtils {
     /**
      * 判断是否为全体at
      *
+     * @param msg 消息
+     * @return 是否为全体at
+     */
+    public static boolean isAtAll(String msg) {
+        return msg.contains("[CQ:at,qq=all]");
+    }
+
+    /**
+     * 判断是否为全体at
+     *
      * @param arrayMsg 消息链
-     * @return 值
+     * @return 是否为全体at
      */
     public static boolean isAtAll(List<MsgChainBean> arrayMsg) {
         return arrayMsg
