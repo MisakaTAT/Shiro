@@ -3,10 +3,10 @@ package com.mikuac.shiro.common.utils;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mikuac.shiro.bean.MsgChainBean;
-import com.mikuac.shiro.enums.ShiroUtilsEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2021/8/10.
@@ -19,25 +19,27 @@ public class ShiroUtils {
     /**
      * 判断是否为全体at
      *
-     * @param msg 消息
+     * @param arrayMsg 消息链
      * @return 值
      */
-    public static boolean isAtAll(String msg) {
-        return msg.contains(ShiroUtilsEnum.AT_ALL_CQ_CODE.getValue());
+    public static boolean isAtAll(List<MsgChainBean> arrayMsg) {
+        return arrayMsg
+                .stream()
+                .anyMatch(it -> "all".equals(it.getData().get("qq")));
     }
 
     /**
-     * 获取消息内所有at对象账号
+     * 获取消息内所有at对象账号（不包含全体 at）
      *
      * @param arrayMsg 消息链
      * @return at对象列表
      */
     public static List<Long> getAtList(List<MsgChainBean> arrayMsg) {
-        List<Long> atList = new ArrayList<>();
-        arrayMsg.stream().filter(it ->
-                "at".equals(it.getType()) && !"all".equals(it.getData().get("qq"))
-        ).forEach(it -> atList.add(Long.parseLong(it.getData().get("qq"))));
-        return atList;
+        return arrayMsg
+                .stream()
+                .filter(it -> "at".equals(it.getType()) && !"all".equals(it.getData().get("qq")))
+                .map(it -> Long.parseLong(it.getData().get("qq")))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -47,11 +49,11 @@ public class ShiroUtils {
      * @return 图片链接列表
      */
     public static List<String> getMsgImgUrlList(List<MsgChainBean> arrayMsg) {
-        List<String> imgUrlList = new ArrayList<>();
-        arrayMsg.stream().filter(it ->
-                "image".equals(it.getType())
-        ).forEach(it -> imgUrlList.add(it.getData().get("url")));
-        return imgUrlList;
+        return arrayMsg
+                .stream()
+                .filter(it -> "image".equals(it.getType()))
+                .map(it -> it.getData().get("url"))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -61,11 +63,11 @@ public class ShiroUtils {
      * @return 视频链接列表
      */
     public static List<String> getMsgVideoUrlList(List<MsgChainBean> arrayMsg) {
-        List<String> imgUrlList = new ArrayList<>();
-        arrayMsg.stream().filter(it ->
-                "video".equals(it.getType())
-        ).forEach(it -> imgUrlList.add(it.getData().get("url")));
-        return imgUrlList;
+        return arrayMsg
+                .stream()
+                .filter(it -> "video".equals(it.getType()))
+                .map(it -> it.getData().get("url"))
+                .collect(Collectors.toList());
     }
 
     /**
