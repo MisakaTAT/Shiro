@@ -1,7 +1,6 @@
 package com.mikuac.shiro.common.utils;
 
 import lombok.val;
-import lombok.var;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -53,7 +52,7 @@ public class ClassUtils {
         val listFiles = new File(filePath).listFiles();
         if (listFiles != null) {
             for (val listFile : listFiles) {
-                var listFilePath = listFile.getPath();
+                String listFilePath = listFile.getPath();
                 if (listFilePath.endsWith(".class")) {
                     listFilePath = listFilePath.substring(listFilePath.indexOf("\\classes") + 37, listFilePath.lastIndexOf("."));
                     listFilePath = listFilePath.replace("\\", ".");
@@ -78,7 +77,7 @@ public class ClassUtils {
             val entries = jarFile.entries();
             while (entries.hasMoreElements()) {
                 val jarEntry = entries.nextElement();
-                var entryName = jarEntry.getName();
+                String entryName = jarEntry.getName();
                 if (!entryName.startsWith(packageName)) {
                     continue;
                 }
