@@ -1,10 +1,10 @@
 package com.mikuac.shiro.core;
 
-import com.mikuac.shiro.annotation.*;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
+import lombok.val;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
@@ -13,8 +13,12 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+
+import static com.mikuac.shiro.common.utils.ClassUtils.getClassName;
 
 /**
  * Created on 2021/7/7.
@@ -24,6 +28,8 @@ import java.util.Map;
 @Component
 public class BotFactory {
 
+    private static List<String> annotations = new ArrayList<>();
+
     @Resource
     private ActionHandler actionHandler;
 
@@ -32,6 +38,19 @@ public class BotFactory {
 
     @Resource
     private ApplicationContext appContext;
+
+    /**
+     * 获取所有注解名
+     *
+     * @return 注解列表
+     */
+    private static List<String> getAnnotations() {
+        if (annotations.size() != 0) {
+            return annotations;
+        }
+        annotations = getClassName("com.mikuac.shiro.annotation");
+        return annotations;
+    }
 
     /**
      * 创建Bot对象
@@ -56,31 +75,17 @@ public class BotFactory {
             Class<?> beanClass = target.getClass();
             Arrays.stream(beanClass.getMethods()).forEach(method ->
                     {
-                        HandlerMethod handlerMethod = new HandlerMethod();
+                        val handlerMethod = new HandlerMethod();
                         handlerMethod.setMethod(method);
                         handlerMethod.setType(beanClass);
                         handlerMethod.setObject(bean);
-                        if (method.isAnnotationPresent(PrivateMessageHandler.class)) {
-                            annotationHandler.add(PrivateMessageHandler.class, handlerMethod);
-                        }
-                        if (method.isAnnotationPresent(GroupMessageHandler.class)) {
-                            annotationHandler.add(GroupMessageHandler.class, handlerMethod);
-                        }
-                        if (method.isAnnotationPresent(GroupAdminHandler.class)) {
-                            annotationHandler.add(GroupAdminHandler.class, handlerMethod);
-                        }
-                        if (method.isAnnotationPresent(MessageHandler.class)) {
-                            annotationHandler.add(MessageHandler.class, handlerMethod);
-                        }
-                        if (method.isAnnotationPresent(GroupIncreaseHandler.class)) {
-                            annotationHandler.add(GroupIncreaseHandler.class, handlerMethod);
-                        }
-                        if (method.isAnnotationPresent(GroupDecreaseHandler.class)) {
-                            annotationHandler.add(GroupDecreaseHandler.class, handlerMethod);
-                        }
-                        if (method.isAnnotationPresent(FriendAddHandler.class)) {
-                            annotationHandler.add(FriendAddHandler.class, handlerMethod);
-                        }
+                        Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
+                            val className = annotation.annotationType().getSimpleName();
+                            val annotations = getAnnotations();
+                            if (annotations.contains(className)) {
+                                annotationHandler.add(annotation.annotationType(), handlerMethod);
+                            }
+                        });
                     }
             );
         }
