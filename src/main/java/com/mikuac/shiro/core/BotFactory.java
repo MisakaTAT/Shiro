@@ -2,6 +2,7 @@ package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
+import com.mikuac.shiro.common.utils.ScanUtils;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.PluginProperties;
 import lombok.val;
@@ -13,12 +14,10 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashSet;
 import java.util.Map;
-
-import static com.mikuac.shiro.common.utils.ClassUtils.getClassName;
+import java.util.Set;
 
 /**
  * Created on 2021/7/7.
@@ -28,7 +27,7 @@ import static com.mikuac.shiro.common.utils.ClassUtils.getClassName;
 @Component
 public class BotFactory {
 
-    private static List<String> annotations = new ArrayList<>();
+    private static Set<Class<?>> annotations = new LinkedHashSet<>();
 
     @Resource
     private ActionHandler actionHandler;
@@ -40,15 +39,15 @@ public class BotFactory {
     private ApplicationContext appContext;
 
     /**
-     * 获取所有注解名
+     * 获取所有注解类
      *
-     * @return 注解列表
+     * @return 注解集合
      */
-    private static List<String> getAnnotations() {
+    private static Set<Class<?>> getAnnotations() {
         if (annotations.size() != 0) {
             return annotations;
         }
-        annotations = getClassName("com.mikuac.shiro.annotation");
+        annotations = new ScanUtils().scanAnnotation("com.mikuac.shiro.annotation");
         return annotations;
     }
 
@@ -80,9 +79,9 @@ public class BotFactory {
                         handlerMethod.setType(beanClass);
                         handlerMethod.setObject(bean);
                         Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
-                            val className = annotation.annotationType().getSimpleName();
                             val annotations = getAnnotations();
-                            if (annotations.contains(className)) {
+                            val annotationType = annotation.annotationType();
+                            if (annotations.contains(annotationType)) {
                                 annotationHandler.add(annotation.annotationType(), handlerMethod);
                             }
                         });
