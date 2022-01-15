@@ -1,5 +1,6 @@
 package com.mikuac.shiro.core;
 
+import com.mikuac.shiro.annotation.Shiro;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
@@ -14,10 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created on 2021/7/7.
@@ -36,7 +34,7 @@ public class BotFactory {
     private PluginProperties pluginProperties;
 
     @Resource
-    private ApplicationContext appContext;
+    private ApplicationContext applicationContext;
 
     /**
      * 获取所有注解类
@@ -59,14 +57,16 @@ public class BotFactory {
      * @return Bot对象
      */
     public Bot createBot(long selfId, WebSocketSession session) {
-        // 获取 Spring 容器中指定类型的所有 JavaBean 对象
-        Map<String, BotPlugin> beansOfType = appContext.getBeansOfType(BotPlugin.class);
+        // 获取 Spring 容器中所有指定类型的对象
+        Map<String, Object> beans = new HashMap<>(16);
+        beans.putAll(applicationContext.getBeansOfType(BotPlugin.class));
+        beans.putAll(applicationContext.getBeansWithAnnotation(Shiro.class));
         // 一键多值 注解为 Key 存放所有包含某个注解的方法
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
-        for (Object bean : beansOfType.values()) {
+        for (Object object : beans.values()) {
             Object target;
             try {
-                target = AopTargetUtils.getTarget(bean);
+                target = AopTargetUtils.getTarget(object);
             } catch (Exception e) {
                 e.printStackTrace();
                 continue;
@@ -77,7 +77,7 @@ public class BotFactory {
                         val handlerMethod = new HandlerMethod();
                         handlerMethod.setMethod(method);
                         handlerMethod.setType(beanClass);
-                        handlerMethod.setObject(bean);
+                        handlerMethod.setObject(object);
                         Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
                             val annotations = getAnnotations();
                             val annotationType = annotation.annotationType();
