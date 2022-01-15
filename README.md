@@ -15,7 +15,7 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
     <a href="https://github.com/MisakaTAT/Shiro/issues"><img src="https://img.shields.io/github/issues/MisakaTAT/Shiro?style=flat-square" alt="issues" /></a>
     <a href="https://github.com/MisakaTAT/Shiro/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MisakaTAT/Shiro?style=flat-square" alt="license"></a>
     <img src="https://img.shields.io/badge/JDK-1.8+-brightgreen.svg?style=flat-square" alt="jdk-version">
-    <a href="https://qm.qq.com/cgi-bin/qm/qr?k=Fl3-G9irYp84ng7LAFlTvqrOGIFHdufR&jump_from=webapi"><img src="https://img.shields.io/badge/QQ群-204219849-brightgreen.svg?style=flat-square" alt="qq-group"></a>
+    <a href="https://qm.qq.com/cgi-bin/qm/qr?k=otLd5ZZwL_AZRjUjuVrdJsT52AWFRqx1&jump_from=webapi"><img src="https://img.shields.io/badge/QQ群-738431739-brightgreen.svg?style=flat-square" alt="qq-group"></a>
     <a href="https://github.com/howmanybots/onebot"><img src="https://img.shields.io/badge/OneBot-v11-blue?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAIVBMVEUAAAAAAAADAwMHBwceHh4UFBQNDQ0ZGRkoKCgvLy8iIiLWSdWYAAAAAXRSTlMAQObYZgAAAQVJREFUSMftlM0RgjAQhV+0ATYK6i1Xb+iMd0qgBEqgBEuwBOxU2QDKsjvojQPvkJ/ZL5sXkgWrFirK4MibYUdE3OR2nEpuKz1/q8CdNxNQgthZCXYVLjyoDQftaKuniHHWRnPh2GCUetR2/9HsMAXyUT4/3UHwtQT2AggSCGKeSAsFnxBIOuAggdh3AKTL7pDuCyABcMb0aQP7aM4AnAbc/wHwA5D2wDHTTe56gIIOUA/4YYV2e1sg713PXdZJAuncdZMAGkAukU9OAn40O849+0ornPwT93rphWF0mgAbauUrEOthlX8Zu7P5A6kZyKCJy75hhw1Mgr9RAUvX7A3csGqZegEdniCx30c3agAAAABJRU5ErkJggg=="></a>
 </p>
 
