@@ -31,11 +31,9 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 
 # QuickStart
 
-请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro
-) 查看最新版本，并替换 version 内的 latest version
+请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro) 查看最新版本，并替换 version 内的 latest version
 
 ```xml
-
 <dependency>
   <groupId>com.mikuac</groupId>
   <artifactId>shiro</artifactId>
@@ -43,47 +41,21 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 </dependency>
 ```
 
-基础配置文件，或详见 [高级自定义配置](https://misakatat.github.io/shiro-docs/quickstart/#%E9%AB%98%E7%BA%A7%E8%87%AA%E5%AE%9A%E4%B9%89%E9%85%8D%E7%BD%AE)
+### 示例插件I：注解调用
+> 编写 `application.yml` 配置文件 [高级自定义配置](https://misakatat.github.io/shiro-docs/advanced/#高级自定义配置)
 
 ```yaml
-# 修改 application.yml
 server:
-  port: 5555
-
+  port: 5000
 shiro:
-  ws-config:
-    # 反向 Webscoket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
-    ws-url: "/ws/shiro"
-    # 访问密钥，强烈推荐在公网的服务器设置
-    access-token: ""
-  # 插件列表 (顺序执行，如果前一个插件返回了MESSAGE_BLOCK，将不会执行后续插件)
-  # 注解方式无需在此定义插件
-  plugin-list:
-    - com.mikuac.bot.plugins.ExamplePlugin
-```
-支持 String 消息转换为 Array 消息 ( v1.1.7 及以上版本 )
-```java
-@Component
-public class ExamplePlugin extends BotPlugin {
-    
-    @Override
-    public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
-        event.getArrayMsg().stream().filter(it ->
-                "image".equals(it.getType())
-        ).forEach(it ->
-                System.out.println(it.getData().get("url"))
-        );
-        return MESSAGE_IGNORE;
-    }
-    
-}
+  # 反向 Websocket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
+  # ws-url: "/ws/shiro"
 ```
 
-示例插件I：注解调用
-
 ```java
+@Shiro
 @Component
-public class DemoPlugin extends BotPlugin {
+public class DemoPlugin {
 
     // 符合 cmd 正则表达式的消息会被响应
     @PrivateMessageHandler(cmd = "hi")
@@ -94,8 +66,8 @@ public class DemoPlugin extends BotPlugin {
         bot.sendPrivateMsg(event.getUserId(), msgUtils.build(), false);
     }
 
-    // at 如果参数设定为 AtEnum.NEED 则只有 at 了机器人的消息会被响应，若参数为 NOT_NEED，消息内如果 at 机器人则会忽略此消息
-    @GroupMessageHandler(cmd = "hi", at = AtEnum.OFF)
+    // 如果 at 参数设定为 AtEnum.NEED 则只有 at 了机器人的消息会被响应
+    @GroupMessageHandler(at = AtEnum.NEED)
     public void fun2(@NotNull GroupMessageEvent event) {
         // 以注解方式调用可以根据自己的需要来为方法设定参数
         // 例如群组消息可以传递 GroupMessageEvent event, Bot bot, Matcher matcher 多余的参数会被设定为 null
@@ -111,7 +83,20 @@ public class DemoPlugin extends BotPlugin {
 }
 ```
 
-示例插件II：重写父类方法（需要在 application.yml 文件 plugin-list 定义插件）
+### 示例插件II：重写父类方法
+> 编写 `application.yml` 配置文件 [高级自定义配置](https://misakatat.github.io/shiro-docs/advanced/#高级自定义配置)
+
+```yaml
+server:
+  port: 5000
+shiro:
+  # 反向 Websocket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
+  # ws-url: "/ws/shiro"
+  # 注解方式无需在此定义插件
+  # 插件列表（顺序执行 如果前一个插件返回了 MESSAGE_BLOCK 将不会执行后续插件）
+  plugin-list:
+    - com.mikuac.example.plugins.ExamplePlugin
+```
 
 ```java
 // 继承BotPlugin开始编写插件
