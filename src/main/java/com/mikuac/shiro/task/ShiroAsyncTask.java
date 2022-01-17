@@ -22,9 +22,9 @@ public class ShiroAsyncTask {
     /**
      * 事件上报处理函数
      *
-     * @param eventHandler eventHandler
-     * @param xSelfId      机器人QQ
-     * @param result       上报的Json数据
+     * @param eventHandler {@link EventHandler}
+     * @param xSelfId      机器人 QQ
+     * @param result       上报的 Json 数据
      */
     @Async("shiroTaskExecutor")
     public void execHandlerMsg(EventHandler eventHandler, long xSelfId, JSONObject result) {

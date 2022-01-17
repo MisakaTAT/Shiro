@@ -9,7 +9,7 @@ import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.stereotype.Component;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 import javax.annotation.Resource;
@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  *
  * @author Zero
  */
-@Component
+@Configuration
 public class Shiro {
 
     @Resource
@@ -41,9 +41,7 @@ public class Shiro {
     private BotContainer botContainer;
 
     /**
-     * 创建ShiroWebSocketHandler
-     *
-     * @return ShiroWebSocketHandler
+     * @return {@link WebSocketHandler}
      */
     @Bean
     @ConditionalOnMissingBean
@@ -52,9 +50,7 @@ public class Shiro {
     }
 
     /**
-     * 设置ServletServerContainerFactoryBean
-     *
-     * @return ServletServerContainerFactoryBean
+     * @return {@link ServletServerContainerFactoryBean}
      */
     @Bean
     @ConditionalOnMissingBean
