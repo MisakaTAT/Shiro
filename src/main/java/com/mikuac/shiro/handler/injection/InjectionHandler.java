@@ -41,7 +41,7 @@ public class InjectionHandler {
      * @param event {@link FriendAddNoticeEvent}
      */
     public void invokeFriendAdd(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
-        setArgs(bot.getAnnotationHandler().get(FriendAddHandler.class), bot, event);
+        setArgs(bot.getAnnotationHandler().get(FriendAddNoticeHandler.class), bot, event);
     }
 
     /**
