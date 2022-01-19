@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.mikuac.shiro.bean.MsgChainBean;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -14,7 +15,12 @@ import java.util.stream.Collectors;
  * @author Zero
  */
 @Slf4j
+@SuppressWarnings("unused")
 public class ShiroUtils {
+
+    private final static String CQ_CODE_SPLIT = "(?<=\\[CQ:[^]]{1,99999}])|(?=\\[CQ:[^]]{1,99999}])";
+
+    private final static String CQ_CODE_REGEX = "\\[CQ:([^,\\[\\]]+)((?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
 
     /**
      * 判断是否为全体at
@@ -33,8 +39,7 @@ public class ShiroUtils {
      * @return 是否为全体at
      */
     public static boolean isAtAll(List<MsgChainBean> arrayMsg) {
-        return arrayMsg
-                .stream()
+        return arrayMsg.stream()
                 .anyMatch(it -> "all".equals(it.getData().get("qq")));
     }
 
@@ -45,8 +50,7 @@ public class ShiroUtils {
      * @return at对象列表
      */
     public static List<Long> getAtList(List<MsgChainBean> arrayMsg) {
-        return arrayMsg
-                .stream()
+        return arrayMsg.stream()
                 .filter(it -> "at".equals(it.getType()) && !"all".equals(it.getData().get("qq")))
                 .map(it -> Long.parseLong(it.getData().get("qq")))
                 .collect(Collectors.toList());
@@ -59,8 +63,7 @@ public class ShiroUtils {
      * @return 图片链接列表
      */
     public static List<String> getMsgImgUrlList(List<MsgChainBean> arrayMsg) {
-        return arrayMsg
-                .stream()
+        return arrayMsg.stream()
                 .filter(it -> "image".equals(it.getType()))
                 .map(it -> it.getData().get("url"))
                 .collect(Collectors.toList());
@@ -73,8 +76,7 @@ public class ShiroUtils {
      * @return 视频链接列表
      */
     public static List<String> getMsgVideoUrlList(List<MsgChainBean> arrayMsg) {
-        return arrayMsg
-                .stream()
+        return arrayMsg.stream()
                 .filter(it -> "video".equals(it.getType()))
                 .map(it -> it.getData().get("url"))
                 .collect(Collectors.toList());
@@ -141,44 +143,31 @@ public class ShiroUtils {
     /**
      * string 消息上报转消息链
      * 建议传入 event.getMessage 而非 event.getRawMessage
-     * 例如 gocqhttp rawMessage 不包含图片 url
+     * 例如 go-cq-http rawMessage 不包含图片 url
      *
      * @param msg 需要修改客户端消息上报类型为 string
      * @return 消息链
      */
     public static List<MsgChainBean> stringToMsgChain(String msg) {
-        JSONArray array = new JSONArray();
+        val array = new JSONArray();
         try {
-            // Java 1.8 零宽断言不支持无限匹配 , 使用 {1,99999} 代替
-            String cqCodeRegex = "\\[CQ:[^]]{1,99999}]";
-            String splitRegex = "(?<=" + cqCodeRegex + ")|(?=" + cqCodeRegex + ")";
-            String cqCodeCheckRegex = "\\[CQ:(?:[^,\\[\\]]+)(?:(?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
-            for (String s1 : msg.split(splitRegex)) {
-                if (s1.isEmpty()) {
-                    continue;
-                }
-                if (s1.matches(cqCodeCheckRegex)) {
-                    s1 = s1.substring(1, s1.length() - 1);
-                }
-                JSONObject object = new JSONObject();
-                JSONObject params = new JSONObject();
-                if (!s1.startsWith("CQ:")) {
+            Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
+                val matcher = RegexUtils.regexMatcher(CQ_CODE_REGEX, s);
+                val object = new JSONObject();
+                val params = new JSONObject();
+                if (matcher == null) {
                     object.put("type", "text");
-                    params.put("text", s1);
+                    params.put("text", s);
                 } else {
-                    String[] s2 = s1.split(",");
-                    object.put("type", s2[0].substring(s2[0].indexOf(":") + 1));
-                    Arrays.stream(s2).filter(it ->
-                            !it.startsWith("CQ:")
-                    ).forEach(it -> {
-                        String key = it.substring(0, it.indexOf("="));
-                        String value = ShiroUtils.unescape(it.substring(it.indexOf("=") + 1));
-                        params.put(key, value);
+                    object.put("type", matcher.group(1));
+                    Arrays.stream(matcher.group(2).split(",")).filter(args -> !args.isEmpty()).forEach(args -> {
+                        val arg = args.split("=");
+                        params.put(arg[0], arg[1]);
                     });
                 }
                 object.put("data", params);
                 array.add(object);
-            }
+            });
         } catch (Exception e) {
             log.error("String msg convert to array msg failed: {}", e.getMessage());
             return null;
@@ -197,18 +186,16 @@ public class ShiroUtils {
      */
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> msgList) {
         List<Map<String, Object>> nodeList = new ArrayList<>();
-        msgList.forEach(msg ->
-                {
-                    Map<String, Object> node = new HashMap<>(5);
-                    node.put("type", "node");
-                    Map<String, Object> data = new HashMap<>(5);
-                    data.put("name", name);
-                    data.put("uin", uin);
-                    data.put("content", msg);
-                    node.put("data", data);
-                    nodeList.add(node);
-                }
-        );
+        msgList.forEach(msg -> {
+            Map<String, Object> node = new HashMap<>(5);
+            node.put("type", "node");
+            Map<String, Object> data = new HashMap<>(5);
+            data.put("name", name);
+            data.put("uin", uin);
+            data.put("content", msg);
+            node.put("data", data);
+            nodeList.add(node);
+        });
         return nodeList;
     }
 
