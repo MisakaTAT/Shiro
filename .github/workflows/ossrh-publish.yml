@@ -1,7 +1,6 @@
-name: Auto deploy for nexus
+name: OSSRH
 
 on:
-  workflow_dispatch:
   release:
     types: [ published ]
 
@@ -9,15 +8,15 @@ jobs:
   release:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out Git repository
+      - name: Checkout git repository
         uses: actions/checkout@v2
 
-      - name: Install Java and Maven
+      - name: Setup Java 8
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
 
-      - name: Release Maven Package
+      - name: Publish to nexus repository
         uses: samuelmeuli/action-maven-publish@v1
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
