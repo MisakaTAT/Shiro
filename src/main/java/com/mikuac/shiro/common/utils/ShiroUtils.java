@@ -39,8 +39,7 @@ public class ShiroUtils {
      * @return 是否为全体at
      */
     public static boolean isAtAll(List<MsgChainBean> arrayMsg) {
-        return arrayMsg.stream()
-                .anyMatch(it -> "all".equals(it.getData().get("qq")));
+        return arrayMsg.stream().anyMatch(it -> "all".equals(it.getData().get("qq")));
     }
 
     /**
@@ -50,10 +49,7 @@ public class ShiroUtils {
      * @return at对象列表
      */
     public static List<Long> getAtList(List<MsgChainBean> arrayMsg) {
-        return arrayMsg.stream()
-                .filter(it -> "at".equals(it.getType()) && !"all".equals(it.getData().get("qq")))
-                .map(it -> Long.parseLong(it.getData().get("qq")))
-                .collect(Collectors.toList());
+        return arrayMsg.stream().filter(it -> "at".equals(it.getType()) && !"all".equals(it.getData().get("qq"))).map(it -> Long.parseLong(it.getData().get("qq"))).collect(Collectors.toList());
     }
 
     /**
@@ -63,10 +59,7 @@ public class ShiroUtils {
      * @return 图片链接列表
      */
     public static List<String> getMsgImgUrlList(List<MsgChainBean> arrayMsg) {
-        return arrayMsg.stream()
-                .filter(it -> "image".equals(it.getType()))
-                .map(it -> it.getData().get("url"))
-                .collect(Collectors.toList());
+        return arrayMsg.stream().filter(it -> "image".equals(it.getType())).map(it -> it.getData().get("url")).collect(Collectors.toList());
     }
 
     /**
@@ -76,10 +69,7 @@ public class ShiroUtils {
      * @return 视频链接列表
      */
     public static List<String> getMsgVideoUrlList(List<MsgChainBean> arrayMsg) {
-        return arrayMsg.stream()
-                .filter(it -> "video".equals(it.getType()))
-                .map(it -> it.getData().get("url"))
-                .collect(Collectors.toList());
+        return arrayMsg.stream().filter(it -> "video".equals(it.getType())).map(it -> it.getData().get("url")).collect(Collectors.toList());
     }
 
     /**
@@ -111,10 +101,7 @@ public class ShiroUtils {
      * @return 解码处理后的字符串
      */
     public static String unescape(String string) {
-        return string.replace("&#44;", ",")
-                .replace("&#91;", "[")
-                .replace("&#93;", "]")
-                .replace("&amp;", "&");
+        return string.replace("&#44;", ",").replace("&#91;", "[").replace("&#93;", "]").replace("&amp;", "&");
     }
 
     /**
@@ -124,10 +111,7 @@ public class ShiroUtils {
      * @return 编码处理后的字符串
      */
     public static String escape(String string) {
-        return string.replace("&", "&amp;")
-                .replace(",", "&#44;")
-                .replace("[", "&#91;")
-                .replace("]", "&#93;");
+        return string.replace("&", "&amp;").replace(",", "&#44;").replace("[", "&#91;").replace("]", "&#93;");
     }
 
     /**
@@ -161,8 +145,9 @@ public class ShiroUtils {
                 } else {
                     object.put("type", matcher.group(1));
                     Arrays.stream(matcher.group(2).split(",")).filter(args -> !args.isEmpty()).forEach(args -> {
-                        val arg = args.split("=");
-                        params.put(arg[0], arg[1]);
+                        val k = args.substring(0, args.indexOf("="));
+                        val v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
+                        params.put(k, v);
                     });
                 }
                 object.put("data", params);
