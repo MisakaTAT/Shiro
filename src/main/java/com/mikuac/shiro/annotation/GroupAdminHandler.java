@@ -1,6 +1,5 @@
 package com.mikuac.shiro.annotation;
 
-
 import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 
 import java.lang.annotation.*;

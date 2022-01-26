@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.List;
 
-
 /**
  * 事件处理器
  *
@@ -28,6 +27,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@SuppressWarnings("unused")
 public class EventHandler {
 
     BotPlugin defaultPlugin = new BotPlugin();

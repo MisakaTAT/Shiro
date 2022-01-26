@@ -5,6 +5,7 @@ package com.mikuac.shiro.common.utils;
  *
  * @author Zero
  */
+@SuppressWarnings("unused")
 public class MsgUtils {
 
     StringBuffer stringBuffer = new StringBuffer();

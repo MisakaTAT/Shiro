@@ -72,21 +72,19 @@ public class BotFactory {
                 continue;
             }
             Class<?> beanClass = target.getClass();
-            Arrays.stream(beanClass.getMethods()).forEach(method ->
-                    {
-                        val handlerMethod = new HandlerMethod();
-                        handlerMethod.setMethod(method);
-                        handlerMethod.setType(beanClass);
-                        handlerMethod.setObject(object);
-                        Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
-                            val annotations = getAnnotations();
-                            val annotationType = annotation.annotationType();
-                            if (annotations.contains(annotationType)) {
-                                annotationHandler.add(annotation.annotationType(), handlerMethod);
-                            }
-                        });
+            Arrays.stream(beanClass.getMethods()).forEach(method -> {
+                val handlerMethod = new HandlerMethod();
+                handlerMethod.setMethod(method);
+                handlerMethod.setType(beanClass);
+                handlerMethod.setObject(object);
+                Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
+                    val annotations = getAnnotations();
+                    val annotationType = annotation.annotationType();
+                    if (annotations.contains(annotationType)) {
+                        annotationHandler.add(annotation.annotationType(), handlerMethod);
                     }
-            );
+                });
+            });
         }
         return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(), annotationHandler);
     }
