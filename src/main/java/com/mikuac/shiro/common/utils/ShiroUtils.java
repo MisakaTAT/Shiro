@@ -6,6 +6,9 @@ import com.mikuac.shiro.bean.MsgChainBean;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -81,6 +84,40 @@ public class ShiroUtils {
      */
     public static String getGroupAvatar(long groupId, int size) {
         return String.format("https://p.qlogo.cn/gh/%s/%s/%s", groupId, groupId, size);
+    }
+
+    /**
+     * 获取用户昵称
+     *
+     * @param userId QQ号
+     * @return 用户昵称
+     */
+    public static String getNickname(long userId) {
+        val result = new StringBuilder();
+        BufferedReader bufferedReader = null;
+        try {
+            val url = new URL(String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId));
+            val connection = url.openConnection();
+            connection.connect();
+            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "GBK"));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                result.append(line);
+            }
+            String nickname = result.toString().split(",")[6];
+            return nickname.substring(1, nickname.length() - 1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 
     /**
