@@ -93,4 +93,11 @@ public class Tests {
         TestCase.assertEquals(2, videoUrlList.size());
     }
 
+    @Test
+    public void getNicknameTest() {
+        val nickname = ShiroUtils.getNickname(1140667337L);
+        TestCase.assertNotNull(nickname);
+        TestCase.assertEquals("Zero", nickname);
+    }
+
 }
