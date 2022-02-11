@@ -9,10 +9,7 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
-import com.mikuac.shiro.dto.event.notice.FriendAddNoticeEvent;
-import com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent;
-import com.mikuac.shiro.dto.event.notice.GroupDecreaseNoticeEvent;
-import com.mikuac.shiro.dto.event.notice.GroupIncreaseNoticeEvent;
+import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.AtEnum;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -27,12 +24,31 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
 /**
- * InjectionHandler
- *
  * @author meme
+ * @author zero
  */
 @Component
 public class InjectionHandler {
+
+    /**
+     * 群消息撤回事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupMsgDeleteNoticeEvent}
+     */
+    public void invokeGroupRecall(@NotNull Bot bot, @NotNull GroupMsgDeleteNoticeEvent event) {
+        setArgs(bot.getAnnotationHandler().get(GroupMsgDeleteNoticeHandler.class), bot, event);
+    }
+
+    /**
+     * 好友消息撤回事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link PrivateMsgDeleteNoticeEvent}
+     */
+    public void invokeFriendRecall(@NotNull Bot bot, @NotNull PrivateMsgDeleteNoticeEvent event) {
+        setArgs(bot.getAnnotationHandler().get(PrivateMsgDeleteNoticeHandler.class), bot, event);
+    }
 
     /**
      * 好友添加事件
@@ -223,15 +239,7 @@ public class InjectionHandler {
             for (HandlerMethod handlerMethod : handlerMethods) {
                 Map<Class<?>, Object> argsMap = new HashMap<>(16);
                 argsMap.put(Bot.class, bot);
-                if (event instanceof GroupIncreaseNoticeEvent) {
-                    argsMap.put(GroupIncreaseNoticeEvent.class, event);
-                }
-                if (event instanceof GroupDecreaseNoticeEvent) {
-                    argsMap.put(GroupDecreaseNoticeEvent.class, event);
-                }
-                if (event instanceof FriendAddNoticeEvent) {
-                    argsMap.put(FriendAddNoticeEvent.class, event);
-                }
+                argsMap.put(event.getClass(), event);
                 invokeMethod(handlerMethod, argsMap);
             }
         }

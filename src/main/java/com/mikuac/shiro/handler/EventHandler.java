@@ -182,6 +182,7 @@ public class EventHandler {
             }
             case "group_recall": {
                 GroupMsgDeleteNoticeEvent event = eventJson.toJavaObject(GroupMsgDeleteNoticeEvent.class);
+                injectionHandler.invokeGroupRecall(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMsgDeleteNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -191,6 +192,7 @@ public class EventHandler {
             }
             case "friend_recall": {
                 PrivateMsgDeleteNoticeEvent event = eventJson.toJavaObject(PrivateMsgDeleteNoticeEvent.class);
+                injectionHandler.invokeFriendRecall(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onPrivateMsgDeleteNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
