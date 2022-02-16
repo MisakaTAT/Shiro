@@ -15,7 +15,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import javax.annotation.Resource;
-import java.util.List;
+import java.io.IOException;
 
 /**
  * Created on 2021/7/16.
@@ -47,14 +47,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     /**
      * 构造函数
      *
-     * @param eventHandler   shiroEventHandler
-     * @param botFactory     botFactory
-     * @param actionHandler  shiroActionHandler
-     * @param shiroAsyncTask asyncTask
-     * @param botContainer   botContainer
+     * @param eventHandler   {@link EventHandler}
+     * @param botFactory     {@link BotFactory}
+     * @param actionHandler  {@link ActionHandler}
+     * @param shiroAsyncTask {@link ShiroAsyncTask}
+     * @param botContainer   {@link BotContainer}
      */
-    public WebSocketHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler,
-                            ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+    public WebSocketHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
@@ -65,16 +64,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
     /**
      * 获取连接的 QQ 号
      *
-     * @param session WebSocketSession
+     * @param session {@link WebSocketSession}
      * @return QQ 号
      */
     private long parseSelfId(WebSocketSession session) {
-        String key = "x-self-id";
-        List<String> list = session.getHandshakeHeaders().get(key);
-        if (list == null || list.size() <= 0) {
+        String botId = session.getHandshakeHeaders().getFirst("x-self-id");
+        if (botId == null || botId.isEmpty()) {
             return 0L;
         }
-        return Long.parseLong(list.get(0));
+        try {
+            return Long.parseLong(botId);
+        } catch (Exception e) {
+            return 0L;
+        }
     }
 
     /**
@@ -88,32 +90,33 @@ public class WebSocketHandler extends TextWebSocketHandler {
         if (token.isEmpty()) {
             return true;
         }
-        String key = "authorization";
-        List<String> list = session.getHandshakeHeaders().get(key);
-        if (list == null || list.size() <= 0) {
+        String clientToken = session.getHandshakeHeaders().getFirst("authorization");
+        if (clientToken == null || clientToken.isEmpty()) {
             return false;
         }
-        return list.get(0).contains(token);
+        return token.equals(clientToken);
     }
 
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) {
-        long xSelfId = parseSelfId(session);
-        if (xSelfId == 0L) {
-            log.error("Close session, get x-self-id failed.");
-            try {
+        try {
+            long xSelfId = parseSelfId(session);
+            if (xSelfId == 0L) {
+                log.error("Client account get failed");
                 session.close();
-            } catch (Exception e) {
-                log.error("Websocket session close exception");
+                return;
             }
-            return;
+            if (!checkToken(session)) {
+                log.error("Access token check failed");
+                session.close();
+                return;
+            }
+            botContainer.robots.put(xSelfId, botFactory.createBot(xSelfId, session));
+            log.info("Account {} connected", xSelfId);
+        } catch (IOException e) {
+            log.error("Websocket session close exception");
+            e.printStackTrace();
         }
-        if (!checkToken(session)) {
-            log.error("Access token check failed");
-            return;
-        }
-        botContainer.robots.put(xSelfId, botFactory.createBot(xSelfId, session));
-        log.info("Account {} connected", xSelfId);
     }
 
     @Override
@@ -136,7 +139,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
         bot.setSession(session);
         JSONObject result = JSON.parseObject(message.getPayload());
-        // 如果返回的Json中含有echo字段说明是api响应，否则当作事件上报处理
+        // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(API_RESULT_KEY)) {
             if (FAILED_STATUS.equals(result.get(RESULT_STATUS_KEY))) {
                 log.error("Message send failed: {}", result.get("wording"));

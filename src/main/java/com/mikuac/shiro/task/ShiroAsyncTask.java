@@ -28,10 +28,7 @@ public class ShiroAsyncTask {
      */
     @Async("shiroTaskExecutor")
     public void execHandlerMsg(EventHandler eventHandler, long xSelfId, JSONObject result) {
-        try {
-            eventHandler.handler(botContainer.robots.get(xSelfId), result);
-        } catch (Exception ignored) {
-        }
+        eventHandler.handler(botContainer.robots.get(xSelfId), result);
     }
 
 }
