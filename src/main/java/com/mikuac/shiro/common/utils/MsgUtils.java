@@ -161,7 +161,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils tts(String text) {
-        String ttsCode = String.format("[CQ:tts,text=%s]", text);
+        String ttsCode = String.format("[CQ:tts,text=%s]", ShiroUtils.escape(text));
         stringBuffer.append(ttsCode);
         return this;
     }
@@ -173,7 +173,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils xml(String data) {
-        String ttsCode = String.format("[CQ:xml,data=%s]", data);
+        String ttsCode = String.format("[CQ:xml,data=%s]", ShiroUtils.escape(data));
         stringBuffer.append(ttsCode);
         return this;
     }
@@ -186,7 +186,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils xml(String data, int resId) {
-        String ttsCode = String.format("[CQ:xml,data=%s,resid=%s]", data, resId);
+        String ttsCode = String.format("[CQ:xml,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
         stringBuffer.append(ttsCode);
         return this;
     }
@@ -244,7 +244,8 @@ public class MsgUtils {
      */
     public MsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source, String icon) {
         String ttsCode = String.format("[CQ:cardimage,file=%s,minwidth=%s,minheight=%s,maxwidth=%s,maxheight=%s,source=%s,icon=%s]",
-                ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, source, ShiroUtils.escape(icon));
+                ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, ShiroUtils.escape(source),
+                ShiroUtils.escape(icon));
         stringBuffer.append(ttsCode);
         return this;
     }
@@ -257,7 +258,7 @@ public class MsgUtils {
      * @return CQ码
      */
     public MsgUtils music(String type, String id) {
-        String musicCode = String.format("[CQ:music,type=%s,id=%s]", type, id);
+        String musicCode = String.format("[CQ:music,type=%s,id=%s]", ShiroUtils.escape(type), id);
         stringBuffer.append(musicCode);
         return this;
     }
@@ -275,7 +276,8 @@ public class MsgUtils {
     public MsgUtils customMusic(String url, String audio, String title, String content, String image) {
         String customMusicCode = String.format(
                 "[CQ:music,type=custom,url=%s,audio=%s,title=%s,content=%s,image=%s]",
-                ShiroUtils.escape(url), ShiroUtils.escape(audio), title, content, ShiroUtils.escape(image)
+                ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title), ShiroUtils.escape(content),
+                ShiroUtils.escape(image)
         );
         stringBuffer.append(customMusicCode);
         return this;
@@ -292,7 +294,7 @@ public class MsgUtils {
     public MsgUtils customMusic(String url, String audio, String title) {
         String customMusicCode = String.format(
                 "[CQ:music,type=custom,url=%s,audio=%s,title=%s]",
-                ShiroUtils.escape(url), ShiroUtils.escape(audio), title
+                ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title)
         );
         stringBuffer.append(customMusicCode);
         return this;
