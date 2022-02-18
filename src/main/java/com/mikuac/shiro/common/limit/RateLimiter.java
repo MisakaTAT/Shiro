@@ -53,7 +53,7 @@ public class RateLimiter implements ApplicationRunner {
     private int timeout;
 
     /**
-     * Set rate limiter config
+     * @param properties {@link RateLimiterProperties}
      */
     @Resource
     public void setProperties(RateLimiterProperties properties) {

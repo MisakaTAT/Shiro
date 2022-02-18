@@ -27,7 +27,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@SuppressWarnings("unused")
+@SuppressWarnings("all")
 public class EventHandler {
 
     BotPlugin defaultPlugin = new BotPlugin();
@@ -40,7 +40,7 @@ public class EventHandler {
     /**
      * 元事件处理器
      *
-     * @param bot       bot对象
+     * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
     public void handler(Bot bot, @NotNull JSONObject eventJson) {
@@ -69,7 +69,7 @@ public class EventHandler {
     /**
      * 消息事件处理器
      *
-     * @param bot       bot对象
+     * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
     private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
@@ -116,7 +116,7 @@ public class EventHandler {
     /**
      * 提醒事件处理器
      *
-     * @param bot       bot对象
+     * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
     private void handlerNotice(Bot bot, @NotNull JSONObject eventJson) {
@@ -229,7 +229,7 @@ public class EventHandler {
     /**
      * 通知事件处理器
      *
-     * @param bot       bot对象
+     * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
     private void handlerNotify(Bot bot, @NotNull JSONObject eventJson) {
@@ -278,7 +278,7 @@ public class EventHandler {
     /**
      * 请求事件处理器
      *
-     * @param bot       bot对象
+     * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
     private void handlerRequest(Bot bot, @NotNull JSONObject eventJson) {

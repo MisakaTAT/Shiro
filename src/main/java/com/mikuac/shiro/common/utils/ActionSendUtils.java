@@ -31,6 +31,8 @@ public class ActionSendUtils extends Thread {
     /**
      * @param req Request json data
      * @return Response json data
+     * @throws IOException          exception
+     * @throws InterruptedException exception
      */
     public JSONObject send(JSONObject req) throws IOException, InterruptedException {
         synchronized (session) {
