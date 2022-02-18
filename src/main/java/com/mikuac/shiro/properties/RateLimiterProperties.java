@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 @ConfigurationProperties(prefix = "shiro.limiter")
-public class ActionLimiterProperties {
+public class RateLimiterProperties {
 
     /**
      * 是否启用限速器（令牌桶算法）
@@ -20,14 +20,19 @@ public class ActionLimiterProperties {
     private boolean enable = false;
 
     /**
-     * 每秒生成的令牌数
+     * 补充速率（每秒补充的令牌数量）
      */
-    private int permitsPerSecond = 1;
+    private int rate = 1;
 
     /**
-     * acquire 如果令牌获取失败，将会阻塞当前线程直到获取成功（后面的 action 将会等待处理，不会被丢弃）
-     * tryAcquire 如果令牌获取失败，该 action 将被丢弃
+     * 令牌桶容量
      */
-    private String mode = "acquire";
+    private int capacity = 1;
+
+    /**
+     * 如果该值为 true 时，当令牌获取失败则会阻塞当前线程，后续任务将被添加到等待队列。
+     * 如果该值为 false 时，当令牌获取失败则会直接丢次本次请求。
+     */
+    private boolean awaitTask = true;
 
 }

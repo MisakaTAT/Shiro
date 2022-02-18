@@ -1,10 +1,10 @@
 package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson.JSONObject;
-import com.mikuac.shiro.common.limit.ActionRateLimiter;
+import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.ActionSendUtils;
 import com.mikuac.shiro.enums.ActionPath;
-import com.mikuac.shiro.properties.ActionLimiterProperties;
+import com.mikuac.shiro.properties.RateLimiterProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -38,13 +38,13 @@ public class ActionHandler {
      * 限速器配置
      */
     @Resource
-    private ActionLimiterProperties limiterProp;
+    private RateLimiterProperties rateLimiterProperties;
 
     /**
      * 限速器
      */
     @Resource
-    private ActionRateLimiter actionRateLimiter;
+    private RateLimiter rateLimiter;
 
     /**
      * 用于唯一标识一次请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
@@ -69,18 +69,20 @@ public class ActionHandler {
     /**
      * 构建请求
      *
-     * @param session websocket session
-     * @param action  请求url
+     * @param session {@link WebSocketSession}
+     * @param action  {@link ActionPath}
      * @param params  请求参数
      * @return 结果
      */
     public JSONObject doActionRequest(WebSocketSession session, ActionPath action, Map<String, Object> params) {
-        if (limiterProp.isEnable()) {
-            if (ActionRateLimiter.ACQUIRE.equals(limiterProp.getMode())) {
+        if (rateLimiterProperties.isEnable()) {
+            if (rateLimiterProperties.isAwaitTask()) {
                 // 阻塞当前线程直到获取令牌成功
-                actionRateLimiter.acquire();
+                if (!rateLimiter.acquire()) {
+                    return null;
+                }
             }
-            if (ActionRateLimiter.TRY_ACQUIRE.equals(limiterProp.getMode()) && !actionRateLimiter.tryAcquire()) {
+            if (!rateLimiterProperties.isAwaitTask() && !rateLimiter.tryAcquire()) {
                 return null;
             }
         }
@@ -88,14 +90,13 @@ public class ActionHandler {
             return null;
         }
         JSONObject reqJson = generateReqJson(action, params);
-        String echo = reqJson.getString("echo");
         ActionSendUtils actionSendUtils = new ActionSendUtils(session, webSocketProperties.getDoRequestTimeout());
-        apiCallbackMap.put(echo, actionSendUtils);
+        apiCallbackMap.put(reqJson.getString("echo"), actionSendUtils);
         JSONObject result;
         try {
             result = actionSendUtils.doRequest(reqJson);
         } catch (Exception e) {
-            log.error("Do action request failed: {}", e.getMessage());
+            log.error("Action request failed: {}", e.getMessage());
             result = new JSONObject();
             result.put("status", "failed");
             result.put("retcode", -1);
