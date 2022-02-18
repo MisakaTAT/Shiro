@@ -35,4 +35,9 @@ public class RateLimiterProperties {
      */
     private boolean awaitTask = true;
 
+    /**
+     * 等待超时
+     */
+    private int timeout = 10;
+
 }

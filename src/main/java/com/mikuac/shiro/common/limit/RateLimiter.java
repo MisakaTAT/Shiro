@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.Resource;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -18,33 +19,47 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author zero
  */
 @Component
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class RateLimiter implements ApplicationRunner {
 
     /**
      * 重入锁
      */
     private final Lock lock = new ReentrantLock();
+
     /**
      * 状态管理
      */
     private final Condition condition = lock.newCondition();
+
     /**
      * 补充速率（每秒补充的令牌数量）
      */
     private long rate;
+
     /**
      * 令牌桶容量
      */
     private long capacity;
+
     /**
      * 桶内剩余令牌数量
      */
     private long currentTokenQuantities;
 
+    /**
+     * 等待超时
+     */
+    private int timeout;
+
+    /**
+     * Set rate limiter config
+     */
     @Resource
     public void setProperties(RateLimiterProperties properties) {
         this.capacity = properties.getCapacity();
         this.rate = properties.getRate();
+        this.timeout = properties.getTimeout();
         currentTokenQuantities = capacity;
     }
 
@@ -104,7 +119,7 @@ public class RateLimiter implements ApplicationRunner {
         lock.lock();
         try {
             while (!getToken(permits)) {
-                condition.await();
+                condition.await(timeout, TimeUnit.SECONDS);
             }
             return true;
         } catch (Exception ignored) {

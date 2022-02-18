@@ -46,13 +46,11 @@ public class Bot {
     private MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler;
 
     /**
-     * 构造函数
-     *
-     * @param selfId            机器人QQ账号
-     * @param session           websocket session
-     * @param actionHandler     shiroActionHandler
-     * @param pluginList        插件列表
-     * @param annotationHandler 注解(key)下的所有方法
+     * @param selfId            Bot account
+     * @param session           {@link WebSocketSession}
+     * @param actionHandler     {@link ActionHandler}
+     * @param pluginList        Plugin list
+     * @param annotationHandler 注解 (key) 下的所有方法
      */
     public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList,
                MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler) {
@@ -99,7 +97,7 @@ public class Bot {
             put("message", msg);
             put("auto_escape", autoEscape);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
         }) : null;
     }
@@ -119,7 +117,7 @@ public class Bot {
             put("message", msg);
             put("auto_escape", autoEscape);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
         }) : null;
     }
@@ -135,7 +133,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("message_id", msgId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
         }) : null;
     }
@@ -151,7 +149,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("message_id", msgId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -170,7 +168,7 @@ public class Bot {
             put("user_id", userId);
             put("reject_add_request", rejectAddRequest);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -189,7 +187,7 @@ public class Bot {
             put("user_id", userId);
             put("duration", duration);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -206,7 +204,7 @@ public class Bot {
             put("group_id", groupId);
             put("enable", enable);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -225,7 +223,7 @@ public class Bot {
             put("user_id", userId);
             put("enable", enable);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -242,7 +240,7 @@ public class Bot {
             put("group_id", groupId);
             put("enable", enable);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -261,7 +259,7 @@ public class Bot {
             put("user_id", userId);
             put("card", card);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -278,7 +276,7 @@ public class Bot {
             put("group_id", groupId);
             put("group_name", groupName);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -295,7 +293,7 @@ public class Bot {
             put("group_id", groupId);
             put("is_dismiss", isDismiss);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -316,7 +314,7 @@ public class Bot {
             put("special_title", specialTitle);
             put("duration", duration);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -335,7 +333,7 @@ public class Bot {
             put("approve", approve);
             put("remark", remark);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -356,7 +354,7 @@ public class Bot {
             put("approve", approve);
             put("reason", reason);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -367,7 +365,7 @@ public class Bot {
      */
     public ActionData<LoginInfoResp> getLoginInfo() {
         val action = ActionPathEnum.GET_LOGIN_INFO;
-        val result = actionHandler.doActionRequest(session, action, null);
+        val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<LoginInfoResp>>() {
         }) : null;
     }
@@ -385,7 +383,7 @@ public class Bot {
             put("user_id", userId);
             put("no_cache", noCache);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<StrangerInfoResp>>() {
         }) : null;
     }
@@ -397,7 +395,7 @@ public class Bot {
      */
     public ActionList<FriendInfoResp> getFriendList() {
         val action = ActionPathEnum.GET_FRIEND_LIST;
-        val result = actionHandler.doActionRequest(session, action, null);
+        val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<FriendInfoResp>>() {
         }) : null;
     }
@@ -413,7 +411,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("friend_id", friendId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -430,7 +428,7 @@ public class Bot {
             put("group_id", groupId);
             put("no_cache", noCache);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupInfoResp>>() {
         }) : null;
     }
@@ -442,7 +440,7 @@ public class Bot {
      */
     public ActionList<GroupInfoResp> getGroupList() {
         val action = ActionPathEnum.GET_GROUP_LIST;
-        val result = actionHandler.doActionRequest(session, action, null);
+        val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupInfoResp>>() {
         }) : null;
     }
@@ -462,7 +460,7 @@ public class Bot {
             put("user_id", userId);
             put("no_cache", noCache);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupMemberInfoResp>>() {
         }) : null;
     }
@@ -478,7 +476,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("group_id", groupId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupMemberInfoResp>>() {
         }) : null;
     }
@@ -496,7 +494,7 @@ public class Bot {
             put("group_id", groupId);
             put("type", type);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupHonorInfoResp>>() {
         }) : null;
     }
@@ -508,7 +506,7 @@ public class Bot {
      */
     public ActionData<BooleanResp> canSendImage() {
         val action = ActionPathEnum.CAN_SEND_IMAGE;
-        val result = actionHandler.doActionRequest(session, action, null);
+        val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
         }) : null;
     }
@@ -520,7 +518,7 @@ public class Bot {
      */
     public ActionData<BooleanResp> canSendRecord() {
         val action = ActionPathEnum.CAN_SEND_RECORD;
-        val result = actionHandler.doActionRequest(session, action, null);
+        val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
         }) : null;
     }
@@ -541,7 +539,7 @@ public class Bot {
             put("file", file);
             put("cache", cache);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -557,7 +555,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("url", url);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
         }) : null;
     }
@@ -575,7 +573,7 @@ public class Bot {
             put("group_id", groupId);
             put("content", content);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -590,7 +588,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("group_id", groupId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
         }) : null;
     }
@@ -614,7 +612,7 @@ public class Bot {
             put("name", name);
             put("folder", folder);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -635,7 +633,7 @@ public class Bot {
             put("file", file);
             put("name", name);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -654,7 +652,7 @@ public class Bot {
             put("anonymous", anonymous);
             put("duration", duration);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -673,7 +671,7 @@ public class Bot {
             put("flag", flag);
             put("duration", duration);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -692,7 +690,7 @@ public class Bot {
             put("thread_count", threadCount);
             put("headers", headers);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
         }) : null;
     }
@@ -708,7 +706,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("url", url);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
         }) : null;
 
@@ -728,7 +726,7 @@ public class Bot {
             put("group_id", groupId);
             put("messages", msg);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -743,7 +741,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("group_id", groupId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
         }) : null;
     }
@@ -761,7 +759,7 @@ public class Bot {
             put("group_id", groupId);
             put("folder_id", folderId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
         }) : null;
     }
@@ -775,7 +773,7 @@ public class Bot {
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRequest(ActionPath action, Map<String, Object> params) {
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionData.class) : null;
     }
 
@@ -790,7 +788,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("group_id", groupId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<EssenceMsgResp>>() {
         }) : null;
     }
@@ -806,7 +804,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("message_id", msgId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 
@@ -821,7 +819,7 @@ public class Bot {
         val params = new JSONObject() {{
             put("message_id", msgId);
         }};
-        val result = actionHandler.doActionRequest(session, action, params);
+        val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(ActionRaw.class) : null;
     }
 

@@ -22,7 +22,7 @@ public class WebSocketProperties {
     /**
      * 超时回收，10秒
      */
-    private Long doRequestTimeout = 10 * 1000L;
+    private Long requestTimeout = 10 * 1000L;
 
     /**
      * ws地址

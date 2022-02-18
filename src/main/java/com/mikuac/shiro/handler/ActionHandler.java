@@ -24,24 +24,24 @@ import java.util.Map;
 public class ActionHandler {
 
     /**
-     * api回调
+     * api callback
      */
     private final Map<String, ActionSendUtils> apiCallbackMap = new HashMap<>();
 
     /**
-     * websocket配置
+     * websocket prop
      */
     @Resource
     private WebSocketProperties webSocketProperties;
 
     /**
-     * 限速器配置
+     * rate limiter prop
      */
     @Resource
     private RateLimiterProperties rateLimiterProperties;
 
     /**
-     * 限速器
+     * rate limiter
      */
     @Resource
     private RateLimiter rateLimiter;
@@ -52,29 +52,27 @@ public class ActionHandler {
     private int echo = 0;
 
     /**
-     * 处理action响应
+     * handle action resp json
      *
-     * @param respJson action返回的json
+     * @param respJson Response json data
      */
     public void onReceiveActionResp(JSONObject respJson) {
         String echo = respJson.get("echo").toString();
         ActionSendUtils actionSendUtils = apiCallbackMap.get(echo);
         if (actionSendUtils != null) {
             // 唤醒挂起的线程
-            actionSendUtils.onResponse(respJson);
+            actionSendUtils.onCallback(respJson);
             apiCallbackMap.remove(echo);
         }
     }
 
     /**
-     * 构建请求
-     *
      * @param session {@link WebSocketSession}
      * @param action  {@link ActionPath}
-     * @param params  请求参数
-     * @return 结果
+     * @param params  Request args
+     * @return Result
      */
-    public JSONObject doActionRequest(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+    public JSONObject action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
         if (rateLimiterProperties.isEnable()) {
             if (rateLimiterProperties.isAwaitTask()) {
                 // 阻塞当前线程直到获取令牌成功
@@ -90,11 +88,11 @@ public class ActionHandler {
             return null;
         }
         JSONObject reqJson = generateReqJson(action, params);
-        ActionSendUtils actionSendUtils = new ActionSendUtils(session, webSocketProperties.getDoRequestTimeout());
+        ActionSendUtils actionSendUtils = new ActionSendUtils(session, webSocketProperties.getRequestTimeout());
         apiCallbackMap.put(reqJson.getString("echo"), actionSendUtils);
         JSONObject result;
         try {
-            result = actionSendUtils.doRequest(reqJson);
+            result = actionSendUtils.send(reqJson);
         } catch (Exception e) {
             log.error("Action request failed: {}", e.getMessage());
             result = new JSONObject();
@@ -105,12 +103,12 @@ public class ActionHandler {
     }
 
     /**
-     * 构造请求Json
+     * Build request json
      * {"action":"send_private_msg","params":{"user_id":10001000,"message":"你好"},"echo":"123"}
      *
-     * @param action 请求路径
-     * @param params 请求参数
-     * @return json
+     * @param action {@link ActionPath}
+     * @param params Request args
+     * @return Request json data
      */
     private JSONObject generateReqJson(ActionPath action, Map<String, Object> params) {
         return new JSONObject() {{

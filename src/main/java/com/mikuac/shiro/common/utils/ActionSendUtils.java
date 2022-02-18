@@ -15,46 +15,38 @@ public class ActionSendUtils extends Thread {
 
     private final WebSocketSession session;
 
-    private final Long doRequestTimeout;
+    private final long requestTimeout;
 
-    private JSONObject respJson;
+    private JSONObject resp;
 
     /**
-     * 构造函数
-     *
-     * @param session          websocket session
-     * @param doRequestTimeout 请求超时时间
+     * @param session        {@link WebSocketSession}
+     * @param requestTimeout Request Timeout
      */
-    public ActionSendUtils(WebSocketSession session, Long doRequestTimeout) {
+    public ActionSendUtils(WebSocketSession session, Long requestTimeout) {
         this.session = session;
-        this.doRequestTimeout = doRequestTimeout;
+        this.requestTimeout = requestTimeout;
     }
 
     /**
-     * 发起请求
-     *
-     * @param apiJson 请求的Json参数
-     * @return respJson
-     * @throws IOException          IO异常
-     * @throws InterruptedException Interrupted Exception
+     * @param req Request json data
+     * @return Response json data
      */
-    public JSONObject doRequest(JSONObject apiJson) throws IOException, InterruptedException {
+    public JSONObject send(JSONObject req) throws IOException, InterruptedException {
         synchronized (session) {
-            session.sendMessage(new TextMessage(apiJson.toJSONString()));
+            session.sendMessage(new TextMessage(req.toJSONString()));
         }
         synchronized (this) {
-            this.wait(doRequestTimeout);
+            this.wait(requestTimeout);
         }
-        return respJson;
+        return resp;
     }
 
     /**
-     * 等待回调
-     *
-     * @param respJson 响应的Json数据
+     * @param resp Response json data
      */
-    public void onResponse(JSONObject respJson) {
-        this.respJson = respJson;
+    public void onCallback(JSONObject resp) {
+        this.resp = resp;
         synchronized (this) {
             this.notify();
         }
