@@ -1,5 +1,6 @@
 package com.mikuac.shiro;
 
+import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import junit.framework.TestCase;
@@ -9,25 +10,22 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.annotation.Resource;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
-public class Tests {
+public class UnitTests {
 
-    // @Resource
-    // private ActionRateLimiter actionRateLimiter;
-    //
-    // @Test
-    // public void rateLimiterTest() throws Exception {
-    //     val a = actionRateLimiter.acquire();
-    //     TestCase.assertEquals(a, 0.00);
-    //     val b = actionRateLimiter.acquire();
-    //     if (b <= 0) {
-    //         TestCase.fail("TokenBucket test failed.");
-    //     }
-    //     Thread.sleep(1000);
-    //     val c = actionRateLimiter.acquire();
-    //     TestCase.assertEquals(c, 0.00);
-    // }
+    @Resource
+    private RateLimiter rateLimiter;
+
+    @Test
+    public void rateLimiterTest() {
+        val a = rateLimiter.tryAcquire(4);
+        TestCase.assertTrue(a);
+        val b = rateLimiter.acquire(5);
+        TestCase.assertTrue(b);
+    }
 
     @Test
     public void stringToArrayMsgTest() {
@@ -40,10 +38,7 @@ public class Tests {
 
     @Test
     public void msgUtilsTest() {
-        val msgUtils = MsgUtils.builder()
-                .at(1122334455L)
-                .text("Hello")
-                .img("https://test.com/1.jpg");
+        val msgUtils = MsgUtils.builder().at(1122334455L).text("Hello").img("https://test.com/1.jpg");
         val buildMsg = "[CQ:at,qq=1122334455]Hello[CQ:image,file=https://test.com/1.jpg]";
         TestCase.assertEquals(buildMsg, msgUtils.build());
     }

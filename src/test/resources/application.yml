@@ -4,4 +4,6 @@ server:
 shiro:
   limiter:
     enable: true
-    permits-per-second: 1
+    rate: 1
+    capacity: 5
+    await-task: false
