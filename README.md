@@ -29,6 +29,12 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
   <a href="">参与贡献</a>
 </p>
 
+<div align="center">
+
+[![Repobeats analytics image](https://repobeats.axiom.co/api/embed/c0b4ba71b13fe79015de15fb9396651f97f3acf9.svg "Repobeats analytics image")](https://github.com/MisakaTAT/Shiro/pulse)
+
+</div>
+
 # QuickStart
 
 请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro) 查看最新版本，并替换 version 内的 latest version
