@@ -42,7 +42,7 @@ public class BotFactory {
      * @return 注解集合
      */
     private static Set<Class<?>> getAnnotations() {
-        if (annotations.size() != 0) {
+        if (annotations.isEmpty()) {
             return annotations;
         }
         annotations = new ScanUtils().scanAnnotation("com.mikuac.shiro.annotation");
@@ -86,7 +86,7 @@ public class BotFactory {
                 });
             });
         }
-        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(), annotationHandler);
+        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(), annotationHandler,pluginProperties.getInterceptor());
     }
 
 }

@@ -45,6 +45,10 @@ public class Bot {
     @Setter
     private MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler;
 
+    @Getter
+    @Setter
+    private Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor;
+
     /**
      * @param selfId            Bot account
      * @param session           {@link WebSocketSession}
@@ -53,12 +57,13 @@ public class Bot {
      * @param annotationHandler 注解 (key) 下的所有方法
      */
     public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList,
-               MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler) {
+               MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler,Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
         this.selfId = selfId;
         this.session = session;
         this.actionHandler = actionHandler;
         this.pluginList = pluginList;
         this.annotationHandler = annotationHandler;
+        this.botMessageEventInterceptor = botMessageEventInterceptor;
     }
 
     /**
