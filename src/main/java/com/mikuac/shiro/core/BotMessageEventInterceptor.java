@@ -11,6 +11,7 @@ public class BotMessageEventInterceptor {
     /**
      * 预执行
      *
+     * @throws Exception 任何异常
      * @param bot 收到信息事件的bot
      * @param event 信息事件 可能为{#{@link com.mikuac.shiro.dto.event.message.PrivateMessageEvent}}或{#{@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}}
      *
@@ -21,6 +22,7 @@ public class BotMessageEventInterceptor {
     }
     /**
      * 执行后
+     * @throws Exception 任何异常
      *
      * @param bot 收到信息事件的bot
      * @param event 信息事件 可能为{#{@link com.mikuac.shiro.dto.event.message.PrivateMessageEvent}}或{#{@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}}
