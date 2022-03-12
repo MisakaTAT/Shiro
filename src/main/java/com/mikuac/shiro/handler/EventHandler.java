@@ -359,11 +359,11 @@ public class EventHandler {
         }
     }
 
-    private BotMessageEventInterceptor getInterceptor(Class<? extends BotMessageEventInterceptor> pluginClass) {
+    private BotMessageEventInterceptor getInterceptor(Class<? extends BotMessageEventInterceptor> interceptorClass) {
         try {
-            return applicationContext.getBean(pluginClass);
+            return applicationContext.getBean(interceptorClass);
         } catch (Exception e) {
-            log.warn("Interceptor {} skip, Please check @Component annotation.", pluginClass.getSimpleName());
+            log.warn("Interceptor {} skip, Please check @Component annotation.", interceptorClass.getSimpleName());
             return defaultInterceptor;
         }
     }
