@@ -7,6 +7,7 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
@@ -76,9 +77,11 @@ public class EventHandler {
      */
     private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
+        MessageEvent messageEvent = null;
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
+                messageEvent = event;
                 try {
                     if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
                         return;
@@ -103,6 +106,7 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
+                messageEvent = event;
                 try {
                     if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
                         return;
@@ -127,6 +131,16 @@ public class EventHandler {
             }
             default:
         }
+
+        if (messageEvent != null) {
+            try {
+                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, messageEvent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     /**
