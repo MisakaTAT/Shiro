@@ -42,7 +42,7 @@ public class BotFactory {
      * @return 注解集合
      */
     private static Set<Class<?>> getAnnotations() {
-        if (annotations.isEmpty()) {
+        if (!annotations.isEmpty()) {
             return annotations;
         }
         annotations = new ScanUtils().scanAnnotation("com.mikuac.shiro.annotation");
