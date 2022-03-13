@@ -53,8 +53,8 @@ public class BotFactory {
      * 创建Bot对象
      *
      * @param selfId  机器人账号
-     * @param session websocket session
-     * @return Bot对象
+     * @param session {@link WebSocketSession}
+     * @return {@link Bot}
      */
     public Bot createBot(long selfId, WebSocketSession session) {
         // 获取 Spring 容器中所有指定类型的对象
@@ -86,7 +86,7 @@ public class BotFactory {
                 });
             });
         }
-        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(), annotationHandler,pluginProperties.getInterceptor());
+        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(), annotationHandler, pluginProperties.getInterceptor());
     }
 
 }

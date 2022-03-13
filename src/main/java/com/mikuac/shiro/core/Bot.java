@@ -50,14 +50,15 @@ public class Bot {
     private Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor;
 
     /**
-     * @param selfId            Bot account
-     * @param session           {@link WebSocketSession}
-     * @param actionHandler     {@link ActionHandler}
-     * @param pluginList        Plugin list
-     * @param annotationHandler 注解 (key) 下的所有方法
+     * @param selfId                     机器人账号
+     * @param session                    {@link WebSocketSession}
+     * @param actionHandler              {@link ActionHandler}
+     * @param pluginList                 插件列表
+     * @param annotationHandler          注解 (key) 下的所有方法
+     * @param botMessageEventInterceptor 消息拦截器
      */
     public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList,
-               MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler,Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
+               MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
         this.selfId = selfId;
         this.session = session;
         this.actionHandler = actionHandler;

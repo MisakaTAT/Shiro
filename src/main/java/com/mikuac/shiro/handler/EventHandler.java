@@ -15,6 +15,7 @@ import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -29,6 +30,7 @@ import java.util.List;
  */
 @Slf4j
 @Component
+@SuppressWarnings("unused")
 public class EventHandler {
 
     BotPlugin defaultPlugin = new BotPlugin();
@@ -70,6 +72,50 @@ public class EventHandler {
     }
 
     /**
+     * 设置拦截器
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link MessageEvent}
+     * @return boolean
+     */
+    private boolean setInterceptor(Bot bot, MessageEvent event) {
+        try {
+            if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (event != null) {
+            try {
+                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 推送消息并返回消息链
+     *
+     * @param bot       {@link Bot}
+     * @param eventJson {@link JSONObject}
+     * @param event     {@link MessageEvent}
+     * @return {@link MsgChainBean}
+     */
+    private List<MsgChainBean> setWholeMessageEvent(Bot bot, JSONObject eventJson, MessageEvent event) {
+        try {
+            val arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+            pushWholeMessageEvent(bot, eventJson, arrayMsg);
+            return arrayMsg;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 消息事件处理器
      *
      * @param bot       {@link Bot}
@@ -77,25 +123,13 @@ public class EventHandler {
      */
     private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
-        MessageEvent messageEvent = null;
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
-                messageEvent = event;
-                try {
-                    if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (setInterceptor(bot, event)) {
+                    return;
                 }
-                try {
-                    List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-                    event.setArrayMsg(arrayMsg);
-                    pushWholeMessageEvent(bot, eventJson, arrayMsg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                event.setArrayMsg(setWholeMessageEvent(bot, eventJson, event));
                 injectionHandler.invokePrivateMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -106,21 +140,10 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
-                messageEvent = event;
-                try {
-                    if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
-                        return;
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (setInterceptor(bot, event)) {
+                    return;
                 }
-                try {
-                    List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-                    event.setArrayMsg(arrayMsg);
-                    pushWholeMessageEvent(bot, eventJson, arrayMsg);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                event.setArrayMsg(setWholeMessageEvent(bot, eventJson, event));
                 injectionHandler.invokeGroupMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -131,15 +154,6 @@ public class EventHandler {
             }
             default:
         }
-
-        if (messageEvent != null) {
-            try {
-                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, messageEvent);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
 
     }
 

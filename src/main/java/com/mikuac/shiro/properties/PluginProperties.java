@@ -25,4 +25,5 @@ public class PluginProperties {
     List<Class<? extends BotPlugin>> pluginList = new ArrayList<>();
 
     Class<? extends BotMessageEventInterceptor> interceptor = BotMessageEventInterceptor.class;
+
 }
