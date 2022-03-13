@@ -1,5 +1,6 @@
 package com.mikuac.shiro.properties;
 
+import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -23,4 +24,5 @@ public class PluginProperties {
      */
     List<Class<? extends BotPlugin>> pluginList = new ArrayList<>();
 
+    Class<? extends BotMessageEventInterceptor> interceptor = BotMessageEventInterceptor.class;
 }

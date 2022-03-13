@@ -4,8 +4,10 @@ import com.alibaba.fastjson.JSONObject;
 import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
+import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
@@ -27,12 +29,13 @@ import java.util.List;
  */
 @Slf4j
 @Component
-@SuppressWarnings("all")
 public class EventHandler {
 
     BotPlugin defaultPlugin = new BotPlugin();
 
     InjectionHandler injectionHandler = new InjectionHandler();
+
+    BotMessageEventInterceptor defaultInterceptor = new BotMessageEventInterceptor();
 
     @Resource
     private ApplicationContext applicationContext;
@@ -74,9 +77,18 @@ public class EventHandler {
      */
     private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
+        MessageEvent messageEvent = null;
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
+                messageEvent = event;
+                try {
+                    if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 try {
                     List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
                     event.setArrayMsg(arrayMsg);
@@ -94,6 +106,14 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
+                messageEvent = event;
+                try {
+                    if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
                 try {
                     List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
                     event.setArrayMsg(arrayMsg);
@@ -111,6 +131,16 @@ public class EventHandler {
             }
             default:
         }
+
+        if (messageEvent != null) {
+            try {
+                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, messageEvent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
     }
 
     /**
@@ -326,6 +356,15 @@ public class EventHandler {
         } catch (Exception e) {
             log.warn("Plugin {} skip, Please check @Component annotation.", pluginClass.getSimpleName());
             return defaultPlugin;
+        }
+    }
+
+    private BotMessageEventInterceptor getInterceptor(Class<? extends BotMessageEventInterceptor> interceptorClass) {
+        try {
+            return applicationContext.getBean(interceptorClass);
+        } catch (Exception e) {
+            log.warn("Interceptor {} skip, Please check @Component annotation.", interceptorClass.getSimpleName());
+            return defaultInterceptor;
         }
     }
 
