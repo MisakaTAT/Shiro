@@ -42,6 +42,11 @@ public class MsgUtils {
         return this;
     }
 
+    public MsgUtils img(OneBotMedia img) {
+        stringBuffer.append("[CQ:image,").append(img.escape()).append("]");
+        return this;
+    }
+
     /**
      * 短视频
      *
