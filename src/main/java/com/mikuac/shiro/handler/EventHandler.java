@@ -86,13 +86,7 @@ public class EventHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (event != null) {
-            try {
-                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
         return false;
     }
 
@@ -123,9 +117,11 @@ public class EventHandler {
      */
     private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
+        MessageEvent messageEvent = null;
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
+                messageEvent = event;
                 if (setInterceptor(bot, event)) {
                     return;
                 }
@@ -140,6 +136,7 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
+                messageEvent = event;
                 if (setInterceptor(bot, event)) {
                     return;
                 }
@@ -153,6 +150,14 @@ public class EventHandler {
                 break;
             }
             default:
+        }
+
+        if (messageEvent != null) {
+            try {
+                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, messageEvent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
