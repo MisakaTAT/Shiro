@@ -1,16 +1,14 @@
 package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.dto.event.message.MessageEvent;
-import org.springframework.stereotype.Component;
 
 /**
  * MessageEvent Interceptor
  *
  * @author Zhongren233
  */
-@Component
 @SuppressWarnings("all")
-public class BotMessageEventInterceptor {
+public interface BotMessageEventInterceptor {
 
     /**
      * 预执行
@@ -22,9 +20,7 @@ public class BotMessageEventInterceptor {
      * @return true 为执行 false 为拦截 拦截后不再传递给 plugin
      * @throws Exception 任何异常
      */
-    public boolean preHandle(Bot bot, MessageEvent event) throws Exception {
-        return true;
-    }
+    boolean preHandle(Bot bot, MessageEvent event) throws Exception;
 
     /**
      * 执行后
@@ -35,7 +31,5 @@ public class BotMessageEventInterceptor {
      *              {@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}
      * @throws Exception 任何异常
      */
-    public void afterCompletion(Bot bot, MessageEvent event) throws Exception {
-    }
-
+    void afterCompletion(Bot bot, MessageEvent event) throws Exception;
 }

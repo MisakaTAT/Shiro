@@ -6,6 +6,7 @@ import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
+import com.mikuac.shiro.core.DefaultBotMessageEventInterceptor;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
@@ -37,7 +38,6 @@ public class EventHandler {
 
     InjectionHandler injectionHandler = new InjectionHandler();
 
-    BotMessageEventInterceptor defaultInterceptor = new BotMessageEventInterceptor();
 
     @Resource
     private ApplicationContext applicationContext;
@@ -378,7 +378,7 @@ public class EventHandler {
             return applicationContext.getBean(interceptorClass);
         } catch (Exception e) {
             log.warn("Interceptor {} skip, Please check @Component annotation.", interceptorClass.getSimpleName());
-            return defaultInterceptor;
+            return applicationContext.getBean(DefaultBotMessageEventInterceptor.class);
         }
     }
 
