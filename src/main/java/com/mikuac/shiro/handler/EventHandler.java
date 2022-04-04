@@ -6,6 +6,7 @@ import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
+import com.mikuac.shiro.core.DefaultBotMessageEventInterceptor;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
@@ -37,7 +38,6 @@ public class EventHandler {
 
     InjectionHandler injectionHandler = new InjectionHandler();
 
-    BotMessageEventInterceptor defaultInterceptor = new BotMessageEventInterceptor();
 
     @Resource
     private ApplicationContext applicationContext;
@@ -86,13 +86,7 @@ public class EventHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        if (event != null) {
-            try {
-                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
         return false;
     }
 
@@ -123,9 +117,11 @@ public class EventHandler {
      */
     private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
+        MessageEvent messageEvent = null;
         switch (messageType) {
             case "private": {
                 PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
+                messageEvent = event;
                 if (setInterceptor(bot, event)) {
                     return;
                 }
@@ -140,6 +136,7 @@ public class EventHandler {
             }
             case "group": {
                 GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
+                messageEvent = event;
                 if (setInterceptor(bot, event)) {
                     return;
                 }
@@ -153,6 +150,14 @@ public class EventHandler {
                 break;
             }
             default:
+        }
+
+        if (messageEvent != null) {
+            try {
+                getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, messageEvent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -378,7 +383,7 @@ public class EventHandler {
             return applicationContext.getBean(interceptorClass);
         } catch (Exception e) {
             log.warn("Interceptor {} skip, Please check @Component annotation.", interceptorClass.getSimpleName());
-            return defaultInterceptor;
+            return applicationContext.getBean(DefaultBotMessageEventInterceptor.class);
         }
     }
 
