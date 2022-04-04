@@ -32,4 +32,5 @@ public interface BotMessageEventInterceptor {
      * @throws Exception 任何异常
      */
     void afterCompletion(Bot bot, MessageEvent event) throws Exception;
+
 }
