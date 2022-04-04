@@ -38,7 +38,6 @@ public class EventHandler {
 
     InjectionHandler injectionHandler = new InjectionHandler();
 
-
     @Resource
     private ApplicationContext applicationContext;
 
@@ -80,14 +79,11 @@ public class EventHandler {
      */
     private boolean setInterceptor(Bot bot, MessageEvent event) {
         try {
-            if (!getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event)) {
-                return true;
-            }
+            return !getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
         } catch (Exception e) {
             e.printStackTrace();
+            return false;
         }
-
-        return false;
     }
 
     /**
