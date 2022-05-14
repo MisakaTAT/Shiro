@@ -129,12 +129,50 @@ public class Bot {
     }
 
     /**
+     * 发送频道消息
+     *
+     * @param guildId    	频道ID
+     * @param channelId    子频道ID
+     * @param msg 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return {@link ActionData} of {@link MsgId}
+     */
+    public ActionData<MsgId> sendGuildMsg(String guildId, String channelId, String msg, boolean autoEscape) {
+        val action = ActionPathEnum.SEND_GUILD_CHANNEL_MSG;
+        val params = new JSONObject() {{
+            put("guild_id", guildId);
+            put("channel_id", channelId);
+            put("message", msg);
+            put("auto_escape", autoEscape);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
+        }) : null;
+    }
+
+    /**
      * 获取消息
      *
      * @param msgId 消息 ID
      * @return {@link ActionData} of {@link GetMsgResp}
      */
     public ActionData<GetMsgResp> getMsg(int msgId) {
+        val action = ActionPathEnum.GET_MSG;
+        val params = new JSONObject() {{
+            put("message_id", msgId);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
+        }) : null;
+    }
+
+    /**
+     * 获取消息-频道
+     *
+     * @param msgId 消息 ID
+     * @return {@link ActionData} of {@link GetMsgResp}
+     */
+    public ActionData<GetMsgResp> getMsg(String msgId) {
         val action = ActionPathEnum.GET_MSG;
         val params = new JSONObject() {{
             put("message_id", msgId);

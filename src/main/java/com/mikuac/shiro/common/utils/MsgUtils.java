@@ -151,6 +151,18 @@ public class MsgUtils {
     }
 
     /**
+     * 回复-频道
+     *
+     * @param msgId 回复时所引用的消息 id, 必须为本频道消息.
+     * @return {@link String}
+     */
+    public MsgUtils reply(String msgId) {
+        String replyCode = String.format("[CQ:reply,id=\"%s\"]", msgId);
+        stringBuffer.append(replyCode);
+        return this;
+    }
+
+    /**
      * 礼物
      * 仅支持免费礼物, 发送群礼物消息 无法撤回, 返回的 message id 恒定为 0
      *

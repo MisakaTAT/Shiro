@@ -163,7 +163,39 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 获取精华消息列表
      */
-    GET_ESSENCE_MSG_LIST("get_essence_msg_list");
+    GET_ESSENCE_MSG_LIST("get_essence_msg_list"),
+    /**
+     * 获取频道系统内BOT的资料
+     */
+    GET_GUILD_SERVICE_PROFILE("get_guild_service_profile"),
+    /**
+     * 获取频道列表
+     */
+    GET_GUILD_LIST("get_guild_list"),
+    /**
+     * 通过访客获取频道元数据
+     */
+    GET_GUILD_META_BY_GUEST("get_guild_meta_by_guest"),
+    /**
+     * 获取子频道列表
+     */
+    GET_GUILD_CHANNEL_LIST("get_guild_channel_list"),
+    /**
+     * 获取频道成员列表
+     */
+    GET_GUILD_MEMBER_LIST("get_guild_member_list"),
+    /**
+     * 单独获取频道成员信息
+     */
+    GET_GUILD_MEMBER_PROFILE("get_guild_member_profile"),
+    /**
+     * 发送信息到子频道
+     */
+    SEND_GUILD_CHANNEL_MSG("send_guild_channel_msg"),
+    /**
+     * 获取话题频道帖子
+     */
+    GET_TOPIC_CHANNEL_FEEDS("get_topic_channel_feeds");
     /**
      * 请求路径
      */

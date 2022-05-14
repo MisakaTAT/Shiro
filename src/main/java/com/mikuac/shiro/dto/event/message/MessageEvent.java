@@ -25,7 +25,7 @@ public class MessageEvent extends Event {
     private String messageType;
 
     @JSONField(name = "message_id")
-    private int messageId;
+    private String messageId;
 
     @JSONField(name = "user_id")
     private long userId;

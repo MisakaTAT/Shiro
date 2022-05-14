@@ -7,6 +7,7 @@ import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
@@ -122,6 +123,32 @@ public class InjectionHandler {
             return true;
         }
         return at == AtEnum.NOT_NEED && atList.contains(selfId);
+    }
+
+    /**
+     * 频道消息
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
+     */
+    public void invokeGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
+        List<HandlerMethod> handlerMethods = handlers.get(GuildMessageHandler.class);
+        if (handlerMethods != null && handlerMethods.size() > 0) {
+            for (HandlerMethod handlerMethod : handlerMethods) {
+                GuildMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GuildMessageHandler.class);
+                if (checkAt(event.getArrayMsg(), event.getSelfId(), gmh.at())) {
+                    continue;
+                }
+                Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getMessage());
+                if (argsMap == null) {
+                    continue;
+                }
+                argsMap.put(Bot.class, bot);
+                argsMap.put(GuildMessageEvent.class, event);
+                invokeMethod(handlerMethod, argsMap);
+            }
+        }
     }
 
     /**
