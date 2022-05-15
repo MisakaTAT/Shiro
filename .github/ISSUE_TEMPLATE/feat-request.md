@@ -1,6 +1,9 @@
 ---
-name: 新功能提议 💡 about: 为该项目提出一个新的想法 title: ''
-labels: enhancement assignees: ''
+name: 新功能提议 💡
+about: 为该项目提出一个新的想法
+title: ''
+labels: enhancement
+assignees: ''
 ---
 
 **详细描述**
