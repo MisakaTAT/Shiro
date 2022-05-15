@@ -10,6 +10,6 @@ import lombok.Data;
 public class MsgId {
 
     @JSONField(name = "message_id")
-    private int messageId;
+    private String messageId;
 
 }

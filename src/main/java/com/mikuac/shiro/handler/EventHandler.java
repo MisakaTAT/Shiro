@@ -7,10 +7,7 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.core.DefaultBotMessageEventInterceptor;
-import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
-import com.mikuac.shiro.dto.event.message.MessageEvent;
-import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
-import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
+import com.mikuac.shiro.dto.event.message.*;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
@@ -140,6 +137,21 @@ public class EventHandler {
                 injectionHandler.invokeGroupMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+                break;
+            }
+            case "guild": {
+                GuildMessageEvent event = eventJson.toJavaObject(GuildMessageEvent.class);
+                messageEvent = event;
+                if (setInterceptor(bot, event)) {
+                    return;
+                }
+                event.setArrayMsg(setWholeMessageEvent(bot, eventJson, event));
+                injectionHandler.invokeGuildMessage(bot, event);
+                for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+                    if (getPlugin(pluginClass).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
                     }
                 }
