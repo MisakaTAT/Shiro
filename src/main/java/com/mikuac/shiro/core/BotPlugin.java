@@ -64,7 +64,7 @@ public class BotPlugin {
      * 收到频道消息
      *
      * @param bot   {@link Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
+     * @param event {@link GuildMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
     public int onGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {

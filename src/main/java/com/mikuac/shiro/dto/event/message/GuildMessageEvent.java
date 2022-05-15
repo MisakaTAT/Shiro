@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.message;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,6 +19,9 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class GuildMessageEvent extends MessageEvent {
 
+    @JSONField(name = "message_id")
+    private String messageId;
+
     @JSONField(name = "post_type")
     private String postType;
 
@@ -31,14 +34,20 @@ public class GuildMessageEvent extends MessageEvent {
     @JSONField(name = "channel_id")
     private String channelId;
 
+    @JSONField(name = "self_tiny_id")
+    private String selfTinyId;
+
+    @JSONField(name = "time")
+    private long time;
+
     @JSONField(name = "sender")
-    private PrivateMessageEvent.PrivateSender privateSender;
+    private Sender sender;
 
     /**
-     * sender信息
+     * Sender Info
      */
     @Data
-    public static class PrivateSender {
+    public static class Sender {
 
         @JSONField(name = "user_id")
         private long userId;
@@ -49,11 +58,6 @@ public class GuildMessageEvent extends MessageEvent {
         @JSONField(name = "nickname")
         private String nickname;
 
-        @JSONField(name = "sex")
-        private String sex;
-
-        @JSONField(name = "age")
-        private int age;
-
     }
+
 }

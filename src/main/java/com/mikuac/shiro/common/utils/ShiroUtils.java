@@ -1,5 +1,6 @@
 package com.mikuac.shiro.common.utils;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.bean.MsgChainBean;
@@ -184,7 +185,9 @@ public class ShiroUtils {
             log.error("String msg convert to array msg failed: {}", e.getMessage());
             return null;
         }
-        return array.toJavaList(MsgChainBean.class);
+        return JSON.parseArray(array.toJSONString(), MsgChainBean.class);
+        // TODO: wait fastjson2 fixed https://github.com/alibaba/fastjson2/issues/255
+        // return array.toJavaList(MsgChainBean.class);
     }
 
     /**

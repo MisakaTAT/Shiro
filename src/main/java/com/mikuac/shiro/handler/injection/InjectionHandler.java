@@ -129,7 +129,7 @@ public class InjectionHandler {
      * 频道消息
      *
      * @param bot   {@link Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
+     * @param event {@link GuildMessageEvent}
      */
     public void invokeGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -137,7 +137,7 @@ public class InjectionHandler {
         if (handlerMethods != null && handlerMethods.size() > 0) {
             for (HandlerMethod handlerMethod : handlerMethods) {
                 GuildMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GuildMessageHandler.class);
-                if (checkAt(event.getArrayMsg(), event.getSelfId(), gmh.at())) {
+                if (checkAt(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), gmh.at())) {
                     continue;
                 }
                 Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getMessage());

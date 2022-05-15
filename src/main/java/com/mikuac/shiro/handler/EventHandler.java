@@ -148,7 +148,8 @@ public class EventHandler {
                 if (setInterceptor(bot, event)) {
                     return;
                 }
-                event.setArrayMsg(setWholeMessageEvent(bot, eventJson, event));
+                val arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+                event.setArrayMsg(arrayMsg);
                 injectionHandler.invokeGuildMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {

@@ -7,9 +7,9 @@ import lombok.Data;
  * @author zero
  */
 @Data
-public class MsgId {
+public class GuildMsgId {
 
     @JSONField(name = "message_id")
-    private int messageId;
+    private String messageId;
 
 }

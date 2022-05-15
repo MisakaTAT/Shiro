@@ -19,6 +19,9 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class PrivateMessageEvent extends MessageEvent {
 
+    @JSONField(name = "message_id")
+    private int messageId;
+
     @JSONField(name = "sub_type")
     private String subType;
 

@@ -3,6 +3,7 @@ package com.mikuac.shiro.annotation;
 import com.mikuac.shiro.enums.AtEnum;
 
 import java.lang.annotation.*;
+
 /**
  * 频道消息事件注解
  *
@@ -12,6 +13,7 @@ import java.lang.annotation.*;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface GuildMessageHandler {
+
     /**
      * 触发命令，支持正则
      *
