@@ -1,7 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.bean.MsgChainBean;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -149,16 +149,6 @@ public class ShiroUtils {
      */
     public static String escape(String string) {
         return string.replace("&", "&amp;").replace(",", "&#44;").replace("[", "&#91;").replace("]", "&#93;");
-    }
-
-    /**
-     * array 消息上报转消息链
-     *
-     * @param msg 需要修改客户端消息上报类型为 array
-     * @return 消息链
-     */
-    public static List<MsgChainBean> arrayToMsgChain(String msg) {
-        return JSONObject.parseArray(msg, MsgChainBean.class);
     }
 
     /**

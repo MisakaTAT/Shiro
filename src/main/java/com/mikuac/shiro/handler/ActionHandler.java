@@ -1,6 +1,6 @@
 package com.mikuac.shiro.handler;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.ActionSendUtils;
 import com.mikuac.shiro.enums.ActionPath;

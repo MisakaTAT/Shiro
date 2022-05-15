@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.message;
 
-import com.alibaba.fastjson.annotation.JSONField;
+import com.alibaba.fastjson2.annotation.JSONField;
 import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.dto.event.Event;
 import lombok.AllArgsConstructor;

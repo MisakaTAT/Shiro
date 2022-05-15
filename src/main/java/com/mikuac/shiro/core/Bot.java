@@ -1,7 +1,7 @@
 package com.mikuac.shiro.core;
 
-import com.alibaba.fastjson.JSONObject;
-import com.alibaba.fastjson.TypeReference;
+import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author Zero
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "unchecked"})
 public class Bot {
 
     private final ActionHandler actionHandler;
@@ -105,7 +105,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -125,7 +125,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -141,7 +141,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -373,7 +373,7 @@ public class Bot {
         val action = ActionPathEnum.GET_LOGIN_INFO;
         val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<LoginInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -391,7 +391,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<StrangerInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -403,7 +403,7 @@ public class Bot {
         val action = ActionPathEnum.GET_FRIEND_LIST;
         val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<FriendInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -436,7 +436,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -448,7 +448,7 @@ public class Bot {
         val action = ActionPathEnum.GET_GROUP_LIST;
         val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -468,7 +468,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupMemberInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -484,7 +484,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupMemberInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -502,7 +502,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupHonorInfoResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -514,7 +514,7 @@ public class Bot {
         val action = ActionPathEnum.CAN_SEND_IMAGE;
         val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -526,7 +526,7 @@ public class Bot {
         val action = ActionPathEnum.CAN_SEND_RECORD;
         val result = actionHandler.action(session, action, null);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -563,7 +563,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -596,7 +596,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -698,7 +698,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -714,7 +714,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
-        }) : null;
+        }.getType()) : null;
 
     }
 
@@ -749,7 +749,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -767,7 +767,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**
@@ -796,7 +796,7 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionList<EssenceMsgResp>>() {
-        }) : null;
+        }.getType()) : null;
     }
 
     /**

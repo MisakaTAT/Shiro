@@ -1,6 +1,6 @@
 package com.mikuac.shiro.task;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.handler.EventHandler;
 import org.springframework.scheduling.annotation.Async;
