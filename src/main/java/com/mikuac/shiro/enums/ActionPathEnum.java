@@ -173,6 +173,10 @@ public enum ActionPathEnum implements ActionPath {
      */
     GET_GUILD_LIST("get_guild_list"),
     /**
+     * 获取频道消息
+     */
+    GET_GUILD_MSG("get_guild_msg"),
+    /**
      * 通过访客获取频道元数据
      */
     GET_GUILD_META_BY_GUEST("get_guild_meta_by_guest"),

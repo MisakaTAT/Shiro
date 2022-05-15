@@ -134,7 +134,7 @@ public class Bot {
      * @param guildId   频道ID
      * @param channelId 子频道ID
      * @param msg       要发送的内容
-     * @return {@link ActionData} of {@link MsgId}
+     * @return {@link ActionData} of {@link GuildMsgId}
      */
     public ActionData<GuildMsgId> sendGuildMsg(String guildId, String channelId, String msg) {
         val action = ActionPathEnum.SEND_GUILD_CHANNEL_MSG;
@@ -145,6 +145,36 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.toJavaObject(new TypeReference<ActionData<GuildMsgId>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取频道信息
+     *
+     * @param guildMsgId 频道ID
+     * @param noCache    是否使用缓存
+     * @return {@link ActionData} of {@link GetGuildMsgResp}
+     */
+    public ActionData<GetGuildMsgResp> getGuildMsg(String guildMsgId, boolean noCache) {
+        val action = ActionPathEnum.GET_GUILD_MSG;
+        val params = new JSONObject() {{
+            put("message_id", guildMsgId);
+            put("no_cache", noCache);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GetGuildMsgResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取频道系统内BOT的资料
+     *
+     * @return {@link ActionData} of {@link GuildServiceProfileResp}
+     */
+    public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
+        val action = ActionPathEnum.GET_GUILD_SERVICE_PROFILE;
+        val result = actionHandler.action(session, action, null);
+        return result != null ? result.toJavaObject(new TypeReference<ActionData<GuildServiceProfileResp>>() {
         }.getType()) : null;
     }
 
