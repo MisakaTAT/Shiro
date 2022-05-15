@@ -40,25 +40,28 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro) 查看最新版本，并替换 version 内的 latest version
 
 ```xml
+
 <dependency>
-  <groupId>com.mikuac</groupId>
-  <artifactId>shiro</artifactId>
-  <version>latest version</version>
+    <groupId>com.mikuac</groupId>
+    <artifactId>shiro</artifactId>
+    <version>latest version</version>
 </dependency>
 ```
 
 ### 示例插件I：注解调用
+
 > 编写 `application.yml` 配置文件 [高级自定义配置](https://misakatat.github.io/shiro-docs/advanced/#高级自定义配置)
 
 ```yaml
 server:
   port: 5000
 shiro:
-  # 反向 Websocket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
-  # ws-url: "/ws/shiro"
+# 反向 Websocket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
+# ws-url: "/ws/shiro"
 ```
 
 ```java
+
 @Shiro
 @Component
 public class DemoPlugin {
@@ -90,6 +93,7 @@ public class DemoPlugin {
 ```
 
 ### 示例插件II：重写父类方法
+
 > 编写 `application.yml` 配置文件 [高级自定义配置](https://misakatat.github.io/shiro-docs/advanced/#高级自定义配置)
 
 ```yaml
@@ -113,29 +117,29 @@ public class ExamplePlugin extends BotPlugin {
     public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         String msg = event.getMessage();
         if ("hi".equals(msg)) {
-          // 构建消息
-          String sendMsg = MsgUtils.builder()
-                  .face(66)
-                  .text("Hello, this is shiro demo.")
-                  .build();
-          // 发送私聊消息
-          bot.sendPrivateMsg(event.getUserId(), sendMsg, false);
+            // 构建消息
+            String sendMsg = MsgUtils.builder()
+                    .face(66)
+                    .text("Hello, this is shiro demo.")
+                    .build();
+            // 发送私聊消息
+            bot.sendPrivateMsg(event.getUserId(), sendMsg, false);
         }
         // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
         return MESSAGE_IGNORE;
     }
-  
+
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         String msg = event.getMessage();
         if ("hi".equals(msg)) {
-          // 构建消息
-          MsgUtils sendMsg = MsgUtils.builder()
-                  .at(event.getUserId())
-                  .face(66)
-                  .text("Hello, this is shiro demo.");
-          // 发送群消息
-          bot.sendGroupMsg(event.getGroupId(), sendMsg.build(), false);
+            // 构建消息
+            MsgUtils sendMsg = MsgUtils.builder()
+                    .at(event.getUserId())
+                    .face(66)
+                    .text("Hello, this is shiro demo.");
+            // 发送群消息
+            bot.sendGroupMsg(event.getGroupId(), sendMsg.build(), false);
         }
         // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
         return MESSAGE_IGNORE;
