@@ -276,6 +276,33 @@ public class EventHandler {
                 }
                 break;
             }
+            case "channel_created": {
+                ChannelCreatedNoticeEvent event = eventJson.toJavaObject(ChannelCreatedNoticeEvent.class);
+                for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+                    if (getPlugin(pluginClass).onChannelCreatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+                break;
+            }
+            case "channel_destroyed": {
+                ChannelDestroyedNoticeEvent event = eventJson.toJavaObject(ChannelDestroyedNoticeEvent.class);
+                for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+                    if (getPlugin(pluginClass).onChannelDestroyedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+                break;
+            }
+            case "channel_updated": {
+                ChannelUpdatedNoticeEvent event = eventJson.toJavaObject(ChannelUpdatedNoticeEvent.class);
+                for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+                    if (getPlugin(pluginClass).onChannelUpdatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+                break;
+            }
             case "notify": {
                 handlerNotify(bot, eventJson);
                 break;

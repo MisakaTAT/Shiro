@@ -247,4 +247,37 @@ public class BotPlugin {
         return MESSAGE_IGNORE;
     }
 
+    /**
+     * 子频道创建
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link ChannelCreatedNoticeEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onChannelCreatedNotice(@NotNull Bot bot, @NotNull ChannelCreatedNoticeEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
+    /**
+     * 子频道删除
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link ChannelDestroyedNoticeEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onChannelDestroyedNotice(@NotNull Bot bot, @NotNull ChannelDestroyedNoticeEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
+    /**
+     * 子频道信息更新
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link ChannelUpdatedNoticeEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onChannelUpdatedNotice(@NotNull Bot bot, @NotNull ChannelUpdatedNoticeEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
 }
