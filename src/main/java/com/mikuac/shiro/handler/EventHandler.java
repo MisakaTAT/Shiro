@@ -303,6 +303,15 @@ public class EventHandler {
                 }
                 break;
             }
+            case "message_reactions_updated": {
+                MessageReactionsUpdatedNoticeEvent event = eventJson.toJavaObject(MessageReactionsUpdatedNoticeEvent.class);
+                for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+                    if (getPlugin(pluginClass).onMessageReactionsUpdatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+                        break;
+                    }
+                }
+                break;
+            }
             case "notify": {
                 handlerNotify(bot, eventJson);
                 break;

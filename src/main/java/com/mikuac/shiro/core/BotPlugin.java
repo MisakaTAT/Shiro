@@ -280,4 +280,15 @@ public class BotPlugin {
         return MESSAGE_IGNORE;
     }
 
+    /**
+     * 频道消息表情贴更新
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link MessageReactionsUpdatedNoticeEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onMessageReactionsUpdatedNotice(@NotNull Bot bot, @NotNull MessageReactionsUpdatedNoticeEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
 }
