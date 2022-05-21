@@ -24,7 +24,7 @@ import java.util.Map;
  *
  * @author Zero
  */
-@SuppressWarnings({"unused", "unchecked"})
+@SuppressWarnings("unused")
 public class Bot {
 
     private final ActionHandler actionHandler;
@@ -104,7 +104,7 @@ public class Bot {
             put("auto_escape", autoEscape);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
 
@@ -124,7 +124,7 @@ public class Bot {
             put("auto_escape", autoEscape);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<MsgId>>() {
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
 
@@ -144,7 +144,7 @@ public class Bot {
             put("message", msg);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GuildMsgId>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GuildMsgId>>() {
         }.getType()) : null;
     }
 
@@ -162,7 +162,7 @@ public class Bot {
             put("no_cache", noCache);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GetGuildMsgResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GetGuildMsgResp>>() {
         }.getType()) : null;
     }
 
@@ -174,7 +174,7 @@ public class Bot {
     public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
         val action = ActionPathEnum.GET_GUILD_SERVICE_PROFILE;
         val result = actionHandler.action(session, action, null);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GuildServiceProfileResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
         }.getType()) : null;
     }
 
@@ -190,7 +190,7 @@ public class Bot {
             put("message_id", msgId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GetMsgResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GetMsgResp>>() {
         }.getType()) : null;
     }
 
@@ -206,7 +206,7 @@ public class Bot {
             put("message_id", msgId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -225,7 +225,7 @@ public class Bot {
             put("reject_add_request", rejectAddRequest);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -244,7 +244,7 @@ public class Bot {
             put("duration", duration);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -261,7 +261,7 @@ public class Bot {
             put("enable", enable);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -280,7 +280,7 @@ public class Bot {
             put("enable", enable);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -297,7 +297,7 @@ public class Bot {
             put("enable", enable);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -316,7 +316,7 @@ public class Bot {
             put("card", card);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -333,7 +333,7 @@ public class Bot {
             put("group_name", groupName);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -350,7 +350,7 @@ public class Bot {
             put("is_dismiss", isDismiss);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -371,7 +371,7 @@ public class Bot {
             put("duration", duration);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -390,7 +390,7 @@ public class Bot {
             put("remark", remark);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -411,7 +411,7 @@ public class Bot {
             put("reason", reason);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -422,7 +422,7 @@ public class Bot {
     public ActionData<LoginInfoResp> getLoginInfo() {
         val action = ActionPathEnum.GET_LOGIN_INFO;
         val result = actionHandler.action(session, action, null);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<LoginInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<LoginInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -440,7 +440,7 @@ public class Bot {
             put("no_cache", noCache);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<StrangerInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<StrangerInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -452,7 +452,7 @@ public class Bot {
     public ActionList<FriendInfoResp> getFriendList() {
         val action = ActionPathEnum.GET_FRIEND_LIST;
         val result = actionHandler.action(session, action, null);
-        return result != null ? result.toJavaObject(new TypeReference<ActionList<FriendInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionList<FriendInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -468,7 +468,7 @@ public class Bot {
             put("friend_id", friendId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -485,7 +485,7 @@ public class Bot {
             put("no_cache", noCache);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GroupInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -497,7 +497,7 @@ public class Bot {
     public ActionList<GroupInfoResp> getGroupList() {
         val action = ActionPathEnum.GET_GROUP_LIST;
         val result = actionHandler.action(session, action, null);
-        return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionList<GroupInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -517,7 +517,7 @@ public class Bot {
             put("no_cache", noCache);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupMemberInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GroupMemberInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -533,7 +533,7 @@ public class Bot {
             put("group_id", groupId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionList<GroupMemberInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -551,7 +551,7 @@ public class Bot {
             put("type", type);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupHonorInfoResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GroupHonorInfoResp>>() {
         }.getType()) : null;
     }
 
@@ -563,7 +563,7 @@ public class Bot {
     public ActionData<BooleanResp> canSendImage() {
         val action = ActionPathEnum.CAN_SEND_IMAGE;
         val result = actionHandler.action(session, action, null);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
         }.getType()) : null;
     }
 
@@ -575,7 +575,7 @@ public class Bot {
     public ActionData<BooleanResp> canSendRecord() {
         val action = ActionPathEnum.CAN_SEND_RECORD;
         val result = actionHandler.action(session, action, null);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<BooleanResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
         }.getType()) : null;
     }
 
@@ -596,7 +596,7 @@ public class Bot {
             put("cache", cache);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -612,7 +612,7 @@ public class Bot {
             put("url", url);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
         }.getType()) : null;
     }
 
@@ -630,7 +630,7 @@ public class Bot {
             put("content", content);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -645,7 +645,7 @@ public class Bot {
             put("group_id", groupId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
         }.getType()) : null;
     }
 
@@ -669,7 +669,7 @@ public class Bot {
             put("folder", folder);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -690,7 +690,7 @@ public class Bot {
             put("name", name);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -709,7 +709,7 @@ public class Bot {
             put("duration", duration);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -728,7 +728,7 @@ public class Bot {
             put("duration", duration);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -747,7 +747,7 @@ public class Bot {
             put("headers", headers);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
         }.getType()) : null;
     }
 
@@ -763,7 +763,7 @@ public class Bot {
             put("url", url);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<DownloadFileResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
         }.getType()) : null;
 
     }
@@ -783,7 +783,7 @@ public class Bot {
             put("messages", msg);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -798,7 +798,7 @@ public class Bot {
             put("group_id", groupId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
         }.getType()) : null;
     }
 
@@ -816,7 +816,7 @@ public class Bot {
             put("folder_id", folderId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionData<GroupFilesResp>>() {
+        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
         }.getType()) : null;
     }
 
@@ -830,7 +830,7 @@ public class Bot {
     @SuppressWarnings("rawtypes")
     public ActionData customRequest(ActionPath action, Map<String, Object> params) {
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionData.class) : null;
+        return result != null ? result.to(ActionData.class) : null;
     }
 
     /**
@@ -845,7 +845,7 @@ public class Bot {
             put("group_id", groupId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(new TypeReference<ActionList<EssenceMsgResp>>() {
+        return result != null ? result.to(new TypeReference<ActionList<EssenceMsgResp>>() {
         }.getType()) : null;
     }
 
@@ -861,7 +861,7 @@ public class Bot {
             put("message_id", msgId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -876,7 +876,7 @@ public class Bot {
             put("message_id", msgId);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.toJavaObject(ActionRaw.class) : null;
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
 }

@@ -113,7 +113,7 @@ public class EventHandler {
         MessageEvent messageEvent = null;
         switch (messageType) {
             case "private": {
-                PrivateMessageEvent event = eventJson.toJavaObject(PrivateMessageEvent.class);
+                PrivateMessageEvent event = eventJson.to(PrivateMessageEvent.class);
                 messageEvent = event;
                 if (setInterceptor(bot, event)) {
                     return;
@@ -128,7 +128,7 @@ public class EventHandler {
                 break;
             }
             case "group": {
-                GroupMessageEvent event = eventJson.toJavaObject(GroupMessageEvent.class);
+                GroupMessageEvent event = eventJson.to(GroupMessageEvent.class);
                 messageEvent = event;
                 if (setInterceptor(bot, event)) {
                     return;
@@ -143,7 +143,7 @@ public class EventHandler {
                 break;
             }
             case "guild": {
-                GuildMessageEvent event = eventJson.toJavaObject(GuildMessageEvent.class);
+                GuildMessageEvent event = eventJson.to(GuildMessageEvent.class);
                 messageEvent = event;
                 if (setInterceptor(bot, event)) {
                     return;
@@ -181,7 +181,7 @@ public class EventHandler {
         String noticeType = eventJson.getString("notice_type");
         switch (noticeType) {
             case "group_upload": {
-                GroupUploadNoticeEvent event = eventJson.toJavaObject(GroupUploadNoticeEvent.class);
+                GroupUploadNoticeEvent event = eventJson.to(GroupUploadNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupUploadNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -190,7 +190,7 @@ public class EventHandler {
                 break;
             }
             case "group_admin": {
-                GroupAdminNoticeEvent event = eventJson.toJavaObject(GroupAdminNoticeEvent.class);
+                GroupAdminNoticeEvent event = eventJson.to(GroupAdminNoticeEvent.class);
                 injectionHandler.invokeGroupAdmin(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupAdminNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -200,7 +200,7 @@ public class EventHandler {
                 break;
             }
             case "group_decrease": {
-                GroupDecreaseNoticeEvent event = eventJson.toJavaObject(GroupDecreaseNoticeEvent.class);
+                GroupDecreaseNoticeEvent event = eventJson.to(GroupDecreaseNoticeEvent.class);
                 injectionHandler.invokeGroupDecrease(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupDecreaseNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -210,7 +210,7 @@ public class EventHandler {
                 break;
             }
             case "group_increase": {
-                GroupIncreaseNoticeEvent event = eventJson.toJavaObject(GroupIncreaseNoticeEvent.class);
+                GroupIncreaseNoticeEvent event = eventJson.to(GroupIncreaseNoticeEvent.class);
                 injectionHandler.invokeGroupIncrease(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupIncreaseNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -220,7 +220,7 @@ public class EventHandler {
                 break;
             }
             case "group_ban": {
-                GroupBanNoticeEvent event = eventJson.toJavaObject(GroupBanNoticeEvent.class);
+                GroupBanNoticeEvent event = eventJson.to(GroupBanNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupBanNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -229,7 +229,7 @@ public class EventHandler {
                 break;
             }
             case "friend_add": {
-                FriendAddNoticeEvent event = eventJson.toJavaObject(FriendAddNoticeEvent.class);
+                FriendAddNoticeEvent event = eventJson.to(FriendAddNoticeEvent.class);
                 injectionHandler.invokeFriendAdd(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onFriendAddNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -239,7 +239,7 @@ public class EventHandler {
                 break;
             }
             case "group_recall": {
-                GroupMsgDeleteNoticeEvent event = eventJson.toJavaObject(GroupMsgDeleteNoticeEvent.class);
+                GroupMsgDeleteNoticeEvent event = eventJson.to(GroupMsgDeleteNoticeEvent.class);
                 injectionHandler.invokeGroupRecall(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMsgDeleteNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -249,7 +249,7 @@ public class EventHandler {
                 break;
             }
             case "friend_recall": {
-                PrivateMsgDeleteNoticeEvent event = eventJson.toJavaObject(PrivateMsgDeleteNoticeEvent.class);
+                PrivateMsgDeleteNoticeEvent event = eventJson.to(PrivateMsgDeleteNoticeEvent.class);
                 injectionHandler.invokeFriendRecall(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onPrivateMsgDeleteNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -259,7 +259,7 @@ public class EventHandler {
                 break;
             }
             case "group_card": {
-                GroupCardChangeNotice event = eventJson.toJavaObject(GroupCardChangeNotice.class);
+                GroupCardChangeNotice event = eventJson.to(GroupCardChangeNotice.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupCardChangeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -268,7 +268,7 @@ public class EventHandler {
                 break;
             }
             case "offline_file": {
-                ReceiveOfflineFilesNoticeEvent event = eventJson.toJavaObject(ReceiveOfflineFilesNoticeEvent.class);
+                ReceiveOfflineFilesNoticeEvent event = eventJson.to(ReceiveOfflineFilesNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onReceiveOfflineFilesNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -277,7 +277,7 @@ public class EventHandler {
                 break;
             }
             case "channel_created": {
-                ChannelCreatedNoticeEvent event = eventJson.toJavaObject(ChannelCreatedNoticeEvent.class);
+                ChannelCreatedNoticeEvent event = eventJson.to(ChannelCreatedNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onChannelCreatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -286,7 +286,7 @@ public class EventHandler {
                 break;
             }
             case "channel_destroyed": {
-                ChannelDestroyedNoticeEvent event = eventJson.toJavaObject(ChannelDestroyedNoticeEvent.class);
+                ChannelDestroyedNoticeEvent event = eventJson.to(ChannelDestroyedNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onChannelDestroyedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -295,7 +295,7 @@ public class EventHandler {
                 break;
             }
             case "channel_updated": {
-                ChannelUpdatedNoticeEvent event = eventJson.toJavaObject(ChannelUpdatedNoticeEvent.class);
+                ChannelUpdatedNoticeEvent event = eventJson.to(ChannelUpdatedNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onChannelUpdatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -304,7 +304,7 @@ public class EventHandler {
                 break;
             }
             case "message_reactions_updated": {
-                MessageReactionsUpdatedNoticeEvent event = eventJson.toJavaObject(MessageReactionsUpdatedNoticeEvent.class);
+                MessageReactionsUpdatedNoticeEvent event = eventJson.to(MessageReactionsUpdatedNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onMessageReactionsUpdatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -330,7 +330,7 @@ public class EventHandler {
         String subType = eventJson.getString("sub_type");
         switch (subType) {
             case "poke": {
-                PokeNoticeEvent event = eventJson.toJavaObject(PokeNoticeEvent.class);
+                PokeNoticeEvent event = eventJson.to(PokeNoticeEvent.class);
                 // 如果群号不为空则当作群内戳一戳处理
                 if (event.getGroupId() > 0L) {
                     for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
@@ -348,7 +348,7 @@ public class EventHandler {
                 break;
             }
             case "lucky_king": {
-                GroupLuckyKingNoticeEvent event = eventJson.toJavaObject(GroupLuckyKingNoticeEvent.class);
+                GroupLuckyKingNoticeEvent event = eventJson.to(GroupLuckyKingNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupLuckyKingNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -357,7 +357,7 @@ public class EventHandler {
                 break;
             }
             case "honor": {
-                GroupHonorChangeNoticeEvent event = eventJson.toJavaObject(GroupHonorChangeNoticeEvent.class);
+                GroupHonorChangeNoticeEvent event = eventJson.to(GroupHonorChangeNoticeEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupHonorChangeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -379,7 +379,7 @@ public class EventHandler {
         String requestType = eventJson.getString("request_type");
         switch (requestType) {
             case "friend": {
-                FriendAddRequestEvent event = eventJson.toJavaObject(FriendAddRequestEvent.class);
+                FriendAddRequestEvent event = eventJson.to(FriendAddRequestEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onFriendAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -388,7 +388,7 @@ public class EventHandler {
                 break;
             }
             case "group": {
-                GroupAddRequestEvent event = eventJson.toJavaObject(GroupAddRequestEvent.class);
+                GroupAddRequestEvent event = eventJson.to(GroupAddRequestEvent.class);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                         break;
@@ -404,7 +404,7 @@ public class EventHandler {
     }
 
     private void pushWholeMessageEvent(Bot bot, JSONObject eventJson, List<MsgChainBean> arrayMsg) {
-        WholeMessageEvent event = eventJson.toJavaObject(WholeMessageEvent.class);
+        WholeMessageEvent event = eventJson.to(WholeMessageEvent.class);
         event.setArrayMsg(arrayMsg);
         injectionHandler.invokeWholeMessage(bot, event);
         for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
