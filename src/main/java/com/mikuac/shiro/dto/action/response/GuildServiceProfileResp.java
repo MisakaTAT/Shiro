@@ -10,12 +10,12 @@ import lombok.Data;
 public class GuildServiceProfileResp {
 
     @JSONField(name = "nickname")
-    String nickname;
+    private String nickname;
 
     @JSONField(name = "tiny_id")
-    String tinyId;
+    private String tinyId;
 
     @JSONField(name = "avatar_url")
-    String avatarUrl;
+    private String avatarUrl;
 
 }

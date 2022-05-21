@@ -32,7 +32,6 @@ public class OneBotMedia {
         return stringBuilder.toString();
     }
 
-
     public static class Builder {
         private String file = "";
         private Boolean cache;

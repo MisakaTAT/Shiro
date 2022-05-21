@@ -1,6 +1,7 @@
 package com.mikuac.shiro.dto.event.notice;
 
 import com.alibaba.fastjson2.annotation.JSONField;
+import com.mikuac.shiro.dto.action.response.ChannelInfoResp;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -39,12 +40,12 @@ public class ChannelUpdatedNoticeEvent extends NoticeEvent {
      * 更新前的频道信息
      */
     @JSONField(name = "old_info")
-    private ChannelDestroyedNoticeEvent.ChannelInfo oldInfo;
+    private ChannelInfoResp oldInfo;
 
     /**
      * 更新后的频道信息
      */
     @JSONField(name = "new_info")
-    private ChannelDestroyedNoticeEvent.ChannelInfo newInfo;
+    private ChannelInfoResp newInfo;
 
 }

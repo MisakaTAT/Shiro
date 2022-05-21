@@ -129,10 +129,10 @@ public class Bot {
     }
 
     /**
-     * 发送频道消息
+     * 发送信息到子频道
      *
-     * @param guildId   频道ID
-     * @param channelId 子频道ID
+     * @param guildId   频道 ID
+     * @param channelId 子频道 ID
      * @param msg       要发送的内容
      * @return {@link ActionData} of {@link GuildMsgId}
      */
@@ -149,9 +149,9 @@ public class Bot {
     }
 
     /**
-     * 获取频道信息
+     * 获取频道消息
      *
-     * @param guildMsgId 频道ID
+     * @param guildMsgId 频道 ID
      * @param noCache    是否使用缓存
      * @return {@link ActionData} of {@link GetGuildMsgResp}
      */
@@ -167,7 +167,7 @@ public class Bot {
     }
 
     /**
-     * 获取频道系统内BOT的资料
+     * 获取频道系统内 BOT 的资料
      *
      * @return {@link ActionData} of {@link GuildServiceProfileResp}
      */
@@ -175,6 +175,70 @@ public class Bot {
         val action = ActionPathEnum.GET_GUILD_SERVICE_PROFILE;
         val result = actionHandler.action(session, action, null);
         return result != null ? result.to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取频道列表
+     *
+     * @return {@link ActionList} of {@link GuildListResp}
+     */
+    public ActionList<GuildListResp> getGuildList() {
+        val action = ActionPathEnum.GET_GUILD_LIST;
+        val result = actionHandler.action(session, action, null);
+        return result != null ? result.to(new TypeReference<ActionList<GuildListResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 通过访客获取频道元数据
+     *
+     * @param guildId 频道 ID
+     * @return {@link ActionData} of {@link GuildMetaByGuestResp}
+     */
+    public ActionData<GuildMetaByGuestResp> getGuildMetaByGuest(String guildId) {
+        val action = ActionPathEnum.GET_GUILD_META_BY_GUEST;
+        val params = new JSONObject() {{
+            put("guild_id", guildId);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<GuildMetaByGuestResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取子频道列表
+     *
+     * @param guildId 频道 ID
+     * @param noCache 是否无视缓存
+     * @return {@link ActionList} of {@link ChannelInfoResp}
+     */
+    public ActionList<ChannelInfoResp> getGuildChannelList(String guildId, boolean noCache) {
+        val action = ActionPathEnum.GET_GUILD_CHANNEL_LIST;
+        val params = new JSONObject() {{
+            put("guild_id", guildId);
+            put("no_cache", noCache);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionList<ChannelInfoResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 单独获取频道成员信息
+     *
+     * @param guildId 频道ID
+     * @param userId  用户ID
+     * @return {@link ActionData} of {@link GuildMemberProfileResp}
+     */
+    public ActionData<GuildMemberProfileResp> getGuildMemberProfile(String guildId, String userId) {
+        val action = ActionPathEnum.GET_GUILD_MEMBER_PROFILE;
+        val params = new JSONObject() {{
+            put("guild_id", guildId);
+            put("user_id", userId);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<GuildMemberProfileResp>>() {
         }.getType()) : null;
     }
 
