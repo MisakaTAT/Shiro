@@ -129,6 +129,27 @@ public class Bot {
     }
 
     /**
+     * 获取频道成员列表
+     * 由于频道人数较多(数万), 请尽量不要全量拉取成员列表, 这将会导致严重的性能问题
+     * 尽量使用 getGuildMemberProfile 接口代替全量拉取
+     * nextToken 为空的情况下, 将返回第一页的数据, 并在返回值附带下一页的 token
+     *
+     * @param guildId   频道ID
+     * @param nextToken 翻页Token
+     * @return {@link ActionData} of {@link GuildMemberListResp}
+     */
+    public ActionData<GuildMemberListResp> getGuildMemberList(String guildId, String nextToken) {
+        val action = ActionPathEnum.GET_GUILD_LIST;
+        val params = new JSONObject() {{
+            put("guild_id", guildId);
+            put("next_token", nextToken);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<GuildMemberListResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
      * 发送信息到子频道
      *
      * @param guildId   频道 ID
