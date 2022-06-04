@@ -7,3 +7,4 @@ shiro:
     rate: 1
     capacity: 5
     await-task: false
+  debug: true

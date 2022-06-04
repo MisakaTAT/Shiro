@@ -4,6 +4,7 @@ import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.MsgUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import junit.framework.TestCase;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 
+@Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class UnitTests {
@@ -90,6 +92,11 @@ public class UnitTests {
         val nickname = ShiroUtils.getNickname(1140667337L);
         TestCase.assertNotNull(nickname);
         TestCase.assertEquals("Zero", nickname);
+    }
+
+    @Test
+    public void debugModeTest() {
+        TestCase.assertTrue(log.isDebugEnabled());
     }
 
 }
