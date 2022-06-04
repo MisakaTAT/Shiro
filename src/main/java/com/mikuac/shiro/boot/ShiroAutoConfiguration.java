@@ -1,7 +1,12 @@
 package com.mikuac.shiro.boot;
 
+import ch.qos.logback.classic.Level;
 import com.mikuac.shiro.handler.WebSocketHandler;
+import com.mikuac.shiro.properties.ShiroProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
@@ -17,6 +22,7 @@ import javax.annotation.Resource;
  *
  * @author Zero
  */
+@Slf4j
 @Component
 @EnableAsync
 @EnableWebSocket
@@ -28,11 +34,23 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
     private WebSocketProperties webSocketProperties;
 
     @Resource
+    private ShiroProperties shiroProperties;
+
+    @Resource
     private WebSocketHandler webSocketHandler;
 
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
+        setLogLevel();
         registry.addHandler(webSocketHandler, webSocketProperties.getWsUrl()).setAllowedOrigins("*");
+    }
+
+    private void setLogLevel() {
+        if (shiroProperties.isDebug()) {
+            val pkg = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.mikuac.shiro");
+            pkg.setLevel(Level.DEBUG);
+            log.warn("Set log level for debug");
+        }
     }
 
 }

@@ -5,7 +5,8 @@ import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
 import com.mikuac.shiro.handler.ActionHandler;
-import com.mikuac.shiro.properties.PluginProperties;
+import com.mikuac.shiro.properties.ShiroProperties;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -22,6 +23,7 @@ import java.util.*;
  *
  * @author Zero
  */
+@Slf4j
 @Component
 public class BotFactory {
 
@@ -31,7 +33,7 @@ public class BotFactory {
     private ActionHandler actionHandler;
 
     @Resource
-    private PluginProperties pluginProperties;
+    private ShiroProperties shiroProperties;
 
     @Resource
     private ApplicationContext applicationContext;
@@ -57,6 +59,7 @@ public class BotFactory {
      * @return {@link Bot}
      */
     public Bot createBot(long selfId, WebSocketSession session) {
+        log.debug("Start creating bot instance {}", selfId);
         // 获取 Spring 容器中所有指定类型的对象
         Map<String, Object> beans = new HashMap<>(16);
         beans.putAll(applicationContext.getBeansOfType(BotPlugin.class));
@@ -86,7 +89,7 @@ public class BotFactory {
                 });
             });
         }
-        return new Bot(selfId, session, actionHandler, pluginProperties.getPluginList(), annotationHandler, pluginProperties.getInterceptor());
+        return new Bot(selfId, session, actionHandler, shiroProperties.getPluginList(), annotationHandler, shiroProperties.getInterceptor());
     }
 
 }

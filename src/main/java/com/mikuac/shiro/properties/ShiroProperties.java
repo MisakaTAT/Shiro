@@ -18,16 +18,21 @@ import java.util.List;
 @Data
 @Component
 @ConfigurationProperties(prefix = "shiro")
-public class PluginProperties {
+public class ShiroProperties {
 
     /**
      * 插件列表
      */
-    List<Class<? extends BotPlugin>> pluginList = new ArrayList<>();
+    private List<Class<? extends BotPlugin>> pluginList = new ArrayList<>();
 
     /**
      * 拦截器
      */
-    Class<? extends BotMessageEventInterceptor> interceptor = DefaultBotMessageEventInterceptor.class;
+    private Class<? extends BotMessageEventInterceptor> interceptor = DefaultBotMessageEventInterceptor.class;
+
+    /**
+     * 日志等级设置为 debug
+     */
+    private boolean debug = false;
 
 }
