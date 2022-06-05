@@ -418,7 +418,7 @@ public class EventHandler {
         try {
             return applicationContext.getBean(pluginClass);
         } catch (Exception e) {
-            log.warn("Plugin {} skip, Please check @Component annotation.", pluginClass.getSimpleName());
+            log.warn("Plugin {} skip, Please check @Component annotation", pluginClass.getSimpleName());
             return defaultPlugin;
         }
     }
@@ -427,7 +427,7 @@ public class EventHandler {
         try {
             return applicationContext.getBean(interceptorClass);
         } catch (Exception e) {
-            log.warn("Interceptor {} skip, Please check @Component annotation.", interceptorClass.getSimpleName());
+            log.warn("Interceptor {} skip, Please check @Component annotation", interceptorClass.getSimpleName());
             return applicationContext.getBean(DefaultBotMessageEventInterceptor.class);
         }
     }

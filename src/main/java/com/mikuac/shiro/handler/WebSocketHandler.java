@@ -102,12 +102,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
         try {
             long xSelfId = parseSelfId(session);
             if (xSelfId == 0L) {
-                log.error("Client account get failed");
+                log.error("Get client self account failed");
                 session.close();
                 return;
             }
             if (!checkToken(session)) {
-                log.error("Access token check failed");
+                log.error("Access token invalid");
                 session.close();
                 return;
             }
@@ -139,6 +139,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
         bot.setSession(session);
         JSONObject result = JSON.parseObject(message.getPayload());
+        log.debug("[Event] {}", result.toJSONString());
         // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(API_RESULT_KEY)) {
             if (FAILED_STATUS.equals(result.get(RESULT_STATUS_KEY))) {

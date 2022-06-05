@@ -49,7 +49,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         if (shiroProperties.isDebug()) {
             val pkg = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.mikuac.shiro");
             pkg.setLevel(Level.DEBUG);
-            log.warn("Set log level for debug");
+            log.warn("Enabled debug mode");
         }
     }
 

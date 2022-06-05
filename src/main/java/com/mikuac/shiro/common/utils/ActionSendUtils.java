@@ -1,6 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
 import com.alibaba.fastjson2.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
  *
  * @author Zero
  */
+@Slf4j
 public class ActionSendUtils extends Thread {
 
     private final WebSocketSession session;
@@ -36,6 +38,7 @@ public class ActionSendUtils extends Thread {
      */
     public JSONObject send(JSONObject req) throws IOException, InterruptedException {
         synchronized (session) {
+            log.debug("[Action] {}", req.toJSONString());
             session.sendMessage(new TextMessage(req.toJSONString()));
         }
         synchronized (this) {

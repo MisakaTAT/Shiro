@@ -94,7 +94,7 @@ public class ActionHandler {
         try {
             result = actionSendUtils.send(reqJson);
         } catch (Exception e) {
-            log.error("Action request failed: {}", e.getMessage());
+            log.error("Action send failed: {}", e.getMessage());
             result = new JSONObject();
             result.put("status", "failed");
             result.put("retcode", -1);
