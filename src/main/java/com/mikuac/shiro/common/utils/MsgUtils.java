@@ -80,8 +80,7 @@ public class MsgUtils {
 
     /**
      * QQ 表情
-     * QQ 表情 ID 表
-     * https://github.com/kyubotics/coolq-http-api/wiki/%E8%A1%A8%E6%83%85-CQ-%E7%A0%81-ID-%E8%A1%A8
+     * <a href="https://github.com/kyubotics/coolq-http-api/wiki/%E8%A1%A8%E6%83%85-CQ-%E7%A0%81-ID-%E8%A1%A8">对照表</a>
      *
      * @param id QQ 表情 ID
      * @return {@link String}
@@ -321,6 +320,18 @@ public class MsgUtils {
                 ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title)
         );
         stringBuffer.append(customMusicCode);
+        return this;
+    }
+
+    /**
+     * 发送猜拳消息
+     *
+     * @param value 0石头 1剪刀 2布
+     * @return {@link String}
+     */
+    public MsgUtils rps(int value) {
+        String rpsCode = String.format("[CQ:rps,value=%s]", value);
+        stringBuffer.append(rpsCode);
         return this;
     }
 

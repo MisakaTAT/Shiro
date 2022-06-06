@@ -199,7 +199,28 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 获取话题频道帖子
      */
-    GET_TOPIC_CHANNEL_FEEDS("get_topic_channel_feeds");
+    GET_TOPIC_CHANNEL_FEEDS("get_topic_channel_feeds"),
+    /**
+     * 发送合并转发 (私聊)
+     */
+    SEND_PRIVATE_FORWARD_MSG("send_private_forward_msg"),
+    /**
+     * 设置QQ资料
+     */
+    SET_QQ_PROFILE("set_qq_profile"),
+    /**
+     * 获取中文分词
+     */
+    GET_WORD_SLICES(".get_word_slices"),
+    /**
+     * 获取当前账号在线客户端列表
+     */
+    GET_ONLINE_CLIENTS("get_online_clients"),
+    /**
+     * 图片 OCR
+     */
+    OCR_IMAGE("ocr_image");
+
     /**
      * 请求路径
      */

@@ -193,7 +193,7 @@ public class ShiroUtils {
      * @param uin     发送者QQ号
      * @param name    发送者显示名字
      * @param msgList 消息列表，每个元素视为一个消息节点
-     *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">合并转发</a>
+     *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return 转发消息
      */
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> msgList) {

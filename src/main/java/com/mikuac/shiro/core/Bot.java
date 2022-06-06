@@ -57,8 +57,7 @@ public class Bot {
      * @param annotationHandler          注解 (key) 下的所有方法
      * @param botMessageEventInterceptor 消息拦截器
      */
-    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList,
-               MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
+    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList, MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
         this.selfId = selfId;
         this.session = session;
         this.actionHandler = actionHandler;
@@ -858,7 +857,7 @@ public class Bot {
      *
      * @param groupId 群号
      * @param msg     自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
-     *                自定义构建详见 https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91
+     *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return {@link ActionRaw}
      */
     public ActionRaw sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
@@ -962,6 +961,94 @@ public class Bot {
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * 设置机器人账号资料
+     *
+     * @param nickname     昵称
+     * @param company      公司
+     * @param email        邮箱
+     * @param college      学校
+     * @param personalNote 个性签名
+     * @return {@link  ActionRaw}
+     */
+    public ActionRaw setBotProfile(String nickname, String company, String email, String college, String personalNote) {
+        val action = ActionPathEnum.SET_QQ_PROFILE;
+        val params = new JSONObject() {{
+            put("nickname", nickname);
+            put("company", company);
+            put("email", email);
+            put("college", college);
+            put("personalNote", personalNote);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * 发送合并转发 (私聊)
+     *
+     * @param userId 目标用户
+     * @param msg    自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
+     *               <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
+     * @return {@link ActionRaw}
+     */
+    public ActionRaw sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
+        val action = ActionPathEnum.SEND_PRIVATE_FORWARD_MSG;
+        val params = new JSONObject() {{
+            put("user_id", userId);
+            put("messages", msg);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * 获取中文分词
+     *
+     * @param content 内容
+     * @return {@link ActionData} of {@link WordSlicesResp}
+     */
+    public ActionData<WordSlicesResp> getWordSlices(String content) {
+        val action = ActionPathEnum.GET_WORD_SLICES;
+        val params = new JSONObject() {{
+            put("content", content);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<WordSlicesResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取当前账号在线客户端列表
+     *
+     * @param noCache 是否无视缓存
+     * @return {@link ActionData} of {@link ClientsResp}
+     */
+    public ActionData<ClientsResp> getOnlineClients(boolean noCache) {
+        val action = ActionPathEnum.GET_ONLINE_CLIENTS;
+        val params = new JSONObject() {{
+            put("no_cache", noCache);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<ClientsResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 图片 OCR
+     *
+     * @param image 图片ID
+     */
+    public ActionData<OcrResp> ocrImage(String image) {
+        val action = ActionPathEnum.OCR_IMAGE;
+        val params = new JSONObject() {{
+            put("image", image);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<OcrResp>>() {
+        }.getType()) : null;
     }
 
 }
