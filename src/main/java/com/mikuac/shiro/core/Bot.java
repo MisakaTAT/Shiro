@@ -1040,6 +1040,7 @@ public class Bot {
      * 图片 OCR
      *
      * @param image 图片ID
+     * @return {@link ActionData} of {@link OcrResp}
      */
     public ActionData<OcrResp> ocrImage(String image) {
         val action = ActionPathEnum.OCR_IMAGE;

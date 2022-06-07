@@ -44,7 +44,7 @@ public class EventHandler {
      * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
-    public void handler(Bot bot, @NotNull JSONObject eventJson) {
+    public void handler(@NotNull Bot bot, @NotNull JSONObject eventJson) {
         String postType = eventJson.getString("post_type");
         switch (postType) {
             case "meta_event": {
@@ -74,7 +74,7 @@ public class EventHandler {
      * @param event {@link MessageEvent}
      * @return boolean
      */
-    private boolean setInterceptor(Bot bot, MessageEvent event) {
+    private boolean setInterceptor(@NotNull Bot bot, @NotNull MessageEvent event) {
         try {
             return !getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
         } catch (Exception e) {
@@ -91,7 +91,7 @@ public class EventHandler {
      * @param event     {@link MessageEvent}
      * @return {@link MsgChainBean}
      */
-    private List<MsgChainBean> setWholeMessageEvent(Bot bot, JSONObject eventJson, MessageEvent event) {
+    private List<MsgChainBean> setWholeMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, @NotNull MessageEvent event) {
         try {
             val arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
             pushWholeMessageEvent(bot, eventJson, arrayMsg);
@@ -108,7 +108,7 @@ public class EventHandler {
      * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
-    private void handlerMessage(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerMessage(@NotNull Bot bot, @NotNull JSONObject eventJson) {
         String messageType = eventJson.getString("message_type");
         MessageEvent messageEvent = null;
         switch (messageType) {
@@ -177,7 +177,7 @@ public class EventHandler {
      * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
-    private void handlerNotice(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerNotice(@NotNull Bot bot, @NotNull JSONObject eventJson) {
         String noticeType = eventJson.getString("notice_type");
         switch (noticeType) {
             case "group_upload": {
@@ -326,7 +326,7 @@ public class EventHandler {
      * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
-    private void handlerNotify(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerNotify(@NotNull Bot bot, @NotNull JSONObject eventJson) {
         String subType = eventJson.getString("sub_type");
         switch (subType) {
             case "poke": {
@@ -375,7 +375,7 @@ public class EventHandler {
      * @param bot       {@link Bot}
      * @param eventJson 响应数据
      */
-    private void handlerRequest(Bot bot, @NotNull JSONObject eventJson) {
+    private void handlerRequest(@NotNull Bot bot, @NotNull JSONObject eventJson) {
         String requestType = eventJson.getString("request_type");
         switch (requestType) {
             case "friend": {
@@ -400,10 +400,11 @@ public class EventHandler {
         }
     }
 
-    private void handlerMetaEvent(Bot bot, JSONObject eventJson) {
+    private void handlerMetaEvent(@NotNull Bot bot, @NotNull JSONObject eventJson) {
+        // Ignored this handler
     }
 
-    private void pushWholeMessageEvent(Bot bot, JSONObject eventJson, List<MsgChainBean> arrayMsg) {
+    private void pushWholeMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, List<MsgChainBean> arrayMsg) {
         WholeMessageEvent event = eventJson.to(WholeMessageEvent.class);
         event.setArrayMsg(arrayMsg);
         injectionHandler.invokeWholeMessage(bot, event);
@@ -423,7 +424,7 @@ public class EventHandler {
         }
     }
 
-    private BotMessageEventInterceptor getInterceptor(Class<? extends BotMessageEventInterceptor> interceptorClass) {
+    private @NotNull BotMessageEventInterceptor getInterceptor(Class<? extends BotMessageEventInterceptor> interceptorClass) {
         try {
             return applicationContext.getBean(interceptorClass);
         } catch (Exception e) {
