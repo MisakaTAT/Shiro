@@ -152,6 +152,16 @@ public class ShiroUtils {
     }
 
     /**
+     * 消息编码（可用于转义CQ码，防止文本注入）
+     *
+     * @param string 需要编码的内容
+     * @return 编码处理后的字符串
+     */
+    public static String escape2(String string) {
+        return string.replace("[", "&#91;").replace("]", "&#93;");
+    }
+
+    /**
      * string 消息上报转消息链
      * 建议传入 event.getMessage 而非 event.getRawMessage
      * 例如 go-cq-http rawMessage 不包含图片 url
