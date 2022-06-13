@@ -24,37 +24,37 @@ import java.util.Map;
 public class ActionHandler {
 
     /**
-     * api callback
+     * 请求回调数据
      */
     private final Map<String, ActionSendUtils> apiCallbackMap = new HashMap<>();
 
     /**
-     * websocket prop
+     * WebSocket 配置
      */
     @Resource
     private WebSocketProperties webSocketProperties;
 
     /**
-     * rate limiter prop
+     * 限速器配置
      */
     @Resource
     private RateLimiterProperties rateLimiterProperties;
 
     /**
-     * rate limiter
+     * 限速器
      */
     @Resource
     private RateLimiter rateLimiter;
 
     /**
-     * 用于唯一标识一次请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
+     * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
      */
     private int echo = 0;
 
     /**
-     * handle action resp json
+     * 处理响应结果
      *
-     * @param respJson Response json data
+     * @param respJson 回调结果
      */
     public void onReceiveActionResp(JSONObject respJson) {
         String echo = respJson.get("echo").toString();
@@ -67,10 +67,10 @@ public class ActionHandler {
     }
 
     /**
-     * @param session {@link WebSocketSession}
-     * @param action  {@link ActionPath}
-     * @param params  Request args
-     * @return Result
+     * @param session Session
+     * @param action  请求路径
+     * @param params  请求参数
+     * @return 请求结果
      */
     public JSONObject action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
         if (rateLimiterProperties.isEnable()) {
@@ -94,7 +94,7 @@ public class ActionHandler {
         try {
             result = actionSendUtils.send(reqJson);
         } catch (Exception e) {
-            log.error("Action send failed: {}", e.getMessage());
+            log.error("Request failed: {}", e.getMessage());
             result = new JSONObject();
             result.put("status", "failed");
             result.put("retcode", -1);
@@ -103,12 +103,12 @@ public class ActionHandler {
     }
 
     /**
-     * Build request json
+     * 构建请求数据
      * {"action":"send_private_msg","params":{"user_id":10001000,"message":"你好"},"echo":"123"}
      *
-     * @param action {@link ActionPath}
-     * @param params Request args
-     * @return Request json data
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return 请求数据结构
      */
     private JSONObject generateReqJson(ActionPath action, Map<String, Object> params) {
         return new JSONObject() {{
