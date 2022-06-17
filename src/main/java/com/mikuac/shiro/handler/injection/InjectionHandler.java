@@ -3,6 +3,7 @@ package com.mikuac.shiro.handler.injection;
 import com.mikuac.shiro.annotation.*;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.bean.MsgChainBean;
+import com.mikuac.shiro.common.utils.InternalUtils;
 import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
@@ -12,16 +13,14 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.AtEnum;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MultiValueMap;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
 /**
@@ -31,6 +30,14 @@ import java.util.regex.Matcher;
 @Component
 public class InjectionHandler {
 
+    private final static String DEFAULT_CMD = "none";
+
+    private final static String SET = "set";
+
+    private final static String UNSET = "unset";
+
+    private final static String GROUP = "group";
+
     /**
      * 群消息撤回事件
      *
@@ -38,7 +45,7 @@ public class InjectionHandler {
      * @param event {@link GroupMsgDeleteNoticeEvent}
      */
     public void invokeGroupRecall(@NotNull Bot bot, @NotNull GroupMsgDeleteNoticeEvent event) {
-        setArgs(bot.getAnnotationHandler().get(GroupMsgDeleteNoticeHandler.class), bot, event);
+        setParams(bot.getAnnotationHandler().get(GroupMsgDeleteNoticeHandler.class), bot, event);
     }
 
     /**
@@ -48,7 +55,7 @@ public class InjectionHandler {
      * @param event {@link PrivateMsgDeleteNoticeEvent}
      */
     public void invokeFriendRecall(@NotNull Bot bot, @NotNull PrivateMsgDeleteNoticeEvent event) {
-        setArgs(bot.getAnnotationHandler().get(PrivateMsgDeleteNoticeHandler.class), bot, event);
+        setParams(bot.getAnnotationHandler().get(PrivateMsgDeleteNoticeHandler.class), bot, event);
     }
 
     /**
@@ -58,7 +65,7 @@ public class InjectionHandler {
      * @param event {@link FriendAddNoticeEvent}
      */
     public void invokeFriendAdd(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
-        setArgs(bot.getAnnotationHandler().get(FriendAddNoticeHandler.class), bot, event);
+        setParams(bot.getAnnotationHandler().get(FriendAddNoticeHandler.class), bot, event);
     }
 
     /**
@@ -68,7 +75,7 @@ public class InjectionHandler {
      * @param event {@link GroupIncreaseNoticeEvent}
      */
     public void invokeGroupIncrease(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
-        setArgs(bot.getAnnotationHandler().get(GroupIncreaseHandler.class), bot, event);
+        setParams(bot.getAnnotationHandler().get(GroupIncreaseHandler.class), bot, event);
     }
 
     /**
@@ -78,7 +85,7 @@ public class InjectionHandler {
      * @param event {@link GroupDecreaseNoticeEvent}
      */
     public void invokeGroupDecrease(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
-        setArgs(bot.getAnnotationHandler().get(GroupDecreaseHandler.class), bot, event);
+        setParams(bot.getAnnotationHandler().get(GroupDecreaseHandler.class), bot, event);
     }
 
     /**
@@ -88,24 +95,24 @@ public class InjectionHandler {
      * @param event {@link WholeMessageEvent}
      */
     public void invokeWholeMessage(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        List<HandlerMethod> handlerMethods = handlers.get(MessageHandler.class);
-        if (handlerMethods != null && handlerMethods.size() > 0) {
-            for (HandlerMethod handlerMethod : handlerMethods) {
-                MessageHandler mh = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
-                if ("group".equals(event.getMessageType())) {
-                    if (checkAt(event.getArrayMsg(), event.getSelfId(), mh.at())) {
-                        continue;
+        val handlers = bot.getAnnotationHandler();
+        val handlerMethods = handlers.get(MessageHandler.class);
+        if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods.forEach(handlerMethod -> {
+                val annotation = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
+                if (GROUP.equals(event.getMessageType())) {
+                    if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
+                        return;
                     }
                 }
-                Map<Class<?>, Object> argsMap = matcher(mh.cmd(), event.getMessage());
-                if (argsMap == null) {
-                    continue;
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), event.getMessage());
+                if (params == null) {
+                    return;
                 }
-                argsMap.put(Bot.class, bot);
-                argsMap.put(WholeMessageEvent.class, event);
-                invokeMethod(handlerMethod, argsMap);
-            }
+                params.put(Bot.class, bot);
+                params.put(WholeMessageEvent.class, event);
+                invokeMethod(handlerMethod, params);
+            });
         }
     }
 
@@ -118,11 +125,11 @@ public class InjectionHandler {
      * @return boolean
      */
     private boolean checkAt(List<MsgChainBean> arrayMsg, long selfId, AtEnum at) {
-        List<Long> atList = ShiroUtils.getAtList(arrayMsg);
-        if (at == AtEnum.NEED && !atList.contains(selfId)) {
+        val ats = ShiroUtils.getAtList(arrayMsg);
+        if (at == AtEnum.NEED && !ats.contains(selfId)) {
             return true;
         }
-        return at == AtEnum.NOT_NEED && atList.contains(selfId);
+        return at == AtEnum.NOT_NEED && ats.contains(selfId);
     }
 
     /**
@@ -132,22 +139,22 @@ public class InjectionHandler {
      * @param event {@link GuildMessageEvent}
      */
     public void invokeGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        List<HandlerMethod> handlerMethods = handlers.get(GuildMessageHandler.class);
-        if (handlerMethods != null && handlerMethods.size() > 0) {
-            for (HandlerMethod handlerMethod : handlerMethods) {
-                GuildMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GuildMessageHandler.class);
-                if (checkAt(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), gmh.at())) {
-                    continue;
+        val handlers = bot.getAnnotationHandler();
+        val handlerMethods = handlers.get(GuildMessageHandler.class);
+        if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods.forEach(handlerMethod -> {
+                val annotation = handlerMethod.getMethod().getAnnotation(GuildMessageHandler.class);
+                if (checkAt(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
+                    return;
                 }
-                Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getMessage());
-                if (argsMap == null) {
-                    continue;
+                val params = matcher(annotation.cmd(), event.getMessage());
+                if (params == null) {
+                    return;
                 }
-                argsMap.put(Bot.class, bot);
-                argsMap.put(GuildMessageEvent.class, event);
-                invokeMethod(handlerMethod, argsMap);
-            }
+                params.put(Bot.class, bot);
+                params.put(GuildMessageEvent.class, event);
+                invokeMethod(handlerMethod, params);
+            });
         }
     }
 
@@ -158,22 +165,22 @@ public class InjectionHandler {
      * @param event {@link GroupMessageEvent}
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        List<HandlerMethod> handlerMethods = handlers.get(GroupMessageHandler.class);
-        if (handlerMethods != null && handlerMethods.size() > 0) {
-            for (HandlerMethod handlerMethod : handlerMethods) {
-                GroupMessageHandler gmh = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
-                if (checkAt(event.getArrayMsg(), event.getSelfId(), gmh.at())) {
-                    continue;
+        val handlers = bot.getAnnotationHandler();
+        val handlerMethods = handlers.get(GroupMessageHandler.class);
+        if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods.forEach(handlerMethod -> {
+                val annotation = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
+                if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
+                    return;
                 }
-                Map<Class<?>, Object> argsMap = matcher(gmh.cmd(), event.getMessage());
-                if (argsMap == null) {
-                    continue;
+                val params = matcher(annotation.cmd(), event.getMessage());
+                if (params == null) {
+                    return;
                 }
-                argsMap.put(Bot.class, bot);
-                argsMap.put(GroupMessageEvent.class, event);
-                invokeMethod(handlerMethod, argsMap);
-            }
+                params.put(Bot.class, bot);
+                params.put(GroupMessageEvent.class, event);
+                invokeMethod(handlerMethod, params);
+            });
         }
     }
 
@@ -184,20 +191,20 @@ public class InjectionHandler {
      * @param event {@link PrivateMessageEvent}
      */
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        List<HandlerMethod> handlerMethods = handlers.get(PrivateMessageHandler.class);
-        if (handlerMethods != null && handlerMethods.size() > 0) {
-            for (HandlerMethod handlerMethod : handlerMethods) {
-                PrivateMessageHandler pmh = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
-                Map<Class<?>, Object> argsMap = matcher(pmh.cmd(), event.getMessage());
-                if (argsMap == null) {
-                    continue;
+        val handlers = bot.getAnnotationHandler();
+        val handlerMethods = handlers.get(PrivateMessageHandler.class);
+        if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods.forEach(handlerMethod -> {
+                val annotation = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
+                val params = matcher(annotation.cmd(), event.getMessage());
+                if (params == null) {
+                    return;
                 }
-                argsMap.put(PrivateMessageEvent.PrivateSender.class, event.getPrivateSender());
-                argsMap.put(Bot.class, bot);
-                argsMap.put(PrivateMessageEvent.class, event);
-                invokeMethod(handlerMethod, argsMap);
-            }
+                params.put(PrivateMessageEvent.PrivateSender.class, event.getPrivateSender());
+                params.put(Bot.class, bot);
+                params.put(PrivateMessageEvent.class, event);
+                invokeMethod(handlerMethod, params);
+            });
         }
     }
 
@@ -208,48 +215,50 @@ public class InjectionHandler {
      * @param event {@link GroupAdminNoticeEvent}
      */
     public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        List<HandlerMethod> handlerMethods = handlers.get(GroupAdminHandler.class);
-        if (handlerMethods != null && handlerMethods.size() > 0) {
-            for (HandlerMethod handlerMethod : handlerMethods) {
-                GroupAdminHandler handler = handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class);
-                switch (handler.type()) {
+        val handlers = bot.getAnnotationHandler();
+        val handlerMethods = handlers.get(GroupAdminHandler.class);
+        if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods.forEach(handlerMethod -> {
+                switch (handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class).type()) {
                     case OFF:
-                        continue;
+                        return;
                     case ALL:
                         break;
                     case UNSET:
-                        if (!"unset".equals(event.getSubType())) {
-                            continue;
+                        if (!UNSET.equals(event.getSubType())) {
+                            return;
                         }
                     case SET:
-                        if (!"set".equals(event.getSubType())) {
-                            continue;
+                        if (!SET.equals(event.getSubType())) {
+                            return;
                         }
                     default:
                 }
-                Map<Class<?>, Object> argsMap = new HashMap<>(16);
-                argsMap.put(Bot.class, bot);
-                argsMap.put(GroupAdminNoticeEvent.class, event);
-                invokeMethod(handlerMethod, argsMap);
-            }
+                Map<Class<?>, Object> params = new HashMap<>(16);
+                params.put(Bot.class, bot);
+                params.put(GroupAdminNoticeEvent.class, event);
+                invokeMethod(handlerMethod, params);
+            });
         }
     }
 
-    private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> argMap) {
-        Class<?>[] parameterTypes = handlerMethod.getMethod().getParameterTypes();
-        Object[] objects = new Object[parameterTypes.length];
-        for (int i = 0; i < parameterTypes.length; i++) {
-            Class<?> parameterType = parameterTypes[i];
-            if (argMap.containsKey(parameterType)) {
-                objects[i] = argMap.remove(parameterType);
+    /**
+     * @param handlerMethod {@link HandlerMethod}
+     * @param params        params
+     */
+    private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
+        val parameterTypes = handlerMethod.getMethod().getParameterTypes();
+        val objects = new Object[parameterTypes.length];
+        Arrays.stream(parameterTypes).forEach(InternalUtils.consumerWithIndex((item, index) -> {
+            if (params.containsKey(item)) {
+                objects[index] = params.remove(item);
             } else {
-                objects[i] = null;
+                objects[index] = null;
             }
-        }
+        }));
         try {
             handlerMethod.getMethod().invoke(handlerMethod.getObject(), objects);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -257,39 +266,38 @@ public class InjectionHandler {
     /**
      * 参数设置
      *
-     * @param handlerMethods Annotation methods
+     * @param handlerMethods {@link HandlerMethod}
      * @param bot            {@link Bot}
-     * @param event          Object
+     * @param event          {@link Object}
      */
-    private void setArgs(List<HandlerMethod> handlerMethods, Bot bot, Object event) {
-        if (handlerMethods != null && handlerMethods.size() > 0) {
-            for (HandlerMethod handlerMethod : handlerMethods) {
-                Map<Class<?>, Object> argsMap = new HashMap<>(16);
-                argsMap.put(Bot.class, bot);
-                argsMap.put(event.getClass(), event);
-                invokeMethod(handlerMethod, argsMap);
-            }
+    private void setParams(List<HandlerMethod> handlerMethods, Bot bot, Object event) {
+        if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods.forEach(handlerMethod -> {
+                Map<Class<?>, Object> params = new HashMap<>(16);
+                params.put(Bot.class, bot);
+                params.put(event.getClass(), event);
+                invokeMethod(handlerMethod, params);
+            });
         }
     }
 
     /**
-     * 返回匹配的消息Matcher类
+     * 返回匹配的消息 Matcher 类
      *
      * @param cmd 正则表达式
      * @param msg 消息内容
-     * @return argsMap
+     * @return params
      */
     private Map<Class<?>, Object> matcher(String cmd, String msg) {
-        String defCommand = "none";
-        Map<Class<?>, Object> argsMap = new ConcurrentHashMap<>(16);
-        if (!defCommand.equals(cmd)) {
-            Matcher matcher = RegexUtils.regexMatcher(cmd, msg);
+        Map<Class<?>, Object> params = new HashMap<>(16);
+        if (!DEFAULT_CMD.equals(cmd)) {
+            val matcher = RegexUtils.regexMatcher(cmd, msg);
             if (matcher == null) {
                 return null;
             }
-            argsMap.put(Matcher.class, matcher);
+            params.put(Matcher.class, matcher);
         }
-        return argsMap;
+        return params;
     }
 
 }
