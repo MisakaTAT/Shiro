@@ -13,6 +13,7 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.AtEnum;
+import com.mikuac.shiro.enums.CommonEnum;
 import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -29,14 +30,6 @@ import java.util.regex.Matcher;
  */
 @Component
 public class InjectionHandler {
-
-    private final static String DEFAULT_CMD = "none";
-
-    private final static String SET = "set";
-
-    private final static String UNSET = "unset";
-
-    private final static String GROUP = "group";
 
     /**
      * 群消息撤回事件
@@ -100,7 +93,7 @@ public class InjectionHandler {
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
                 val annotation = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
-                if (GROUP.equals(event.getMessageType())) {
+                if (CommonEnum.GROUP.value().equals(event.getMessageType())) {
                     if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                         return;
                     }
@@ -225,11 +218,11 @@ public class InjectionHandler {
                     case ALL:
                         break;
                     case UNSET:
-                        if (!UNSET.equals(event.getSubType())) {
+                        if (!CommonEnum.UNSET.value().equals(event.getSubType())) {
                             return;
                         }
                     case SET:
-                        if (!SET.equals(event.getSubType())) {
+                        if (!CommonEnum.SET.value().equals(event.getSubType())) {
                             return;
                         }
                     default:
@@ -290,7 +283,7 @@ public class InjectionHandler {
      */
     private Map<Class<?>, Object> matcher(String cmd, String msg) {
         Map<Class<?>, Object> params = new HashMap<>(16);
-        if (!DEFAULT_CMD.equals(cmd)) {
+        if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
             val matcher = RegexUtils.regexMatcher(cmd, msg);
             if (matcher == null) {
                 return null;
