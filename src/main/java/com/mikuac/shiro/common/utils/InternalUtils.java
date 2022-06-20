@@ -10,6 +10,11 @@ import java.util.function.Consumer;
  */
 public class InternalUtils {
 
+    /**
+     * @param consumer BiConsumer
+     * @param <T>      T
+     * @return Consumer
+     */
     public static <T> Consumer<T> consumerWithIndex(BiConsumer<T, Integer> consumer) {
         class Object {
             int i;

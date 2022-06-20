@@ -10,6 +10,11 @@ public class OneBotMedia {
     private final Boolean proxy;
     private final Integer timeout;
 
+    /**
+     * 构造函数
+     *
+     * @param builder {@link Builder}
+     */
     public OneBotMedia(Builder builder) {
         this.file = builder.file;
         this.cache = builder.cache;
@@ -17,6 +22,9 @@ public class OneBotMedia {
         this.timeout = builder.timeout;
     }
 
+    /**
+     * @return media code params
+     */
     public String escape() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("file=").append(this.file);
@@ -32,32 +40,54 @@ public class OneBotMedia {
         return stringBuilder.toString();
     }
 
+    /**
+     * 构造器
+     */
     public static class Builder {
         private String file = "";
         private Boolean cache;
         private Boolean proxy;
         private Integer timeout;
 
+        /**
+         * @param file 文件
+         * @return {@link Builder}
+         */
         public Builder file(String file) {
             this.file = ShiroUtils.escape(file);
             return this;
         }
 
+        /**
+         * @param cache 缓存
+         * @return {@link Builder}
+         */
         public Builder cache(boolean cache) {
             this.cache = cache;
             return this;
         }
 
+        /**
+         * @param proxy 代理
+         * @return {@link Builder}
+         */
         public Builder proxy(boolean proxy) {
             this.proxy = proxy;
             return this;
         }
 
+        /**
+         * @param timeout 超时
+         * @return {@link Builder}
+         */
         public Builder timeout(Integer timeout) {
             this.timeout = timeout;
             return this;
         }
 
+        /**
+         * @return {@link OneBotMedia}
+         */
         public OneBotMedia build() {
             return new OneBotMedia(this);
         }
