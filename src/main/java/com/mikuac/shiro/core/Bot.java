@@ -860,14 +860,15 @@ public class Bot {
      *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return {@link ActionRaw}
      */
-    public ActionRaw sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
+    public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
         val action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
         val params = new JSONObject() {{
             put("group_id", groupId);
             put("messages", msg);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -994,14 +995,44 @@ public class Bot {
      *               <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return {@link ActionRaw}
      */
-    public ActionRaw sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
+    public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
         val action = ActionPathEnum.SEND_PRIVATE_FORWARD_MSG;
         val params = new JSONObject() {{
             put("user_id", userId);
             put("messages", msg);
         }};
         val result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 发送合并转发
+     *
+     * @param event 事件
+     * @param msg   自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
+     *              <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
+     * @return {@link ActionRaw}
+     */
+    public ActionData<MsgId> sendForwardMsg(WholeMessageEvent event, List<Map<String, Object>> msg) {
+        val action = ActionPathEnum.SEND_FORWARD_MSG;
+        val params = new JSONObject() {{
+            put("messages", msg);
+        }};
+        switch (event.getMessageType()) {
+            case "private": {
+                params.put("user_id", event.getUserId());
+                break;
+            }
+            case "group": {
+                params.put("group_id", event.getGroupId());
+                break;
+            }
+            default:
+        }
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -1050,6 +1081,25 @@ public class Bot {
         val result = actionHandler.action(session, action, params);
         return result != null ? result.to(new TypeReference<ActionData<OcrResp>>() {
         }.getType()) : null;
+    }
+
+    /**
+     * 私聊发送文件
+     *
+     * @param userId 目标用户
+     * @param file   本地文件路径
+     * @param name   文件名
+     * @return {@link ActionRaw}
+     */
+    public ActionRaw uploadPrivateFile(long userId, String file, String name) {
+        val action = ActionPathEnum.UPLOAD_PRIVATE_FILE;
+        val params = new JSONObject() {{
+            put("user_id", userId);
+            put("file", file);
+            put("name", name);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
 }

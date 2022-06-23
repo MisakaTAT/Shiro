@@ -200,25 +200,26 @@ public class ShiroUtils {
     /**
      * 创建自定义消息合并转发
      *
-     * @param uin     发送者QQ号
-     * @param name    发送者显示名字
-     * @param msgList 消息列表，每个元素视为一个消息节点
-     *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
+     * @param uin      发送者QQ号
+     * @param name     发送者显示名字
+     * @param contents 消息列表，每个元素视为一个消息节点
+     *                 <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return 转发消息
      */
-    public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> msgList) {
-        List<Map<String, Object>> nodeList = new ArrayList<>();
-        msgList.forEach(msg -> {
-            Map<String, Object> node = new HashMap<>(5);
-            node.put("type", "node");
-            Map<String, Object> data = new HashMap<>(5);
-            data.put("name", name);
-            data.put("uin", uin);
-            data.put("content", msg);
-            node.put("data", data);
-            nodeList.add(node);
+    public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> contents) {
+        val nodes = new ArrayList<Map<String, Object>>();
+        contents.forEach(msg -> {
+            val node = new HashMap<String, Object>(16) {{
+                put("type", "node");
+                put("data", new HashMap<String, Object>(16) {{
+                    put("name", name);
+                    put("uin", uin);
+                    put("content", msg);
+                }});
+            }};
+            nodes.add(node);
         });
-        return nodeList;
+        return nodes;
     }
 
 }

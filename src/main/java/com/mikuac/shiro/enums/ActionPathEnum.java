@@ -219,7 +219,15 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 图片 OCR
      */
-    OCR_IMAGE("ocr_image");
+    OCR_IMAGE("ocr_image"),
+    /**
+     * 合并转发
+     */
+    SEND_FORWARD_MSG("send_forward_msg"),
+    /**
+     * 上传私聊文件
+     */
+    UPLOAD_PRIVATE_FILE("upload_private_file");
 
     /**
      * 请求路径
