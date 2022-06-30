@@ -6,9 +6,6 @@ import com.mikuac.shiro.bean.MsgChainBean;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -93,31 +90,13 @@ public class ShiroUtils {
      * @return 用户昵称
      */
     public static String getNickname(long userId) {
-        val result = new StringBuilder();
-        BufferedReader bufferedReader = null;
-        try {
-            val url = new URL(String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId));
-            val connection = url.openConnection();
-            connection.connect();
-            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), "GBK"));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                result.append(line);
-            }
-            String nickname = result.toString().split(",")[6];
+        val url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
+        val result = NetUtils.get(url, "GBK");
+        if (result != null && !result.isEmpty()) {
+            String nickname = result.split(",")[6];
             return nickname.substring(1, nickname.length() - 1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bufferedReader != null) {
-                    bufferedReader.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         }
-        return null;
+        return "";
     }
 
     /**
