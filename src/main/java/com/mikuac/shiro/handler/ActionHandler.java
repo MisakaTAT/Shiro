@@ -113,7 +113,7 @@ public class ActionHandler {
     private JSONObject generateReqJson(ActionPath action, Map<String, Object> params) {
         return new JSONObject() {{
             put("action", action.getPath());
-            if (params != null) {
+            if (!params.isEmpty()) {
                 put("params", params);
             }
             put("echo", echo++);
