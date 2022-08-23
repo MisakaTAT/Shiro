@@ -12,8 +12,11 @@ import java.net.URL;
 public class NetUtils {
 
     /**
-     * @param url request url
-     * @return resp
+     * get request
+     *
+     * @param url         url
+     * @param charsetName charset
+     * @return {@link String}
      */
     public static String get(String url, String charsetName) {
         val result = new StringBuilder();
