@@ -6,7 +6,7 @@
 
     <groupId>com.mikuac</groupId>
     <artifactId>shiro</artifactId>
-    <version>1.3.2</version>
+    <version>1.3.3</version>
     <name>Shiro</name>
     <url>https://mikuac.com</url>
     <description>基于OneBot协议的QQ机器人快速开发框架</description>
