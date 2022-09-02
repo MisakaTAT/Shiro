@@ -1102,4 +1102,46 @@ public class Bot {
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
+    /**
+     * 群打卡
+     *
+     * @param groupId 群号
+     * @return {@link ActionRaw}
+     */
+    public ActionRaw sendGroupSign(long groupId) {
+        val action = ActionPathEnum.SEND_GROUP_SIGN;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * 删除单向好友
+     *
+     * @param userId QQ号
+     * @return {@link ActionRaw}
+     */
+    public ActionRaw deleteUnidirectionalFriend(long userId) {
+        val action = ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND;
+        val params = new JSONObject() {{
+            put("user_id", userId);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * 获取单向好友列表
+     *
+     * @return {@link ActionList} of {@link  UnidirectionalFriendListResp}
+     */
+    public ActionList<UnidirectionalFriendListResp> getUnidirectionalFriendList() {
+        val action = ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST;
+        val result = actionHandler.action(session, action, null);
+        return result != null ? result.to(new TypeReference<ActionList<UnidirectionalFriendListResp>>() {
+        }.getType()) : null;
+    }
+
 }

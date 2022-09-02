@@ -227,7 +227,19 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 上传私聊文件
      */
-    UPLOAD_PRIVATE_FILE("upload_private_file");
+    UPLOAD_PRIVATE_FILE("upload_private_file"),
+    /**
+     * 群打卡
+     */
+    SEND_GROUP_SIGN("send_group_sign"),
+    /**
+     * 获取单向好友列表
+     */
+    GET_UNIDIRECTIONAL_FRIEND_LIST("get_unidirectional_friend_list"),
+    /**
+     * 删除单向好友
+     */
+    DELETE_UNIDIRECTIONAL_FRIEND("delete_unidirectional_friend");
 
     /**
      * 请求路径
