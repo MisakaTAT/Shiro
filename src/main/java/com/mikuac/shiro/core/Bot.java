@@ -108,6 +108,28 @@ public class Bot {
     }
 
     /**
+     * 临时会话
+     *
+     * @param groupId    主动发起临时会话群号(机器人本身必须是管理员/群主)
+     * @param userId     对方 QQ 号
+     * @param msg        要发送的内容
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return {@link ActionData} of {@link MsgId}
+     */
+    public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, String msg, boolean autoEscape) {
+        val action = ActionPathEnum.SEND_PRIVATE_MSG;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("user_id", userId);
+            put("message", msg);
+            put("auto_escape", autoEscape);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
+
+    /**
      * 发送群消息
      *
      * @param groupId    群号
