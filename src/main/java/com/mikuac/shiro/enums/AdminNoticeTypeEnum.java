@@ -4,6 +4,7 @@ package com.mikuac.shiro.enums;
  * 群管理员变动类型枚举
  *
  * @author meme
+ * @version $Id: $Id
  */
 public enum AdminNoticeTypeEnum {
 

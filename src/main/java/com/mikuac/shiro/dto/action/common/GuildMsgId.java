@@ -4,7 +4,10 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 
 /**
+ * <p>GuildMsgId class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 @Data
 public class GuildMsgId {

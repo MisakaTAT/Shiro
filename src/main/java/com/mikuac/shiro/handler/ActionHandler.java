@@ -18,6 +18,7 @@ import java.util.Map;
  * Created on 2021/7/7.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Slf4j
 @Component
@@ -67,6 +68,8 @@ public class ActionHandler {
     }
 
     /**
+     * <p>action.</p>
+     *
      * @param session Session
      * @param action  请求路径
      * @param params  请求参数

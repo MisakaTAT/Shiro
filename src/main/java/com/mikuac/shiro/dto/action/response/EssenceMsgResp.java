@@ -4,7 +4,10 @@ import com.alibaba.fastjson2.annotation.JSONField;
 import lombok.Data;
 
 /**
+ * <p>EssenceMsgResp class.</p>
+ *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 public class EssenceMsgResp {

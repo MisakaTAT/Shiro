@@ -21,6 +21,7 @@ import java.io.IOException;
  * Created on 2021/7/16.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Slf4j
 public class WebSocketHandler extends TextWebSocketHandler {
@@ -47,11 +48,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
     /**
      * 构造函数
      *
-     * @param eventHandler   {@link EventHandler}
-     * @param botFactory     {@link BotFactory}
-     * @param actionHandler  {@link ActionHandler}
-     * @param shiroAsyncTask {@link ShiroAsyncTask}
-     * @param botContainer   {@link BotContainer}
+     * @param eventHandler   {@link com.mikuac.shiro.handler.EventHandler}
+     * @param botFactory     {@link com.mikuac.shiro.core.BotFactory}
+     * @param actionHandler  {@link com.mikuac.shiro.handler.ActionHandler}
+     * @param shiroAsyncTask {@link com.mikuac.shiro.task.ShiroAsyncTask}
+     * @param botContainer   {@link com.mikuac.shiro.core.BotContainer}
      */
     public WebSocketHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;
@@ -97,6 +98,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         return token.equals(clientToken);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         try {
@@ -119,6 +121,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         long xSelfId = parseSelfId(session);
@@ -129,6 +132,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         log.warn("Account {} disconnected", xSelfId);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) {
         long xSelfId = parseSelfId(session);

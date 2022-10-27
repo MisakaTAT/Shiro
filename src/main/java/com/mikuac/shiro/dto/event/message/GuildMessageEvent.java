@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
  * 频道消息
  *
  * @author Alexskim
+ * @version $Id: $Id
  */
 @Data
 @NoArgsConstructor

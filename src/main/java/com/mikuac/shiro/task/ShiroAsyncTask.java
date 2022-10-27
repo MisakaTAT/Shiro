@@ -12,6 +12,7 @@ import javax.annotation.Resource;
  * 异步任务
  *
  * @author zero
+ * @version $Id: $Id
  */
 @Component
 public class ShiroAsyncTask {
@@ -22,7 +23,7 @@ public class ShiroAsyncTask {
     /**
      * 事件上报处理函数
      *
-     * @param eventHandler {@link EventHandler}
+     * @param eventHandler {@link com.mikuac.shiro.handler.EventHandler}
      * @param xSelfId      机器人 QQ
      * @param result       上报的 Json 数据
      */

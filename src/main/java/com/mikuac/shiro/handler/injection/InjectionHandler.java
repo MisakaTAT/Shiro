@@ -26,8 +26,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 
 /**
+ * <p>InjectionHandler class.</p>
+ *
  * @author meme
  * @author zero
+ * @version $Id: $Id
  */
 @Component
 public class InjectionHandler {

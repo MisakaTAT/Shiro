@@ -5,7 +5,10 @@ import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import lombok.Data;
 
 /**
+ * <p>GetGuildMsgResp class.</p>
+ *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 public class GetGuildMsgResp {

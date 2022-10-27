@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
+ * <p>ChannelCreatedNoticeEvent class.</p>
+ *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 @NoArgsConstructor

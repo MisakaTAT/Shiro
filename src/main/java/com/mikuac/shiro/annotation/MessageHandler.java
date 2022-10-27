@@ -5,7 +5,10 @@ import com.mikuac.shiro.enums.AtEnum;
 import java.lang.annotation.*;
 
 /**
+ * <p>MessageHandler class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 @Documented
 @Target(ElementType.METHOD)

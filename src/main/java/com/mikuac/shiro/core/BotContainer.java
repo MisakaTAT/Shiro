@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Created on 2021/7/7.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Component
 public class BotContainer {

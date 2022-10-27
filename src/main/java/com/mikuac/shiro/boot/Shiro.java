@@ -18,6 +18,7 @@ import javax.annotation.Resource;
  * Created on 2021/7/16.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Configuration
 public class Shiro {
@@ -41,7 +42,9 @@ public class Shiro {
     private BotContainer botContainer;
 
     /**
-     * @return {@link WebSocketHandler}
+     * <p>createShiroWebSocketHandler.</p>
+     *
+     * @return {@link com.mikuac.shiro.handler.WebSocketHandler}
      */
     @Bean
     @ConditionalOnMissingBean
@@ -50,7 +53,9 @@ public class Shiro {
     }
 
     /**
-     * @return {@link ServletServerContainerFactoryBean}
+     * <p>createWebSocketContainer.</p>
+     *
+     * @return {@link org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean}
      */
     @Bean
     @ConditionalOnMissingBean

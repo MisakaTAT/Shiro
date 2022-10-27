@@ -10,7 +10,10 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 /**
+ * <p>MessageReactionsUpdatedNoticeEvent class.</p>
+ *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 @NoArgsConstructor

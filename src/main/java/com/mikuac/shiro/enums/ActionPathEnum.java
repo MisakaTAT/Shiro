@@ -3,7 +3,10 @@ package com.mikuac.shiro.enums;
 import lombok.Getter;
 
 /**
+ * <p>ActionPathEnum class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 
 @Getter
@@ -256,9 +259,9 @@ public enum ActionPathEnum implements ActionPath {
     }
 
     /**
-     * 获取请求路径
+     * {@inheritDoc}
      *
-     * @return 请求路径
+     * 获取请求路径
      */
     @Override
     public String getPath() {

@@ -21,6 +21,7 @@ import javax.annotation.Resource;
  * Created on 2021/7/15.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Slf4j
 @Component
@@ -39,6 +40,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
     @Resource
     private WebSocketHandler webSocketHandler;
 
+    /** {@inheritDoc} */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         setLogLevel();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
  * Created on 2021/7/7.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 @Component

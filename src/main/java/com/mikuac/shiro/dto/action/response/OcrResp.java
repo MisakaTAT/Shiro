@@ -6,7 +6,10 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * <p>OcrResp class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 @Data
 public class OcrResp {

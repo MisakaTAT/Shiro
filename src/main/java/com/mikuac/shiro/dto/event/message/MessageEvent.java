@@ -12,7 +12,10 @@ import lombok.experimental.SuperBuilder;
 import java.util.List;
 
 /**
+ * <p>MessageEvent class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 @Data
 @NoArgsConstructor

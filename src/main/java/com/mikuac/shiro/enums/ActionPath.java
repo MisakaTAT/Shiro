@@ -4,6 +4,7 @@ package com.mikuac.shiro.enums;
  * Created on 2021/9/11.
  *
  * @author zero
+ * @version $Id: $Id
  */
 public interface ActionPath {
 

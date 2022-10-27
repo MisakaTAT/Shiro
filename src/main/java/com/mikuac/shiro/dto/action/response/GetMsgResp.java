@@ -7,6 +7,7 @@ import lombok.Data;
  * Created on 2021/9/6.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 public class GetMsgResp {

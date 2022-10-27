@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 /**
+ * <p>GroupMessageEvent class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 @Data
 @NoArgsConstructor

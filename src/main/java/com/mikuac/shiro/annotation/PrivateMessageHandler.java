@@ -6,6 +6,7 @@ import java.lang.annotation.*;
  * 私聊事件注解
  *
  * @author meme
+ * @version $Id: $Id
  */
 @Documented
 @Target(ElementType.METHOD)

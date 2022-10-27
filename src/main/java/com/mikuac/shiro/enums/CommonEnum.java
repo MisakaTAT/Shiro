@@ -1,7 +1,10 @@
 package com.mikuac.shiro.enums;
 
 /**
+ * <p>CommonEnum class.</p>
+ *
  * @author Zero
+ * @version $Id: $Id
  */
 public enum CommonEnum {
 

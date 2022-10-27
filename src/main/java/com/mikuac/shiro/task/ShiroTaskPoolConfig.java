@@ -12,6 +12,7 @@ import java.util.concurrent.ThreadPoolExecutor;
  * 线程池
  *
  * @author zero
+ * @version $Id: $Id
  */
 @Configuration
 public class ShiroTaskPoolConfig {
@@ -22,7 +23,7 @@ public class ShiroTaskPoolConfig {
     /**
      * 线程池配置
      *
-     * @return {@link ThreadPoolTaskExecutor}
+     * @return {@link org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor}
      */
     @Bean("shiroTaskExecutor")
     public ThreadPoolTaskExecutor shiroTaskExecutor() {

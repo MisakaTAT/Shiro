@@ -4,6 +4,7 @@ package com.mikuac.shiro.enums;
  * At枚举
  *
  * @author meme
+ * @version $Id: $Id
  */
 public enum AtEnum {
 

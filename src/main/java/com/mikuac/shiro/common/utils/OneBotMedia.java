@@ -1,7 +1,10 @@
 package com.mikuac.shiro.common.utils;
 
 /**
+ * <p>OneBotMedia class.</p>
+ *
  * @author Zhongren233
+ * @version $Id: $Id
  */
 public class OneBotMedia {
 
@@ -13,7 +16,7 @@ public class OneBotMedia {
     /**
      * 构造函数
      *
-     * @param builder {@link Builder}
+     * @param builder {@link com.mikuac.shiro.common.utils.OneBotMedia.Builder}
      */
     public OneBotMedia(Builder builder) {
         this.file = builder.file;
@@ -23,6 +26,8 @@ public class OneBotMedia {
     }
 
     /**
+     * <p>escape.</p>
+     *
      * @return media code params
      */
     public String escape() {

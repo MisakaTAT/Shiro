@@ -8,6 +8,7 @@ import java.lang.annotation.*;
  * 群管理员变动事件注解
  *
  * @author meme
+ * @version $Id: $Id
  */
 @Documented
 @Target(ElementType.METHOD)

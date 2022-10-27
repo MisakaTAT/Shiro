@@ -10,6 +10,7 @@ import lombok.experimental.SuperBuilder;
  * 事件上报
  *
  * @author zero
+ * @version $Id: $Id
  */
 @Data
 @NoArgsConstructor

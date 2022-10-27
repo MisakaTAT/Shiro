@@ -11,6 +11,7 @@ import java.io.IOException;
  * Created on 2021/7/7.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Slf4j
 public class ActionSendUtils extends Thread {
@@ -22,7 +23,9 @@ public class ActionSendUtils extends Thread {
     private JSONObject resp;
 
     /**
-     * @param session        {@link WebSocketSession}
+     * <p>Constructor for ActionSendUtils.</p>
+     *
+     * @param session        {@link org.springframework.web.socket.WebSocketSession}
      * @param requestTimeout Request Timeout
      */
     public ActionSendUtils(WebSocketSession session, Long requestTimeout) {
@@ -31,10 +34,12 @@ public class ActionSendUtils extends Thread {
     }
 
     /**
+     * <p>send.</p>
+     *
      * @param req Request json data
      * @return Response json data
-     * @throws IOException          exception
-     * @throws InterruptedException exception
+     * @throws java.io.IOException          exception
+     * @throws java.lang.InterruptedException exception
      */
     public JSONObject send(JSONObject req) throws IOException, InterruptedException {
         synchronized (session) {
@@ -48,6 +53,8 @@ public class ActionSendUtils extends Thread {
     }
 
     /**
+     * <p>onCallback.</p>
+     *
      * @param resp Response json data
      */
     public void onCallback(JSONObject resp) {

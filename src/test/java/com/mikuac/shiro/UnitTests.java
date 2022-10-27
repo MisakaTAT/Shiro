@@ -13,6 +13,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 
+/**
+ * <p>UnitTests class.</p>
+ *
+ * @author zero
+ * @version $Id: $Id
+ * @since 1.3.7
+ */
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -21,6 +28,9 @@ public class UnitTests {
     @Resource
     private RateLimiter rateLimiter;
 
+    /**
+     * <p>rateLimiterTest.</p>
+     */
     @Test
     public void rateLimiterTest() {
         val a = rateLimiter.tryAcquire(4);
@@ -29,6 +39,9 @@ public class UnitTests {
         TestCase.assertTrue(b);
     }
 
+    /**
+     * <p>stringToArrayMsgTest.</p>
+     */
     @Test
     public void stringToArrayMsgTest() {
         val stringMsg = "[CQ:at,qq=1122334455]测试消息1[CQ:face,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test.image,url=https://test.com/2.jpg]\n[CQ:image,file=test.image,url=https://test.com/2.jpg]";
@@ -38,6 +51,9 @@ public class UnitTests {
         TestCase.assertEquals(arrayMsg, list.toString());
     }
 
+    /**
+     * <p>msgUtilsTest.</p>
+     */
     @Test
     public void msgUtilsTest() {
         val msgUtils = MsgUtils.builder().at(1122334455L).text("Hello").img("https://test.com/1.jpg");
@@ -45,6 +61,9 @@ public class UnitTests {
         TestCase.assertEquals(buildMsg, msgUtils.build());
     }
 
+    /**
+     * <p>isAtAllTest.</p>
+     */
     @Test
     public void isAtAllTest() {
         val atAll = "[CQ:at,qq=all]";
@@ -60,6 +79,9 @@ public class UnitTests {
         TestCase.assertFalse(notAtAll);
     }
 
+    /**
+     * <p>getAtListTest.</p>
+     */
     @Test
     public void getAtListTest() {
         val stringMsg = "[CQ:at,qq=11111][CQ:at,qq=22222][CQ:at,qq=33333]";
@@ -69,6 +91,9 @@ public class UnitTests {
         TestCase.assertEquals(3, atList.size());
     }
 
+    /**
+     * <p>getMsgImgUrlListTest.</p>
+     */
     @Test
     public void getMsgImgUrlListTest() {
         val stringMsg = "[CQ:image,file=https://test.com/2.jpg][CQ:image,file=https://test.com/2.jpg]";
@@ -78,6 +103,9 @@ public class UnitTests {
         TestCase.assertEquals(2, imgUrlList.size());
     }
 
+    /**
+     * <p>getMsgVideoUrlListTest.</p>
+     */
     @Test
     public void getMsgVideoUrlListTest() {
         val stringMsg = "[CQ:video,file=https://test.com/1.mp4][CQ:video,file=https://test.com/2.mp4]";
@@ -87,6 +115,9 @@ public class UnitTests {
         TestCase.assertEquals(2, videoUrlList.size());
     }
 
+    /**
+     * <p>getNicknameTest.</p>
+     */
     @Test
     public void getNicknameTest() {
         val nickname = ShiroUtils.getNickname(1140667337L);
@@ -94,6 +125,9 @@ public class UnitTests {
         TestCase.assertEquals("Zero", nickname);
     }
 
+    /**
+     * <p>debugModeTest.</p>
+     */
     @Test
     public void debugModeTest() {
         TestCase.assertTrue(log.isDebugEnabled());

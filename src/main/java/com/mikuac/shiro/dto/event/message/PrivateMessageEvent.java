@@ -11,6 +11,7 @@ import lombok.experimental.SuperBuilder;
  * 私聊消息
  *
  * @author zero
+ * @version $Id: $Id
  */
 @Data
 @NoArgsConstructor

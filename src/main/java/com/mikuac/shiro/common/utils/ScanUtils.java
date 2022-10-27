@@ -15,12 +15,16 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * <p>ScanUtils class.</p>
+ *
  * @author Zero
+ * @version $Id: $Id
  */
 public class ScanUtils implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
 
+    /** {@inheritDoc} */
     @Override
     public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;

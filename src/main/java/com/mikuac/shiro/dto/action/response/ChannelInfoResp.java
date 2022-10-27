@@ -6,7 +6,10 @@ import lombok.Data;
 import java.util.List;
 
 /**
+ * <p>ChannelInfoResp class.</p>
+ *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 public class ChannelInfoResp {

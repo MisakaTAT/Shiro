@@ -7,14 +7,19 @@ import org.springframework.aop.support.AopUtils;
 import java.lang.reflect.Field;
 
 /**
+ * <p>AopTargetUtils class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 public class AopTargetUtils {
 
     /**
-     * @param proxy {@link Object}
+     * <p>getTarget.</p>
+     *
+     * @param proxy {@link java.lang.Object}
      * @return TargetObject
-     * @throws Exception exception
+     * @throws java.lang.Exception exception
      */
     public static Object getTarget(Object proxy) throws Exception {
         if (!AopUtils.isAopProxy(proxy)) {

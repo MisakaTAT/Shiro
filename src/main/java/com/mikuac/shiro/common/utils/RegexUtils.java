@@ -7,6 +7,7 @@ import java.util.regex.Pattern;
  * 正则工具类
  *
  * @author Zero
+ * @version $Id: $Id
  */
 public class RegexUtils {
 

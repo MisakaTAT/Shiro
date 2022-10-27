@@ -25,6 +25,7 @@ import java.util.List;
  * 事件处理器
  *
  * @author zero
+ * @version $Id: $Id
  */
 @Slf4j
 @Component
@@ -41,7 +42,7 @@ public class EventHandler {
     /**
      * 元事件处理器
      *
-     * @param bot       {@link Bot}
+     * @param bot       {@link com.mikuac.shiro.core.Bot}
      * @param eventJson 响应数据
      */
     public void handler(@NotNull Bot bot, @NotNull JSONObject eventJson) {

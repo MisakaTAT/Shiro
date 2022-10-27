@@ -9,6 +9,7 @@ import java.util.List;
  * Created on 2021/7/8.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Data
 public class GroupHonorInfoResp {

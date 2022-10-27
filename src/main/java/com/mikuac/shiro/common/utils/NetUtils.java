@@ -7,7 +7,10 @@ import java.io.InputStreamReader;
 import java.net.URL;
 
 /**
+ * <p>NetUtils class.</p>
+ *
  * @author zero
+ * @version $Id: $Id
  */
 public class NetUtils {
 
@@ -16,7 +19,7 @@ public class NetUtils {
      *
      * @param url         url
      * @param charsetName charset
-     * @return {@link String}
+     * @return {@link java.lang.String}
      */
     public static String get(String url, String charsetName) {
         val result = new StringBuilder();

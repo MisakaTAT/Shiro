@@ -22,6 +22,7 @@ import java.util.*;
  * Created on 2021/7/7.
  *
  * @author Zero
+ * @version $Id: $Id
  */
 @Slf4j
 @Component
@@ -55,8 +56,8 @@ public class BotFactory {
      * 创建Bot对象
      *
      * @param selfId  机器人账号
-     * @param session {@link WebSocketSession}
-     * @return {@link Bot}
+     * @param session {@link org.springframework.web.socket.WebSocketSession}
+     * @return {@link com.mikuac.shiro.core.Bot}
      */
     public Bot createBot(long selfId, WebSocketSession session) {
         log.debug("Start creating bot instance {}", selfId);
