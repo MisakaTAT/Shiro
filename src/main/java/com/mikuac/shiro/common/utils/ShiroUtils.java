@@ -177,6 +177,20 @@ public class ShiroUtils {
     }
 
     /**
+     * 从 MsgChainBean 生成 CQ Code
+     *
+     * @param o {@link com.mikuac.shiro.bean.MsgChainBean}
+     * @return CQ Code
+     */
+    public static String jsonToCode(MsgChainBean o) {
+        val builder = new StringBuilder();
+        builder.append("[CQ:").append(o.getType());
+        o.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
+        builder.append("]");
+        return builder.toString();
+    }
+
+    /**
      * 创建自定义消息合并转发
      *
      * @param uin      发送者QQ号

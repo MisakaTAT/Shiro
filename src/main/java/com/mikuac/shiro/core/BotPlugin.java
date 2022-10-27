@@ -3,7 +3,7 @@ package com.mikuac.shiro.core;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
-import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
+import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
@@ -31,10 +31,10 @@ public class BotPlugin {
      * 全部消息监听 （群聊与私聊）
      *
      * @param bot   {@link Bot}
-     * @param event {@link WholeMessageEvent}
+     * @param event {@link AnyMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onWholeMessage(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
+    public int onWholeMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
         return MESSAGE_IGNORE;
     }
 

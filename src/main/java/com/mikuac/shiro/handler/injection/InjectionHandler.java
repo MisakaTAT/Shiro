@@ -7,14 +7,15 @@ import com.mikuac.shiro.common.utils.InternalUtils;
 import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
+import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
-import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
 import lombok.val;
+import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -34,8 +35,8 @@ public class InjectionHandler {
     /**
      * 群消息撤回事件
      *
-     * @param bot   {@link Bot}
-     * @param event {@link GroupMsgDeleteNoticeEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupMsgDeleteNoticeEvent}
      */
     public void invokeGroupRecall(@NotNull Bot bot, @NotNull GroupMsgDeleteNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupMsgDeleteNoticeHandler.class), bot, event);
@@ -44,8 +45,8 @@ public class InjectionHandler {
     /**
      * 好友消息撤回事件
      *
-     * @param bot   {@link Bot}
-     * @param event {@link PrivateMsgDeleteNoticeEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.notice.PrivateMsgDeleteNoticeEvent}
      */
     public void invokeFriendRecall(@NotNull Bot bot, @NotNull PrivateMsgDeleteNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(PrivateMsgDeleteNoticeHandler.class), bot, event);
@@ -54,8 +55,8 @@ public class InjectionHandler {
     /**
      * 好友添加事件
      *
-     * @param bot   {@link Bot}
-     * @param event {@link FriendAddNoticeEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.notice.FriendAddNoticeEvent}
      */
     public void invokeFriendAdd(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(FriendAddNoticeHandler.class), bot, event);
@@ -64,8 +65,8 @@ public class InjectionHandler {
     /**
      * 入群事件
      *
-     * @param bot   {@link Bot}
-     * @param event {@link GroupIncreaseNoticeEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupIncreaseNoticeEvent}
      */
     public void invokeGroupIncrease(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupIncreaseHandler.class), bot, event);
@@ -74,8 +75,8 @@ public class InjectionHandler {
     /**
      * 退群事件
      *
-     * @param bot   {@link Bot}
-     * @param event {@link GroupDecreaseNoticeEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupDecreaseNoticeEvent}
      */
     public void invokeGroupDecrease(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupDecreaseHandler.class), bot, event);
@@ -84,10 +85,10 @@ public class InjectionHandler {
     /**
      * 监听全部消息
      *
-     * @param bot   {@link Bot}
-     * @param event {@link WholeMessageEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.message.AnyMessageEvent}
      */
-    public void invokeWholeMessage(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
+    public void invokeAnyMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
         val handlers = bot.getAnnotationHandler();
         val handlerMethods = handlers.get(MessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
@@ -98,12 +99,13 @@ public class InjectionHandler {
                         return;
                     }
                 }
-                Map<Class<?>, Object> params = matcher(annotation.cmd(), event.getMessage());
+                val msg = extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at());
+                val params = matcher(annotation.cmd(), msg);
                 if (params == null) {
                     return;
                 }
                 params.put(Bot.class, bot);
-                params.put(WholeMessageEvent.class, event);
+                params.put(AnyMessageEvent.class, event);
                 invokeMethod(handlerMethod, params);
             });
         }
@@ -114,22 +116,58 @@ public class InjectionHandler {
      *
      * @param arrayMsg 消息链
      * @param selfId   机器人QQ
-     * @param at       at枚举
+     * @param atEnum   at枚举
      * @return boolean
      */
-    private boolean checkAt(List<MsgChainBean> arrayMsg, long selfId, AtEnum at) {
-        val ats = ShiroUtils.getAtList(arrayMsg);
-        if (at == AtEnum.NEED && !ats.contains(selfId)) {
+    private boolean checkAt(List<MsgChainBean> arrayMsg, long selfId, AtEnum atEnum) {
+        val at = "at";
+        val all = "all";
+
+        if (atEnum == AtEnum.OFF) {
+            return false;
+        }
+
+        if (arrayMsg.isEmpty()) {
             return true;
         }
-        return at == AtEnum.NOT_NEED && ats.contains(selfId);
+
+        if (atEnum == AtEnum.NEED) {
+            val atObj = arrayMsg.get(0);
+            val atUserIdStr = atObj.getData().get("qq");
+            if (!at.equals(atObj.getType())) {
+                return true;
+            }
+            if (atUserIdStr == null || atUserIdStr.isEmpty()) {
+                return false;
+            }
+            if (all.equals(atUserIdStr)) {
+                return true;
+            }
+            val atUserId = Long.parseLong(atUserIdStr);
+            return selfId != atUserId;
+        }
+
+        if (atEnum == AtEnum.NOT_NEED) {
+            val atObj = arrayMsg.get(0);
+            val atUserIdStr = atObj.getData().get("qq");
+            if (atUserIdStr == null || atUserIdStr.isEmpty()) {
+                return false;
+            }
+            if (all.equals(atUserIdStr)) {
+                return false;
+            }
+            val atUserId = Long.parseLong(atUserIdStr);
+            return selfId == atUserId;
+        }
+
+        return true;
     }
 
     /**
      * 频道消息
      *
-     * @param bot   {@link Bot}
-     * @param event {@link GuildMessageEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
      */
     public void invokeGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
         val handlers = bot.getAnnotationHandler();
@@ -140,7 +178,8 @@ public class InjectionHandler {
                 if (checkAt(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
                     return;
                 }
-                val params = matcher(annotation.cmd(), event.getMessage());
+                val msg = extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at());
+                val params = matcher(annotation.cmd(), msg);
                 if (params == null) {
                     return;
                 }
@@ -152,10 +191,27 @@ public class InjectionHandler {
     }
 
     /**
+     * 提取去除@后的消息内容
+     *
+     * @param message  原始消息
+     * @param arrayMsg 数组消息
+     * @param atEnum   @枚举
+     * @return 处理后的消息
+     */
+    private String extractMsg(String message, List<MsgChainBean> arrayMsg, AtEnum atEnum) {
+        var msg = message;
+        if (atEnum == AtEnum.NEED) {
+            val atCode = ShiroUtils.jsonToCode(arrayMsg.get(0));
+            msg = msg.replace(atCode, "").replace(" ", "");
+        }
+        return msg;
+    }
+
+    /**
      * 群聊消息
      *
-     * @param bot   {@link Bot}
-     * @param event {@link GroupMessageEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         val handlers = bot.getAnnotationHandler();
@@ -166,7 +222,8 @@ public class InjectionHandler {
                 if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
-                val params = matcher(annotation.cmd(), event.getMessage());
+                val msg = extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at());
+                val params = matcher(annotation.cmd(), msg);
                 if (params == null) {
                     return;
                 }
@@ -180,8 +237,8 @@ public class InjectionHandler {
     /**
      * 私聊消息
      *
-     * @param bot   {@link Bot}
-     * @param event {@link PrivateMessageEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.message.PrivateMessageEvent}
      */
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         val handlers = bot.getAnnotationHandler();
@@ -204,8 +261,8 @@ public class InjectionHandler {
     /**
      * 管理员变动事件
      *
-     * @param bot   {@link Bot}
-     * @param event {@link GroupAdminNoticeEvent}
+     * @param bot   {@link com.mikuac.shiro.core.Bot}
+     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent}
      */
     public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
         val handlers = bot.getAnnotationHandler();

@@ -91,10 +91,10 @@ public class EventHandler {
      * @param event     {@link MessageEvent}
      * @return {@link MsgChainBean}
      */
-    private List<MsgChainBean> setWholeMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, @NotNull MessageEvent event) {
+    private List<MsgChainBean> setAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, @NotNull MessageEvent event) {
         try {
             val arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-            pushWholeMessageEvent(bot, eventJson, arrayMsg);
+            pushAnyMessageEvent(bot, eventJson, arrayMsg);
             return arrayMsg;
         } catch (Exception e) {
             e.printStackTrace();
@@ -118,7 +118,7 @@ public class EventHandler {
                 if (setInterceptor(bot, event)) {
                     return;
                 }
-                event.setArrayMsg(setWholeMessageEvent(bot, eventJson, event));
+                event.setArrayMsg(setAnyMessageEvent(bot, eventJson, event));
                 injectionHandler.invokePrivateMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -133,7 +133,7 @@ public class EventHandler {
                 if (setInterceptor(bot, event)) {
                     return;
                 }
-                event.setArrayMsg(setWholeMessageEvent(bot, eventJson, event));
+                event.setArrayMsg(setAnyMessageEvent(bot, eventJson, event));
                 injectionHandler.invokeGroupMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
                     if (getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
@@ -404,10 +404,10 @@ public class EventHandler {
         // Ignored this handler
     }
 
-    private void pushWholeMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, List<MsgChainBean> arrayMsg) {
-        val event = eventJson.to(WholeMessageEvent.class);
+    private void pushAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, List<MsgChainBean> arrayMsg) {
+        val event = eventJson.to(AnyMessageEvent.class);
         event.setArrayMsg(arrayMsg);
-        injectionHandler.invokeWholeMessage(bot, event);
+        injectionHandler.invokeAnyMessage(bot, event);
         for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
             if (getPlugin(pluginClass).onWholeMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                 break;

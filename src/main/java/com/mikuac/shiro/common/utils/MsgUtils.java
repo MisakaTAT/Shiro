@@ -8,7 +8,7 @@ package com.mikuac.shiro.common.utils;
 @SuppressWarnings("unused")
 public class MsgUtils {
 
-    StringBuffer stringBuffer = new StringBuffer();
+    StringBuilder builder = new StringBuilder();
 
     /**
      * 消息构建
@@ -26,7 +26,7 @@ public class MsgUtils {
      * @return {@link String}
      */
     public MsgUtils text(String text) {
-        stringBuffer.append(text);
+        builder.append(text);
         return this;
     }
 
@@ -38,7 +38,7 @@ public class MsgUtils {
      */
     public MsgUtils img(String url) {
         String imgCode = String.format("[CQ:image,file=%s]", ShiroUtils.escape(url));
-        stringBuffer.append(imgCode);
+        builder.append(imgCode);
         return this;
     }
 
@@ -49,7 +49,7 @@ public class MsgUtils {
      * @return {@link String}
      */
     public MsgUtils img(OneBotMedia img) {
-        stringBuffer.append("[CQ:image,").append(img.escape()).append("]");
+        builder.append("[CQ:image,").append(img.escape()).append("]");
         return this;
     }
 
@@ -62,7 +62,7 @@ public class MsgUtils {
      */
     public MsgUtils video(String video, String cover) {
         String videoCode = String.format("[CQ:video,file=%s,cover=%s]", ShiroUtils.escape(video), ShiroUtils.escape(cover));
-        stringBuffer.append(videoCode);
+        builder.append(videoCode);
         return this;
     }
 
@@ -74,7 +74,7 @@ public class MsgUtils {
      */
     public MsgUtils flashImg(String img) {
         String flashImgCode = String.format("[CQ:image,type=flash,file=%s]", ShiroUtils.escape(img));
-        stringBuffer.append(flashImgCode);
+        builder.append(flashImgCode);
         return this;
     }
 
@@ -87,7 +87,7 @@ public class MsgUtils {
      */
     public MsgUtils face(int id) {
         String faceCode = String.format("[CQ:face,id=%s]", id);
-        stringBuffer.append(faceCode);
+        builder.append(faceCode);
         return this;
     }
 
@@ -99,7 +99,7 @@ public class MsgUtils {
      */
     public MsgUtils record(String record) {
         String recordCode = String.format("[CQ:record,file=%s]", ShiroUtils.escape(record));
-        stringBuffer.append(recordCode);
+        builder.append(recordCode);
         return this;
     }
 
@@ -111,7 +111,7 @@ public class MsgUtils {
      */
     public MsgUtils at(long userId) {
         String atCode = String.format("[CQ:at,qq=%s]", userId);
-        stringBuffer.append(atCode);
+        builder.append(atCode);
         return this;
     }
 
@@ -121,7 +121,7 @@ public class MsgUtils {
      * @return {@link String}
      */
     public MsgUtils atAll() {
-        stringBuffer.append("[CQ:at,qq=all]");
+        builder.append("[CQ:at,qq=all]");
         return this;
     }
 
@@ -133,7 +133,7 @@ public class MsgUtils {
      */
     public MsgUtils poke(long userId) {
         String pokeCode = String.format("[CQ:poke,qq=%s]", userId);
-        stringBuffer.append(pokeCode);
+        builder.append(pokeCode);
         return this;
     }
 
@@ -145,7 +145,7 @@ public class MsgUtils {
      */
     public MsgUtils reply(int msgId) {
         String replyCode = String.format("[CQ:reply,id=%s]", msgId);
-        stringBuffer.append(replyCode);
+        builder.append(replyCode);
         return this;
     }
 
@@ -157,7 +157,7 @@ public class MsgUtils {
      */
     public MsgUtils reply(String msgId) {
         String replyCode = String.format("[CQ:reply,id=\"%s\"]", msgId);
-        stringBuffer.append(replyCode);
+        builder.append(replyCode);
         return this;
     }
 
@@ -171,7 +171,7 @@ public class MsgUtils {
      */
     public MsgUtils gift(long userId, int giftId) {
         String giftCode = String.format("[CQ:gift,qq=%s,id=%s]", userId, giftId);
-        stringBuffer.append(giftCode);
+        builder.append(giftCode);
         return this;
     }
 
@@ -184,7 +184,7 @@ public class MsgUtils {
      */
     public MsgUtils tts(String text) {
         String ttsCode = String.format("[CQ:tts,text=%s]", ShiroUtils.escape(text));
-        stringBuffer.append(ttsCode);
+        builder.append(ttsCode);
         return this;
     }
 
@@ -196,7 +196,7 @@ public class MsgUtils {
      */
     public MsgUtils xml(String data) {
         String xmlCode = String.format("[CQ:xml,data=%s]", ShiroUtils.escape(data));
-        stringBuffer.append(xmlCode);
+        builder.append(xmlCode);
         return this;
     }
 
@@ -209,7 +209,7 @@ public class MsgUtils {
      */
     public MsgUtils xml(String data, int resId) {
         String xmlCode = String.format("[CQ:xml,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
-        stringBuffer.append(xmlCode);
+        builder.append(xmlCode);
         return this;
     }
 
@@ -221,7 +221,7 @@ public class MsgUtils {
      */
     public MsgUtils json(String data) {
         String ttsCode = String.format("[CQ:json,data=%s]", ShiroUtils.escape(data));
-        stringBuffer.append(ttsCode);
+        builder.append(ttsCode);
         return this;
     }
 
@@ -234,7 +234,7 @@ public class MsgUtils {
      */
     public MsgUtils json(String data, int resId) {
         String jsonCode = String.format("[CQ:json,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
-        stringBuffer.append(jsonCode);
+        builder.append(jsonCode);
         return this;
     }
 
@@ -247,7 +247,7 @@ public class MsgUtils {
      */
     public MsgUtils cardImage(String file) {
         String cardImageCode = String.format("[CQ:cardimage,file=%s]", ShiroUtils.escape(file));
-        stringBuffer.append(cardImageCode);
+        builder.append(cardImageCode);
         return this;
     }
 
@@ -269,7 +269,7 @@ public class MsgUtils {
                 String.format("[CQ:cardimage,file=%s,minwidth=%s,minheight=%s,maxwidth=%s,maxheight=%s,source=%s,icon=%s]",
                         ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, ShiroUtils.escape(source),
                         ShiroUtils.escape(icon));
-        stringBuffer.append(cardImageCode);
+        builder.append(cardImageCode);
         return this;
     }
 
@@ -282,7 +282,7 @@ public class MsgUtils {
      */
     public MsgUtils music(String type, long id) {
         String musicCode = String.format("[CQ:music,type=%s,id=%s]", ShiroUtils.escape(type), id);
-        stringBuffer.append(musicCode);
+        builder.append(musicCode);
         return this;
     }
 
@@ -302,7 +302,7 @@ public class MsgUtils {
                 ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title), ShiroUtils.escape(content),
                 ShiroUtils.escape(image)
         );
-        stringBuffer.append(customMusicCode);
+        builder.append(customMusicCode);
         return this;
     }
 
@@ -319,7 +319,7 @@ public class MsgUtils {
                 "[CQ:music,type=custom,url=%s,audio=%s,title=%s]",
                 ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title)
         );
-        stringBuffer.append(customMusicCode);
+        builder.append(customMusicCode);
         return this;
     }
 
@@ -331,7 +331,7 @@ public class MsgUtils {
      */
     public MsgUtils rps(int value) {
         String rpsCode = String.format("[CQ:rps,value=%s]", value);
-        stringBuffer.append(rpsCode);
+        builder.append(rpsCode);
         return this;
     }
 
@@ -341,7 +341,7 @@ public class MsgUtils {
      * @return {@link String}
      */
     public String build() {
-        return stringBuffer.toString();
+        return builder.toString();
     }
 
 }

@@ -5,7 +5,7 @@ import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
-import com.mikuac.shiro.dto.event.message.WholeMessageEvent;
+import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
@@ -69,12 +69,12 @@ public class Bot {
     /**
      * 发送消息
      *
-     * @param event      {@link WholeMessageEvent}
+     * @param event      {@link AnyMessageEvent}
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return {@link ActionData} of {@link MsgId}
      */
-    public ActionData<MsgId> sendMsg(WholeMessageEvent event, String msg, boolean autoEscape) {
+    public ActionData<MsgId> sendMsg(AnyMessageEvent event, String msg, boolean autoEscape) {
         switch (event.getMessageType()) {
             case "private": {
                 return sendPrivateMsg(event.getUserId(), msg, autoEscape);
@@ -1036,7 +1036,7 @@ public class Bot {
      *              <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return {@link ActionRaw}
      */
-    public ActionData<MsgId> sendForwardMsg(WholeMessageEvent event, List<Map<String, Object>> msg) {
+    public ActionData<MsgId> sendForwardMsg(AnyMessageEvent event, List<Map<String, Object>> msg) {
         val action = ActionPathEnum.SEND_FORWARD_MSG;
         val params = new JSONObject() {{
             put("messages", msg);

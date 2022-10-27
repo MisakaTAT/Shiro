@@ -85,7 +85,7 @@ public class DemoPlugin {
 
     // 同时监听群组及私聊消息 并根据消息类型（私聊，群聊）回复
     @MessageHandler
-    public void fun3(@NotNull Bot bot, @NotNull WholeMessageEvent event) {
+    public void fun3(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
         bot.sendMsg(event, "hello", false);
     }
 
