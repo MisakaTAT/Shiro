@@ -1,14 +1,15 @@
 package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
-import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
+import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -44,6 +45,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     @Resource
     private WebSocketProperties webSocketProperties;
+
+    @Autowired
+    private CoreEvent coreEvent;
 
     /**
      * 构造函数
@@ -98,7 +102,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         return token.equals(clientToken);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         try {
@@ -113,36 +119,43 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 session.close();
                 return;
             }
-            botContainer.robots.put(xSelfId, botFactory.createBot(xSelfId, session));
+            if (!coreEvent.session(session)) {
+                session.close();
+                return;
+            }
+            val bot = botFactory.createBot(xSelfId, session);
+            botContainer.robots.put(xSelfId, bot);
             log.info("Account {} connected", xSelfId);
+            coreEvent.online(bot);
         } catch (IOException e) {
             log.error("Websocket session close exception");
             e.printStackTrace();
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         long xSelfId = parseSelfId(session);
         if (xSelfId == 0L) {
             return;
         }
-        botContainer.robots.remove(xSelfId);
-        log.warn("Account {} disconnected", xSelfId);
+        if (botContainer.robots.containsKey(xSelfId)) {
+            botContainer.robots.remove(xSelfId);
+            log.warn("Account {} disconnected", xSelfId);
+            coreEvent.offline(xSelfId);
+        }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) {
         long xSelfId = parseSelfId(session);
-        Bot bot = botContainer.robots.get(xSelfId);
-        if (bot == null) {
-            bot = botFactory.createBot(xSelfId, session);
-            botContainer.robots.put(xSelfId, bot);
-        }
-        bot.setSession(session);
-        JSONObject result = JSON.parseObject(message.getPayload());
+        val result = JSON.parseObject(message.getPayload());
         log.debug("[Event] {}", result.toJSONString());
         // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(API_RESULT_KEY)) {
