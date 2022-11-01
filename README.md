@@ -37,49 +37,62 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 
 # QuickStart
 
-请访问 [Maven Repo](https://search.maven.org/search?q=com.mikuac.shiro) 查看最新版本，并替换 version 内的 latest version
+## 依赖引入
+
+>引入依赖时请替换版本 `latest` 为 `Maven Central` 实际的最新版本
+
+### Maven
 
 ```xml
-
 <dependency>
-    <groupId>com.mikuac</groupId>
-    <artifactId>shiro</artifactId>
-    <version>latest version</version>
+  <groupId>com.mikuac</groupId>
+  <artifactId>shiro</artifactId>
+  <version>latest</version>
 </dependency>
 ```
 
-### 示例插件I：注解调用
+### Gradle Kotlin DSL
 
-> 编写 `application.yml` 配置文件 [高级自定义配置](https://misakatat.github.io/shiro-docs/advanced/#高级自定义配置)
+```kotlin
+implementation("com.mikuac:shiro:latest")
+```
+
+### Gradle Groovy DSL
+
+```groovy
+implementation 'com.mikuac:shiro:latest'
+```
+
+## 示例插件
+
+### 注解调用
+
+> 编写 `application.yaml` 配置文件 或参考 [进阶配置文件](https://misakatat.github.io/shiro-docs/advanced.html#进阶配置文件)
 
 ```yaml
 server:
   port: 5000
-shiro:
-# 反向 Websocket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
-# ws-url: "/ws/shiro"
 ```
 
 ```java
-
 @Shiro
 @Component
-public class DemoPlugin {
+public class ExamplePlugin {
 
     // 符合 cmd 正则表达式的消息会被响应
     @PrivateMessageHandler(cmd = "hi")
     public void fun1(@NotNull Bot bot, @NotNull PrivateMessageEvent event, @NotNull Matcher matcher) {
         // 构建消息
-        MsgUtils msgUtils = MsgUtils.builder().face(66).text("Hello, this is shiro demo.");
+        String sendMsg = MsgUtils.builder().face(66).text("Hello, this is shiro demo.").build();
         // 发送私聊消息
-        bot.sendPrivateMsg(event.getUserId(), msgUtils.build(), false);
+        bot.sendPrivateMsg(event.getUserId(), sendMsg, false);
     }
 
     // 如果 at 参数设定为 AtEnum.NEED 则只有 at 了机器人的消息会被响应
     @GroupMessageHandler(at = AtEnum.NEED)
     public void fun2(@NotNull GroupMessageEvent event) {
         // 以注解方式调用可以根据自己的需要来为方法设定参数
-        // 例如群组消息可以传递 GroupMessageEvent event, Bot bot, Matcher matcher 多余的参数会被设定为 null
+        // 例如群组消息可以传递 GroupMessageEvent, Bot, Matcher 多余的参数会被设定为 null
         System.out.println(event.getMessage());
     }
 
@@ -92,56 +105,54 @@ public class DemoPlugin {
 }
 ```
 
-### 示例插件II：重写父类方法
+### 重写父类方法
 
-> 编写 `application.yml` 配置文件 [高级自定义配置](https://misakatat.github.io/shiro-docs/advanced/#高级自定义配置)
+- 注解方式编写的插件无需在插件列表 `plugin-list`定义
+- 服务端配置文件 `resources/application.yaml` 追加如下内容
+- 插件列表为顺序执行，如果前一个插件返回了 `MESSAGE_BLOCK` 将不会执行后续插件
+
+> 编写 `application.yaml` 配置文件 或参考 [进阶配置文件](https://misakatat.github.io/shiro-docs/advanced.html#进阶配置文件)
 
 ```yaml
 server:
   port: 5000
 shiro:
-  # 反向 Websocket 连接地址，无需该配置字段可删除，将使用默认值 "/ws/shiro"
-  # ws-url: "/ws/shiro"
-  # 注解方式无需在此定义插件
-  # 插件列表（顺序执行 如果前一个插件返回了 MESSAGE_BLOCK 将不会执行后续插件）
   plugin-list:
-    - com.mikuac.example.plugins.ExamplePlugin
+    - com.example.bot.plugins.ExamplePlugin
 ```
 
 ```java
-// 继承BotPlugin开始编写插件
 @Component
 public class ExamplePlugin extends BotPlugin {
 
     @Override
     public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
-        String msg = event.getMessage();
-        if ("hi".equals(msg)) {
+        if ("hi".equals(event.getMessage())) {
             // 构建消息
             String sendMsg = MsgUtils.builder()
                     .face(66)
-                    .text("Hello, this is shiro demo.")
+                    .text("hello, this is shiro example plugin.")
                     .build();
             // 发送私聊消息
             bot.sendPrivateMsg(event.getUserId(), sendMsg, false);
         }
-        // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
+        // 返回 MESSAGE_IGNORE 执行 plugin-list 下一个插件，返回 MESSAGE_BLOCK 则不执行下一个插件
         return MESSAGE_IGNORE;
     }
 
     @Override
     public int onGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
-        String msg = event.getMessage();
-        if ("hi".equals(msg)) {
+        if ("hi".equals(event.getMessage())) {
             // 构建消息
-            MsgUtils sendMsg = MsgUtils.builder()
+            String sendMsg = MsgUtils.builder()
                     .at(event.getUserId())
                     .face(66)
-                    .text("Hello, this is shiro demo.");
+                    .text("hello, this is shiro example plugin.")
+                    .build();
             // 发送群消息
-            bot.sendGroupMsg(event.getGroupId(), sendMsg.build(), false);
+            bot.sendGroupMsg(event.getGroupId(), sendMsg, false);
         }
-        // 返回 MESSAGE_IGNORE 插件向下执行，返回 MESSAGE_BLOCK 则不执行下一个插件
+        // 返回 MESSAGE_IGNORE 执行 plugin-list 下一个插件，返回 MESSAGE_BLOCK 则不执行下一个插件
         return MESSAGE_IGNORE;
     }
 
@@ -186,6 +197,6 @@ Thanks [JetBrains](https://www.jetbrains.com/?from=Shiro) Provide Free License S
 
 [<img src="https://mikuac.com/images/jetbrains-variant-3.png" width="200"/>](https://www.jetbrains.com/?from=mirai)
 
-## Stargazers over time
+# Stargazers over time
 
 [![Stargazers over time](https://starchart.cc/MisakaTAT/Shiro.svg)](https://starchart.cc/MisakaTAT/Shiro)
