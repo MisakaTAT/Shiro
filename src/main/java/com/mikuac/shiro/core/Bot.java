@@ -1226,7 +1226,7 @@ public class Bot {
     }
 
     /**
-     * <p>deleteGroupFile.</p>
+     * 删除群文件
      *
      * @param groupId 群号
      * @param fileId  文件ID
