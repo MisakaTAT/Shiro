@@ -1169,4 +1169,79 @@ public class Bot {
         }.getType()) : null;
     }
 
+    /**
+     * 获取群文件资源链接
+     *
+     * @param groupId 群号
+     * @param fileId  文件ID
+     * @param busId   文件类型
+     * @return {@link com.mikuac.shiro.dto.action.common.ActionData} of {@link com.mikuac.shiro.dto.action.response.UrlResp}
+     */
+    public ActionData<UrlResp> getGroupFileUrl(long groupId, String fileId, int busId) {
+        val action = ActionPathEnum.GET_GROUP_FILE_URL;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("file_id", fileId);
+            put("busid", busId);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<UrlResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 创建群文件文件夹
+     *
+     * @param groupId    群号
+     * @param folderName 文件夹名
+     * @return {@link com.mikuac.shiro.dto.action.common.ActionRaw}
+     */
+    public ActionRaw createGroupFileFolder(long groupId, long folderName) {
+        val action = ActionPathEnum.CREATE_GROUP_FILE_FOLDER;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("name", folderName);
+            // 仅能在根目录创建文件夹
+            put("parent_id", "/");
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * 删除群文件文件夹
+     *
+     * @param groupId  群号
+     * @param folderId 文件夹ID
+     * @return {@link com.mikuac.shiro.dto.action.common.ActionRaw}
+     */
+    public ActionRaw deleteGroupFileFolder(long groupId, String folderId) {
+        val action = ActionPathEnum.DELETE_GROUP_FOLDER;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("folder_id", folderId);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * <p>deleteGroupFile.</p>
+     *
+     * @param groupId 群号
+     * @param fileId  文件ID
+     * @param busid   文件类型
+     * @return {@link com.mikuac.shiro.dto.action.common.ActionRaw}
+     */
+    public ActionRaw deleteGroupFile(long groupId, String fileId, int busid) {
+        val action = ActionPathEnum.DELETE_GROUP_FILE;
+        val params = new JSONObject() {{
+            put("group_id", groupId);
+            put("file_id", fileId);
+            put("busid", busid);
+        }};
+        val result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
 }

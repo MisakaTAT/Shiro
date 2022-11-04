@@ -242,7 +242,23 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 删除单向好友
      */
-    DELETE_UNIDIRECTIONAL_FRIEND("delete_unidirectional_friend");
+    DELETE_UNIDIRECTIONAL_FRIEND("delete_unidirectional_friend"),
+    /**
+     * 创建群文件文件夹
+     */
+    CREATE_GROUP_FILE_FOLDER("create_group_file_folder"),
+    /**
+     * 删除群文件文件夹
+     */
+    DELETE_GROUP_FOLDER("delete_group_folder"),
+    /**
+     * 删除群文件
+     */
+    DELETE_GROUP_FILE("delete_group_file"),
+    /**
+     * 获取群文件资源链接
+     */
+    GET_GROUP_FILE_URL("get_group_file_url");
 
     /**
      * 请求路径
@@ -260,7 +276,7 @@ public enum ActionPathEnum implements ActionPath {
 
     /**
      * {@inheritDoc}
-     *
+     * <p>
      * 获取请求路径
      */
     @Override

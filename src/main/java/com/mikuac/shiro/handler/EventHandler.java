@@ -410,7 +410,7 @@ public class EventHandler {
         event.setArrayMsg(arrayMsg);
         injectionHandler.invokeAnyMessage(bot, event);
         for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (getPlugin(pluginClass).onWholeMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+            if (getPlugin(pluginClass).onAnyMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
                 break;
             }
         }

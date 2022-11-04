@@ -37,7 +37,7 @@ public class BotPlugin {
      * @param event {@link com.mikuac.shiro.dto.event.message.AnyMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onWholeMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
+    public int onAnyMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
         return MESSAGE_IGNORE;
     }
 
