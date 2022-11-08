@@ -2,6 +2,7 @@ package com.mikuac.shiro;
 
 import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.MsgUtils;
+import com.mikuac.shiro.common.utils.OneBotMedia;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
@@ -131,6 +132,17 @@ public class UnitTests {
     @Test
     public void debugModeTest() {
         TestCase.assertTrue(log.isDebugEnabled());
+    }
+
+    /**
+     * <p>testOneBotMedia.</p>
+     */
+    @Test
+    public void testOneBotMedia() {
+        val media = OneBotMedia.builder().file("https://a.com/1.jpg").cache(false).proxy(false).timeout(10);
+        val msg = MsgUtils.builder().img(media).build();
+        val stringMsg = "[CQ:image,file=https://a.com/1.jpg,cache=0,proxy=0,timeout=10]";
+        TestCase.assertEquals(stringMsg, msg);
     }
 
 }

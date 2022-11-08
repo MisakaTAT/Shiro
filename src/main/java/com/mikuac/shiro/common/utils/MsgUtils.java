@@ -8,7 +8,7 @@ package com.mikuac.shiro.common.utils;
 @SuppressWarnings("unused")
 public class MsgUtils {
 
-    StringBuilder builder = new StringBuilder();
+    private final StringBuilder builder = new StringBuilder();
 
     /**
      * 消息构建

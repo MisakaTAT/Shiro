@@ -8,21 +8,33 @@ package com.mikuac.shiro.common.utils;
  */
 public class OneBotMedia {
 
-    private final String file;
-    private final Boolean cache;
-    private final Boolean proxy;
-    private final Integer timeout;
+    /**
+     * 文件
+     */
+    private String file;
 
     /**
-     * 构造函数
-     *
-     * @param builder {@link com.mikuac.shiro.common.utils.OneBotMedia.Builder}
+     * 是否使用缓存
      */
-    public OneBotMedia(Builder builder) {
-        this.file = builder.file;
-        this.cache = builder.cache;
-        this.proxy = builder.proxy;
-        this.timeout = builder.timeout;
+    private Boolean cache;
+
+    /**
+     * 是否启用代理
+     */
+    private Boolean proxy;
+
+    /**
+     * 超时
+     */
+    private Integer timeout;
+
+    /**
+     * <p>builder.</p>
+     *
+     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     */
+    public static OneBotMedia builder() {
+        return new OneBotMedia();
     }
 
     /**
@@ -46,57 +58,47 @@ public class OneBotMedia {
     }
 
     /**
-     * 构造器
+     * <p>file.</p>
+     *
+     * @param file 文件
+     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
      */
-    public static class Builder {
-        private String file = "";
-        private Boolean cache;
-        private Boolean proxy;
-        private Integer timeout;
+    public OneBotMedia file(String file) {
+        this.file = ShiroUtils.escape(file);
+        return this;
+    }
 
-        /**
-         * @param file 文件
-         * @return {@link Builder}
-         */
-        public Builder file(String file) {
-            this.file = ShiroUtils.escape(file);
-            return this;
-        }
+    /**
+     * <p>cache.</p>
+     *
+     * @param cache 缓存
+     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     */
+    public OneBotMedia cache(boolean cache) {
+        this.cache = cache;
+        return this;
+    }
 
-        /**
-         * @param cache 缓存
-         * @return {@link Builder}
-         */
-        public Builder cache(boolean cache) {
-            this.cache = cache;
-            return this;
-        }
+    /**
+     * <p>proxy.</p>
+     *
+     * @param proxy 代理
+     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     */
+    public OneBotMedia proxy(boolean proxy) {
+        this.proxy = proxy;
+        return this;
+    }
 
-        /**
-         * @param proxy 代理
-         * @return {@link Builder}
-         */
-        public Builder proxy(boolean proxy) {
-            this.proxy = proxy;
-            return this;
-        }
-
-        /**
-         * @param timeout 超时
-         * @return {@link Builder}
-         */
-        public Builder timeout(Integer timeout) {
-            this.timeout = timeout;
-            return this;
-        }
-
-        /**
-         * @return {@link OneBotMedia}
-         */
-        public OneBotMedia build() {
-            return new OneBotMedia(this);
-        }
-
+    /**
+     * <p>timeout.</p>
+     *
+     * @param timeout 超时
+     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     */
+    public OneBotMedia timeout(Integer timeout) {
+        this.timeout = timeout;
+        return this;
     }
 
 }
