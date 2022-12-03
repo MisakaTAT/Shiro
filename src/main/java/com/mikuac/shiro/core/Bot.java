@@ -574,7 +574,7 @@ public class Bot {
     public ActionRaw deleteFriend(long friendId) {
         val action = ActionPathEnum.DELETE_FRIEND;
         val params = new JSONObject() {{
-            put("friend_id", friendId);
+            put("user_id", friendId);
         }};
         val result = actionHandler.action(session, action, params);
         return result != null ? result.to(ActionRaw.class) : null;
