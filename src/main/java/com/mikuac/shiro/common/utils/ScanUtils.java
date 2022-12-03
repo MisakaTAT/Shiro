@@ -41,7 +41,7 @@ public class ScanUtils implements ResourceLoaderAware {
         try {
             String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
                     .concat(ClassUtils.convertClassNameToResourcePath(SystemPropertyUtils.resolvePlaceholders(packageName))
-                            .concat("/**/*.class"));
+                            .concat("/*.class"));
             Resource[] resources = ResourcePatternUtils.getResourcePatternResolver(resourceLoader).getResources(packageSearchPath);
             MetadataReader metadataReader;
             for (Resource resource : resources) {
