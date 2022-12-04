@@ -1,6 +1,7 @@
 package com.mikuac.shiro.handler.injection;
 
 import com.mikuac.shiro.annotation.*;
+import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.bean.MsgChainBean;
 import com.mikuac.shiro.common.utils.InternalUtils;
@@ -19,11 +20,9 @@ import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
+import java.util.stream.Collectors;
 
 /**
  * <p>InjectionHandler class.</p>
@@ -218,8 +217,12 @@ public class InjectionHandler {
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         val handlers = bot.getAnnotationHandler();
-        val handlerMethods = handlers.get(GroupMessageHandler.class);
+        List<HandlerMethod> handlerMethods = handlers.get(GroupMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods = handlerMethods.stream().
+                    sorted(Comparator.comparing(handlerMethod ->
+                            Optional.ofNullable(handlerMethod.getMethod().getAnnotation(Order.class).value()).orElse(Integer.MAX_VALUE))).
+                    collect(Collectors.toList());
             handlerMethods.forEach(handlerMethod -> {
                 val annotation = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
                 if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
@@ -245,8 +248,12 @@ public class InjectionHandler {
      */
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         val handlers = bot.getAnnotationHandler();
-        val handlerMethods = handlers.get(PrivateMessageHandler.class);
+        List<HandlerMethod> handlerMethods = handlers.get(PrivateMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
+            handlerMethods = handlerMethods.stream().
+                    sorted(Comparator.comparing(handlerMethod ->
+                            Optional.ofNullable(handlerMethod.getMethod().getAnnotation(Order.class).value()).orElse(Integer.MAX_VALUE))).
+                    collect(Collectors.toList());
             handlerMethods.forEach(handlerMethod -> {
                 val annotation = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
                 val params = matcher(annotation.cmd(), event.getMessage());
