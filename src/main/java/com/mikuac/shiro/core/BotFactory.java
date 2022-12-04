@@ -11,12 +11,14 @@ import lombok.val;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Created on 2021/7/7.
@@ -60,12 +62,12 @@ public class BotFactory {
      * @return {@link com.mikuac.shiro.core.Bot}
      */
     public Bot createBot(long selfId, WebSocketSession session) {
-        log.debug("Start creating bot instance {}", selfId);
+        log.debug("Bot instance creating {}", selfId);
         // 获取 Spring 容器中所有指定类型的对象
-        Map<String, Object> beans = new HashMap<>(16);
+        val beans = new HashMap<String, Object>(16);
         beans.putAll(applicationContext.getBeansWithAnnotation(Shiro.class));
         // 一键多值 注解为 Key 存放所有包含某个注解的方法
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
+        val annotationHandler = new LinkedMultiValueMap<Class<? extends Annotation>, HandlerMethod>();
         for (Object object : beans.values()) {
             Object target;
             try {
@@ -74,7 +76,7 @@ public class BotFactory {
                 e.printStackTrace();
                 continue;
             }
-            Class<?> beanClass = target.getClass();
+            val beanClass = target.getClass();
             Arrays.stream(beanClass.getMethods()).forEach(method -> {
                 val handlerMethod = new HandlerMethod();
                 handlerMethod.setMethod(method);

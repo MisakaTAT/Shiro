@@ -24,7 +24,9 @@ public class ScanUtils implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;

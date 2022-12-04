@@ -219,10 +219,14 @@ public class InjectionHandler {
         val handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
-            handlerMethods = handlerMethods.stream().
-                    sorted(Comparator.comparing(handlerMethod ->
-                            Optional.ofNullable(handlerMethod.getMethod().getAnnotation(Order.class).value()).orElse(Integer.MAX_VALUE))).
-                    collect(Collectors.toList());
+
+            handlerMethods = handlerMethods.stream().sorted(
+                    Comparator.comparing(
+                            handlerMethod -> Optional.of(
+                                    handlerMethod.getMethod().getAnnotation(Order.class).value()
+                            ).orElse(Integer.MAX_VALUE))
+            ).collect(Collectors.toList());
+
             handlerMethods.forEach(handlerMethod -> {
                 val annotation = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
                 if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
@@ -250,10 +254,15 @@ public class InjectionHandler {
         val handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(PrivateMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
-            handlerMethods = handlerMethods.stream().
-                    sorted(Comparator.comparing(handlerMethod ->
-                            Optional.ofNullable(handlerMethod.getMethod().getAnnotation(Order.class).value()).orElse(Integer.MAX_VALUE))).
-                    collect(Collectors.toList());
+
+            handlerMethods = handlerMethods.stream().sorted(
+                    Comparator.comparing(
+                            handlerMethod -> Optional.of(
+                                    handlerMethod.getMethod().getAnnotation(Order.class).value()
+                            ).orElse(Integer.MAX_VALUE)
+                    )
+            ).collect(Collectors.toList());
+
             handlerMethods.forEach(handlerMethod -> {
                 val annotation = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
                 val params = matcher(annotation.cmd(), event.getMessage());
