@@ -1,6 +1,8 @@
 package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.annotation.Shiro;
+import com.mikuac.shiro.annotation.common.Break;
+import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
@@ -15,10 +17,8 @@ import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2021/7/7.
@@ -91,7 +91,45 @@ public class BotFactory {
                 });
             });
         }
+        this.sortAndBlock(annotationHandler);
         return new Bot(selfId, session, actionHandler, shiroProperties.getPluginList(), annotationHandler, shiroProperties.getInterceptor());
+    }
+
+    /**
+     * 处理优先级次序以及阻断
+     *
+     * @param annotationHandler 处理方法集合Map
+     * @return
+     */
+    private void sortAndBlock(LinkedMultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler) {
+
+        //为空直接返回
+        if (annotationHandler.isEmpty()) {
+            return;
+        }
+
+        //排序及阻断
+        annotationHandler.keySet().forEach(annotation -> {
+            List<HandlerMethod> handlers = annotationHandler.get(annotation);
+
+            //排序
+            handlers = handlers.stream().sorted(
+                    Comparator.comparing(
+                            handlerMethod -> Optional.of(
+                                    handlerMethod.getMethod().getAnnotation(Order.class).value()
+                            ).orElse(Integer.MAX_VALUE))
+            ).collect(Collectors.toList());
+
+            //阻断（相同优先级各凭运气）
+            for (int i = 0; i < handlers.size(); i++) {
+                Break breakAnnotation = handlers.get(i).getMethod().getAnnotation(Break.class);
+                if (breakAnnotation != null) {
+                    handlers = handlers.subList(0, i + 1);
+                    break;
+                }
+            }
+            annotationHandler.put(annotation, handlers);
+        });
     }
 
 }
