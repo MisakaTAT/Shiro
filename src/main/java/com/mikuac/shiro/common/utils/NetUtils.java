@@ -1,10 +1,9 @@
 package com.mikuac.shiro.common.utils;
 
-import lombok.val;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLConnection;
 
 /**
  * <p>NetUtils class.</p>
@@ -22,10 +21,10 @@ public class NetUtils {
      * @return {@link java.lang.String}
      */
     public static String get(String url, String charsetName) {
-        val result = new StringBuilder();
+        StringBuilder result = new StringBuilder();
         BufferedReader bufferedReader = null;
         try {
-            val connection = new URL(url).openConnection();
+            URLConnection connection = new URL(url).openConnection();
             connection.connect();
             bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), charsetName));
             String line;

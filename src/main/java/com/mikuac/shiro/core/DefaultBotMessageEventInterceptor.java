@@ -12,13 +12,17 @@ import org.springframework.stereotype.Component;
 @Component
 public class DefaultBotMessageEventInterceptor implements BotMessageEventInterceptor {
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public boolean preHandle(Bot bot, MessageEvent event) {
         return true;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterCompletion(Bot bot, MessageEvent event) {
     }

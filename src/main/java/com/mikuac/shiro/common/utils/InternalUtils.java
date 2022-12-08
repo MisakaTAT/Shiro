@@ -1,7 +1,5 @@
 package com.mikuac.shiro.common.utils;
 
-import lombok.val;
-
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -24,7 +22,7 @@ public class InternalUtils {
         class Object {
             int i;
         }
-        val object = new Object();
+        Object object = new Object();
         return item -> {
             int index = object.i++;
             consumer.accept(item, index);

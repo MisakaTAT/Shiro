@@ -4,9 +4,9 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.bean.MsgChainBean;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 
 /**
@@ -91,8 +91,8 @@ public class ShiroUtils {
      * @return 用户昵称
      */
     public static String getNickname(long userId) {
-        val url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
-        val result = NetUtils.get(url, "GBK");
+        String url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
+        String result = NetUtils.get(url, "GBK");
         if (result != null && !result.isEmpty()) {
             String nickname = result.split(",")[6];
             return nickname.substring(1, nickname.length() - 1);
@@ -150,20 +150,20 @@ public class ShiroUtils {
      * @return 消息链
      */
     public static List<MsgChainBean> stringToMsgChain(String msg) {
-        val array = new JSONArray();
+        JSONArray array = new JSONArray();
         try {
             Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
-                val matcher = RegexUtils.regexMatcher(CQ_CODE_REGEX, s);
-                val object = new JSONObject();
-                val params = new JSONObject();
+                Matcher matcher = RegexUtils.regexMatcher(CQ_CODE_REGEX, s);
+                JSONObject object = new JSONObject();
+                JSONObject params = new JSONObject();
                 if (matcher == null) {
                     object.put("type", "text");
                     params.put("text", s);
                 } else {
                     object.put("type", matcher.group(1));
                     Arrays.stream(matcher.group(2).split(",")).filter(args -> !args.isEmpty()).forEach(args -> {
-                        val k = args.substring(0, args.indexOf("="));
-                        val v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
+                        String k = args.substring(0, args.indexOf("="));
+                        String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
                         params.put(k, v);
                     });
                 }
@@ -184,7 +184,7 @@ public class ShiroUtils {
      * @return CQ Code
      */
     public static String jsonToCode(MsgChainBean o) {
-        val builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         builder.append("[CQ:").append(o.getType());
         o.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
         builder.append("]");
@@ -201,9 +201,9 @@ public class ShiroUtils {
      * @return 转发消息
      */
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> contents) {
-        val nodes = new ArrayList<Map<String, Object>>();
+        List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
-            val node = new HashMap<String, Object>(16) {{
+            Map<String, Object> node = new HashMap<String, Object>(16) {{
                 put("type", "node");
                 put("data", new HashMap<String, Object>(16) {{
                     put("name", name);

@@ -15,11 +15,11 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
-import lombok.val;
-import lombok.var;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MultiValueMap;
 
+import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.stream.Collectors;
@@ -91,18 +91,20 @@ public class InjectionHandler {
      * @param event {@link com.mikuac.shiro.dto.event.message.AnyMessageEvent}
      */
     public void invokeAnyMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
-        val handlers = bot.getAnnotationHandler();
-        val handlerMethods = handlers.get(MessageHandler.class);
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
+        List<HandlerMethod> handlerMethods = handlers.get(MessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
-                val annotation = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
+                MessageHandler annotation = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
                 if (CommonEnum.GROUP.value().equals(event.getMessageType())) {
                     if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                         return;
                     }
                 }
-                val msg = extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at());
-                val params = matcher(annotation.cmd(), msg);
+                Map<Class<?>, Object> params = matcher(
+                        annotation.cmd(),
+                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
+                );
                 if (params == null) {
                     return;
                 }
@@ -122,8 +124,8 @@ public class InjectionHandler {
      * @return boolean
      */
     private boolean checkAt(List<MsgChainBean> arrayMsg, long selfId, AtEnum atEnum) {
-        val at = "at";
-        val all = "all";
+        String at = "at";
+        String all = "all";
 
         if (atEnum == AtEnum.OFF) {
             return false;
@@ -134,8 +136,8 @@ public class InjectionHandler {
         }
 
         if (atEnum == AtEnum.NEED) {
-            val atObj = arrayMsg.get(0);
-            val atUserIdStr = atObj.getData().get("qq");
+            MsgChainBean atObj = arrayMsg.get(0);
+            String atUserIdStr = atObj.getData().get("qq");
             if (!at.equals(atObj.getType())) {
                 return true;
             }
@@ -145,20 +147,20 @@ public class InjectionHandler {
             if (all.equals(atUserIdStr)) {
                 return true;
             }
-            val atUserId = Long.parseLong(atUserIdStr);
+            long atUserId = Long.parseLong(atUserIdStr);
             return selfId != atUserId;
         }
 
         if (atEnum == AtEnum.NOT_NEED) {
-            val atObj = arrayMsg.get(0);
-            val atUserIdStr = atObj.getData().get("qq");
+            MsgChainBean atObj = arrayMsg.get(0);
+            String atUserIdStr = atObj.getData().get("qq");
             if (atUserIdStr == null || atUserIdStr.isEmpty()) {
                 return false;
             }
             if (all.equals(atUserIdStr)) {
                 return false;
             }
-            val atUserId = Long.parseLong(atUserIdStr);
+            long atUserId = Long.parseLong(atUserIdStr);
             return selfId == atUserId;
         }
 
@@ -172,16 +174,18 @@ public class InjectionHandler {
      * @param event {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
      */
     public void invokeGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
-        val handlers = bot.getAnnotationHandler();
-        val handlerMethods = handlers.get(GuildMessageHandler.class);
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
+        List<HandlerMethod> handlerMethods = handlers.get(GuildMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
-                val annotation = handlerMethod.getMethod().getAnnotation(GuildMessageHandler.class);
+                GuildMessageHandler annotation = handlerMethod.getMethod().getAnnotation(GuildMessageHandler.class);
                 if (checkAt(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
                     return;
                 }
-                val msg = extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at());
-                val params = matcher(annotation.cmd(), msg);
+                Map<Class<?>, Object> params = matcher(
+                        annotation.cmd(),
+                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
+                );
                 if (params == null) {
                     return;
                 }
@@ -201,9 +205,9 @@ public class InjectionHandler {
      * @return 处理后的消息
      */
     private String extractMsg(String message, List<MsgChainBean> arrayMsg, AtEnum atEnum) {
-        var msg = message;
+        String msg = message;
         if (atEnum == AtEnum.NEED) {
-            val atCode = ShiroUtils.jsonToCode(arrayMsg.get(0));
+            String atCode = ShiroUtils.jsonToCode(arrayMsg.get(0));
             msg = msg.replace(atCode, "").replace(" ", "");
         }
         return msg;
@@ -216,7 +220,7 @@ public class InjectionHandler {
      * @param event {@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
-        val handlers = bot.getAnnotationHandler();
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
 
@@ -228,12 +232,14 @@ public class InjectionHandler {
             ).collect(Collectors.toList());
 
             handlerMethods.forEach(handlerMethod -> {
-                val annotation = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
+                GroupMessageHandler annotation = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
                 if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
-                val msg = extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at());
-                val params = matcher(annotation.cmd(), msg);
+                Map<Class<?>, Object> params = matcher(
+                        annotation.cmd(),
+                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
+                );
                 if (params == null) {
                     return;
                 }
@@ -251,7 +257,7 @@ public class InjectionHandler {
      * @param event {@link com.mikuac.shiro.dto.event.message.PrivateMessageEvent}
      */
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
-        val handlers = bot.getAnnotationHandler();
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(PrivateMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
 
@@ -264,8 +270,8 @@ public class InjectionHandler {
             ).collect(Collectors.toList());
 
             handlerMethods.forEach(handlerMethod -> {
-                val annotation = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
-                val params = matcher(annotation.cmd(), event.getMessage());
+                PrivateMessageHandler annotation = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), event.getMessage());
                 if (params == null) {
                     return;
                 }
@@ -284,8 +290,8 @@ public class InjectionHandler {
      * @param event {@link com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent}
      */
     public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
-        val handlers = bot.getAnnotationHandler();
-        val handlerMethods = handlers.get(GroupAdminHandler.class);
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
+        List<HandlerMethod> handlerMethods = handlers.get(GroupAdminHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
                 switch (handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class).type()) {
@@ -316,8 +322,8 @@ public class InjectionHandler {
      * @param params        params
      */
     private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
-        val parameterTypes = handlerMethod.getMethod().getParameterTypes();
-        val objects = new Object[parameterTypes.length];
+        Class<?>[] parameterTypes = handlerMethod.getMethod().getParameterTypes();
+        Object[] objects = new Object[parameterTypes.length];
         Arrays.stream(parameterTypes).forEach(InternalUtils.consumerWithIndex((item, index) -> {
             if (params.containsKey(item)) {
                 objects[index] = params.remove(item);
@@ -360,7 +366,7 @@ public class InjectionHandler {
     private Map<Class<?>, Object> matcher(String cmd, String msg) {
         Map<Class<?>, Object> params = new HashMap<>(16);
         if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
-            val matcher = RegexUtils.regexMatcher(cmd, msg);
+            Matcher matcher = RegexUtils.regexMatcher(cmd, msg);
             if (matcher == null) {
                 return null;
             }

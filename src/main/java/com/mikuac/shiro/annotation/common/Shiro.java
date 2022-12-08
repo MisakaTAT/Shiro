@@ -1,4 +1,4 @@
-package com.mikuac.shiro.annotation;
+package com.mikuac.shiro.annotation.common;
 
 import java.lang.annotation.*;
 

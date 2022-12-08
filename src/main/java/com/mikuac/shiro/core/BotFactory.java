@@ -1,24 +1,21 @@
 package com.mikuac.shiro.core;
 
-import com.mikuac.shiro.annotation.Shiro;
+import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created on 2021/7/7.
@@ -64,33 +61,32 @@ public class BotFactory {
     public Bot createBot(long selfId, WebSocketSession session) {
         log.debug("Bot instance creating {}", selfId);
         // 获取 Spring 容器中所有指定类型的对象
-        val beans = new HashMap<String, Object>(16);
+        Map<String, Object> beans = new HashMap<>(16);
         beans.putAll(applicationContext.getBeansWithAnnotation(Shiro.class));
         // 一键多值 注解为 Key 存放所有包含某个注解的方法
-        val annotationHandler = new LinkedMultiValueMap<Class<? extends Annotation>, HandlerMethod>();
-        for (Object object : beans.values()) {
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
+        beans.values().forEach(obj -> {
             Object target;
             try {
-                target = AopTargetUtils.getTarget(object);
+                target = AopTargetUtils.getTarget(obj);
             } catch (Exception e) {
-                e.printStackTrace();
-                continue;
+                throw new RuntimeException(e);
             }
-            val beanClass = target.getClass();
+            Class<?> beanClass = target.getClass();
             Arrays.stream(beanClass.getMethods()).forEach(method -> {
-                val handlerMethod = new HandlerMethod();
+                HandlerMethod handlerMethod = new HandlerMethod();
                 handlerMethod.setMethod(method);
                 handlerMethod.setType(beanClass);
-                handlerMethod.setObject(object);
+                handlerMethod.setObject(obj);
                 Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
-                    val annotations = getAnnotations();
-                    val annotationType = annotation.annotationType();
+                    Set<Class<?>> annotations = getAnnotations();
+                    Class<? extends Annotation> annotationType = annotation.annotationType();
                     if (annotations.contains(annotationType)) {
                         annotationHandler.add(annotation.annotationType(), handlerMethod);
                     }
                 });
             });
-        }
+        });
         return new Bot(selfId, session, actionHandler, shiroProperties.getPluginList(), annotationHandler, shiroProperties.getInterceptor());
     }
 

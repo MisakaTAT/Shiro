@@ -1,13 +1,14 @@
 package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
+import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
@@ -102,7 +103,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         return token.equals(clientToken);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         try {
@@ -121,7 +124,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 session.close();
                 return;
             }
-            val bot = botFactory.createBot(xSelfId, session);
+            Bot bot = botFactory.createBot(xSelfId, session);
             botContainer.robots.put(xSelfId, bot);
             log.info("Account {} connected", xSelfId);
             coreEvent.online(bot);
@@ -131,7 +134,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         long xSelfId = parseSelfId(session);
@@ -145,11 +150,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) {
         long xSelfId = parseSelfId(session);
-        val result = JSON.parseObject(message.getPayload());
+        JSONObject result = JSON.parseObject(message.getPayload());
         log.debug("[Event] {}", result.toJSONString());
         // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(API_RESULT_KEY)) {
