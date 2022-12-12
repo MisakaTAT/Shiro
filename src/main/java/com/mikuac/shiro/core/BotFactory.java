@@ -1,5 +1,6 @@
 package com.mikuac.shiro.core;
 
+import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.bean.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
@@ -16,6 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2021/7/7.
@@ -87,7 +89,32 @@ public class BotFactory {
                 });
             });
         });
+        this.sort(annotationHandler);
         return new Bot(selfId, session, actionHandler, shiroProperties.getPluginList(), annotationHandler, shiroProperties.getInterceptor());
+    }
+
+    /**
+     * 优先级排序
+     *
+     * @param annotationHandler 处理方法集合Map
+     */
+    private void sort(MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler) {
+        if (annotationHandler.isEmpty()) {
+            return;
+        }
+        // 排序
+        annotationHandler.keySet().forEach(annotation -> {
+            List<HandlerMethod> handlers = annotationHandler.get(annotation);
+            handlers = handlers.stream().sorted(
+                    Comparator.comparing(
+                            handlerMethod -> {
+                                Order order = handlerMethod.getMethod().getAnnotation(Order.class);
+                                return Optional.ofNullable(order == null ? null : order.value()).orElse(Integer.MAX_VALUE);
+                            }
+                    )
+            ).collect(Collectors.toList());
+            annotationHandler.put(annotation, handlers);
+        });
     }
 
 }
