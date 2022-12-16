@@ -2,7 +2,7 @@ package com.mikuac.shiro.task;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.BotContainer;
-import com.mikuac.shiro.handler.EventHandler;
+import com.mikuac.shiro.handler.Handler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -23,13 +23,13 @@ public class ShiroAsyncTask {
     /**
      * 事件上报处理函数
      *
-     * @param eventHandler {@link com.mikuac.shiro.handler.EventHandler}
+     * @param handler {@link Handler}
      * @param xSelfId      机器人 QQ
      * @param result       上报的 Json 数据
      */
     @Async("shiroTaskExecutor")
-    public void execHandlerMsg(EventHandler eventHandler, long xSelfId, JSONObject result) {
-        eventHandler.handler(botContainer.robots.get(xSelfId), result);
+    public void execHandlerMsg(Handler handler, long xSelfId, JSONObject result) {
+        handler.handler(botContainer.robots.get(xSelfId), result);
     }
 
 }

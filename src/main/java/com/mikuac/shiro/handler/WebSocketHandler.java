@@ -34,7 +34,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private static final String RESULT_STATUS_KEY = "status";
 
-    private final EventHandler eventHandler;
+    private final Handler handler;
 
     private final BotFactory botFactory;
 
@@ -53,14 +53,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
     /**
      * 构造函数
      *
-     * @param eventHandler   {@link com.mikuac.shiro.handler.EventHandler}
+     * @param handler   {@link Handler}
      * @param botFactory     {@link com.mikuac.shiro.core.BotFactory}
      * @param actionHandler  {@link com.mikuac.shiro.handler.ActionHandler}
      * @param shiroAsyncTask {@link com.mikuac.shiro.task.ShiroAsyncTask}
      * @param botContainer   {@link com.mikuac.shiro.core.BotContainer}
      */
-    public WebSocketHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
-        this.eventHandler = eventHandler;
+    public WebSocketHandler(Handler handler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+        this.handler = handler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
         this.shiroAsyncTask = shiroAsyncTask;
@@ -165,7 +165,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             }
             actionHandler.onReceiveActionResp(result);
         } else {
-            shiroAsyncTask.execHandlerMsg(eventHandler, xSelfId, result);
+            shiroAsyncTask.execHandlerMsg(handler, xSelfId, result);
         }
     }
 
