@@ -2,7 +2,7 @@ package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.annotation.common.Shiro;
-import com.mikuac.shiro.bean.HandlerMethod;
+import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
 import com.mikuac.shiro.handler.ActionHandler;

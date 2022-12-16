@@ -1,7 +1,7 @@
 package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.mikuac.shiro.bean.MsgChainBean;
+import com.mikuac.shiro.bo.ArrayMsg;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
@@ -89,11 +89,11 @@ public class EventHandler {
      * @param bot       {@link Bot}
      * @param eventJson {@link JSONObject}
      * @param event     {@link MessageEvent}
-     * @return {@link MsgChainBean}
+     * @return {@link ArrayMsg}
      */
-    private List<MsgChainBean> setAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, @NotNull MessageEvent event) {
+    private List<ArrayMsg> setAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, @NotNull MessageEvent event) {
         try {
-            List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+            List<ArrayMsg> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
             pushAnyMessageEvent(bot, eventJson, arrayMsg);
             return arrayMsg;
         } catch (Exception e) {
@@ -148,7 +148,7 @@ public class EventHandler {
                 if (setInterceptor(bot, event)) {
                     return;
                 }
-                List<MsgChainBean> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+                List<ArrayMsg> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
                 event.setArrayMsg(arrayMsg);
                 injectionHandler.invokeGuildMessage(bot, event);
                 for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
@@ -404,7 +404,7 @@ public class EventHandler {
         // Ignored this handler
     }
 
-    private void pushAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, List<MsgChainBean> arrayMsg) {
+    private void pushAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, List<ArrayMsg> arrayMsg) {
         AnyMessageEvent event = eventJson.to(AnyMessageEvent.class);
         event.setArrayMsg(arrayMsg);
         injectionHandler.invokeAnyMessage(bot, event);

@@ -103,7 +103,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         return token.equals(clientToken);
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterConnectionEstablished(@NotNull WebSocketSession session) {
         try {
@@ -132,7 +134,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
         long xSelfId = parseSelfId(session);
@@ -146,7 +150,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) {
         long xSelfId = parseSelfId(session);

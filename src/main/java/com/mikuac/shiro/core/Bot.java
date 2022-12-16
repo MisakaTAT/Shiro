@@ -2,7 +2,7 @@ package com.mikuac.shiro.core;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
-import com.mikuac.shiro.bean.HandlerMethod;
+import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;

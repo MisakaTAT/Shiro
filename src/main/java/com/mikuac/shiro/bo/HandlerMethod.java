@@ -1,4 +1,4 @@
-package com.mikuac.shiro.bean;
+package com.mikuac.shiro.bo;
 
 import lombok.Data;
 

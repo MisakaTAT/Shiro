@@ -1,4 +1,4 @@
-package com.mikuac.shiro.bean;
+package com.mikuac.shiro.bo;
 
 import lombok.Data;
 
@@ -11,7 +11,7 @@ import java.util.Map;
  * @version $Id: $Id
  */
 @Data
-public class MsgChainBean {
+public class ArrayMsg {
 
     private String type;
 

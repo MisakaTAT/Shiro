@@ -1,8 +1,8 @@
 package com.mikuac.shiro.handler.injection;
 
 import com.mikuac.shiro.annotation.*;
-import com.mikuac.shiro.bean.HandlerMethod;
-import com.mikuac.shiro.bean.MsgChainBean;
+import com.mikuac.shiro.bo.ArrayMsg;
+import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.common.utils.InternalUtils;
 import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
@@ -124,7 +124,7 @@ public class InjectionHandler {
      * @param atEnum   at枚举
      * @return boolean
      */
-    private boolean checkAt(List<MsgChainBean> arrayMsg, long selfId, AtEnum atEnum) {
+    private boolean checkAt(List<ArrayMsg> arrayMsg, long selfId, AtEnum atEnum) {
         String at = "at";
         String all = "all";
 
@@ -137,7 +137,7 @@ public class InjectionHandler {
         }
 
         if (atEnum == AtEnum.NEED) {
-            MsgChainBean atObj = arrayMsg.get(0);
+            ArrayMsg atObj = arrayMsg.get(0);
             String atUserIdStr = atObj.getData().get("qq");
             if (!at.equals(atObj.getType())) {
                 return true;
@@ -153,7 +153,7 @@ public class InjectionHandler {
         }
 
         if (atEnum == AtEnum.NOT_NEED) {
-            MsgChainBean atObj = arrayMsg.get(0);
+            ArrayMsg atObj = arrayMsg.get(0);
             String atUserIdStr = atObj.getData().get("qq");
             if (atUserIdStr == null || atUserIdStr.isEmpty()) {
                 return false;
@@ -205,7 +205,7 @@ public class InjectionHandler {
      * @param atEnum   @枚举
      * @return 处理后的消息
      */
-    private String extractMsg(String message, List<MsgChainBean> arrayMsg, AtEnum atEnum) {
+    private String extractMsg(String message, List<ArrayMsg> arrayMsg, AtEnum atEnum) {
         String msg = message;
         if (atEnum == AtEnum.NEED) {
             String atCode = ShiroUtils.jsonToCode(arrayMsg.get(0));

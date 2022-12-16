@@ -2,7 +2,7 @@ package com.mikuac.shiro.common.utils;
 
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
-import com.mikuac.shiro.bean.MsgChainBean;
+import com.mikuac.shiro.bo.ArrayMsg;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -39,7 +39,7 @@ public class ShiroUtils {
      * @param arrayMsg 消息链
      * @return 是否为全体at
      */
-    public static boolean isAtAll(List<MsgChainBean> arrayMsg) {
+    public static boolean isAtAll(List<ArrayMsg> arrayMsg) {
         return arrayMsg.stream().anyMatch(it -> "all".equals(it.getData().get("qq")));
     }
 
@@ -49,7 +49,7 @@ public class ShiroUtils {
      * @param arrayMsg 消息链
      * @return at对象列表
      */
-    public static List<Long> getAtList(List<MsgChainBean> arrayMsg) {
+    public static List<Long> getAtList(List<ArrayMsg> arrayMsg) {
         return arrayMsg.stream().filter(it -> "at".equals(it.getType()) && !"all".equals(it.getData().get("qq"))).map(it -> Long.parseLong(it.getData().get("qq"))).collect(Collectors.toList());
     }
 
@@ -59,7 +59,7 @@ public class ShiroUtils {
      * @param arrayMsg 消息链
      * @return 图片链接列表
      */
-    public static List<String> getMsgImgUrlList(List<MsgChainBean> arrayMsg) {
+    public static List<String> getMsgImgUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg.stream().filter(it -> "image".equals(it.getType())).map(it -> it.getData().get("url")).collect(Collectors.toList());
     }
 
@@ -69,7 +69,7 @@ public class ShiroUtils {
      * @param arrayMsg 消息链
      * @return 视频链接列表
      */
-    public static List<String> getMsgVideoUrlList(List<MsgChainBean> arrayMsg) {
+    public static List<String> getMsgVideoUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg.stream().filter(it -> "video".equals(it.getType())).map(it -> it.getData().get("url")).collect(Collectors.toList());
     }
 
@@ -149,7 +149,7 @@ public class ShiroUtils {
      * @param msg 需要修改客户端消息上报类型为 string
      * @return 消息链
      */
-    public static List<MsgChainBean> stringToMsgChain(String msg) {
+    public static List<ArrayMsg> stringToMsgChain(String msg) {
         JSONArray array = new JSONArray();
         try {
             Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
@@ -174,16 +174,16 @@ public class ShiroUtils {
             log.error("Raw message convert failed: {}", e.getMessage());
             return null;
         }
-        return array.toList(MsgChainBean.class);
+        return array.toList(ArrayMsg.class);
     }
 
     /**
      * 从 MsgChainBean 生成 CQ Code
      *
-     * @param o {@link com.mikuac.shiro.bean.MsgChainBean}
+     * @param o {@link ArrayMsg}
      * @return CQ Code
      */
-    public static String jsonToCode(MsgChainBean o) {
+    public static String jsonToCode(ArrayMsg o) {
         StringBuilder builder = new StringBuilder();
         builder.append("[CQ:").append(o.getType());
         o.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));

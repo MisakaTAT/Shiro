@@ -40,7 +40,9 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
     @Resource
     private WebSocketHandler webSocketHandler;
 
-    /** {@inheritDoc} */
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         setLogLevel();
