@@ -18,6 +18,7 @@ import java.util.function.BiConsumer;
  * @author zero
  */
 @Component
+@SuppressWarnings("ResultOfMethodCallIgnored")
 public class RequestEvent {
 
     @Resource
@@ -43,22 +44,57 @@ public class RequestEvent {
         ).accept(bot, eventJson);
     }
 
-    public void friend(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        FriendAddRequestEvent event = eventJson.to(FriendAddRequestEvent.class);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onFriendAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
+    /**
+     * 请求事件类型枚举
+     */
+    private enum RequestEventType {
+        /**
+         * 加群请求
+         */
+        GROUP,
+        /**
+         * 加好友请求
+         */
+        FRIEND
     }
 
-    public void group(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        GroupAddRequestEvent event = eventJson.to(GroupAddRequestEvent.class);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onGroupAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
+    /**
+     * 事件处理
+     *
+     * @param bot       {@link Bot}
+     * @param eventJson {@link  JSONObject}
+     * @param type      {@link RequestEventType}
+     */
+    private void process(Bot bot, JSONObject eventJson, RequestEventType type) {
+        bot.getPluginList().stream().anyMatch(o -> {
+            if (type == RequestEventType.GROUP) {
+                return utils.getPlugin(o).onGroupAddRequest(bot, eventJson.to(GroupAddRequestEvent.class)) == BotPlugin.MESSAGE_BLOCK;
             }
-        }
+            if (type == RequestEventType.FRIEND) {
+                return utils.getPlugin(o).onFriendAddRequest(bot, eventJson.to(FriendAddRequestEvent.class)) == BotPlugin.MESSAGE_BLOCK;
+            }
+            return false;
+        });
+    }
+
+    /**
+     * 加好友请求
+     *
+     * @param bot       {@link Bot}
+     * @param eventJson {@link  JSONObject}
+     */
+    public void friend(@NotNull Bot bot, @NotNull JSONObject eventJson) {
+        process(bot, eventJson, RequestEventType.FRIEND);
+    }
+
+    /**
+     * 加群请求
+     *
+     * @param bot       {@link Bot}
+     * @param eventJson {@link  JSONObject}
+     */
+    public void group(@NotNull Bot bot, @NotNull JSONObject eventJson) {
+        process(bot, eventJson, RequestEventType.GROUP);
     }
 
 }
