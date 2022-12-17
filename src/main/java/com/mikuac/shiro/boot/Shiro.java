@@ -3,7 +3,7 @@ package com.mikuac.shiro.boot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.handler.ActionHandler;
-import com.mikuac.shiro.handler.Handler;
+import com.mikuac.shiro.handler.EventHandler;
 import com.mikuac.shiro.handler.WebSocketHandler;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
@@ -30,7 +30,7 @@ public class Shiro {
     private BotFactory botFactory;
 
     @Resource
-    private Handler handler;
+    private EventHandler eventHandler;
 
     @Resource
     private ActionHandler actionHandler;
@@ -49,7 +49,7 @@ public class Shiro {
     @Bean
     @ConditionalOnMissingBean
     public WebSocketHandler createShiroWebSocketHandler() {
-        return new WebSocketHandler(handler, botFactory, actionHandler, shiroAsyncTask, botContainer);
+        return new WebSocketHandler(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
     }
 
     /**
