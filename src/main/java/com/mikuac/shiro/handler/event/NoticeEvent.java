@@ -59,79 +59,81 @@ public class NoticeEvent {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void process(@NotNull Bot bot, JSONObject resp, NoticeEventEnum type) {
-        bot.getPluginList().stream().anyMatch(o -> {
-            int status = BotPlugin.MESSAGE_IGNORE;
+        if (type == NoticeEventEnum.GROUP_UPLOAD) {
+            GroupUploadNoticeEvent event = resp.to(GroupUploadNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupUploadNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.GROUP_UPLOAD) {
-                status = utils.getPlugin(o).onGroupUploadNotice(bot, resp.to(GroupUploadNoticeEvent.class));
-            }
+        if (type == NoticeEventEnum.GROUP_ADMIN) {
+            GroupAdminNoticeEvent event = resp.to(GroupAdminNoticeEvent.class);
+            injection.invokeGroupAdmin(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupAdminNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.GROUP_ADMIN) {
-                GroupAdminNoticeEvent event = resp.to(GroupAdminNoticeEvent.class);
-                injection.invokeGroupAdmin(bot, event);
-                status = utils.getPlugin(o).onGroupAdminNotice(bot, event);
-            }
+        if (type == NoticeEventEnum.GROUP_DECREASE) {
+            GroupDecreaseNoticeEvent event = resp.to(GroupDecreaseNoticeEvent.class);
+            injection.invokeGroupDecrease(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupDecreaseNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.GROUP_DECREASE) {
-                GroupDecreaseNoticeEvent event = resp.to(GroupDecreaseNoticeEvent.class);
-                injection.invokeGroupDecrease(bot, event);
-                status = utils.getPlugin(o).onGroupDecreaseNotice(bot, event);
-            }
+        if (type == NoticeEventEnum.GROUP_INCREASE) {
+            GroupIncreaseNoticeEvent event = resp.to(GroupIncreaseNoticeEvent.class);
+            injection.invokeGroupIncrease(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupIncreaseNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.GROUP_INCREASE) {
-                GroupIncreaseNoticeEvent event = resp.to(GroupIncreaseNoticeEvent.class);
-                injection.invokeGroupIncrease(bot, event);
-                status = utils.getPlugin(o).onGroupIncreaseNotice(bot, event);
-            }
+        if (type == NoticeEventEnum.GROUP_BAN) {
+            GroupBanNoticeEvent event = resp.to(GroupBanNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupBanNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.GROUP_BAN) {
-                status = utils.getPlugin(o).onGroupBanNotice(bot, resp.to(GroupBanNoticeEvent.class));
-            }
+        if (type == NoticeEventEnum.FRIEND_ADD) {
+            FriendAddNoticeEvent event = resp.to(FriendAddNoticeEvent.class);
+            injection.invokeFriendAdd(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onFriendAddNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.FRIEND_ADD) {
-                FriendAddNoticeEvent event = resp.to(FriendAddNoticeEvent.class);
-                injection.invokeFriendAdd(bot, event);
-                status = utils.getPlugin(o).onFriendAddNotice(bot, event);
-            }
+        if (type == NoticeEventEnum.GROUP_MSG_DELETE) {
+            GroupMsgDeleteNoticeEvent event = resp.to(GroupMsgDeleteNoticeEvent.class);
+            injection.invokeGroupRecall(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupMsgDeleteNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.GROUP_MSG_DELETE) {
-                GroupMsgDeleteNoticeEvent event = resp.to(GroupMsgDeleteNoticeEvent.class);
-                injection.invokeGroupRecall(bot, event);
-                status = utils.getPlugin(o).onGroupMsgDeleteNotice(bot, event);
-            }
+        if (type == NoticeEventEnum.PRIVATE_MSG_DELETE) {
+            PrivateMsgDeleteNoticeEvent event = resp.to(PrivateMsgDeleteNoticeEvent.class);
+            injection.invokeFriendRecall(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onPrivateMsgDeleteNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.PRIVATE_MSG_DELETE) {
-                PrivateMsgDeleteNoticeEvent event = resp.to(PrivateMsgDeleteNoticeEvent.class);
-                injection.invokeFriendRecall(bot, event);
-                status = utils.getPlugin(o).onPrivateMsgDeleteNotice(bot, event);
-            }
+        if (type == NoticeEventEnum.GROUP_CARD_CHANGE) {
+            GroupCardChangeNotice event = resp.to(GroupCardChangeNotice.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupCardChangeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.GROUP_CARD_CHANGE) {
-                status = utils.getPlugin(o).onGroupCardChangeNotice(bot, resp.to(GroupCardChangeNotice.class));
-            }
+        if (type == NoticeEventEnum.OFFLINE_FILE) {
+            ReceiveOfflineFilesNoticeEvent event = resp.to(ReceiveOfflineFilesNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onReceiveOfflineFilesNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.OFFLINE_FILE) {
-                status = utils.getPlugin(o).onReceiveOfflineFilesNotice(bot, resp.to(ReceiveOfflineFilesNoticeEvent.class));
-            }
+        if (type == NoticeEventEnum.CHANNEL_CREATED) {
+            ChannelCreatedNoticeEvent event = resp.to(ChannelCreatedNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onChannelCreatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.CHANNEL_CREATED) {
-                status = utils.getPlugin(o).onChannelCreatedNotice(bot, resp.to(ChannelCreatedNoticeEvent.class));
-            }
+        if (type == NoticeEventEnum.CHANNEL_DESTROYED) {
+            ChannelDestroyedNoticeEvent event = resp.to(ChannelDestroyedNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onChannelDestroyedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.CHANNEL_DESTROYED) {
-                status = utils.getPlugin(o).onChannelDestroyedNotice(bot, resp.to(ChannelDestroyedNoticeEvent.class));
-            }
+        if (type == NoticeEventEnum.CHANNEL_UPDATED) {
+            ChannelUpdatedNoticeEvent event = resp.to(ChannelUpdatedNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onChannelUpdatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NoticeEventEnum.CHANNEL_UPDATED) {
-                status = utils.getPlugin(o).onChannelUpdatedNotice(bot, resp.to(ChannelUpdatedNoticeEvent.class));
-            }
-
-            if (type == NoticeEventEnum.MESSAGE_REACTIONS_UPDATED) {
-                status = utils.getPlugin(o).onMessageReactionsUpdatedNotice(bot, resp.to(MessageReactionsUpdatedNoticeEvent.class));
-            }
-
-            return status == BotPlugin.MESSAGE_BLOCK;
-        });
+        if (type == NoticeEventEnum.MESSAGE_REACTIONS_UPDATED) {
+            MessageReactionsUpdatedNoticeEvent event = resp.to(MessageReactionsUpdatedNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onMessageReactionsUpdatedNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
     }
 
     /**

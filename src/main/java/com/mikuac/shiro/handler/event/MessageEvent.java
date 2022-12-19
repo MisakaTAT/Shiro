@@ -1,7 +1,6 @@
 package com.mikuac.shiro.handler.event;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.mikuac.shiro.bo.ArrayMsg;
 import com.mikuac.shiro.common.utils.EventUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
@@ -58,46 +56,42 @@ public class MessageEvent {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void process(@NotNull Bot bot, JSONObject resp, MessageEventEnum type) {
-        bot.getPluginList().stream().anyMatch(o -> {
-            int status = BotPlugin.MESSAGE_IGNORE;
-
-            try {
-                if (type == MessageEventEnum.GROUP) {
-                    PrivateMessageEvent event = resp.to(PrivateMessageEvent.class);
-                    if (utils.setInterceptor(bot, event)) {
-                        event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
-                        injection.invokePrivateMessage(bot, event);
-                        status = utils.getPlugin(o).onPrivateMessage(bot, event);
-                        utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-                    }
+        try {
+            if (type == MessageEventEnum.FRIEND) {
+                PrivateMessageEvent event = resp.to(PrivateMessageEvent.class);
+                if (!utils.setInterceptor(bot, event)) {
+                    return;
                 }
-
-                if (type == MessageEventEnum.FRIEND) {
-                    GroupMessageEvent event = resp.to(GroupMessageEvent.class);
-                    if (utils.setInterceptor(bot, event)) {
-                        event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
-                        injection.invokeGroupMessage(bot, event);
-                        status = utils.getPlugin(o).onGroupMessage(bot, event);
-                        utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-                    }
-                }
-
-                if (type == MessageEventEnum.GUILD) {
-                    GuildMessageEvent event = resp.to(GuildMessageEvent.class);
-                    if (utils.setInterceptor(bot, event)) {
-                        List<ArrayMsg> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-                        event.setArrayMsg(arrayMsg);
-                        injection.invokeGuildMessage(bot, event);
-                        status = utils.getPlugin(o).onGuildMessage(bot, event);
-                        utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-                    }
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
+                event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
+                injection.invokePrivateMessage(bot, event);
+                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
             }
 
-            return status == BotPlugin.MESSAGE_BLOCK;
-        });
+            if (type == MessageEventEnum.GROUP) {
+                GroupMessageEvent event = resp.to(GroupMessageEvent.class);
+                if (!utils.setInterceptor(bot, event)) {
+                    return;
+                }
+                event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
+                injection.invokeGroupMessage(bot, event);
+                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
+            }
+
+            if (type == MessageEventEnum.GUILD) {
+                GuildMessageEvent event = resp.to(GuildMessageEvent.class);
+                if (!utils.setInterceptor(bot, event)) {
+                    return;
+                }
+                event.setArrayMsg(ShiroUtils.stringToMsgChain(event.getMessage()));
+                injection.invokeGuildMessage(bot, event);
+                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

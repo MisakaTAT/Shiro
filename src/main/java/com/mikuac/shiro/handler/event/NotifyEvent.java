@@ -51,29 +51,25 @@ public class NotifyEvent {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void process(@NotNull Bot bot, JSONObject resp, NotifyEventEnum type) {
-        bot.getPluginList().stream().anyMatch(o -> {
-            int status = BotPlugin.MESSAGE_IGNORE;
-
-            if (type == NotifyEventEnum.POKE) {
-                PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);
-                // 如果群号不为空则作为群内戳一戳处理
-                if (event.getGroupId() > 0L) {
-                    status = utils.getPlugin(o).onGroupPokeNotice(bot, event);
-                } else {
-                    status = utils.getPlugin(o).onPrivatePokeNotice(bot, event);
-                }
+        if (type == NotifyEventEnum.POKE) {
+            PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);
+            // 如果群号不为空则作为群内戳一戳处理
+            if (event.getGroupId() > 0L) {
+                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupPokeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+            } else {
+                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onPrivatePokeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
             }
+        }
 
-            if (type == NotifyEventEnum.HONOR) {
-                status = utils.getPlugin(o).onGroupHonorChangeNotice(bot, resp.to(GroupHonorChangeNoticeEvent.class));
-            }
+        if (type == NotifyEventEnum.HONOR) {
+            GroupHonorChangeNoticeEvent event = resp.to(GroupHonorChangeNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupHonorChangeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
 
-            if (type == NotifyEventEnum.LUCKY_KING) {
-                status = utils.getPlugin(o).onGroupLuckyKingNotice(bot, resp.to(GroupLuckyKingNoticeEvent.class));
-            }
-
-            return status == BotPlugin.MESSAGE_BLOCK;
-        });
+        if (type == NotifyEventEnum.LUCKY_KING) {
+            GroupLuckyKingNoticeEvent event = resp.to(GroupLuckyKingNoticeEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupLuckyKingNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
     }
 
     /**

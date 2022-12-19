@@ -53,18 +53,14 @@ public class RequestEvent {
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     private void process(@NotNull Bot bot, JSONObject resp, RequestEventEnum type) {
-        bot.getPluginList().stream().anyMatch(o -> {
-            int status = BotPlugin.MESSAGE_IGNORE;
-
-            if (type == RequestEventEnum.GROUP) {
-                status = utils.getPlugin(o).onGroupAddRequest(bot, resp.to(GroupAddRequestEvent.class));
-            }
-            if (type == RequestEventEnum.FRIEND) {
-                status = utils.getPlugin(o).onFriendAddRequest(bot, resp.to(FriendAddRequestEvent.class));
-            }
-
-            return status == BotPlugin.MESSAGE_BLOCK;
-        });
+        if (type == RequestEventEnum.GROUP) {
+            GroupAddRequestEvent event = resp.to(GroupAddRequestEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
+        if (type == RequestEventEnum.FRIEND) {
+            FriendAddRequestEvent event = resp.to(FriendAddRequestEvent.class);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onFriendAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
     }
 
     /**
