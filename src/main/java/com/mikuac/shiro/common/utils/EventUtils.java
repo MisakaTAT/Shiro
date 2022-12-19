@@ -72,7 +72,7 @@ public class EventUtils {
      */
     public boolean setInterceptor(@NotNull Bot bot, @NotNull MessageEvent event) {
         try {
-            return !getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
+            return getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
@@ -82,12 +82,12 @@ public class EventUtils {
     /**
      * 推送消息
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link JSONObject}
-     * @param arrayMsg  {@link ArrayMsg}
+     * @param bot      {@link Bot}
+     * @param resp     {@link JSONObject}
+     * @param arrayMsg {@link ArrayMsg}
      */
-    private void pushAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, List<ArrayMsg> arrayMsg) {
-        AnyMessageEvent event = eventJson.to(AnyMessageEvent.class);
+    private void pushAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject resp, List<ArrayMsg> arrayMsg) {
+        AnyMessageEvent event = resp.to(AnyMessageEvent.class);
         event.setArrayMsg(arrayMsg);
         injection.invokeAnyMessage(bot, event);
         for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
@@ -100,15 +100,15 @@ public class EventUtils {
     /**
      * 推送消息并返回消息链
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link JSONObject}
-     * @param event     {@link MessageEvent}
+     * @param bot   {@link Bot}
+     * @param resp  {@link JSONObject}
+     * @param event {@link MessageEvent}
      * @return {@link ArrayMsg}
      */
-    public List<ArrayMsg> setAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject eventJson, @NotNull MessageEvent event) {
+    public List<ArrayMsg> setAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject resp, @NotNull MessageEvent event) {
         try {
             List<ArrayMsg> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-            pushAnyMessageEvent(bot, eventJson, arrayMsg);
+            pushAnyMessageEvent(bot, resp, arrayMsg);
             return arrayMsg;
         } catch (Exception e) {
             e.printStackTrace();

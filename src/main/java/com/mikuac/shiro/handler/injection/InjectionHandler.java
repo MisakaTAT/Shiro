@@ -15,6 +15,7 @@ import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -305,7 +306,7 @@ public class InjectionHandler {
      * @param handlerMethod {@link HandlerMethod}
      * @param params        params
      */
-    private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
+    private void invokeMethod(@NotNull HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
         Class<?>[] parameterTypes = handlerMethod.getMethod().getParameterTypes();
         Object[] objects = new Object[parameterTypes.length];
         Arrays.stream(parameterTypes).forEach(InternalUtils.consumerWithIndex((item, index) -> {
@@ -347,7 +348,7 @@ public class InjectionHandler {
      * @param msg 消息内容
      * @return params
      */
-    private Map<Class<?>, Object> matcher(String cmd, String msg) {
+    private @Nullable Map<Class<?>, Object> matcher(String cmd, String msg) {
         Map<Class<?>, Object> params = new HashMap<>(16);
         if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
             Matcher matcher = RegexUtils.regexMatcher(cmd, msg);

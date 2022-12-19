@@ -6,6 +6,7 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
+import com.mikuac.shiro.enums.RequestEventEnum;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +19,6 @@ import java.util.function.BiConsumer;
  * @author zero
  */
 @Component
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class RequestEvent {
 
     @Resource
@@ -32,69 +32,59 @@ public class RequestEvent {
     /**
      * 请求事件分发
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        String type = eventJson.getString("request_type");
+    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+        String type = resp.getString("request_type");
         handlers.getOrDefault(
                 type,
                 (b, e) -> {
                 }
-        ).accept(bot, eventJson);
-    }
-
-    /**
-     * 请求事件类型枚举
-     */
-    private enum RequestEventType {
-        /**
-         * 加群请求
-         */
-        GROUP,
-        /**
-         * 加好友请求
-         */
-        FRIEND
+        ).accept(bot, resp);
     }
 
     /**
      * 事件处理
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link  JSONObject}
-     * @param type      {@link RequestEventType}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     * @param type {@link RequestEventEnum}
      */
-    private void process(Bot bot, JSONObject eventJson, RequestEventType type) {
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void process(@NotNull Bot bot, JSONObject resp, RequestEventEnum type) {
         bot.getPluginList().stream().anyMatch(o -> {
-            if (type == RequestEventType.GROUP) {
-                return utils.getPlugin(o).onGroupAddRequest(bot, eventJson.to(GroupAddRequestEvent.class)) == BotPlugin.MESSAGE_BLOCK;
+            int status = BotPlugin.MESSAGE_IGNORE;
+
+            if (type == RequestEventEnum.GROUP) {
+                status = utils.getPlugin(o).onGroupAddRequest(bot, resp.to(GroupAddRequestEvent.class));
             }
-            if (type == RequestEventType.FRIEND) {
-                return utils.getPlugin(o).onFriendAddRequest(bot, eventJson.to(FriendAddRequestEvent.class)) == BotPlugin.MESSAGE_BLOCK;
+            if (type == RequestEventEnum.FRIEND) {
+                status = utils.getPlugin(o).onFriendAddRequest(bot, resp.to(FriendAddRequestEvent.class));
             }
-            return false;
+
+            return status == BotPlugin.MESSAGE_BLOCK;
         });
     }
 
     /**
      * 加好友请求
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link  JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      */
-    public void friend(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        process(bot, eventJson, RequestEventType.FRIEND);
+    public void friend(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, RequestEventEnum.FRIEND);
     }
 
     /**
      * 加群请求
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link  JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      */
-    public void group(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        process(bot, eventJson, RequestEventType.GROUP);
+    public void group(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, RequestEventEnum.GROUP);
     }
 
 }

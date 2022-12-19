@@ -7,6 +7,7 @@ import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.notice.GroupHonorChangeNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.GroupLuckyKingNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.PokeNoticeEvent;
+import com.mikuac.shiro.enums.NotifyEventEnum;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -32,52 +33,77 @@ public class NotifyEvent {
     /**
      * 通知事件分发
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        String type = eventJson.getString("sub_type");
-        handlers.getOrDefault(
-                type,
-                (b, e) -> {
+    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+        String type = resp.getString("sub_type");
+        handlers.getOrDefault(type, (b, e) -> {
+        }).accept(bot, resp);
+    }
+
+    /**
+     * 事件处理
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     * @param type {@link NotifyEventEnum}
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void process(@NotNull Bot bot, JSONObject resp, NotifyEventEnum type) {
+        bot.getPluginList().stream().anyMatch(o -> {
+            int status = BotPlugin.MESSAGE_IGNORE;
+
+            if (type == NotifyEventEnum.POKE) {
+                PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);
+                // 如果群号不为空则作为群内戳一戳处理
+                if (event.getGroupId() > 0L) {
+                    status = utils.getPlugin(o).onGroupPokeNotice(bot, event);
+                } else {
+                    status = utils.getPlugin(o).onPrivatePokeNotice(bot, event);
                 }
-        ).accept(bot, eventJson);
+            }
+
+            if (type == NotifyEventEnum.HONOR) {
+                status = utils.getPlugin(o).onGroupHonorChangeNotice(bot, resp.to(GroupHonorChangeNoticeEvent.class));
+            }
+
+            if (type == NotifyEventEnum.LUCKY_KING) {
+                status = utils.getPlugin(o).onGroupLuckyKingNotice(bot, resp.to(GroupLuckyKingNoticeEvent.class));
+            }
+
+            return status == BotPlugin.MESSAGE_BLOCK;
+        });
     }
 
-    public void poke(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        PokeNoticeEvent event = eventJson.to(PokeNoticeEvent.class);
-        // 如果群号不为空则当作群内戳一戳处理
-        if (event.getGroupId() > 0L) {
-            for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-                if (utils.getPlugin(pluginClass).onGroupPokeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                    break;
-                }
-            }
-            return;
-        }
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onPrivatePokeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
+    /**
+     * 戳一戳事件
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     */
+    public void poke(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, NotifyEventEnum.POKE);
     }
 
-    public void luckyKing(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        GroupLuckyKingNoticeEvent event = eventJson.to(GroupLuckyKingNoticeEvent.class);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onGroupLuckyKingNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
+    /**
+     * 抢红包运气王事件
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     */
+    public void luckyKing(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, NotifyEventEnum.LUCKY_KING);
     }
 
-    public void honor(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        GroupHonorChangeNoticeEvent event = eventJson.to(GroupHonorChangeNoticeEvent.class);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onGroupHonorChangeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
+    /**
+     * 群荣誉变更事件
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     */
+    public void honor(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, NotifyEventEnum.HONOR);
     }
 
 }

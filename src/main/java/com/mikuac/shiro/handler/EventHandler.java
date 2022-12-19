@@ -3,12 +3,10 @@ package com.mikuac.shiro.handler;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.handler.event.*;
-import com.mikuac.shiro.handler.injection.InjectionHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -24,11 +22,7 @@ import java.util.function.BiConsumer;
  */
 @Slf4j
 @Component
-@SuppressWarnings("unused")
 public class EventHandler implements ApplicationRunner {
-
-    @Resource
-    private ApplicationContext applicationContext;
 
     @Resource
     private MetaEvent meta;
@@ -44,9 +38,6 @@ public class EventHandler implements ApplicationRunner {
 
     @Resource
     private RequestEvent request;
-
-    @Resource
-    private InjectionHandler injection;
 
     /**
      * 存储事件处理器
@@ -96,13 +87,13 @@ public class EventHandler implements ApplicationRunner {
     /**
      * 事件分发
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        String postType = eventJson.getString("post_type");
+    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+        String postType = resp.getString("post_type");
         handlers.getOrDefault(postType, (b, e) -> {
-        }).accept(bot, eventJson);
+        }).accept(bot, resp);
     }
 
 }

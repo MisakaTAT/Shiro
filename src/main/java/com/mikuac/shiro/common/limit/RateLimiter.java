@@ -19,7 +19,6 @@ import java.util.concurrent.locks.ReentrantLock;
  * @author zero
  */
 @Component
-@SuppressWarnings("ResultOfMethodCallIgnored")
 public class RateLimiter implements ApplicationRunner {
 
     /**
@@ -115,6 +114,7 @@ public class RateLimiter implements ApplicationRunner {
      * @param permits 获取数量
      * @return 是否成功
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     public boolean acquire(int permits) {
         lock.lock();
         try {

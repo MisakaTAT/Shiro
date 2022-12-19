@@ -9,6 +9,7 @@ import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
+import com.mikuac.shiro.enums.MessageEventEnum;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
@@ -39,77 +40,94 @@ public class MessageEvent {
     /**
      * 消息事件分发
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        String type = eventJson.getString("message_type");
-        handlers.getOrDefault(
-                type,
-                (b, e) -> {
+    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+        String type = resp.getString("message_type");
+        handlers.getOrDefault(type, (b, e) -> {
+        }).accept(bot, resp);
+    }
+
+    /**
+     * 事件处理
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     * @param type {@link MessageEventEnum}
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    private void process(@NotNull Bot bot, JSONObject resp, MessageEventEnum type) {
+        bot.getPluginList().stream().anyMatch(o -> {
+            int status = BotPlugin.MESSAGE_IGNORE;
+
+            try {
+                if (type == MessageEventEnum.GROUP) {
+                    PrivateMessageEvent event = resp.to(PrivateMessageEvent.class);
+                    if (utils.setInterceptor(bot, event)) {
+                        event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
+                        injection.invokePrivateMessage(bot, event);
+                        status = utils.getPlugin(o).onPrivateMessage(bot, event);
+                        utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
+                    }
                 }
-        ).accept(bot, eventJson);
+
+                if (type == MessageEventEnum.FRIEND) {
+                    GroupMessageEvent event = resp.to(GroupMessageEvent.class);
+                    if (utils.setInterceptor(bot, event)) {
+                        event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
+                        injection.invokeGroupMessage(bot, event);
+                        status = utils.getPlugin(o).onGroupMessage(bot, event);
+                        utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
+                    }
+                }
+
+                if (type == MessageEventEnum.GUILD) {
+                    GuildMessageEvent event = resp.to(GuildMessageEvent.class);
+                    if (utils.setInterceptor(bot, event)) {
+                        List<ArrayMsg> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+                        event.setArrayMsg(arrayMsg);
+                        injection.invokeGuildMessage(bot, event);
+                        status = utils.getPlugin(o).onGuildMessage(bot, event);
+                        utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return status == BotPlugin.MESSAGE_BLOCK;
+        });
     }
 
-    public void friend(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        PrivateMessageEvent event = eventJson.to(PrivateMessageEvent.class);
-        if (utils.setInterceptor(bot, event)) {
-            return;
-        }
-        event.setArrayMsg(utils.setAnyMessageEvent(bot, eventJson, event));
-        injection.invokePrivateMessage(bot, event);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
-
-        try {
-            utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /**
+     * 私聊请求
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     */
+    public void friend(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, MessageEventEnum.FRIEND);
     }
 
-    public void group(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        GroupMessageEvent event = eventJson.to(GroupMessageEvent.class);
-        if (utils.setInterceptor(bot, event)) {
-            return;
-        }
-        event.setArrayMsg(utils.setAnyMessageEvent(bot, eventJson, event));
-        injection.invokeGroupMessage(bot, event);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
-
-        try {
-            utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /**
+     * 群消息
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     */
+    public void group(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, MessageEventEnum.GROUP);
     }
 
-    public void guild(@NotNull Bot bot, @NotNull JSONObject eventJson) {
-        GuildMessageEvent event = eventJson.to(GuildMessageEvent.class);
-        if (utils.setInterceptor(bot, event)) {
-            return;
-        }
-        List<ArrayMsg> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
-        event.setArrayMsg(arrayMsg);
-        injection.invokeGuildMessage(bot, event);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (utils.getPlugin(pluginClass).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
-
-        try {
-            utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    /**
+     * 频道消息
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     */
+    public void guild(@NotNull Bot bot, @NotNull JSONObject resp) {
+        process(bot, resp, MessageEventEnum.GUILD);
     }
 
 }

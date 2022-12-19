@@ -2,6 +2,7 @@ package com.mikuac.shiro.handler.event;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.Bot;
+import com.mikuac.shiro.enums.NotifyEventEnum;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,7 @@ import java.util.function.BiConsumer;
  * @author zero
  */
 @Component
+@SuppressWarnings("unused")
 public class MetaEvent {
 
     /**
@@ -23,11 +25,21 @@ public class MetaEvent {
     /**
      * 元事件分发
      *
-     * @param bot       {@link Bot}
-     * @param eventJson {@link JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject eventJson) {
+    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
         // Ignored this handler
+    }
+
+    /**
+     * 事件处理
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     * @param type {@link NotifyEventEnum}
+     */
+    private void process(@NotNull Bot bot, JSONObject resp, NotifyEventEnum type) {
     }
 
 }
