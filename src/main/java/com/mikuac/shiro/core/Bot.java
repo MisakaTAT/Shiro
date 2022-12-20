@@ -1243,4 +1243,21 @@ public class Bot {
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
+    /**
+     * 好友点赞
+     *
+     * @param userId 目标用户
+     * @param times  点赞次数（每个好友每天最多 10 次，机器人为 SVIP 则提高到 20次）
+     * @return {@link ActionRaw}
+     */
+    public ActionRaw sendLike(long userId, int times) {
+        ActionPathEnum action = ActionPathEnum.SEND_LIKE;
+        JSONObject params = new JSONObject() {{
+            put("user_id", userId);
+            put("times", times);
+        }};
+        JSONObject result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
 }

@@ -258,7 +258,11 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 获取群文件资源链接
      */
-    GET_GROUP_FILE_URL("get_group_file_url");
+    GET_GROUP_FILE_URL("get_group_file_url"),
+    /**
+     * 发送好友赞
+     */
+    SEND_LIKE("send_like");
 
     /**
      * 请求路径
