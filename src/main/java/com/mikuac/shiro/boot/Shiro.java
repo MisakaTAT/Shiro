@@ -44,7 +44,7 @@ public class Shiro {
     /**
      * <p>createShiroWebSocketHandler.</p>
      *
-     * @return {@link com.mikuac.shiro.handler.WebSocketHandler}
+     * @return {@link WebSocketHandler}
      */
     @Bean
     @ConditionalOnMissingBean
@@ -55,7 +55,7 @@ public class Shiro {
     /**
      * <p>createWebSocketContainer.</p>
      *
-     * @return {@link org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean}
+     * @return {@link ServletServerContainerFactoryBean}
      */
     @Bean
     @ConditionalOnMissingBean

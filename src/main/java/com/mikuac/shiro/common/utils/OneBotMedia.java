@@ -31,7 +31,7 @@ public class OneBotMedia {
     /**
      * <p>builder.</p>
      *
-     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     * @return {@link OneBotMedia}
      */
     public static OneBotMedia builder() {
         return new OneBotMedia();
@@ -61,7 +61,7 @@ public class OneBotMedia {
      * <p>file.</p>
      *
      * @param file 文件
-     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     * @return {@link OneBotMedia}
      */
     public OneBotMedia file(String file) {
         this.file = ShiroUtils.escape(file);
@@ -72,7 +72,7 @@ public class OneBotMedia {
      * <p>cache.</p>
      *
      * @param cache 缓存
-     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     * @return {@link OneBotMedia}
      */
     public OneBotMedia cache(boolean cache) {
         this.cache = cache;
@@ -83,7 +83,7 @@ public class OneBotMedia {
      * <p>proxy.</p>
      *
      * @param proxy 代理
-     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     * @return {@link OneBotMedia}
      */
     public OneBotMedia proxy(boolean proxy) {
         this.proxy = proxy;
@@ -94,7 +94,7 @@ public class OneBotMedia {
      * <p>timeout.</p>
      *
      * @param timeout 超时
-     * @return {@link com.mikuac.shiro.common.utils.OneBotMedia}
+     * @return {@link OneBotMedia}
      */
     public OneBotMedia timeout(Integer timeout) {
         this.timeout = timeout;

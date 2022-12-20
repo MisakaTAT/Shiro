@@ -23,7 +23,7 @@ public class ShiroTaskPoolConfig {
     /**
      * 线程池配置
      *
-     * @return {@link org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor}
+     * @return {@link ThreadPoolTaskExecutor}
      */
     @Bean("shiroTaskExecutor")
     public ThreadPoolTaskExecutor shiroTaskExecutor() {

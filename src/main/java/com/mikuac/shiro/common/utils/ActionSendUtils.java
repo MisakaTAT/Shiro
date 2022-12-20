@@ -25,7 +25,7 @@ public class ActionSendUtils extends Thread {
     /**
      * <p>Constructor for ActionSendUtils.</p>
      *
-     * @param session        {@link org.springframework.web.socket.WebSocketSession}
+     * @param session        {@link WebSocketSession}
      * @param requestTimeout Request Timeout
      */
     public ActionSendUtils(WebSocketSession session, Long requestTimeout) {
@@ -38,8 +38,8 @@ public class ActionSendUtils extends Thread {
      *
      * @param req Request json data
      * @return Response json data
-     * @throws java.io.IOException            exception
-     * @throws java.lang.InterruptedException exception
+     * @throws IOException          exception
+     * @throws InterruptedException exception
      */
     public JSONObject send(JSONObject req) throws IOException, InterruptedException {
         synchronized (session) {

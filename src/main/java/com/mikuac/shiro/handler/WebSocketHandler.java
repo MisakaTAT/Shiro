@@ -54,10 +54,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * 构造函数
      *
      * @param eventHandler   {@link EventHandler}
-     * @param botFactory     {@link com.mikuac.shiro.core.BotFactory}
-     * @param actionHandler  {@link com.mikuac.shiro.handler.ActionHandler}
-     * @param shiroAsyncTask {@link com.mikuac.shiro.task.ShiroAsyncTask}
-     * @param botContainer   {@link com.mikuac.shiro.core.BotContainer}
+     * @param botFactory     {@link BotFactory}
+     * @param actionHandler  {@link ActionHandler}
+     * @param shiroAsyncTask {@link ShiroAsyncTask}
+     * @param botContainer   {@link BotContainer}
      */
     public WebSocketHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;

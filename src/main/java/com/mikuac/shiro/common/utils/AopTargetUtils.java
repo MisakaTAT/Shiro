@@ -17,9 +17,9 @@ public class AopTargetUtils {
     /**
      * <p>getTarget.</p>
      *
-     * @param proxy {@link java.lang.Object}
+     * @param proxy {@link Object}
      * @return TargetObject
-     * @throws java.lang.Exception exception
+     * @throws Exception exception
      */
     public static Object getTarget(Object proxy) throws Exception {
         if (!AopUtils.isAopProxy(proxy)) {

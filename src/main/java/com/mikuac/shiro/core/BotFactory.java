@@ -57,8 +57,8 @@ public class BotFactory {
      * 创建Bot对象
      *
      * @param selfId  机器人账号
-     * @param session {@link org.springframework.web.socket.WebSocketSession}
-     * @return {@link com.mikuac.shiro.core.Bot}
+     * @param session {@link WebSocketSession}
+     * @return {@link Bot}
      */
     public Bot createBot(long selfId, WebSocketSession session) {
         log.debug("Bot instance creating {}", selfId);

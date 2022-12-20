@@ -14,9 +14,7 @@ public interface BotMessageEventInterceptor {
      * 预处理
      *
      * @param bot   {@link Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}
-     *              {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
-     *              {@link com.mikuac.shiro.dto.event.message.PrivateMessageEvent}
+     * @param event {@link MessageEvent}
      * @return true 为执行 false 为拦截 拦截后不再传递给 plugin
      * @throws Exception 异常
      */
@@ -26,9 +24,7 @@ public interface BotMessageEventInterceptor {
      * 执行后
      *
      * @param bot   {@link Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}
-     *              {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
-     *              {@link com.mikuac.shiro.dto.event.message.PrivateMessageEvent}
+     * @param event {@link MessageEvent}
      * @throws Exception 异常
      */
     void afterCompletion(Bot bot, MessageEvent event) throws Exception;

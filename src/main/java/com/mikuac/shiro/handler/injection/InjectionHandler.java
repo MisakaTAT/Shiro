@@ -39,8 +39,8 @@ public class InjectionHandler {
     /**
      * 群消息撤回事件
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupMsgDeleteNoticeEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link GroupMsgDeleteNoticeEvent}
      */
     public void invokeGroupRecall(@NotNull Bot bot, @NotNull GroupMsgDeleteNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupMsgDeleteNoticeHandler.class), bot, event);
@@ -49,8 +49,8 @@ public class InjectionHandler {
     /**
      * 好友消息撤回事件
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.notice.PrivateMsgDeleteNoticeEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link PrivateMsgDeleteNoticeEvent}
      */
     public void invokeFriendRecall(@NotNull Bot bot, @NotNull PrivateMsgDeleteNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(PrivateMsgDeleteNoticeHandler.class), bot, event);
@@ -59,8 +59,8 @@ public class InjectionHandler {
     /**
      * 好友添加事件
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.notice.FriendAddNoticeEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link FriendAddNoticeEvent}
      */
     public void invokeFriendAdd(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(FriendAddNoticeHandler.class), bot, event);
@@ -69,8 +69,8 @@ public class InjectionHandler {
     /**
      * 入群事件
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupIncreaseNoticeEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link GroupIncreaseNoticeEvent}
      */
     public void invokeGroupIncrease(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupIncreaseHandler.class), bot, event);
@@ -79,8 +79,8 @@ public class InjectionHandler {
     /**
      * 退群事件
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupDecreaseNoticeEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link GroupDecreaseNoticeEvent}
      */
     public void invokeGroupDecrease(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupDecreaseHandler.class), bot, event);
@@ -89,8 +89,8 @@ public class InjectionHandler {
     /**
      * 监听全部消息
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.AnyMessageEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link AnyMessageEvent}
      */
     public void invokeAnyMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -172,8 +172,8 @@ public class InjectionHandler {
     /**
      * 频道消息
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.GuildMessageEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link GuildMessageEvent}
      */
     public void invokeGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -218,8 +218,8 @@ public class InjectionHandler {
     /**
      * 群聊消息
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.GroupMessageEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link GroupMessageEvent}
      */
     public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -247,8 +247,8 @@ public class InjectionHandler {
     /**
      * 私聊消息
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.message.PrivateMessageEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link PrivateMessageEvent}
      */
     public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
@@ -271,8 +271,8 @@ public class InjectionHandler {
     /**
      * 管理员变动事件
      *
-     * @param bot   {@link com.mikuac.shiro.core.Bot}
-     * @param event {@link com.mikuac.shiro.dto.event.notice.GroupAdminNoticeEvent}
+     * @param bot   {@link Bot}
+     * @param event {@link GroupAdminNoticeEvent}
      */
     public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
