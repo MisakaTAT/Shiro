@@ -59,7 +59,7 @@ public class MessageEvent {
         try {
             if (type == MessageEventEnum.FRIEND) {
                 PrivateMessageEvent event = resp.to(PrivateMessageEvent.class);
-                if (!utils.setInterceptor(bot, event)) {
+                if (utils.setInterceptor(bot, event)) {
                     return;
                 }
                 event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
@@ -70,7 +70,7 @@ public class MessageEvent {
 
             if (type == MessageEventEnum.GROUP) {
                 GroupMessageEvent event = resp.to(GroupMessageEvent.class);
-                if (!utils.setInterceptor(bot, event)) {
+                if (utils.setInterceptor(bot, event)) {
                     return;
                 }
                 event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
@@ -81,7 +81,7 @@ public class MessageEvent {
 
             if (type == MessageEventEnum.GUILD) {
                 GuildMessageEvent event = resp.to(GuildMessageEvent.class);
-                if (!utils.setInterceptor(bot, event)) {
+                if (utils.setInterceptor(bot, event)) {
                     return;
                 }
                 event.setArrayMsg(ShiroUtils.stringToMsgChain(event.getMessage()));

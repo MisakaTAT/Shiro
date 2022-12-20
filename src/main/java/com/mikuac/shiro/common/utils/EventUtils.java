@@ -72,10 +72,10 @@ public class EventUtils {
      */
     public boolean setInterceptor(@NotNull Bot bot, @NotNull MessageEvent event) {
         try {
-            return getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
+            return !getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return true;
         }
     }
 
