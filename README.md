@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://mikuac.com/archives/675"><img src="https://mikuac.com/images/yuri.jpg" width="200" height="200" alt="Yuri"></a>
+  <a href="https://mikuac.com/archives/675"><img src="https://mikuac.com/images/shiro.png" width="200" height="200" alt="Yuri"></a>
 </p>
 
 <div align="center">
