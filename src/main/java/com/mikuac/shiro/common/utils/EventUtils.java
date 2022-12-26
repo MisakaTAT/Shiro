@@ -107,7 +107,7 @@ public class EventUtils {
      */
     public List<ArrayMsg> setAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject resp, @NotNull MessageEvent event) {
         try {
-            List<ArrayMsg> arrayMsg = ShiroUtils.stringToMsgChain(event.getMessage());
+            List<ArrayMsg> arrayMsg = ShiroUtils.rawToArrayMsg(event.getMessage());
             pushAnyMessageEvent(bot, resp, arrayMsg);
             return arrayMsg;
         } catch (Exception e) {

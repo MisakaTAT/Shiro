@@ -160,7 +160,7 @@ public class ShiroUtils {
      * @param msg 需要修改客户端消息上报类型为 string
      * @return 消息链
      */
-    public static List<ArrayMsg> stringToMsgChain(String msg) {
+    public static List<ArrayMsg> rawToArrayMsg(String msg) {
         List<ArrayMsg> arrayMsgList = new ArrayList<>();
         try {
             Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {

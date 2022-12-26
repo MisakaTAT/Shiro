@@ -84,7 +84,7 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                event.setArrayMsg(ShiroUtils.stringToMsgChain(event.getMessage()));
+                event.setArrayMsg(ShiroUtils.rawToArrayMsg(event.getMessage()));
                 injection.invokeGuildMessage(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
