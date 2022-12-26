@@ -6,7 +6,7 @@ package com.mikuac.shiro.enums;
 public enum MsgTypeEnum {
 
     /**
-     * @ 某人
+     * at 某人
      */
     AT,
 
