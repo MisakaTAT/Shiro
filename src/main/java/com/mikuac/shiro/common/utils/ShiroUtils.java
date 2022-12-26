@@ -1,8 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.JSONArray;
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.bo.ArrayMsg;
+import com.mikuac.shiro.enums.MsgTypeEnum;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -50,7 +49,11 @@ public class ShiroUtils {
      * @return at对象列表
      */
     public static List<Long> getAtList(List<ArrayMsg> arrayMsg) {
-        return arrayMsg.stream().filter(it -> "at".equals(it.getType()) && !"all".equals(it.getData().get("qq"))).map(it -> Long.parseLong(it.getData().get("qq"))).collect(Collectors.toList());
+        return arrayMsg
+                .stream()
+                .filter(it -> MsgTypeEnum.AT == it.getType() && !"all".equals(it.getData().get("qq")))
+                .map(it -> Long.parseLong(it.getData().get("qq")))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -60,7 +63,11 @@ public class ShiroUtils {
      * @return 图片链接列表
      */
     public static List<String> getMsgImgUrlList(List<ArrayMsg> arrayMsg) {
-        return arrayMsg.stream().filter(it -> "image".equals(it.getType())).map(it -> it.getData().get("url")).collect(Collectors.toList());
+        return arrayMsg
+                .stream()
+                .filter(it -> MsgTypeEnum.IMAGE == it.getType())
+                .map(it -> it.getData().get("url"))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -70,7 +77,11 @@ public class ShiroUtils {
      * @return 视频链接列表
      */
     public static List<String> getMsgVideoUrlList(List<ArrayMsg> arrayMsg) {
-        return arrayMsg.stream().filter(it -> "video".equals(it.getType())).map(it -> it.getData().get("url")).collect(Collectors.toList());
+        return arrayMsg
+                .stream()
+                .filter(it -> MsgTypeEnum.VIDEO == it.getType())
+                .map(it -> it.getData().get("url"))
+                .collect(Collectors.toList());
     }
 
     /**
@@ -150,31 +161,32 @@ public class ShiroUtils {
      * @return 消息链
      */
     public static List<ArrayMsg> stringToMsgChain(String msg) {
-        JSONArray array = new JSONArray();
+        List<ArrayMsg> arrayMsgList = new ArrayList<>();
         try {
             Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
                 Matcher matcher = RegexUtils.regexMatcher(CQ_CODE_REGEX, s);
-                JSONObject object = new JSONObject();
-                JSONObject params = new JSONObject();
+                ArrayMsg arrayMsg = new ArrayMsg();
+                Map<String, String> data = new HashMap<>(16);
                 if (matcher == null) {
-                    object.put("type", "text");
-                    params.put("text", s);
+                    arrayMsg.setType(MsgTypeEnum.TEXT);
+                    data.put("text", s);
                 } else {
-                    object.put("type", matcher.group(1));
-                    Arrays.stream(matcher.group(2).split(",")).filter(args -> !args.isEmpty()).forEach(args -> {
-                        String k = args.substring(0, args.indexOf("="));
-                        String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
-                        params.put(k, v);
-                    });
+                    arrayMsg.setType(MsgTypeEnum.valueOf(matcher.group(1).toUpperCase()));
+                    Arrays.stream(matcher.group(2).split(","))
+                            .filter(args -> !args.isEmpty())
+                            .forEach(args -> {
+                                String k = args.substring(0, args.indexOf("="));
+                                String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
+                                data.put(k, v);
+                            });
                 }
-                object.put("data", params);
-                array.add(object);
+                arrayMsg.setData(data);
+                arrayMsgList.add(arrayMsg);
             });
         } catch (Exception e) {
             log.error("Raw message convert failed: {}", e.getMessage());
-            return null;
         }
-        return array.toList(ArrayMsg.class);
+        return arrayMsgList;
     }
 
     /**

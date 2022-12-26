@@ -46,7 +46,7 @@ public class UnitTests {
     @Test
     public void stringToArrayMsgTest() {
         val stringMsg = "[CQ:at,qq=1122334455]测试消息1[CQ:face,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test.image,url=https://test.com/2.jpg]\n[CQ:image,file=test.image,url=https://test.com/2.jpg]";
-        val arrayMsg = "[MsgChainBean(type=at, data={qq=1122334455}), MsgChainBean(type=text, data={text=测试消息1}), MsgChainBean(type=face, data={id=1}), MsgChainBean(type=text, data={text=测试消息2}), MsgChainBean(type=video, data={file=https://test.com/1.mp4}), MsgChainBean(type=image, data={file=test.image, url=https://test.com/2.jpg}), MsgChainBean(type=text, data={text=\n}), MsgChainBean(type=image, data={file=test.image, url=https://test.com/2.jpg})]";
+        val arrayMsg = "[ArrayMsg(type=AT, data={qq=1122334455}), ArrayMsg(type=TEXT, data={text=测试消息1}), ArrayMsg(type=FACE, data={id=1}), ArrayMsg(type=TEXT, data={text=测试消息2}), ArrayMsg(type=VIDEO, data={file=https://test.com/1.mp4}), ArrayMsg(type=IMAGE, data={file=test.image, url=https://test.com/2.jpg}), ArrayMsg(type=TEXT, data={text=\n}), ArrayMsg(type=IMAGE, data={file=test.image, url=https://test.com/2.jpg})]";
         val list = ShiroUtils.stringToMsgChain(stringMsg);
         TestCase.assertNotNull(list);
         TestCase.assertEquals(arrayMsg, list.toString());
