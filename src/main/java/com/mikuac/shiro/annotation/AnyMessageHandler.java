@@ -5,7 +5,7 @@ import com.mikuac.shiro.enums.AtEnum;
 import java.lang.annotation.*;
 
 /**
- * <p>MessageHandler class.</p>
+ * <p>AnyMessageHandler class.</p>
  *
  * @author zero
  * @version $Id: $Id
@@ -13,7 +13,7 @@ import java.lang.annotation.*;
 @Documented
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface MessageHandler {
+public @interface AnyMessageHandler {
 
     /**
      * 触发命令，支持正则

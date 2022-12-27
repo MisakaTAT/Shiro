@@ -94,10 +94,10 @@ public class InjectionHandler {
      */
     public void invokeAnyMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
-        List<HandlerMethod> handlerMethods = handlers.get(MessageHandler.class);
+        List<HandlerMethod> handlerMethods = handlers.get(AnyMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
-                MessageHandler annotation = handlerMethod.getMethod().getAnnotation(MessageHandler.class);
+                AnyMessageHandler annotation = handlerMethod.getMethod().getAnnotation(AnyMessageHandler.class);
                 if (CommonEnum.GROUP.value().equals(event.getMessageType())) {
                     if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                         return;
