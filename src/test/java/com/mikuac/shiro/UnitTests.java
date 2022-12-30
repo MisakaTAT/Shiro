@@ -48,36 +48,36 @@ public class UnitTests {
         TestCase.assertNotNull(arrayMsg);
         int[] count = {0};
         arrayMsg.forEach(InternalUtils.consumerWithIndex((item, index) -> {
-            if (MsgTypeEnum.AT == item.getType() && index == 0) {
+            if (MsgTypeEnum.at == item.getType() && index == 0) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("1122334455", item.getData().get("qq"));
             }
-            if (MsgTypeEnum.TEXT == item.getType() && index == 1) {
+            if (MsgTypeEnum.text == item.getType() && index == 1) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("测试消息1", item.getData().get("text"));
             }
-            if (MsgTypeEnum.FACE == item.getType() && index == 2) {
+            if (MsgTypeEnum.face == item.getType() && index == 2) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("1", item.getData().get("id"));
             }
-            if (MsgTypeEnum.TEXT == item.getType() && index == 3) {
+            if (MsgTypeEnum.text == item.getType() && index == 3) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("测试消息2", item.getData().get("text"));
             }
-            if (MsgTypeEnum.VIDEO == item.getType() && index == 4) {
+            if (MsgTypeEnum.video == item.getType() && index == 4) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("https://test.com/1.mp4", item.getData().get("file"));
             }
-            if (MsgTypeEnum.IMAGE == item.getType() && index == 5) {
+            if (MsgTypeEnum.image == item.getType() && index == 5) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("test.image", item.getData().get("file"));
                 TestCase.assertEquals("https://test.com/2.jpg", item.getData().get("url"));
             }
-            if (MsgTypeEnum.TEXT == item.getType() && index == 6) {
+            if (MsgTypeEnum.text == item.getType() && index == 6) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("\n", item.getData().get("text"));
             }
-            if (MsgTypeEnum.IMAGE == item.getType() && index == 7) {
+            if (MsgTypeEnum.image == item.getType() && index == 7) {
                 count[0] = count[0] + 1;
                 TestCase.assertEquals("test.image", item.getData().get("file"));
                 TestCase.assertEquals("https://test.com/2.jpg", item.getData().get("url"));
@@ -173,6 +173,14 @@ public class UnitTests {
     public void testConsumerWithIndex() {
         val list = Arrays.asList(1, 2, 3);
         list.forEach(InternalUtils.consumerWithIndex((item, index) -> TestCase.assertEquals(item, list.get(index))));
+    }
+
+    @Test
+    public void testArrayMsgToCode() {
+        val raw = "[CQ:at,qq=1122334455]";
+        val arrayMsg = ShiroUtils.rawToArrayMsg(raw);
+        val cqCode = ShiroUtils.arrayMsgToCode(arrayMsg.get(0));
+        TestCase.assertEquals(raw, cqCode);
     }
 
 }
