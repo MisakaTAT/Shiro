@@ -30,7 +30,8 @@ public class GroupFilesResp {
         @JSONField(name = "file_name")
         private String fileName;
 
-        private Integer busid;
+        @JSONField(name = "busid")
+        private Integer busId;
 
         @JSONField(name = "file_size")
         private Long fileSize;
@@ -47,6 +48,7 @@ public class GroupFilesResp {
         @JSONField(name = "download_times")
         private Integer downloadTimes;
 
+        @JSONField(name = "uploader")
         private Long uploader;
 
         @JSONField(name = "uploader_name")
@@ -69,6 +71,7 @@ public class GroupFilesResp {
         @JSONField(name = "create_time")
         private Long createTime;
 
+        @JSONField(name = "creator")
         private Long creator;
 
         @JSONField(name = "creator_name")

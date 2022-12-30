@@ -1195,7 +1195,7 @@ public class Bot {
      * @param folderName 文件夹名
      * @return {@link ActionRaw}
      */
-    public ActionRaw createGroupFileFolder(long groupId, long folderName) {
+    public ActionRaw createGroupFileFolder(long groupId, String folderName) {
         ActionPathEnum action = ActionPathEnum.CREATE_GROUP_FILE_FOLDER;
         JSONObject params = new JSONObject() {{
             put("group_id", groupId);
@@ -1229,15 +1229,15 @@ public class Bot {
      *
      * @param groupId 群号
      * @param fileId  文件ID
-     * @param busid   文件类型
+     * @param busId   文件类型
      * @return {@link ActionRaw}
      */
-    public ActionRaw deleteGroupFile(long groupId, String fileId, int busid) {
+    public ActionRaw deleteGroupFile(long groupId, String fileId, int busId) {
         ActionPathEnum action = ActionPathEnum.DELETE_GROUP_FILE;
         JSONObject params = new JSONObject() {{
             put("group_id", groupId);
             put("file_id", fileId);
-            put("busid", busid);
+            put("busid", busId);
         }};
         JSONObject result = actionHandler.action(session, action, params);
         return result != null ? result.to(ActionRaw.class) : null;

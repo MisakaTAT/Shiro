@@ -19,6 +19,6 @@ public class GuildListResp {
     private String guildName;
 
     @JSONField(name = "guild_display_id")
-    private String guildDisplayId;
+    private Long guildDisplayId;
 
 }

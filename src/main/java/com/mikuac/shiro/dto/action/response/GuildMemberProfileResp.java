@@ -24,7 +24,7 @@ public class GuildMemberProfileResp {
     private String avatarUrl;
 
     @JSONField(name = "join_time")
-    private String joinTime;
+    private Long joinTime;
 
     @JSONField(name = "roles")
     private List<RoleInfo> roles;
