@@ -51,7 +51,7 @@ public class ShiroUtils {
     public static List<Long> getAtList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.AT == it.getType() && !"all".equals(it.getData().get("qq")))
+                .filter(it -> MsgTypeEnum.at == it.getType() && !"all".equals(it.getData().get("qq")))
                 .map(it -> Long.parseLong(it.getData().get("qq")))
                 .collect(Collectors.toList());
     }
@@ -65,7 +65,7 @@ public class ShiroUtils {
     public static List<String> getMsgImgUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.IMAGE == it.getType())
+                .filter(it -> MsgTypeEnum.image == it.getType())
                 .map(it -> it.getData().get("url"))
                 .collect(Collectors.toList());
     }
@@ -79,7 +79,7 @@ public class ShiroUtils {
     public static List<String> getMsgVideoUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.VIDEO == it.getType())
+                .filter(it -> MsgTypeEnum.video == it.getType())
                 .map(it -> it.getData().get("url"))
                 .collect(Collectors.toList());
     }
@@ -168,10 +168,10 @@ public class ShiroUtils {
                 ArrayMsg arrayMsg = new ArrayMsg();
                 Map<String, String> data = new HashMap<>(16);
                 if (matcher == null) {
-                    arrayMsg.setType(MsgTypeEnum.TEXT);
+                    arrayMsg.setType(MsgTypeEnum.text);
                     data.put("text", s);
                 } else {
-                    arrayMsg.setType(MsgTypeEnum.valueOf(matcher.group(1).toUpperCase()));
+                    arrayMsg.setType(MsgTypeEnum.valueOf(matcher.group(1)));
                     Arrays.stream(matcher.group(2).split(","))
                             .filter(args -> !args.isEmpty())
                             .forEach(args -> {
@@ -190,12 +190,12 @@ public class ShiroUtils {
     }
 
     /**
-     * 从 MsgChainBean 生成 CQ Code
+     * 从 ArrayMsg 生成 CQ Code
      *
      * @param o {@link ArrayMsg}
      * @return CQ Code
      */
-    public static String jsonToCode(ArrayMsg o) {
+    public static String arrayMsgToCode(ArrayMsg o) {
         StringBuilder builder = new StringBuilder();
         builder.append("[CQ:").append(o.getType());
         o.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));

@@ -209,7 +209,7 @@ public class InjectionHandler {
     private String extractMsg(String message, List<ArrayMsg> arrayMsg, AtEnum atEnum) {
         String msg = message;
         if (atEnum == AtEnum.NEED) {
-            String atCode = ShiroUtils.jsonToCode(arrayMsg.get(0));
+            String atCode = ShiroUtils.arrayMsgToCode(arrayMsg.get(0));
             msg = msg.replace(atCode, "").replace(" ", "");
         }
         return msg;

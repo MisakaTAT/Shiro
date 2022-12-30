@@ -76,14 +76,14 @@ public class ActionHandler {
      * @return 请求结果
      */
     public JSONObject action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
-        if (rateLimiterProperties.isEnable()) {
-            if (rateLimiterProperties.isAwaitTask()) {
+        if (rateLimiterProperties.getEnable()) {
+            if (rateLimiterProperties.getAwaitTask()) {
                 // 阻塞当前线程直到获取令牌成功
                 if (!rateLimiter.acquire()) {
                     return null;
                 }
             }
-            if (!rateLimiterProperties.isAwaitTask() && !rateLimiter.tryAcquire()) {
+            if (!rateLimiterProperties.getAwaitTask() && !rateLimiter.tryAcquire()) {
                 return null;
             }
         }
