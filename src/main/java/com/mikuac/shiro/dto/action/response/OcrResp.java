@@ -33,13 +33,13 @@ public class OcrResp {
          * 置信度
          */
         @JSONField(name = "confidence")
-        private int confidence;
+        private Integer confidence;
 
         /**
          * 坐标
          */
         @JSONField(name = "coordinates")
-        private int[][] coordinates;
+        private Integer[][] coordinates;
 
     }
 

@@ -24,12 +24,12 @@ public class GroupCardChangeNotice extends NoticeEvent {
     private String cardNew;
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "card_old")
     private String cardOld;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
 }

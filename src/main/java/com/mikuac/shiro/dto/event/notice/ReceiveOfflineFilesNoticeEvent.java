@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 public class ReceiveOfflineFilesNoticeEvent extends NoticeEvent {
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "file")
     private File file;
@@ -36,7 +36,7 @@ public class ReceiveOfflineFilesNoticeEvent extends NoticeEvent {
         private String name;
 
         @JSONField(name = "size")
-        private long size;
+        private Long size;
 
         @JSONField(name = "url")
         private String url;

@@ -13,7 +13,7 @@ import lombok.Data;
 public class LoginInfoResp {
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "nickname")
     private String nickname;

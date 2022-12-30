@@ -21,6 +21,6 @@ import lombok.experimental.SuperBuilder;
 public class FriendAddNoticeEvent extends NoticeEvent {
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
 }

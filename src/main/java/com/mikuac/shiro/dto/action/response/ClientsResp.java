@@ -21,7 +21,7 @@ public class ClientsResp {
     private static class Clients {
 
         @JSONField(name = "app_id")
-        private long appId;
+        private Long appId;
 
         @JSONField(name = "device_name")
         private String deviceName;

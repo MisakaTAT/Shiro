@@ -34,6 +34,6 @@ public class ShiroProperties {
     /**
      * 日志等级设置为 debug
      */
-    private boolean debug = false;
+    private Boolean debug = false;
 
 }

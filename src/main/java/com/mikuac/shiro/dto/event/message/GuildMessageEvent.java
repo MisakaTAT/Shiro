@@ -39,7 +39,7 @@ public class GuildMessageEvent extends MessageEvent {
     private String selfTinyId;
 
     @JSONField(name = "time")
-    private long time;
+    private Long time;
 
     @JSONField(name = "sender")
     private Sender sender;
@@ -51,7 +51,7 @@ public class GuildMessageEvent extends MessageEvent {
     public static class Sender {
 
         @JSONField(name = "user_id")
-        private long userId;
+        private Long userId;
 
         @JSONField(name = "tiny_id")
         private String tinyId;

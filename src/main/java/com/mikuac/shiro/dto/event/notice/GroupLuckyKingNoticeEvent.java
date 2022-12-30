@@ -24,12 +24,12 @@ public class GroupLuckyKingNoticeEvent extends NoticeEvent {
     private String subType;
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "target_id")
-    private long targetId;
+    private Long targetId;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
 }

@@ -26,7 +26,7 @@ public class GetGuildMsgResp {
     private String messageId;
 
     @JSONField(name = "message_seq")
-    private int messageSeq;
+    private Integer messageSeq;
 
     @JSONField(name = "message_source")
     private String messageSource;
@@ -35,6 +35,6 @@ public class GetGuildMsgResp {
     private GuildMessageEvent.Sender sender;
 
     @JSONField(name = "time")
-    private long time;
+    private Long time;
 
 }

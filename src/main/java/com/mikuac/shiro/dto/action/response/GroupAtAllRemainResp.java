@@ -16,18 +16,18 @@ public class GroupAtAllRemainResp {
      * 是否可以 @全体成员
      */
     @JSONField(name = "can_at_all")
-    private boolean canAtAll;
+    private Boolean canAtAll;
 
     /**
      * 群内所有管理当天剩余 @全体成员 次数
      */
     @JSONField(name = "remain_at_all_count_for_group")
-    private int remainAtAllCountForGroup;
+    private Integer remainAtAllCountForGroup;
 
     /**
      * Bot 当天剩余 @全体成员 次数
      */
     @JSONField(name = "remain_at_all_count_for_uin")
-    private int remainAtAllCountForUin;
+    private Integer remainAtAllCountForUin;
 
 }

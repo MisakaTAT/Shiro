@@ -58,13 +58,13 @@ public class MessageReactionsUpdatedNoticeEvent extends NoticeEvent {
          * 表情对应数值ID
          */
         @JSONField(name = "emoji_index")
-        private int emojiIndex;
+        private Integer emojiIndex;
 
         /**
          * 表情类型
          */
         @JSONField(name = "emoji_type")
-        private int emojiType;
+        private Integer emojiType;
 
         /**
          * 表情名字
@@ -76,13 +76,13 @@ public class MessageReactionsUpdatedNoticeEvent extends NoticeEvent {
          * 当前表情被贴数量
          */
         @JSONField(name = "count")
-        private int count;
+        private Integer count;
 
         /**
          * BOT是否点击
          */
         @JSONField(name = "clicked")
-        private boolean clicked;
+        private Boolean clicked;
 
     }
 

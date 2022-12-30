@@ -30,24 +30,24 @@ public class GroupFilesResp {
         @JSONField(name = "file_name")
         private String fileName;
 
-        private int busid;
+        private Integer busid;
 
         @JSONField(name = "file_size")
-        private long fileSize;
+        private Long fileSize;
 
         @JSONField(name = "upload_time")
-        private long uploadTime;
+        private Long uploadTime;
 
         @JSONField(name = "dead_time")
-        private long deadTime;
+        private Long deadTime;
 
         @JSONField(name = "modify_time")
-        private long modifyTime;
+        private Long modifyTime;
 
         @JSONField(name = "download_times")
-        private int downloadTimes;
+        private Integer downloadTimes;
 
-        private long uploader;
+        private Long uploader;
 
         @JSONField(name = "uploader_name")
         private String uploaderName;
@@ -67,15 +67,15 @@ public class GroupFilesResp {
         private String folderName;
 
         @JSONField(name = "create_time")
-        private long createTime;
+        private Long createTime;
 
-        private long creator;
+        private Long creator;
 
         @JSONField(name = "creator_name")
         private String creatorName;
 
         @JSONField(name = "total_file_count")
-        private int totalFileCount;
+        private Integer totalFileCount;
 
     }
 

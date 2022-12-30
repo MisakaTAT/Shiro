@@ -22,19 +22,19 @@ public class GuildMetaByGuestResp {
     private String guildProfile;
 
     @JSONField(name = "create_time")
-    private long createTime;
+    private Long createTime;
 
     @JSONField(name = "max_member_count")
-    private long maxMemberCount;
+    private Long maxMemberCount;
 
     @JSONField(name = "max_robot_count")
-    private long maxRobotCount;
+    private Long maxRobotCount;
 
     @JSONField(name = "max_admin_count")
-    private long maxAdminCount;
+    private Long maxAdminCount;
 
     @JSONField(name = "member_count")
-    private long memberCount;
+    private Long memberCount;
 
     @JSONField(name = "owner_id")
     private String ownerId;

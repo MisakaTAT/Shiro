@@ -15,7 +15,7 @@ import java.util.List;
 public class GroupHonorInfoResp {
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "current_talkative")
     private CurrentTalkative currentTalkative;
@@ -42,7 +42,7 @@ public class GroupHonorInfoResp {
     public static class CurrentTalkative {
 
         @JSONField(name = "user_id")
-        private long userId;
+        private Long userId;
 
         @JSONField(name = "nickname")
         private String nickname;
@@ -51,7 +51,7 @@ public class GroupHonorInfoResp {
         private String avatar;
 
         @JSONField(name = "day_count")
-        private int dayCount;
+        private Integer dayCount;
 
     }
 
@@ -62,7 +62,7 @@ public class GroupHonorInfoResp {
     public static class OtherHonor {
 
         @JSONField(name = "user_id")
-        private long userId;
+        private Long userId;
 
         @JSONField(name = "nickname")
         private String nickname;

@@ -31,12 +31,12 @@ public class GroupAdminNoticeEvent extends NoticeEvent {
      * 群号
      */
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     /**
      * 管理员 QQ 号
      */
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
 }

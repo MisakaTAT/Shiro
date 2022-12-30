@@ -25,7 +25,7 @@ public class RequestEvent extends Event {
     private String requestType;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "comment")
     private String comment;

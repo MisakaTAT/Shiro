@@ -13,16 +13,16 @@ import lombok.Data;
 public class EssenceMsgResp {
 
     @JSONField(name = "sender_id")
-    private long senderId;
+    private Long senderId;
 
     @JSONField(name = "sender_nick")
     private String senderNick;
 
     @JSONField(name = "sender_time")
-    private long senderTime;
+    private Long senderTime;
 
     @JSONField(name = "operator_id")
-    private long operatorId;
+    private Long operatorId;
 
     @JSONField(name = "operator_nick")
     private String operatorNick;
@@ -31,6 +31,6 @@ public class EssenceMsgResp {
     private String operatorTime;
 
     @JSONField(name = "message_id")
-    private int messageId;
+    private Integer messageId;
 
 }

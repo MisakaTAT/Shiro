@@ -21,9 +21,9 @@ import lombok.experimental.SuperBuilder;
 public class PrivateMsgDeleteNoticeEvent extends NoticeEvent {
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "message_id")
-    private long msgId;
+    private Long msgId;
 
 }

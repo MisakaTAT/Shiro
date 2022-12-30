@@ -16,13 +16,13 @@ public class GetMsgResp {
      * 消息id
      */
     @JSONField(name = "message_id")
-    private int messageId;
+    private Integer messageId;
 
     /**
      * 消息真实id
      */
     @JSONField(name = "real_id")
-    private int realId;
+    private Integer realId;
 
     /**
      * 发送者
@@ -34,7 +34,7 @@ public class GetMsgResp {
      * 发送时间
      */
     @JSONField(name = "time")
-    private int time;
+    private Integer time;
 
     /**
      * 消息内容
@@ -67,7 +67,7 @@ public class GetMsgResp {
         private String sex;
 
         @JSONField(name = "age")
-        private int age;
+        private Integer age;
 
         @JSONField(name = "area")
         private String area;

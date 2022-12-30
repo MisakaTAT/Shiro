@@ -24,21 +24,21 @@ public class PokeNoticeEvent extends NoticeEvent {
     private String subType;
 
     @JSONField(name = "self_id")
-    private long selfId;
+    private Long selfId;
 
     @JSONField(name = "sender_id")
-    private long senderId;
+    private Long senderId;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "target_id")
-    private long targetId;
+    private Long targetId;
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "time")
-    private long time;
+    private Long time;
 
 }

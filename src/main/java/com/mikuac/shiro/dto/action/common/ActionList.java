@@ -18,7 +18,7 @@ public class ActionList<T> {
     private String status;
 
     @JSONField(name = "retcode")
-    private int retCode;
+    private Integer retCode;
 
     @JSONField(name = "data")
     private List<T> data;

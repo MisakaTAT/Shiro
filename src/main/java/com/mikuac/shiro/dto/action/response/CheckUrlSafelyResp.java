@@ -13,6 +13,6 @@ import lombok.Data;
 public class CheckUrlSafelyResp {
 
     @JSONField(name = "level")
-    private int level;
+    private Integer level;
 
 }

@@ -21,7 +21,7 @@ import lombok.experimental.SuperBuilder;
 public class GroupUploadNoticeEvent extends NoticeEvent {
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "file")
     private File file;
@@ -39,10 +39,10 @@ public class GroupUploadNoticeEvent extends NoticeEvent {
         private String name;
 
         @JSONField(name = "size")
-        private long size;
+        private Long size;
 
         @JSONField(name = "busid")
-        private long busid;
+        private Long busid;
 
     }
 

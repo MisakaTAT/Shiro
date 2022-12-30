@@ -22,9 +22,9 @@ public class Event {
     private String postType;
 
     @JSONField(name = "time")
-    private long time;
+    private Long time;
 
     @JSONField(name = "self_id")
-    private long selfId;
+    private Long selfId;
 
 }

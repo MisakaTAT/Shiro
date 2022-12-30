@@ -13,7 +13,7 @@ import lombok.Data;
 public class Anonymous {
 
     @JSONField(name = "id")
-    private long id;
+    private Long id;
 
     @JSONField(name = "name")
     private String name;

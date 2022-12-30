@@ -28,7 +28,7 @@ public class MessageEvent extends Event {
     private String messageType;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "message")
     private String message;
@@ -37,7 +37,7 @@ public class MessageEvent extends Event {
     private String rawMessage;
 
     @JSONField(name = "font")
-    private int font;
+    private Integer font;
 
     private List<ArrayMsg> arrayMsg;
 

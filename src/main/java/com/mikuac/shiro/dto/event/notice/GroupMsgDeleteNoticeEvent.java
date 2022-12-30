@@ -21,15 +21,15 @@ import lombok.experimental.SuperBuilder;
 public class GroupMsgDeleteNoticeEvent extends NoticeEvent {
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "operator_id")
-    private long operatorId;
+    private Long operatorId;
 
     @JSONField(name = "message_id")
-    private long msgId;
+    private Long msgId;
 
 }

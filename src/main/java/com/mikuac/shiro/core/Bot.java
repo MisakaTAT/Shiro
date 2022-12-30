@@ -809,7 +809,7 @@ public class Bot {
      * @param duration  禁言时长，单位秒，无法取消匿名用户禁言
      * @return {@link ActionRaw}
      */
-    public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, boolean duration) {
+    public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, int duration) {
         ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
         JSONObject params = new JSONObject() {{
             put("group_id", groupId);
@@ -828,7 +828,7 @@ public class Bot {
      * @param duration 禁言时长，单位秒，无法取消匿名用户禁言
      * @return {@link ActionRaw}
      */
-    public ActionRaw setGroupAnonymousBan(long groupId, String flag, boolean duration) {
+    public ActionRaw setGroupAnonymousBan(long groupId, String flag, int duration) {
         ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
         JSONObject params = new JSONObject() {{
             put("group_id", groupId);

@@ -24,12 +24,12 @@ public class GroupIncreaseNoticeEvent extends NoticeEvent {
     private String subType;
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "operator_id")
-    private long operatorId;
+    private Long operatorId;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
 }

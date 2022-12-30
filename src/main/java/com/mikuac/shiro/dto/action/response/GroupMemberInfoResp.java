@@ -13,10 +13,10 @@ import lombok.Data;
 public class GroupMemberInfoResp {
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     @JSONField(name = "nickname")
     private String nickname;
@@ -28,16 +28,16 @@ public class GroupMemberInfoResp {
     private String sex;
 
     @JSONField(name = "age")
-    private int age;
+    private Integer age;
 
     @JSONField(name = "area")
     private String area;
 
     @JSONField(name = "join_time")
-    private int joinTime;
+    private Integer joinTime;
 
     @JSONField(name = "last_sent_time")
-    private int lastSentTime;
+    private Integer lastSentTime;
 
     @JSONField(name = "level")
     private String level;
@@ -46,15 +46,15 @@ public class GroupMemberInfoResp {
     private String role;
 
     @JSONField(name = "unfriendly")
-    private boolean unfriendly;
+    private Boolean unfriendly;
 
     @JSONField(name = "title")
     private String title;
 
     @JSONField(name = "title_expire_time")
-    private long titleExpireTime;
+    private Long titleExpireTime;
 
     @JSONField(name = "card_changeable")
-    private boolean cardChangeable;
+    private Boolean cardChangeable;
 
 }

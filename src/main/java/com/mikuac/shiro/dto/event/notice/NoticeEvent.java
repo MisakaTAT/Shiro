@@ -25,6 +25,6 @@ public class NoticeEvent extends Event {
     private String noticeType;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
 }

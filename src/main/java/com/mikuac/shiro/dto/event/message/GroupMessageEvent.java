@@ -22,13 +22,13 @@ import lombok.experimental.SuperBuilder;
 public class GroupMessageEvent extends MessageEvent {
 
     @JSONField(name = "message_id")
-    private int messageId;
+    private Integer messageId;
 
     @JSONField(name = "sub_type")
     private String subType;
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "anonymous")
     private Anonymous anonymous;
@@ -55,7 +55,7 @@ public class GroupMessageEvent extends MessageEvent {
         private String sex;
 
         @JSONField(name = "age")
-        private int age;
+        private Integer age;
 
         @JSONField(name = "area")
         private String area;

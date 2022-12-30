@@ -16,7 +16,7 @@ public class StrangerInfoResp {
      * QQ 号
      */
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
     /**
      * 昵称
@@ -34,7 +34,7 @@ public class StrangerInfoResp {
      * 年龄
      */
     @JSONField(name = "age")
-    private int age;
+    private Integer age;
 
     /**
      * qid id 身份卡
@@ -46,12 +46,12 @@ public class StrangerInfoResp {
      * 等级
      */
     @JSONField(name = "level")
-    private int level;
+    private Integer level;
 
     /**
      * 在线天数？我猜的（
      */
     @JSONField(name = "login_days")
-    private int loginDays;
+    private Integer loginDays;
 
 }

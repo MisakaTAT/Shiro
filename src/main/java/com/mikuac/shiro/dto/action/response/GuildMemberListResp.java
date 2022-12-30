@@ -24,7 +24,7 @@ public class GuildMemberListResp {
      * 是否最终页
      */
     @JSONField(name = "finished")
-    private boolean finished;
+    private Boolean finished;
 
     /**
      * 翻页Token

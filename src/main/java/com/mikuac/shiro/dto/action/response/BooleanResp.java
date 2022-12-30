@@ -13,6 +13,6 @@ import lombok.Data;
 public class BooleanResp {
 
     @JSONField(name = "yes")
-    private boolean yes;
+    private Boolean yes;
 
 }

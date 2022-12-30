@@ -24,12 +24,12 @@ public class GroupHonorChangeNoticeEvent extends NoticeEvent {
     private String subType;
 
     @JSONField(name = "group_id")
-    private long groupId;
+    private Long groupId;
 
     @JSONField(name = "honor_type")
     private String honorType;
 
     @JSONField(name = "user_id")
-    private long userId;
+    private Long userId;
 
 }
