@@ -4,11 +4,11 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.handler.event.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -23,20 +23,40 @@ import java.util.function.BiConsumer;
 @Component
 public class EventHandler implements ApplicationRunner {
 
-    @Resource
     private MetaEvent meta;
 
-    @Resource
+    @Autowired
+    public void setMeta(MetaEvent meta) {
+        this.meta = meta;
+    }
+
     private NoticeEvent notice;
 
-    @Resource
+    @Autowired
+    public void setNotice(NoticeEvent notice) {
+        this.notice = notice;
+    }
+
     private NotifyEvent notify;
 
-    @Resource
+    @Autowired
+    public void setNotify(NotifyEvent notify) {
+        this.notify = notify;
+    }
+
     private MessageEvent message;
 
-    @Resource
+    @Autowired
+    public void setMessage(MessageEvent message) {
+        this.message = message;
+    }
+
     private RequestEvent request;
+
+    @Autowired
+    public void setRequest(RequestEvent request) {
+        this.request = request;
+    }
 
     /**
      * 存储事件处理器

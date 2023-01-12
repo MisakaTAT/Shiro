@@ -7,9 +7,9 @@ import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import com.mikuac.shiro.enums.RequestEventEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -20,8 +20,12 @@ import java.util.function.BiConsumer;
 @Component
 public class RequestEvent {
 
-    @Resource
     private EventUtils utils;
+
+    @Autowired
+    public void setUtils(EventUtils utils) {
+        this.utils = utils;
+    }
 
     /**
      * 存储请求事件处理器

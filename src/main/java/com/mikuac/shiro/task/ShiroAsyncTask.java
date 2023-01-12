@@ -3,10 +3,9 @@ package com.mikuac.shiro.task;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.handler.EventHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.Resource;
 
 /**
  * 异步任务
@@ -17,8 +16,12 @@ import javax.annotation.Resource;
 @Component
 public class ShiroAsyncTask {
 
-    @Resource
     private BotContainer botContainer;
+
+    @Autowired
+    public void setBotContainer(BotContainer botContainer) {
+        this.botContainer = botContainer;
+    }
 
     /**
      * 事件上报处理函数

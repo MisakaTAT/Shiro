@@ -7,9 +7,9 @@ import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.NoticeEventEnum;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -20,14 +20,26 @@ import java.util.function.BiConsumer;
 @Component
 public class NoticeEvent {
 
-    @Resource
     private EventUtils utils;
 
-    @Resource
+    @Autowired
+    public void setUtils(EventUtils utils) {
+        this.utils = utils;
+    }
+
     private InjectionHandler injection;
 
-    @Resource
+    @Autowired
+    public void setInjection(InjectionHandler injection) {
+        this.injection = injection;
+    }
+
     private NotifyEvent notify;
+
+    @Autowired
+    public void setNotify(NotifyEvent notify) {
+        this.notify = notify;
+    }
 
     /**
      * 存储通知事件处理器

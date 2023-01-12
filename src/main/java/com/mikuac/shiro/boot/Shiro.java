@@ -7,12 +7,11 @@ import com.mikuac.shiro.handler.EventHandler;
 import com.mikuac.shiro.handler.WebSocketHandler;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
-
-import javax.annotation.Resource;
 
 /**
  * Created on 2021/7/16.
@@ -23,23 +22,48 @@ import javax.annotation.Resource;
 @Configuration
 public class Shiro {
 
-    @Resource
     private WebSocketProperties webSocketProperties;
 
-    @Resource
+    @Autowired
+    public void setWebSocketProperties(WebSocketProperties webSocketProperties) {
+        this.webSocketProperties = webSocketProperties;
+    }
+
     private BotFactory botFactory;
 
-    @Resource
+    @Autowired
+    public void setBotFactory(BotFactory botFactory) {
+        this.botFactory = botFactory;
+    }
+
     private EventHandler eventHandler;
 
-    @Resource
+    @Autowired
+    public void setEventHandler(EventHandler eventHandler) {
+        this.eventHandler = eventHandler;
+    }
+
     private ActionHandler actionHandler;
 
-    @Resource
+    @Autowired
+
+    public void setActionHandler(ActionHandler actionHandler) {
+        this.actionHandler = actionHandler;
+    }
+
     private ShiroAsyncTask shiroAsyncTask;
 
-    @Resource
+    @Autowired
+    public void setShiroAsyncTask(ShiroAsyncTask shiroAsyncTask) {
+        this.shiroAsyncTask = shiroAsyncTask;
+    }
+
     private BotContainer botContainer;
+
+    @Autowired
+    public void setBotContainer(BotContainer botContainer) {
+        this.botContainer = botContainer;
+    }
 
     /**
      * <p>createShiroWebSocketHandler.</p>

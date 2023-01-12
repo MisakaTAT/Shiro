@@ -1,11 +1,11 @@
 package com.mikuac.shiro.common.limit;
 
 import com.mikuac.shiro.properties.RateLimiterProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
@@ -54,7 +54,7 @@ public class RateLimiter implements ApplicationRunner {
     /**
      * @param properties {@link RateLimiterProperties}
      */
-    @Resource
+    @Autowired
     public void setProperties(RateLimiterProperties properties) {
         this.capacity = properties.getCapacity();
         this.rate = properties.getRate();

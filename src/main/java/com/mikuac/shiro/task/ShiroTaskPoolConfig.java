@@ -1,11 +1,11 @@
 package com.mikuac.shiro.task;
 
 import com.mikuac.shiro.properties.TaskPoolProperties;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import javax.annotation.Resource;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
@@ -17,8 +17,12 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class ShiroTaskPoolConfig {
 
-    @Resource
     private TaskPoolProperties taskPoolProperties;
+
+    @Autowired
+    public void setTaskPoolProperties(TaskPoolProperties taskPoolProperties) {
+        this.taskPoolProperties = taskPoolProperties;
+    }
 
     /**
      * 线程池配置

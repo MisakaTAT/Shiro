@@ -8,13 +8,13 @@ import com.mikuac.shiro.common.utils.ScanUtils;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
-import javax.annotation.Resource;
 import java.lang.annotation.Annotation;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -31,14 +31,26 @@ public class BotFactory {
 
     private static Set<Class<?>> annotations = new LinkedHashSet<>();
 
-    @Resource
     private ActionHandler actionHandler;
 
-    @Resource
+    @Autowired
+    public void setActionHandler(ActionHandler actionHandler) {
+        this.actionHandler = actionHandler;
+    }
+
     private ShiroProperties shiroProperties;
 
-    @Resource
+    @Autowired
+    public void setShiroProperties(ShiroProperties shiroProperties) {
+        this.shiroProperties = shiroProperties;
+    }
+
     private ApplicationContext applicationContext;
+
+    @Autowired
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     /**
      * 获取所有注解类

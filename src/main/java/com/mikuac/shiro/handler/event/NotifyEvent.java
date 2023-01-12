@@ -8,9 +8,9 @@ import com.mikuac.shiro.dto.event.notice.GroupHonorChangeNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.GroupLuckyKingNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.PokeNoticeEvent;
 import com.mikuac.shiro.enums.NotifyEventEnum;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -21,8 +21,12 @@ import java.util.function.BiConsumer;
 @Component
 public class NotifyEvent {
 
-    @Resource
     private EventUtils utils;
+
+    @Autowired
+    public void setUtils(EventUtils utils) {
+        this.utils = utils;
+    }
 
     /**
      * 存储通知事件处理器

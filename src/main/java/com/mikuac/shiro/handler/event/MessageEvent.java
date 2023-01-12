@@ -10,9 +10,9 @@ import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.MessageEventEnum;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
@@ -23,11 +23,19 @@ import java.util.function.BiConsumer;
 @Component
 public class MessageEvent {
 
-    @Resource
     private EventUtils utils;
 
-    @Resource
+    @Autowired
+    public void setUtils(EventUtils utils) {
+        this.utils = utils;
+    }
+
     private InjectionHandler injection;
+
+    @Autowired
+    public void setInjection(InjectionHandler injection) {
+        this.injection = injection;
+    }
 
     /**
      * 存储消息事件处理器

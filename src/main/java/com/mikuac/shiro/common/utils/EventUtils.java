@@ -10,10 +10,10 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -24,11 +24,19 @@ import java.util.List;
 @Component
 public class EventUtils {
 
-    @Resource
     private ApplicationContext ctx;
 
-    @Resource
+    @Autowired
+    public void setCtx(ApplicationContext ctx) {
+        this.ctx = ctx;
+    }
+
     private InjectionHandler injection;
+
+    @Autowired
+    public void setInjection(InjectionHandler injection) {
+        this.injection = injection;
+    }
 
     private final BotPlugin defaultPlugin = new BotPlugin();
 

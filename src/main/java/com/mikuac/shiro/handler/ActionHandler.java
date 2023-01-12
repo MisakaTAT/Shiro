@@ -7,10 +7,10 @@ import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.properties.RateLimiterProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -32,20 +32,32 @@ public class ActionHandler {
     /**
      * WebSocket 配置
      */
-    @Resource
     private WebSocketProperties webSocketProperties;
+
+    @Autowired
+    public void setWebSocketProperties(WebSocketProperties webSocketProperties) {
+        this.webSocketProperties = webSocketProperties;
+    }
 
     /**
      * 限速器配置
      */
-    @Resource
     private RateLimiterProperties rateLimiterProperties;
+
+    @Autowired
+    public void setRateLimiterProperties(RateLimiterProperties rateLimiterProperties) {
+        this.rateLimiterProperties = rateLimiterProperties;
+    }
 
     /**
      * 限速器
      */
-    @Resource
     private RateLimiter rateLimiter;
+
+    @Autowired
+    public void setRateLimiter(RateLimiter rateLimiter) {
+        this.rateLimiter = rateLimiter;
+    }
 
     /**
      * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回

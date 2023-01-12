@@ -9,10 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import javax.annotation.Resource;
 import java.util.Arrays;
 
 /**
@@ -27,11 +27,19 @@ import java.util.Arrays;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class UnitTests {
 
-    @Resource
     private BotFactory botFactory;
 
-    @Resource
+    @Autowired
+    public void setBotFactory(BotFactory botFactory) {
+        this.botFactory = botFactory;
+    }
+
     private RateLimiter rateLimiter;
+
+    @Autowired
+    public void setRateLimiter(RateLimiter rateLimiter) {
+        this.rateLimiter = rateLimiter;
+    }
 
     @Test
     public void testRateLimiter() {

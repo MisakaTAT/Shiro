@@ -15,7 +15,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 
 /**
@@ -43,11 +42,19 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private final BotContainer botContainer;
 
-    @Resource
     private WebSocketProperties webSocketProperties;
 
     @Autowired
+    public void setWebSocketProperties(WebSocketProperties webSocketProperties) {
+        this.webSocketProperties = webSocketProperties;
+    }
+
     private CoreEvent coreEvent;
+
+    @Autowired
+    public void setCoreEvent(CoreEvent coreEvent) {
+        this.coreEvent = coreEvent;
+    }
 
     /**
      * 构造函数
