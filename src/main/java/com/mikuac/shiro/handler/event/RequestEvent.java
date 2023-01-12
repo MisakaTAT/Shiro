@@ -7,7 +7,6 @@ import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import com.mikuac.shiro.enums.RequestEventEnum;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -35,7 +34,7 @@ public class RequestEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void handler(Bot bot, JSONObject resp) {
         String type = resp.getString("request_type");
         handlers.getOrDefault(
                 type,
@@ -52,7 +51,7 @@ public class RequestEvent {
      * @param type {@link RequestEventEnum}
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void process(@NotNull Bot bot, JSONObject resp, RequestEventEnum type) {
+    private void process(Bot bot, JSONObject resp, RequestEventEnum type) {
         if (type == RequestEventEnum.GROUP) {
             GroupAddRequestEvent event = resp.to(GroupAddRequestEvent.class);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK);
@@ -69,7 +68,7 @@ public class RequestEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void friend(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void friend(Bot bot, JSONObject resp) {
         process(bot, resp, RequestEventEnum.FRIEND);
     }
 
@@ -79,7 +78,7 @@ public class RequestEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void group(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void group(Bot bot, JSONObject resp) {
         process(bot, resp, RequestEventEnum.GROUP);
     }
 

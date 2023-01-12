@@ -3,7 +3,6 @@ package com.mikuac.shiro.task;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.handler.EventHandler;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -29,7 +28,7 @@ public class ShiroAsyncTask {
      * @param resp    上报的 Json 数据
      */
     @Async("shiroTaskExecutor")
-    public void execHandlerMsg(@NotNull EventHandler event, long xSelfId, JSONObject resp) {
+    public void execHandlerMsg(EventHandler event, long xSelfId, JSONObject resp) {
         event.handler(botContainer.robots.get(xSelfId), resp);
     }
 

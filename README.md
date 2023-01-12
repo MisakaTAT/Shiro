@@ -81,7 +81,7 @@ public class ExamplePlugin {
 
     // 符合 cmd 正则表达式的消息会被响应
     @PrivateMessageHandler(cmd = "hi")
-    public void fun1(@NotNull Bot bot, @NotNull PrivateMessageEvent event, @NotNull Matcher matcher) {
+    public void fun1(Bot bot, PrivateMessageEvent event, Matcher matcher) {
         // 构建消息
         String sendMsg = MsgUtils.builder().face(66).text("Hello, this is shiro demo.").build();
         // 发送私聊消息
@@ -90,7 +90,7 @@ public class ExamplePlugin {
 
     // 如果 at 参数设定为 AtEnum.NEED 则只有 at 了机器人的消息会被响应
     @GroupMessageHandler(at = AtEnum.NEED)
-    public void fun2(@NotNull GroupMessageEvent event) {
+    public void fun2(GroupMessageEvent event) {
         // 以注解方式调用可以根据自己的需要来为方法设定参数
         // 例如群组消息可以传递 GroupMessageEvent, Bot, Matcher 多余的参数会被设定为 null
         System.out.println(event.getMessage());
@@ -98,7 +98,7 @@ public class ExamplePlugin {
 
     // 同时监听群组及私聊消息 并根据消息类型（私聊，群聊）回复
     @AnyMessageHandler
-    public void fun3(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
+    public void fun3(Bot bot, AnyMessageEvent event) {
         bot.sendMsg(event, "hello", false);
     }
 
@@ -126,7 +126,7 @@ shiro:
 public class ExamplePlugin extends BotPlugin {
 
     @Override
-    public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
+    public int onPrivateMessage(Bot bot, PrivateMessageEvent event) {
         if ("hi".equals(event.getMessage())) {
             // 构建消息
             String sendMsg = MsgUtils.builder()
@@ -141,7 +141,7 @@ public class ExamplePlugin extends BotPlugin {
     }
 
     @Override
-    public int onGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
+    public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         if ("hi".equals(event.getMessage())) {
             // 构建消息
             String sendMsg = MsgUtils.builder()

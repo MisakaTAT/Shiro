@@ -1,6 +1,5 @@
 package com.mikuac.shiro.common.utils;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -28,7 +27,7 @@ public class ScanUtils implements ResourceLoaderAware {
      * {@inheritDoc}
      */
     @Override
-    public void setResourceLoader(@NotNull ResourceLoader resourceLoader) {
+    public void setResourceLoader(ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 

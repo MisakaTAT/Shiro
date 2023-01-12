@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.handler.event.*;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -90,7 +89,7 @@ public class EventHandler implements ApplicationRunner {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void handler(Bot bot, JSONObject resp) {
         String postType = resp.getString("post_type");
         handlers.getOrDefault(postType, (b, e) -> {
         }).accept(bot, resp);

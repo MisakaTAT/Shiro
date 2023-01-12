@@ -8,7 +8,6 @@ import com.mikuac.shiro.dto.event.notice.GroupHonorChangeNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.GroupLuckyKingNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.PokeNoticeEvent;
 import com.mikuac.shiro.enums.NotifyEventEnum;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -36,7 +35,7 @@ public class NotifyEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void handler(Bot bot, JSONObject resp) {
         String type = resp.getString("sub_type");
         handlers.getOrDefault(type, (b, e) -> {
         }).accept(bot, resp);
@@ -50,7 +49,7 @@ public class NotifyEvent {
      * @param type {@link NotifyEventEnum}
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void process(@NotNull Bot bot, JSONObject resp, NotifyEventEnum type) {
+    private void process(Bot bot, JSONObject resp, NotifyEventEnum type) {
         if (type == NotifyEventEnum.POKE) {
             PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);
             // 如果群号不为空则作为群内戳一戳处理
@@ -78,7 +77,7 @@ public class NotifyEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void poke(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void poke(Bot bot, JSONObject resp) {
         process(bot, resp, NotifyEventEnum.POKE);
     }
 
@@ -88,7 +87,7 @@ public class NotifyEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void luckyKing(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void luckyKing(Bot bot, JSONObject resp) {
         process(bot, resp, NotifyEventEnum.LUCKY_KING);
     }
 
@@ -98,7 +97,7 @@ public class NotifyEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void honor(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void honor(Bot bot, JSONObject resp) {
         process(bot, resp, NotifyEventEnum.HONOR);
     }
 

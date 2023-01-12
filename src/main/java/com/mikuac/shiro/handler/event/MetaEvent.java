@@ -3,7 +3,6 @@ package com.mikuac.shiro.handler.event;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.enums.NotifyEventEnum;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class MetaEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void handler(Bot bot, JSONObject resp) {
         // Ignored this handler
     }
 
@@ -39,7 +38,7 @@ public class MetaEvent {
      * @param resp {@link JSONObject}
      * @param type {@link NotifyEventEnum}
      */
-    private void process(@NotNull Bot bot, JSONObject resp, NotifyEventEnum type) {
+    private void process(Bot bot, JSONObject resp, NotifyEventEnum type) {
     }
 
 }

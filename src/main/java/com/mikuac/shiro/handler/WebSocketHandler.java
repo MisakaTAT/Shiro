@@ -9,7 +9,6 @@ import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
@@ -107,7 +106,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * {@inheritDoc}
      */
     @Override
-    public void afterConnectionEstablished(@NotNull WebSocketSession session) {
+    public void afterConnectionEstablished(WebSocketSession session) {
         try {
             long xSelfId = parseSelfId(session);
             if (xSelfId == 0L) {
@@ -138,7 +137,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * {@inheritDoc}
      */
     @Override
-    public void afterConnectionClosed(@NotNull WebSocketSession session, @NotNull CloseStatus status) {
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         long xSelfId = parseSelfId(session);
         if (xSelfId == 0L) {
             return;
@@ -154,7 +153,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * {@inheritDoc}
      */
     @Override
-    protected void handleTextMessage(@NotNull WebSocketSession session, @NotNull TextMessage message) {
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
         long xSelfId = parseSelfId(session);
         JSONObject result = JSON.parseObject(message.getPayload());
         log.debug("[Event] {}", result.toJSONString());

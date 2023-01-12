@@ -14,8 +14,6 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -42,7 +40,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link GroupMsgDeleteNoticeEvent}
      */
-    public void invokeGroupRecall(@NotNull Bot bot, @NotNull GroupMsgDeleteNoticeEvent event) {
+    public void invokeGroupRecall(Bot bot, GroupMsgDeleteNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupMsgDeleteNoticeHandler.class), bot, event);
     }
 
@@ -52,7 +50,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link PrivateMsgDeleteNoticeEvent}
      */
-    public void invokeFriendRecall(@NotNull Bot bot, @NotNull PrivateMsgDeleteNoticeEvent event) {
+    public void invokeFriendRecall(Bot bot, PrivateMsgDeleteNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(PrivateMsgDeleteNoticeHandler.class), bot, event);
     }
 
@@ -62,7 +60,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link FriendAddNoticeEvent}
      */
-    public void invokeFriendAdd(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
+    public void invokeFriendAdd(Bot bot, FriendAddNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(FriendAddNoticeHandler.class), bot, event);
     }
 
@@ -72,7 +70,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link GroupIncreaseNoticeEvent}
      */
-    public void invokeGroupIncrease(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
+    public void invokeGroupIncrease(Bot bot, GroupIncreaseNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupIncreaseHandler.class), bot, event);
     }
 
@@ -82,7 +80,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link GroupDecreaseNoticeEvent}
      */
-    public void invokeGroupDecrease(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
+    public void invokeGroupDecrease(Bot bot, GroupDecreaseNoticeEvent event) {
         setParams(bot.getAnnotationHandler().get(GroupDecreaseHandler.class), bot, event);
     }
 
@@ -92,7 +90,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link AnyMessageEvent}
      */
-    public void invokeAnyMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
+    public void invokeAnyMessage(Bot bot, AnyMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(AnyMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
@@ -175,7 +173,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link GuildMessageEvent}
      */
-    public void invokeGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
+    public void invokeGuildMessage(Bot bot, GuildMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GuildMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
@@ -221,7 +219,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link GroupMessageEvent}
      */
-    public void invokeGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
+    public void invokeGroupMessage(Bot bot, GroupMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
@@ -250,7 +248,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link PrivateMessageEvent}
      */
-    public void invokePrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
+    public void invokePrivateMessage(Bot bot, PrivateMessageEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(PrivateMessageHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
@@ -274,7 +272,7 @@ public class InjectionHandler {
      * @param bot   {@link Bot}
      * @param event {@link GroupAdminNoticeEvent}
      */
-    public void invokeGroupAdmin(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
+    public void invokeGroupAdmin(Bot bot, GroupAdminNoticeEvent event) {
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> handlers = bot.getAnnotationHandler();
         List<HandlerMethod> handlerMethods = handlers.get(GroupAdminHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
@@ -306,7 +304,7 @@ public class InjectionHandler {
      * @param handlerMethod {@link HandlerMethod}
      * @param params        params
      */
-    private void invokeMethod(@NotNull HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
+    private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
         Class<?>[] parameterTypes = handlerMethod.getMethod().getParameterTypes();
         Object[] objects = new Object[parameterTypes.length];
         Arrays.stream(parameterTypes).forEach(InternalUtils.consumerWithIndex((item, index) -> {
@@ -348,7 +346,7 @@ public class InjectionHandler {
      * @param msg 消息内容
      * @return params
      */
-    private @Nullable Map<Class<?>, Object> matcher(String cmd, String msg) {
+    private Map<Class<?>, Object> matcher(String cmd, String msg) {
         Map<Class<?>, Object> params = new HashMap<>(16);
         if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
             Matcher matcher = RegexUtils.regexMatcher(cmd, msg);

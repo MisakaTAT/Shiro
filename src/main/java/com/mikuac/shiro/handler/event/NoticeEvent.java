@@ -7,7 +7,6 @@ import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.enums.NoticeEventEnum;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -41,7 +40,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void handler(Bot bot, JSONObject resp) {
         String type = resp.getString("notice_type");
         handlers.getOrDefault(
                 type,
@@ -58,7 +57,7 @@ public class NoticeEvent {
      * @param type {@link NoticeEventEnum}
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void process(@NotNull Bot bot, JSONObject resp, NoticeEventEnum type) {
+    private void process(Bot bot, JSONObject resp, NoticeEventEnum type) {
         if (type == NoticeEventEnum.GROUP_UPLOAD) {
             GroupUploadNoticeEvent event = resp.to(GroupUploadNoticeEvent.class);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupUploadNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
@@ -142,7 +141,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void groupUpload(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void groupUpload(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.GROUP_UPLOAD);
     }
 
@@ -152,7 +151,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void groupAdmin(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void groupAdmin(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.GROUP_ADMIN);
     }
 
@@ -162,7 +161,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void groupDecrease(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void groupDecrease(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.GROUP_DECREASE);
     }
 
@@ -172,7 +171,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void groupIncrease(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void groupIncrease(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.GROUP_INCREASE);
     }
 
@@ -182,7 +181,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void groupBan(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void groupBan(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.GROUP_BAN);
     }
 
@@ -192,7 +191,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void friendAdd(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void friendAdd(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.FRIEND_ADD);
     }
 
@@ -202,7 +201,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void groupMsgDelete(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void groupMsgDelete(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.GROUP_MSG_DELETE);
     }
 
@@ -210,7 +209,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void privateMsgDelete(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void privateMsgDelete(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.PRIVATE_MSG_DELETE);
     }
 
@@ -220,7 +219,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void groupCardChange(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void groupCardChange(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.GROUP_CARD_CHANGE);
     }
 
@@ -230,7 +229,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void offlineFile(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void offlineFile(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.OFFLINE_FILE);
     }
 
@@ -240,7 +239,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void channelCreated(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void channelCreated(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.CHANNEL_CREATED);
     }
 
@@ -250,7 +249,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void channelDestroyed(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void channelDestroyed(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.CHANNEL_DESTROYED);
     }
 
@@ -260,7 +259,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void channelUpdated(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void channelUpdated(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.CHANNEL_UPDATED);
     }
 
@@ -270,7 +269,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void messageReactionsUpdated(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void messageReactionsUpdated(Bot bot, JSONObject resp) {
         process(bot, resp, NoticeEventEnum.MESSAGE_REACTIONS_UPDATED);
     }
 
@@ -280,7 +279,7 @@ public class NoticeEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void notify(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void notify(Bot bot, JSONObject resp) {
         notify.handler(bot, resp);
     }
 

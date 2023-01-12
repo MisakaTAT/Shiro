@@ -10,7 +10,6 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
@@ -70,7 +69,7 @@ public class EventUtils {
      * @param event {@link MessageEvent}
      * @return boolean
      */
-    public boolean setInterceptor(@NotNull Bot bot, @NotNull MessageEvent event) {
+    public boolean setInterceptor(Bot bot, MessageEvent event) {
         try {
             return !getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
         } catch (Exception e) {
@@ -86,7 +85,7 @@ public class EventUtils {
      * @param resp     {@link JSONObject}
      * @param arrayMsg {@link ArrayMsg}
      */
-    private void pushAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject resp, List<ArrayMsg> arrayMsg) {
+    private void pushAnyMessageEvent(Bot bot, JSONObject resp, List<ArrayMsg> arrayMsg) {
         AnyMessageEvent event = resp.to(AnyMessageEvent.class);
         event.setArrayMsg(arrayMsg);
         injection.invokeAnyMessage(bot, event);
@@ -105,7 +104,7 @@ public class EventUtils {
      * @param event {@link MessageEvent}
      * @return {@link ArrayMsg}
      */
-    public List<ArrayMsg> setAnyMessageEvent(@NotNull Bot bot, @NotNull JSONObject resp, @NotNull MessageEvent event) {
+    public List<ArrayMsg> setAnyMessageEvent(Bot bot, JSONObject resp, MessageEvent event) {
         try {
             List<ArrayMsg> arrayMsg = ShiroUtils.rawToArrayMsg(event.getMessage());
             pushAnyMessageEvent(bot, resp, arrayMsg);

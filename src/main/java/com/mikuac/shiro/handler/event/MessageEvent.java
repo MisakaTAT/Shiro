@@ -10,7 +10,6 @@ import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.MessageEventEnum;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
@@ -41,7 +40,7 @@ public class MessageEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void handler(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void handler(Bot bot, JSONObject resp) {
         String type = resp.getString("message_type");
         handlers.getOrDefault(type, (b, e) -> {
         }).accept(bot, resp);
@@ -55,7 +54,7 @@ public class MessageEvent {
      * @param type {@link MessageEventEnum}
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
-    private void process(@NotNull Bot bot, JSONObject resp, MessageEventEnum type) {
+    private void process(Bot bot, JSONObject resp, MessageEventEnum type) {
         try {
             if (type == MessageEventEnum.FRIEND) {
                 PrivateMessageEvent event = resp.to(PrivateMessageEvent.class);
@@ -100,7 +99,7 @@ public class MessageEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void friend(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void friend(Bot bot, JSONObject resp) {
         process(bot, resp, MessageEventEnum.FRIEND);
     }
 
@@ -110,7 +109,7 @@ public class MessageEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void group(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void group(Bot bot, JSONObject resp) {
         process(bot, resp, MessageEventEnum.GROUP);
     }
 
@@ -120,7 +119,7 @@ public class MessageEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void guild(@NotNull Bot bot, @NotNull JSONObject resp) {
+    public void guild(Bot bot, JSONObject resp) {
         process(bot, resp, MessageEventEnum.GUILD);
     }
 

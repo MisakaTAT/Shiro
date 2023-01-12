@@ -7,7 +7,6 @@ import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 
 /**
@@ -37,7 +36,7 @@ public class BotPlugin {
      * @param event {@link AnyMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onAnyMessage(@NotNull Bot bot, @NotNull AnyMessageEvent event) {
+    public int onAnyMessage(Bot bot, AnyMessageEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -48,7 +47,7 @@ public class BotPlugin {
      * @param event {@link PrivateMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onPrivateMessage(@NotNull Bot bot, @NotNull PrivateMessageEvent event) {
+    public int onPrivateMessage(Bot bot, PrivateMessageEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -59,7 +58,7 @@ public class BotPlugin {
      * @param event {@link GroupMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupMessage(@NotNull Bot bot, @NotNull GroupMessageEvent event) {
+    public int onGroupMessage(Bot bot, GroupMessageEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -70,7 +69,7 @@ public class BotPlugin {
      * @param event {@link GuildMessageEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGuildMessage(@NotNull Bot bot, @NotNull GuildMessageEvent event) {
+    public int onGuildMessage(Bot bot, GuildMessageEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -81,7 +80,7 @@ public class BotPlugin {
      * @param event {@link GroupUploadNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupUploadNotice(@NotNull Bot bot, @NotNull GroupUploadNoticeEvent event) {
+    public int onGroupUploadNotice(Bot bot, GroupUploadNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -92,7 +91,7 @@ public class BotPlugin {
      * @param event {@link GroupAdminNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupAdminNotice(@NotNull Bot bot, @NotNull GroupAdminNoticeEvent event) {
+    public int onGroupAdminNotice(Bot bot, GroupAdminNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -103,7 +102,7 @@ public class BotPlugin {
      * @param event {@link GroupDecreaseNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupDecreaseNotice(@NotNull Bot bot, @NotNull GroupDecreaseNoticeEvent event) {
+    public int onGroupDecreaseNotice(Bot bot, GroupDecreaseNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -114,7 +113,7 @@ public class BotPlugin {
      * @param event {@link GroupIncreaseNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupIncreaseNotice(@NotNull Bot bot, @NotNull GroupIncreaseNoticeEvent event) {
+    public int onGroupIncreaseNotice(Bot bot, GroupIncreaseNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -125,7 +124,7 @@ public class BotPlugin {
      * @param event {@link GroupBanNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupBanNotice(@NotNull Bot bot, @NotNull GroupBanNoticeEvent event) {
+    public int onGroupBanNotice(Bot bot, GroupBanNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -136,7 +135,7 @@ public class BotPlugin {
      * @param event {@link FriendAddNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onFriendAddNotice(@NotNull Bot bot, @NotNull FriendAddNoticeEvent event) {
+    public int onFriendAddNotice(Bot bot, FriendAddNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -147,7 +146,7 @@ public class BotPlugin {
      * @param event {@link GroupMsgDeleteNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupMsgDeleteNotice(@NotNull Bot bot, @NotNull GroupMsgDeleteNoticeEvent event) {
+    public int onGroupMsgDeleteNotice(Bot bot, GroupMsgDeleteNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -158,7 +157,7 @@ public class BotPlugin {
      * @param event {@link PrivateMsgDeleteNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onPrivateMsgDeleteNotice(@NotNull Bot bot, @NotNull PrivateMsgDeleteNoticeEvent event) {
+    public int onPrivateMsgDeleteNotice(Bot bot, PrivateMsgDeleteNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -169,7 +168,7 @@ public class BotPlugin {
      * @param event {@link PokeNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupPokeNotice(@NotNull Bot bot, @NotNull PokeNoticeEvent event) {
+    public int onGroupPokeNotice(Bot bot, PokeNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -180,7 +179,7 @@ public class BotPlugin {
      * @param event {@link PokeNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onPrivatePokeNotice(@NotNull Bot bot, @NotNull PokeNoticeEvent event) {
+    public int onPrivatePokeNotice(Bot bot, PokeNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -191,7 +190,7 @@ public class BotPlugin {
      * @param event {@link GroupLuckyKingNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupLuckyKingNotice(@NotNull Bot bot, @NotNull GroupLuckyKingNoticeEvent event) {
+    public int onGroupLuckyKingNotice(Bot bot, GroupLuckyKingNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -202,7 +201,7 @@ public class BotPlugin {
      * @param event {@link GroupHonorChangeNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupHonorChangeNotice(@NotNull Bot bot, @NotNull GroupHonorChangeNoticeEvent event) {
+    public int onGroupHonorChangeNotice(Bot bot, GroupHonorChangeNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -213,7 +212,7 @@ public class BotPlugin {
      * @param event {@link GroupCardChangeNotice}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupCardChangeNotice(@NotNull Bot bot, @NotNull GroupCardChangeNotice event) {
+    public int onGroupCardChangeNotice(Bot bot, GroupCardChangeNotice event) {
         return MESSAGE_IGNORE;
     }
 
@@ -224,7 +223,7 @@ public class BotPlugin {
      * @param event {@link ReceiveOfflineFilesNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onReceiveOfflineFilesNotice(@NotNull Bot bot, @NotNull ReceiveOfflineFilesNoticeEvent event) {
+    public int onReceiveOfflineFilesNotice(Bot bot, ReceiveOfflineFilesNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -235,7 +234,7 @@ public class BotPlugin {
      * @param event {@link FriendAddRequestEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onFriendAddRequest(@NotNull Bot bot, @NotNull FriendAddRequestEvent event) {
+    public int onFriendAddRequest(Bot bot, FriendAddRequestEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -246,7 +245,7 @@ public class BotPlugin {
      * @param event {@link GroupAddRequestEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupAddRequest(@NotNull Bot bot, @NotNull GroupAddRequestEvent event) {
+    public int onGroupAddRequest(Bot bot, GroupAddRequestEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -257,7 +256,7 @@ public class BotPlugin {
      * @param event {@link ChannelCreatedNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onChannelCreatedNotice(@NotNull Bot bot, @NotNull ChannelCreatedNoticeEvent event) {
+    public int onChannelCreatedNotice(Bot bot, ChannelCreatedNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -268,7 +267,7 @@ public class BotPlugin {
      * @param event {@link ChannelDestroyedNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onChannelDestroyedNotice(@NotNull Bot bot, @NotNull ChannelDestroyedNoticeEvent event) {
+    public int onChannelDestroyedNotice(Bot bot, ChannelDestroyedNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -279,7 +278,7 @@ public class BotPlugin {
      * @param event {@link ChannelUpdatedNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onChannelUpdatedNotice(@NotNull Bot bot, @NotNull ChannelUpdatedNoticeEvent event) {
+    public int onChannelUpdatedNotice(Bot bot, ChannelUpdatedNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 
@@ -290,7 +289,7 @@ public class BotPlugin {
      * @param event {@link MessageReactionsUpdatedNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onMessageReactionsUpdatedNotice(@NotNull Bot bot, @NotNull MessageReactionsUpdatedNoticeEvent event) {
+    public int onMessageReactionsUpdatedNotice(Bot bot, MessageReactionsUpdatedNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 

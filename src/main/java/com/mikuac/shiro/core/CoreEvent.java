@@ -1,6 +1,5 @@
 package com.mikuac.shiro.core;
 
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
@@ -21,7 +20,7 @@ public class CoreEvent {
      *
      * @param bot {@link Bot}
      */
-    public void online(@NotNull Bot bot) {
+    public void online(Bot bot) {
     }
 
     /**
@@ -40,7 +39,7 @@ public class CoreEvent {
      * @param session {@link WebSocketSession}
      * @return 返回值为 false 时会中断 ws 会话
      */
-    public boolean session(@NotNull WebSocketSession session) {
+    public boolean session(WebSocketSession session) {
         return true;
     }
 
