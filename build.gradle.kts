@@ -17,6 +17,16 @@ java {
     withJavadocJar()
 }
 
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType<Javadoc> {
+    val opts = options as StandardJavadocDocletOptions
+    opts.encoding = "UTF-8"
+    opts.addBooleanOption("Xdoclint:none", true)
+}
+
 repositories {
     mavenCentral()
 }
