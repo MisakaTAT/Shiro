@@ -1,13 +1,6 @@
 HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
-.DS_Store
-/.mvn/
-/mvnw
-/mvnw.bat
-mvnw.cmd
+.gradle
+!gradle/wrapper/gradle-wrapper.jar
 
 # Package Files #
 *.jar
@@ -45,3 +38,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Mac ###
+.DS_Store
