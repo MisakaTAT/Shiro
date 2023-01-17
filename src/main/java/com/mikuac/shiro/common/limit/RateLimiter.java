@@ -122,7 +122,7 @@ public class RateLimiter implements ApplicationRunner {
                 condition.await(timeout, TimeUnit.SECONDS);
             }
             return true;
-        } catch (Exception e) {
+        } catch (Exception ignored) {
             return false;
         } finally {
             lock.unlock();
