@@ -3,6 +3,7 @@ package com.mikuac.shiro.enums;
 /**
  * @author zero
  */
+@SuppressWarnings("squid:S115")
 public enum MsgTypeEnum {
 
     /**

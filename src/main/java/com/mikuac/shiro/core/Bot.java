@@ -1,8 +1,9 @@
 package com.mikuac.shiro.core;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.bo.HandlerMethod;
+import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
@@ -15,6 +16,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ import java.util.Map;
  * @author Zero
  * @version $Id: $Id
  */
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "Duplicates"})
 public class Bot {
 
     private final ActionHandler actionHandler;
@@ -77,14 +79,11 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendMsg(AnyMessageEvent event, String msg, boolean autoEscape) {
-        switch (event.getMessageType()) {
-            case "private": {
-                return sendPrivateMsg(event.getUserId(), msg, autoEscape);
-            }
-            case "group": {
-                return sendGroupMsg(event.getGroupId(), msg, autoEscape);
-            }
-            default:
+        if (ActionParams.PRIVATE.equals(event.getMessageType())) {
+            return sendPrivateMsg(event.getUserId(), msg, autoEscape);
+        }
+        if (ActionParams.GROUP.equals(event.getMessageType())) {
+            return sendGroupMsg(event.getGroupId(), msg, autoEscape);
         }
         return null;
     }
@@ -98,15 +97,13 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long userId, String msg, boolean autoEscape) {
-        ActionPathEnum action = ActionPathEnum.SEND_PRIVATE_MSG;
-        JSONObject params = new JSONObject() {{
-            put("user_id", userId);
-            put("message", msg);
-            put("auto_escape", autoEscape);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
+        }.getType());
     }
 
     /**
@@ -119,16 +116,14 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, String msg, boolean autoEscape) {
-        ActionPathEnum action = ActionPathEnum.SEND_PRIVATE_MSG;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("user_id", userId);
-            put("message", msg);
-            put("auto_escape", autoEscape);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
+        }.getType());
     }
 
     /**
@@ -140,15 +135,13 @@ public class Bot {
      * @return {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendGroupMsg(long groupId, String msg, boolean autoEscape) {
-        ActionPathEnum action = ActionPathEnum.SEND_GROUP_MSG;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("message", msg);
-            put("auto_escape", autoEscape);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
+        }.getType());
     }
 
     /**
@@ -162,14 +155,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMemberListResp}
      */
     public ActionData<GuildMemberListResp> getGuildMemberList(String guildId, String nextToken) {
-        ActionPathEnum action = ActionPathEnum.GET_GUILD_LIST;
-        JSONObject params = new JSONObject() {{
-            put("guild_id", guildId);
-            put("next_token", nextToken);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMemberListResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GUILD_ID, guildId);
+        params.put(ActionParams.NEXT_TOKEN, nextToken);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMemberListResp>>() {
+        }.getType());
     }
 
     /**
@@ -181,15 +172,13 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMsgId}
      */
     public ActionData<GuildMsgId> sendGuildMsg(String guildId, String channelId, String msg) {
-        ActionPathEnum action = ActionPathEnum.SEND_GUILD_CHANNEL_MSG;
-        JSONObject params = new JSONObject() {{
-            put("guild_id", guildId);
-            put("channel_id", channelId);
-            put("message", msg);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMsgId>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GUILD_ID, guildId);
+        params.put(ActionParams.CHANNEL_ID, channelId);
+        params.put(ActionParams.MESSAGE, msg);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GUILD_CHANNEL_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMsgId>>() {
+        }.getType());
     }
 
     /**
@@ -200,14 +189,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GetGuildMsgResp}
      */
     public ActionData<GetGuildMsgResp> getGuildMsg(String guildMsgId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_GUILD_MSG;
-        JSONObject params = new JSONObject() {{
-            put("message_id", guildMsgId);
-            put("no_cache", noCache);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GetGuildMsgResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.MESSAGE_ID, guildMsgId);
+        params.put(ActionParams.NO_CACHE, noCache);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GetGuildMsgResp>>() {
+        }.getType());
     }
 
     /**
@@ -216,10 +203,9 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildServiceProfileResp}
      */
     public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
-        ActionPathEnum action = ActionPathEnum.GET_GUILD_SERVICE_PROFILE;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_SERVICE_PROFILE, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
+        }.getType());
     }
 
     /**
@@ -228,10 +214,9 @@ public class Bot {
      * @return {@link ActionList} of {@link GuildListResp}
      */
     public ActionList<GuildListResp> getGuildList() {
-        ActionPathEnum action = ActionPathEnum.GET_GUILD_LIST;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionList<GuildListResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<GuildListResp>>() {
+        }.getType());
     }
 
     /**
@@ -241,13 +226,11 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMetaByGuestResp}
      */
     public ActionData<GuildMetaByGuestResp> getGuildMetaByGuest(String guildId) {
-        ActionPathEnum action = ActionPathEnum.GET_GUILD_META_BY_GUEST;
-        JSONObject params = new JSONObject() {{
-            put("guild_id", guildId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMetaByGuestResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GUILD_ID, guildId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_META_BY_GUEST, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMetaByGuestResp>>() {
+        }.getType());
     }
 
     /**
@@ -258,14 +241,12 @@ public class Bot {
      * @return {@link ActionList} of {@link ChannelInfoResp}
      */
     public ActionList<ChannelInfoResp> getGuildChannelList(String guildId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_GUILD_CHANNEL_LIST;
-        JSONObject params = new JSONObject() {{
-            put("guild_id", guildId);
-            put("no_cache", noCache);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionList<ChannelInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GUILD_ID, guildId);
+        params.put(ActionParams.NO_CACHE, noCache);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_CHANNEL_LIST, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<ChannelInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -276,14 +257,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GuildMemberProfileResp}
      */
     public ActionData<GuildMemberProfileResp> getGuildMemberProfile(String guildId, String userId) {
-        ActionPathEnum action = ActionPathEnum.GET_GUILD_MEMBER_PROFILE;
-        JSONObject params = new JSONObject() {{
-            put("guild_id", guildId);
-            put("user_id", userId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMemberProfileResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GUILD_ID, guildId);
+        params.put(ActionParams.USER_ID, userId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MEMBER_PROFILE, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMemberProfileResp>>() {
+        }.getType());
     }
 
     /**
@@ -293,13 +272,11 @@ public class Bot {
      * @return {@link ActionData} of {@link GetMsgResp}
      */
     public ActionData<GetMsgResp> getMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.GET_MSG;
-        JSONObject params = new JSONObject() {{
-            put("message_id", msgId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GetMsgResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.MESSAGE_ID, msgId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GetMsgResp>>() {
+        }.getType());
     }
 
     /**
@@ -309,12 +286,10 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_MSG;
-        JSONObject params = new JSONObject() {{
-            put("message_id", msgId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.MESSAGE_ID, msgId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -326,14 +301,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupKick(long groupId, long userId, boolean rejectAddRequest) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_KICK;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("user_id", userId);
-            put("reject_add_request", rejectAddRequest);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.REJECT_ADD_REQUEST, rejectAddRequest);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_KICK, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -345,14 +318,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupBan(long groupId, long userId, int duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_BAN;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("user_id", userId);
-            put("duration", duration);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.DURATION, duration);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_BAN, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -363,13 +334,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupWholeBan(long groupId, boolean enable) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_WHOLE_BAN;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("enable", enable);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.ENABLE, enable);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_WHOLE_BAN, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -381,14 +350,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAdmin(long groupId, long userId, boolean enable) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ADMIN;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("user_id", userId);
-            put("enable", enable);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.ENABLE, enable);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADMIN, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -399,13 +366,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymous(long groupId, boolean enable) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("enable", enable);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.ENABLE, enable);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -417,14 +382,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupCard(long groupId, long userId, String card) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_CARD;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("user_id", userId);
-            put("card", card);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.CARD, card);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_CARD, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -435,13 +398,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupName(long groupId, String groupName) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_NAME;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("group_name", groupName);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.GROUP_NAME, groupName);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_NAME, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -452,13 +413,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupLeave(long groupId, boolean isDismiss) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_LEAVE;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("is_dismiss", isDismiss);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.IS_DISMISS, isDismiss);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_LEAVE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -471,15 +430,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupSpecialTitle(long groupId, long userId, String specialTitle, int duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_SPECIAL_TITLE;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("user_id", userId);
-            put("special_title", specialTitle);
-            put("duration", duration);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.SPECIAL_TITLE, specialTitle);
+        params.put(ActionParams.DURATION, duration);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_SPECIAL_TITLE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -491,14 +448,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setFriendAddRequest(String flag, boolean approve, String remark) {
-        ActionPathEnum action = ActionPathEnum.SET_FRIEND_ADD_REQUEST;
-        JSONObject params = new JSONObject() {{
-            put("flag", flag);
-            put("approve", approve);
-            put("remark", remark);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.FLAG, flag);
+        params.put(ActionParams.APPROVE, approve);
+        params.put(ActionParams.REMARK, remark);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_FRIEND_ADD_REQUEST, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -511,15 +466,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAddRequest(String flag, String subType, boolean approve, String reason) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ADD_REQUEST;
-        JSONObject params = new JSONObject() {{
-            put("flag", flag);
-            put("sub_type", subType);
-            put("approve", approve);
-            put("reason", reason);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.FLAG, flag);
+        params.put(ActionParams.SUB_TYPE, subType);
+        params.put(ActionParams.APPROVE, approve);
+        params.put(ActionParams.REASON, reason);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADD_REQUEST, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -528,10 +481,9 @@ public class Bot {
      * @return {@link ActionData} of @{@link LoginInfoResp}
      */
     public ActionData<LoginInfoResp> getLoginInfo() {
-        ActionPathEnum action = ActionPathEnum.GET_LOGIN_INFO;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionData<LoginInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_LOGIN_INFO, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<LoginInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -542,14 +494,12 @@ public class Bot {
      * @return {@link ActionData} of {@link StrangerInfoResp}
      */
     public ActionData<StrangerInfoResp> getStrangerInfo(long userId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_STRANGER_INFO;
-        JSONObject params = new JSONObject() {{
-            put("user_id", userId);
-            put("no_cache", noCache);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<StrangerInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.NO_CACHE, noCache);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_STRANGER_INFO, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<StrangerInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -558,10 +508,9 @@ public class Bot {
      * @return {@link ActionList} of {@link FriendInfoResp}
      */
     public ActionList<FriendInfoResp> getFriendList() {
-        ActionPathEnum action = ActionPathEnum.GET_FRIEND_LIST;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionList<FriendInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_LIST, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<FriendInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -571,12 +520,10 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteFriend(long friendId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_FRIEND;
-        JSONObject params = new JSONObject() {{
-            put("user_id", friendId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.USER_ID, friendId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_FRIEND, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -587,14 +534,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupInfoResp}
      */
     public ActionData<GroupInfoResp> getGroupInfo(long groupId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_INFO;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("no_cache", noCache);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.NO_CACHE, noCache);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_INFO, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -603,10 +548,9 @@ public class Bot {
      * @return {@link ActionList} of {@link GroupInfoResp}
      */
     public ActionList<GroupInfoResp> getGroupList() {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_LIST;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionList<GroupInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_LIST, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<GroupInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -618,15 +562,13 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupMemberInfoResp}
      */
     public ActionData<GroupMemberInfoResp> getGroupMemberInfo(long groupId, long userId, boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_MEMBER_INFO;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("user_id", userId);
-            put("no_cache", noCache);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupMemberInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.NO_CACHE, noCache);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_INFO, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupMemberInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -636,13 +578,11 @@ public class Bot {
      * @return {@link ActionList} of {@link GroupMemberInfoResp}
      */
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_MEMBER_LIST;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -653,14 +593,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupHonorInfoResp}
      */
     public ActionData<GroupHonorInfoResp> getGroupHonorInfo(long groupId, String type) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_HONOR_INFO;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("type", type);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupHonorInfoResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.TYPE, type);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_HONOR_INFO, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupHonorInfoResp>>() {
+        }.getType());
     }
 
     /**
@@ -669,10 +607,9 @@ public class Bot {
      * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendImage() {
-        ActionPathEnum action = ActionPathEnum.CAN_SEND_IMAGE;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CAN_SEND_IMAGE, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<BooleanResp>>() {
+        }.getType());
     }
 
     /**
@@ -681,10 +618,9 @@ public class Bot {
      * @return {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendRecord() {
-        ActionPathEnum action = ActionPathEnum.CAN_SEND_RECORD;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CAN_SEND_RECORD, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<BooleanResp>>() {
+        }.getType());
     }
 
     /**
@@ -697,14 +633,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupPortrait(long groupId, String file, int cache) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_PORTRAIT;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("file", file);
-            put("cache", cache);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FILE, file);
+        params.put(ActionParams.CACHE, cache);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_PORTRAIT, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -715,13 +649,11 @@ public class Bot {
      * @return {@link ActionData} of {@link CheckUrlSafelyResp}
      */
     public ActionData<CheckUrlSafelyResp> checkUrlSafely(String url) {
-        ActionPathEnum action = ActionPathEnum.CHECK_URL_SAFELY;
-        JSONObject params = new JSONObject() {{
-            put("url", url);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.URL, url);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CHECK_URL_SAFELY, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
+        }.getType());
     }
 
     /**
@@ -732,13 +664,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw sendGroupNotice(long groupId, String content) {
-        ActionPathEnum action = ActionPathEnum.SEN_GROUP_NOTICE;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("content", content);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.CONTENT, content);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEN_GROUP_NOTICE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -748,13 +678,11 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupAtAllRemainResp}
      */
     public ActionData<GroupAtAllRemainResp> getGroupAtAllRemain(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_AT_ALL_REMAIN;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_AT_ALL_REMAIN, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
+        }.getType());
     }
 
     /**
@@ -769,15 +697,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name, String folder) {
-        ActionPathEnum action = ActionPathEnum.UPLOAD_GROUP_FILE;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("file", file);
-            put("name", name);
-            put("folder", folder);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FILE, file);
+        params.put(ActionParams.NAME, name);
+        params.put(ActionParams.FOLDER, folder);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -791,14 +717,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name) {
-        ActionPathEnum action = ActionPathEnum.UPLOAD_GROUP_FILE;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("file", file);
-            put("name", name);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put("file", file);
+        params.put(ActionParams.NAME, name);
+
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -810,14 +735,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, int duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("anonymous", anonymous);
-            put("duration", duration);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.ANONYMOUS, anonymous);
+        params.put(ActionParams.DURATION, duration);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -829,14 +752,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymousBan(long groupId, String flag, int duration) {
-        ActionPathEnum action = ActionPathEnum.SET_GROUP_ANONYMOUS_BAN;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("flag", flag);
-            put("duration", duration);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FLAG, flag);
+        params.put(ActionParams.DURATION, duration);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -848,15 +769,13 @@ public class Bot {
      * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url, int threadCount, String headers) {
-        ActionPathEnum action = ActionPathEnum.DOWNLOAD_FILE;
-        JSONObject params = new JSONObject() {{
-            put("url", url);
-            put("thread_count", threadCount);
-            put("headers", headers);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.URL, url);
+        params.put(ActionParams.HEADERS, headers);
+        params.put(ActionParams.THREAD_COUNT, threadCount);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<DownloadFileResp>>() {
+        }.getType());
     }
 
     /**
@@ -866,13 +785,11 @@ public class Bot {
      * @return {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url) {
-        ActionPathEnum action = ActionPathEnum.DOWNLOAD_FILE;
-        JSONObject params = new JSONObject() {{
-            put("url", url);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.URL, url);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<DownloadFileResp>>() {
+        }.getType());
 
     }
 
@@ -885,14 +802,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
-        ActionPathEnum action = ActionPathEnum.SEND_GROUP_FORWARD_MSG;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("messages", msg);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.MESSAGES, msg);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
+        }.getType());
     }
 
     /**
@@ -902,13 +817,11 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_ROOT_FILES;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_ROOT_FILES, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupFilesResp>>() {
+        }.getType());
     }
 
     /**
@@ -919,14 +832,12 @@ public class Bot {
      * @return {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_FILES_BY_FOLDER;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("folder_id", folderId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FOLDER_ID, folderId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILES_BY_FOLDER, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupFilesResp>>() {
+        }.getType());
     }
 
     /**
@@ -938,8 +849,8 @@ public class Bot {
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRequest(ActionPath action, Map<String, Object> params) {
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionData.class) : null;
+        Map<String, Object> result = actionHandler.action(session, action, params);
+        return JSON.parseObject(result.toString()).to(ActionData.class);
     }
 
     /**
@@ -949,13 +860,11 @@ public class Bot {
      * @return {@link ActionList} of {@link EssenceMsgResp}
      */
     public ActionList<EssenceMsgResp> getEssenceMsgList(long groupId) {
-        ActionPathEnum action = ActionPathEnum.GET_ESSENCE_MSG_LIST;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionList<EssenceMsgResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_ESSENCE_MSG_LIST, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<EssenceMsgResp>>() {
+        }.getType());
     }
 
     /**
@@ -965,12 +874,10 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setEssenceMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.SET_ESSENCE_MSG;
-        JSONObject params = new JSONObject() {{
-            put("message_id", msgId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.MESSAGE_ID, msgId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_ESSENCE_MSG, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -980,12 +887,10 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteEssenceMsg(int msgId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_ESSENCE_MSG;
-        JSONObject params = new JSONObject() {{
-            put("message_id", msgId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.MESSAGE_ID, msgId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_ESSENCE_MSG, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -999,16 +904,14 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw setBotProfile(String nickname, String company, String email, String college, String personalNote) {
-        ActionPathEnum action = ActionPathEnum.SET_QQ_PROFILE;
-        JSONObject params = new JSONObject() {{
-            put("nickname", nickname);
-            put("company", company);
-            put("email", email);
-            put("college", college);
-            put("personalNote", personalNote);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.NICKNAME, nickname);
+        params.put(ActionParams.COMPANY, company);
+        params.put(ActionParams.EMAIL, email);
+        params.put(ActionParams.COLLEGE, college);
+        params.put(ActionParams.PERSONAL_NOTE, personalNote);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_QQ_PROFILE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -1020,14 +923,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
-        ActionPathEnum action = ActionPathEnum.SEND_PRIVATE_FORWARD_MSG;
-        JSONObject params = new JSONObject() {{
-            put("user_id", userId);
-            put("messages", msg);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGES, msg);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
+        }.getType());
     }
 
     /**
@@ -1039,24 +940,17 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionData<MsgId> sendForwardMsg(AnyMessageEvent event, List<Map<String, Object>> msg) {
-        ActionPathEnum action = ActionPathEnum.SEND_FORWARD_MSG;
-        JSONObject params = new JSONObject() {{
-            put("messages", msg);
-        }};
-        switch (event.getMessageType()) {
-            case "private": {
-                params.put("user_id", event.getUserId());
-                break;
-            }
-            case "group": {
-                params.put("group_id", event.getGroupId());
-                break;
-            }
-            default:
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.MESSAGES, msg);
+        if (ActionParams.GROUP.equals(event.getMessageType())) {
+            params.put(ActionParams.GROUP_ID, event.getGroupId());
         }
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        if (ActionParams.PRIVATE.equals(event.getMessageType())) {
+            params.put(ActionParams.USER_ID, event.getUserId());
+        }
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
+        }.getType());
     }
 
     /**
@@ -1066,13 +960,11 @@ public class Bot {
      * @return {@link ActionData} of {@link WordSlicesResp}
      */
     public ActionData<WordSlicesResp> getWordSlices(String content) {
-        ActionPathEnum action = ActionPathEnum.GET_WORD_SLICES;
-        JSONObject params = new JSONObject() {{
-            put("content", content);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<WordSlicesResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.CONTENT, content);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_WORD_SLICES, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<WordSlicesResp>>() {
+        }.getType());
     }
 
     /**
@@ -1082,13 +974,11 @@ public class Bot {
      * @return {@link ActionData} of {@link ClientsResp}
      */
     public ActionData<ClientsResp> getOnlineClients(boolean noCache) {
-        ActionPathEnum action = ActionPathEnum.GET_ONLINE_CLIENTS;
-        JSONObject params = new JSONObject() {{
-            put("no_cache", noCache);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<ClientsResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.NO_CACHE, noCache);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_ONLINE_CLIENTS, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<ClientsResp>>() {
+        }.getType());
     }
 
     /**
@@ -1098,13 +988,11 @@ public class Bot {
      * @return {@link ActionData} of {@link OcrResp}
      */
     public ActionData<OcrResp> ocrImage(String image) {
-        ActionPathEnum action = ActionPathEnum.OCR_IMAGE;
-        JSONObject params = new JSONObject() {{
-            put("image", image);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<OcrResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.IMAGE, image);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.OCR_IMAGE, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<OcrResp>>() {
+        }.getType());
     }
 
     /**
@@ -1116,14 +1004,12 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw uploadPrivateFile(long userId, String file, String name) {
-        ActionPathEnum action = ActionPathEnum.UPLOAD_PRIVATE_FILE;
-        JSONObject params = new JSONObject() {{
-            put("user_id", userId);
-            put("file", file);
-            put("name", name);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.FILE, file);
+        params.put(ActionParams.NAME, name);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.UPLOAD_PRIVATE_FILE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -1133,12 +1019,10 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw sendGroupSign(long groupId) {
-        ActionPathEnum action = ActionPathEnum.SEND_GROUP_SIGN;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_SIGN, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -1148,12 +1032,10 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteUnidirectionalFriend(long userId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND;
-        JSONObject params = new JSONObject() {{
-            put("user_id", userId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.USER_ID, userId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -1162,10 +1044,9 @@ public class Bot {
      * @return {@link ActionList} of {@link UnidirectionalFriendListResp}
      */
     public ActionList<UnidirectionalFriendListResp> getUnidirectionalFriendList() {
-        ActionPathEnum action = ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST;
-        JSONObject result = actionHandler.action(session, action, null);
-        return result != null ? result.to(new TypeReference<ActionList<UnidirectionalFriendListResp>>() {
-        }.getType()) : null;
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST, null);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<UnidirectionalFriendListResp>>() {
+        }.getType());
     }
 
     /**
@@ -1177,15 +1058,13 @@ public class Bot {
      * @return {@link ActionData} of {@link UrlResp}
      */
     public ActionData<UrlResp> getGroupFileUrl(long groupId, String fileId, int busId) {
-        ActionPathEnum action = ActionPathEnum.GET_GROUP_FILE_URL;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("file_id", fileId);
-            put("busid", busId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<UrlResp>>() {
-        }.getType()) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FILE_ID, fileId);
+        params.put(ActionParams.BUS_ID, busId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILE_URL, params);
+        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<UrlResp>>() {
+        }.getType());
     }
 
     /**
@@ -1196,15 +1075,13 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw createGroupFileFolder(long groupId, String folderName) {
-        ActionPathEnum action = ActionPathEnum.CREATE_GROUP_FILE_FOLDER;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("name", folderName);
-            // 仅能在根目录创建文件夹
-            put("parent_id", "/");
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.NAME, folderName);
+        // 仅能在根目录创建文件夹
+        params.put(ActionParams.PARENT_ID, "/");
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CREATE_GROUP_FILE_FOLDER, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -1215,13 +1092,11 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteGroupFileFolder(long groupId, String folderId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_GROUP_FOLDER;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("folder_id", folderId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FOLDER_ID, folderId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FOLDER, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
@@ -1233,31 +1108,27 @@ public class Bot {
      * @return {@link ActionRaw}
      */
     public ActionRaw deleteGroupFile(long groupId, String fileId, int busId) {
-        ActionPathEnum action = ActionPathEnum.DELETE_GROUP_FILE;
-        JSONObject params = new JSONObject() {{
-            put("group_id", groupId);
-            put("file_id", fileId);
-            put("busid", busId);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FILE_ID, fileId);
+        params.put(ActionParams.BUS_ID, busId);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FILE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
     /**
      * 好友点赞
      *
      * @param userId 目标用户
-     * @param times  点赞次数（每个好友每天最多 10 次，机器人为 SVIP 则提高到 20次）
+     * @param times  点赞次数（每个好友每天最多 10 次，机器人为 Super VIP 则提高到 20次）
      * @return {@link ActionRaw}
      */
     public ActionRaw sendLike(long userId, int times) {
-        ActionPathEnum action = ActionPathEnum.SEND_LIKE;
-        JSONObject params = new JSONObject() {{
-            put("user_id", userId);
-            put("times", times);
-        }};
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionRaw.class) : null;
+        Map<String, Object> params = new LinkedHashMap<>();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.TIMES, times);
+        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_LIKE, params);
+        return JSON.parseObject(result.toString()).to(ActionRaw.class);
     }
 
 }

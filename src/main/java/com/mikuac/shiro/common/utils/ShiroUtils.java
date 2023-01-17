@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2021/8/10.
@@ -15,12 +14,15 @@ import java.util.stream.Collectors;
  * @version $Id: $Id
  */
 @Slf4j
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "squid:S1192"})
 public class ShiroUtils {
 
-    private final static String CQ_CODE_SPLIT = "(?<=\\[CQ:[^]]{1,99999}])|(?=\\[CQ:[^]]{1,99999}])";
+    private ShiroUtils() {
+    }
 
-    private final static String CQ_CODE_REGEX = "\\[CQ:([^,\\[\\]]+)((?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
+    private static final String CQ_CODE_SPLIT = "(?<=\\[CQ:[^]]{1,99999}])|(?=\\[CQ:[^]]{1,99999}])";
+
+    private static final String CQ_CODE_REGEX = "\\[CQ:([^,\\[\\]]+)((?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
 
     /**
      * 判断是否为全体at
@@ -53,7 +55,7 @@ public class ShiroUtils {
                 .stream()
                 .filter(it -> MsgTypeEnum.at == it.getType() && !"all".equals(it.getData().get("qq")))
                 .map(it -> Long.parseLong(it.getData().get("qq")))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -67,7 +69,7 @@ public class ShiroUtils {
                 .stream()
                 .filter(it -> MsgTypeEnum.image == it.getType())
                 .map(it -> it.getData().get("url"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -81,7 +83,7 @@ public class ShiroUtils {
                 .stream()
                 .filter(it -> MsgTypeEnum.video == it.getType())
                 .map(it -> it.getData().get("url"))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     /**
@@ -101,12 +103,17 @@ public class ShiroUtils {
      * @param userId QQ号
      * @return 用户昵称
      */
+    @SuppressWarnings("squid:S2142")
     public static String getNickname(long userId) {
         String url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
-        String result = NetUtils.get(url, "GBK");
-        if (result != null && !result.isEmpty()) {
-            String nickname = result.split(",")[6];
-            return nickname.substring(1, nickname.length() - 1);
+        try {
+            String result = NetUtils.asyncGet(url);
+            if (result != null && !result.isEmpty()) {
+                String nickname = result.split(",")[6];
+                return nickname.substring(1, nickname.length() - 1);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return "";
     }
@@ -166,7 +173,7 @@ public class ShiroUtils {
             Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
                 Matcher matcher = RegexUtils.regexMatcher(CQ_CODE_REGEX, s);
                 ArrayMsg arrayMsg = new ArrayMsg();
-                Map<String, String> data = new HashMap<>(16);
+                Map<String, String> data = new HashMap<>();
                 if (matcher == null) {
                     arrayMsg.setType(MsgTypeEnum.text);
                     data.put("text", s);
@@ -215,14 +222,13 @@ public class ShiroUtils {
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
-            Map<String, Object> node = new HashMap<String, Object>(16) {{
-                put("type", "node");
-                put("data", new HashMap<String, Object>(16) {{
-                    put("name", name);
-                    put("uin", uin);
-                    put("content", msg);
-                }});
-            }};
+            Map<String, Object> node = new HashMap<>();
+            node.put("type", "node");
+            Map<String, Object> data = new HashMap<>();
+            data.put("name", name);
+            data.put("uin", uin);
+            data.put("content", msg);
+            node.put("data", data);
             nodes.add(node);
         });
         return nodes;

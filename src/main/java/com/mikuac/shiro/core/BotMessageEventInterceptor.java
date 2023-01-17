@@ -8,6 +8,7 @@ import com.mikuac.shiro.dto.event.message.MessageEvent;
  * @author Zhongren233
  * @version $Id: $Id
  */
+@SuppressWarnings("squid:S112")
 public interface BotMessageEventInterceptor {
 
     /**

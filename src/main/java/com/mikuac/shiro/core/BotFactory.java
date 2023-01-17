@@ -17,7 +17,6 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Created on 2021/7/7.
@@ -72,11 +71,11 @@ public class BotFactory {
      * @param session {@link WebSocketSession}
      * @return {@link Bot}
      */
+    @SuppressWarnings("squid:S112")
     public Bot createBot(long selfId, WebSocketSession session) {
-        log.debug("Bot instance creating {}", selfId);
+        log.debug("Creating bot instance {}", selfId);
         // 获取 Spring 容器中所有指定类型的对象
-        Map<String, Object> beans = new HashMap<>(16);
-        beans.putAll(applicationContext.getBeansWithAnnotation(Shiro.class));
+        Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
         // 一键多值 注解为 Key 存放所有包含某个注解的方法
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
         beans.values().forEach(obj -> {
@@ -93,9 +92,9 @@ public class BotFactory {
                 handlerMethod.setType(beanClass);
                 handlerMethod.setObject(obj);
                 Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
-                    Set<Class<?>> annotations = getAnnotations();
+                    Set<Class<?>> as = getAnnotations();
                     Class<? extends Annotation> annotationType = annotation.annotationType();
-                    if (annotations.contains(annotationType)) {
+                    if (as.contains(annotationType)) {
                         annotationHandler.add(annotation.annotationType(), handlerMethod);
                     }
                 });
@@ -124,7 +123,7 @@ public class BotFactory {
                                 return Optional.ofNullable(order == null ? null : order.value()).orElse(Integer.MAX_VALUE);
                             }
                     )
-            ).collect(Collectors.toList());
+            ).toList();
             annotationHandler.put(annotation, handlers);
         });
     }

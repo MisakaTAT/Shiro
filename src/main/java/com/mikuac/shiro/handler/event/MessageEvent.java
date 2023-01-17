@@ -61,7 +61,7 @@ public class MessageEvent {
      * @param resp {@link JSONObject}
      * @param type {@link MessageEventEnum}
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
     private void process(Bot bot, JSONObject resp, MessageEventEnum type) {
         try {
             if (type == MessageEventEnum.FRIEND) {

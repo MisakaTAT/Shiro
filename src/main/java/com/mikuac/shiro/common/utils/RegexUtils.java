@@ -11,6 +11,10 @@ import java.util.regex.Pattern;
  */
 public class RegexUtils {
 
+    private RegexUtils() {
+
+    }
+
     /**
      * 消息正则匹配
      *

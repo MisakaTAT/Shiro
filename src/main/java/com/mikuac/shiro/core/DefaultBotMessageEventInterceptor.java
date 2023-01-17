@@ -17,6 +17,7 @@ public class DefaultBotMessageEventInterceptor implements BotMessageEventInterce
      */
     @Override
     public boolean preHandle(Bot bot, MessageEvent event) {
+        // do something...
         return true;
     }
 
@@ -25,6 +26,7 @@ public class DefaultBotMessageEventInterceptor implements BotMessageEventInterce
      */
     @Override
     public void afterCompletion(Bot bot, MessageEvent event) {
+        // do something...
     }
 
 }

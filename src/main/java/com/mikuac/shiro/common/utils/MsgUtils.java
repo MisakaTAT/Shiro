@@ -94,11 +94,11 @@ public class MsgUtils {
     /**
      * 语音
      *
-     * @param record 语音文件名
+     * @param file 语音文件名
      * @return {@link MsgUtils}
      */
-    public MsgUtils record(String record) {
-        String recordCode = String.format("[CQ:record,file=%s]", ShiroUtils.escape(record));
+    public MsgUtils voice(String file) {
+        String recordCode = String.format("[CQ:record,file=%s]", ShiroUtils.escape(file));
         builder.append(recordCode);
         return this;
     }

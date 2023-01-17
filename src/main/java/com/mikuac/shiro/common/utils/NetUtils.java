@@ -1,9 +1,11 @@
 package com.mikuac.shiro.common.utils;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * <p>NetUtils class.</p>
@@ -13,37 +15,14 @@ import java.net.URLConnection;
  */
 public class NetUtils {
 
-    /**
-     * get request
-     *
-     * @param url         url
-     * @param charsetName charset
-     * @return {@link java.lang.String}
-     */
-    public static String get(String url, String charsetName) {
-        StringBuilder result = new StringBuilder();
-        BufferedReader bufferedReader = null;
-        try {
-            URLConnection connection = new URL(url).openConnection();
-            connection.connect();
-            bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream(), charsetName));
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                result.append(line);
-            }
-            return result.toString();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                if (bufferedReader != null) {
-                    bufferedReader.close();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return null;
+    private NetUtils() {
+    }
+
+    public static String asyncGet(String url) throws InterruptedException, ExecutionException {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
+        CompletableFuture<String> result = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
+        return result.get();
     }
 
 }

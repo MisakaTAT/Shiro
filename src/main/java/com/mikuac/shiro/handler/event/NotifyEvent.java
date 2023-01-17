@@ -52,7 +52,7 @@ public class NotifyEvent {
      * @param resp {@link JSONObject}
      * @param type {@link NotifyEventEnum}
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
     private void process(Bot bot, JSONObject resp, NotifyEventEnum type) {
         if (type == NotifyEventEnum.POKE) {
             PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);

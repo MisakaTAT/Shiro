@@ -54,7 +54,7 @@ public class RequestEvent {
      * @param resp {@link JSONObject}
      * @param type {@link RequestEventEnum}
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
     private void process(Bot bot, JSONObject resp, RequestEventEnum type) {
         if (type == RequestEventEnum.GROUP) {
             GroupAddRequestEvent event = resp.to(GroupAddRequestEvent.class);

@@ -46,10 +46,10 @@ public class OneBotMedia {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("file=").append(this.file);
         if (this.cache != null) {
-            stringBuilder.append(",cache=").append(this.cache ? 1 : 0);
+            stringBuilder.append(",cache=").append(Boolean.TRUE.equals(this.cache) ? 1 : 0);
         }
         if (this.proxy != null) {
-            stringBuilder.append(",proxy=").append(this.proxy ? 1 : 0);
+            stringBuilder.append(",proxy=").append(Boolean.TRUE.equals(this.proxy) ? 1 : 0);
         }
         if (this.timeout != null) {
             stringBuilder.append(",timeout=").append(this.timeout);

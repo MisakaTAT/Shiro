@@ -26,7 +26,7 @@ import java.io.IOException;
 @Slf4j
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private final static String API_RESULT_KEY = "echo";
+    private static final String API_RESULT_KEY = "echo";
 
     private static final String FAILED_STATUS = "failed";
 

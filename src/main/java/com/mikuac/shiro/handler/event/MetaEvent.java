@@ -19,7 +19,7 @@ public class MetaEvent {
     /**
      * 存储元事件处理器
      */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+    public final Map<String, BiConsumer<Bot, Map<String, Object>>> handlers = new HashMap<>();
 
     /**
      * 元事件分发
@@ -27,7 +27,7 @@ public class MetaEvent {
      * @param bot  {@link Bot}
      * @param resp {@link JSONObject}
      */
-    public void handler(Bot bot, JSONObject resp) {
+    public void handler(Bot bot, Map<String, Object> resp) {
         // Ignored this handler
     }
 
@@ -38,7 +38,9 @@ public class MetaEvent {
      * @param resp {@link JSONObject}
      * @param type {@link NotifyEventEnum}
      */
-    private void process(Bot bot, JSONObject resp, NotifyEventEnum type) {
+    @SuppressWarnings("unsed")
+    private void process(Bot bot, Map<String, Object> resp, NotifyEventEnum type) {
+        // Ignored this process
     }
 
 }

@@ -114,7 +114,7 @@ public class RateLimiter implements ApplicationRunner {
      * @param permits 获取数量
      * @return 是否成功
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S899", "squid:S2142"})
     public boolean acquire(int permits) {
         lock.lock();
         try {
@@ -122,7 +122,7 @@ public class RateLimiter implements ApplicationRunner {
                 condition.await(timeout, TimeUnit.SECONDS);
             }
             return true;
-        } catch (Exception ignored) {
+        } catch (Exception e) {
             return false;
         } finally {
             lock.unlock();

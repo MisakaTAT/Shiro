@@ -11,7 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -67,15 +69,15 @@ public class ActionHandler {
     /**
      * 处理响应结果
      *
-     * @param respJson 回调结果
+     * @param resp 回调结果
      */
-    public void onReceiveActionResp(JSONObject respJson) {
-        String echo = respJson.get("echo").toString();
-        ActionSendUtils actionSendUtils = apiCallbackMap.get(echo);
+    public void onReceiveActionResp(JSONObject resp) {
+        String e = resp.get("echo").toString();
+        ActionSendUtils actionSendUtils = apiCallbackMap.get(e);
         if (actionSendUtils != null) {
             // 唤醒挂起的线程
-            actionSendUtils.onCallback(respJson);
-            apiCallbackMap.remove(echo);
+            actionSendUtils.onCallback(resp);
+            apiCallbackMap.remove(e);
         }
     }
 
@@ -87,32 +89,31 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public JSONObject action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
-        if (rateLimiterProperties.getEnable()) {
-            if (rateLimiterProperties.getAwaitTask()) {
+    public Map<String, Object> action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+        if (Boolean.TRUE.equals(rateLimiterProperties.getEnable())) {
+            if (Boolean.TRUE.equals(rateLimiterProperties.getAwaitTask()) && !rateLimiter.acquire()) {
                 // 阻塞当前线程直到获取令牌成功
-                if (!rateLimiter.acquire()) {
-                    return null;
-                }
+                return Collections.emptyMap();
             }
-            if (!rateLimiterProperties.getAwaitTask() && !rateLimiter.tryAcquire()) {
-                return null;
+            if (Boolean.TRUE.equals(!rateLimiterProperties.getAwaitTask()) && !rateLimiter.tryAcquire()) {
+                return Collections.emptyMap();
             }
         }
         if (!session.isOpen()) {
-            return null;
+            return Collections.emptyMap();
         }
-        JSONObject reqJson = generateReqJson(action, params);
+        Map<String, Object> payload = generatePayload(action, params);
         ActionSendUtils actionSendUtils = new ActionSendUtils(session, webSocketProperties.getRequestTimeout());
-        apiCallbackMap.put(reqJson.getString("echo"), actionSendUtils);
-        JSONObject result;
+        apiCallbackMap.put(payload.get("echo").toString(), actionSendUtils);
+        Map<String, Object> result;
         try {
-            result = actionSendUtils.send(reqJson);
+            result = actionSendUtils.send(payload);
         } catch (Exception e) {
-            log.error("Request failed: {}", e.getMessage());
-            result = new JSONObject();
+            result = new LinkedHashMap<>();
             result.put("status", "failed");
             result.put("retcode", -1);
+            Thread.currentThread().interrupt();
+            log.error("Request failed: {}", e.getMessage());
         }
         return result;
     }
@@ -125,14 +126,14 @@ public class ActionHandler {
      * @param params 请求参数
      * @return 请求数据结构
      */
-    private JSONObject generateReqJson(ActionPath action, Map<String, Object> params) {
-        return new JSONObject() {{
-            put("action", action.getPath());
-            if (params != null && !params.isEmpty()) {
-                put("params", params);
-            }
-            put("echo", echo++);
-        }};
+    private Map<String, Object> generatePayload(ActionPath action, Map<String, Object> params) {
+        Map<String, Object> m = new LinkedHashMap<>();
+        m.put("action", action.getPath());
+        m.put("echo", echo++);
+        if (params != null && !params.isEmpty()) {
+            m.put("params", params);
+        }
+        return m;
     }
 
 }

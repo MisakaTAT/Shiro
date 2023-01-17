@@ -19,6 +19,7 @@ import java.util.Set;
  * @author Zero
  * @version $Id: $Id
  */
+@SuppressWarnings("NullableProblems")
 public class ScanUtils implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;

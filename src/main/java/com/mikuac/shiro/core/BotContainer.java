@@ -12,6 +12,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version $Id: $Id
  */
 @Component
+@SuppressWarnings("squid:S1104")
 public class BotContainer {
 
     /**

@@ -12,16 +12,15 @@ import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.dto.event.notice.*;
+import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
+import com.mikuac.shiro.enums.MsgTypeEnum;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.annotation.Annotation;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 
 /**
@@ -96,16 +95,11 @@ public class InjectionHandler {
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
                 AnyMessageHandler annotation = handlerMethod.getMethod().getAnnotation(AnyMessageHandler.class);
-                if (CommonEnum.GROUP.value().equals(event.getMessageType())) {
-                    if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
-                        return;
-                    }
+                if (CommonEnum.GROUP.value().equals(event.getMessageType()) && checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
+                    return;
                 }
-                Map<Class<?>, Object> params = matcher(
-                        annotation.cmd(),
-                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
-                );
-                if (params == null) {
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
+                if (params.isEmpty()) {
                     return;
                 }
                 params.put(Bot.class, bot);
@@ -123,8 +117,8 @@ public class InjectionHandler {
      * @param atEnum   at枚举
      * @return boolean
      */
+    @SuppressWarnings("squid:S3776")
     private boolean checkAt(List<ArrayMsg> arrayMsg, long selfId, AtEnum atEnum) {
-        String at = "at";
         String all = "all";
 
         if (atEnum == AtEnum.OFF) {
@@ -137,17 +131,17 @@ public class InjectionHandler {
 
         if (atEnum == AtEnum.NEED) {
             ArrayMsg atObj = arrayMsg.get(0);
-            String atUserIdStr = atObj.getData().get("qq");
-            if (!at.equals(atObj.getType())) {
+            String atALL = atObj.getData().get("qq");
+            if (MsgTypeEnum.at != atObj.getType()) {
                 return true;
             }
-            if (atUserIdStr == null || atUserIdStr.isEmpty()) {
+            if (atALL == null || atALL.isEmpty()) {
                 return false;
             }
-            if (all.equals(atUserIdStr)) {
+            if (all.equals(atALL)) {
                 return true;
             }
-            long atUserId = Long.parseLong(atUserIdStr);
+            long atUserId = Long.parseLong(atALL);
             return selfId != atUserId;
         }
 
@@ -182,11 +176,8 @@ public class InjectionHandler {
                 if (checkAt(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(
-                        annotation.cmd(),
-                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
-                );
-                if (params == null) {
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
+                if (params.isEmpty()) {
                     return;
                 }
                 params.put(Bot.class, bot);
@@ -228,11 +219,8 @@ public class InjectionHandler {
                 if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(
-                        annotation.cmd(),
-                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
-                );
-                if (params == null) {
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
+                if (params.isEmpty()) {
                     return;
                 }
                 params.put(Bot.class, bot);
@@ -255,7 +243,7 @@ public class InjectionHandler {
             handlerMethods.forEach(handlerMethod -> {
                 PrivateMessageHandler annotation = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
                 Map<Class<?>, Object> params = matcher(annotation.cmd(), event.getMessage());
-                if (params == null) {
+                if (params.isEmpty()) {
                     return;
                 }
                 params.put(PrivateMessageEvent.PrivateSender.class, event.getPrivateSender());
@@ -277,27 +265,23 @@ public class InjectionHandler {
         List<HandlerMethod> handlerMethods = handlers.get(GroupAdminHandler.class);
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
-                switch (handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class).type()) {
-                    case OFF:
-                        return;
-                    case ALL:
-                        break;
-                    case UNSET:
-                        if (!CommonEnum.UNSET.value().equals(event.getSubType())) {
-                            return;
-                        }
-                    case SET:
-                        if (!CommonEnum.SET.value().equals(event.getSubType())) {
-                            return;
-                        }
-                    default:
+                AdminNoticeTypeEnum type = handlerMethod.getMethod().getAnnotation(GroupAdminHandler.class).type();
+                if (type == AdminNoticeTypeEnum.OFF) {
+                    return;
                 }
-                Map<Class<?>, Object> params = new HashMap<>(16);
+                if (type == AdminNoticeTypeEnum.UNSET && !CommonEnum.UNSET.value().equals(event.getSubType())) {
+                    return;
+                }
+                if (type == AdminNoticeTypeEnum.SET && !CommonEnum.SET.value().equals(event.getSubType())) {
+                    return;
+                }
+                Map<Class<?>, Object> params = new HashMap<>();
                 params.put(Bot.class, bot);
                 params.put(GroupAdminNoticeEvent.class, event);
                 invokeMethod(handlerMethod, params);
             });
         }
+
     }
 
     /**
@@ -331,7 +315,7 @@ public class InjectionHandler {
     private void setParams(List<HandlerMethod> handlerMethods, Bot bot, Object event) {
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
-                Map<Class<?>, Object> params = new HashMap<>(16);
+                Map<Class<?>, Object> params = new HashMap<>();
                 params.put(Bot.class, bot);
                 params.put(event.getClass(), event);
                 invokeMethod(handlerMethod, params);
@@ -347,11 +331,11 @@ public class InjectionHandler {
      * @return params
      */
     private Map<Class<?>, Object> matcher(String cmd, String msg) {
-        Map<Class<?>, Object> params = new HashMap<>(16);
+        Map<Class<?>, Object> params = new HashMap<>();
         if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
             Matcher matcher = RegexUtils.regexMatcher(cmd, msg);
             if (matcher == null) {
-                return null;
+                return Collections.emptyMap();
             }
             params.put(Matcher.class, matcher);
         }

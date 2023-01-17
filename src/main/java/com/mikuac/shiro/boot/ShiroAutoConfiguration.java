@@ -61,7 +61,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
     }
 
     private void setLogLevel() {
-        if (shiroProperties.getDebug()) {
+        if (Boolean.TRUE.equals(shiroProperties.getDebug())) {
             Logger pkg = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger("com.mikuac.shiro");
             pkg.setLevel(Level.DEBUG);
             log.warn("Enabled debug mode");

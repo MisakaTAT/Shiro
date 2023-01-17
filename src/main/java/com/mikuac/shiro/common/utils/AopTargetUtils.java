@@ -3,6 +3,7 @@ package com.mikuac.shiro.common.utils;
 import org.springframework.aop.framework.AdvisedSupport;
 import org.springframework.aop.framework.AopProxy;
 import org.springframework.aop.support.AopUtils;
+import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 
@@ -13,6 +14,9 @@ import java.lang.reflect.Field;
  * @version $Id: $Id
  */
 public class AopTargetUtils {
+
+    private AopTargetUtils() {
+    }
 
     /**
      * <p>getTarget.</p>
@@ -41,10 +45,10 @@ public class AopTargetUtils {
      */
     private static Object getCglibProxyTargetObject(Object proxy) throws Exception {
         Field h = proxy.getClass().getDeclaredField("CGLIB$CALLBACK_0");
-        h.setAccessible(true);
+        ReflectionUtils.makeAccessible(h);
         Object dynamicAdvisedInterceptor = h.get(proxy);
         Field advised = dynamicAdvisedInterceptor.getClass().getDeclaredField("advised");
-        advised.setAccessible(true);
+        ReflectionUtils.makeAccessible(advised);
         return ((AdvisedSupport) advised.get(dynamicAdvisedInterceptor)).getTargetSource().getTarget();
     }
 
@@ -55,10 +59,10 @@ public class AopTargetUtils {
      */
     private static Object getJdkDynamicProxyTargetObject(Object proxy) throws Exception {
         Field h = proxy.getClass().getSuperclass().getDeclaredField("h");
-        h.setAccessible(true);
+        ReflectionUtils.makeAccessible(h);
         AopProxy aopProxy = (AopProxy) h.get(proxy);
         Field advised = aopProxy.getClass().getDeclaredField("advised");
-        advised.setAccessible(true);
+        ReflectionUtils.makeAccessible(advised);
         return ((AdvisedSupport) advised.get(aopProxy)).getTargetSource().getTarget();
     }
 

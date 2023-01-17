@@ -21,6 +21,7 @@ public class CoreEvent {
      * @param bot {@link Bot}
      */
     public void online(Bot bot) {
+        // do something...
     }
 
     /**
@@ -29,6 +30,7 @@ public class CoreEvent {
      * @param account 离线QQ号
      */
     public void offline(long account) {
+        // do something...
     }
 
     /**
@@ -40,6 +42,7 @@ public class CoreEvent {
      * @return 返回值为 false 时会中断 ws 会话
      */
     public boolean session(WebSocketSession session) {
+        // do something...
         return true;
     }
 
