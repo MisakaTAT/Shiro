@@ -5,6 +5,7 @@ import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
+import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +72,6 @@ public class BotFactory {
      * @param session {@link WebSocketSession}
      * @return {@link Bot}
      */
-    @SuppressWarnings("squid:S112")
     public Bot createBot(long selfId, WebSocketSession session) {
         log.debug("Creating bot instance {}", selfId);
         // 获取 Spring 容器中所有指定类型的对象
@@ -83,7 +83,7 @@ public class BotFactory {
             try {
                 target = AopTargetUtils.getTarget(obj);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                throw new ShiroException(e);
             }
             Class<?> beanClass = target.getClass();
             Arrays.stream(beanClass.getMethods()).forEach(method -> {

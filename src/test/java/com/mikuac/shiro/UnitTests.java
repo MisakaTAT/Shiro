@@ -43,9 +43,9 @@ public class UnitTests {
 
     @Test
     public void testRateLimiter() {
-        val a = rateLimiter.tryAcquire(4);
+        val a = rateLimiter.tryAcquire(1);
         TestCase.assertTrue(a);
-        val b = rateLimiter.acquire(5);
+        val b = rateLimiter.acquire(4);
         TestCase.assertTrue(b);
     }
 

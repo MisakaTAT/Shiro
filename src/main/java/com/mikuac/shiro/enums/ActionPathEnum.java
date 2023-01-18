@@ -8,7 +8,6 @@ import lombok.Getter;
  * @author zero
  * @version $Id: $Id
  */
-
 @Getter
 public enum ActionPathEnum implements ActionPath {
     /**
