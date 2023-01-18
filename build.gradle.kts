@@ -32,11 +32,9 @@ repositories {
 }
 
 dependencies {
-    api("org.slf4j:slf4j-api:2.0.6")
     api("com.alibaba.fastjson2:fastjson2:2.0.23")
     api("org.springframework.boot:spring-boot-starter-websocket")
-    api("org.springframework.boot:spring-boot-configuration-processor")
-
+    annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
