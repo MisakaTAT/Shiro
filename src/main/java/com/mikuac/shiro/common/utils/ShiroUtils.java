@@ -67,8 +67,7 @@ public class ShiroUtils {
     public static List<String> getMsgImgUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.image == it.getType())
-                .map(it -> it.getData().get("url"))
+                .filter(it -> MsgTypeEnum.image == it.getType()).map(it -> it.getData().get("url"))
                 .toList();
     }
 
@@ -81,8 +80,7 @@ public class ShiroUtils {
     public static List<String> getMsgVideoUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.video == it.getType())
-                .map(it -> it.getData().get("url"))
+                .filter(it -> MsgTypeEnum.video == it.getType()).map(it -> it.getData().get("url"))
                 .toList();
     }
 
@@ -131,7 +129,11 @@ public class ShiroUtils {
      * @return 解码处理后的字符串
      */
     public static String unescape(String string) {
-        return string.replace("&#44;", ",").replace("&#91;", "[").replace("&#93;", "]").replace("&amp;", "&");
+        return string
+                .replace("&#44;", ",")
+                .replace("&#91;", "[")
+                .replace("&#93;", "]")
+                .replace("&amp;", "&");
     }
 
     /**
@@ -141,7 +143,11 @@ public class ShiroUtils {
      * @return 编码处理后的字符串
      */
     public static String escape(String string) {
-        return string.replace("&", "&amp;").replace(",", "&#44;").replace("[", "&#91;").replace("]", "&#93;");
+        return string
+                .replace("&", "&amp;")
+                .replace(",", "&#44;")
+                .replace("[", "&#91;")
+                .replace("]", "&#93;");
     }
 
     /**
@@ -151,7 +157,9 @@ public class ShiroUtils {
      * @return 编码处理后的字符串
      */
     public static String escape2(String string) {
-        return string.replace("[", "&#91;").replace("]", "&#93;");
+        return string
+                .replace("[", "&#91;")
+                .replace("]", "&#93;");
     }
 
     /**
@@ -174,13 +182,11 @@ public class ShiroUtils {
                     data.put("text", s);
                 } else {
                     arrayMsg.setType(MsgTypeEnum.valueOf(matcher.group(1)));
-                    Arrays.stream(matcher.group(2).split(","))
-                            .filter(args -> !args.isEmpty())
-                            .forEach(args -> {
-                                String k = args.substring(0, args.indexOf("="));
-                                String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
-                                data.put(k, v);
-                            });
+                    Arrays.stream(matcher.group(2).split(",")).filter(args -> !args.isEmpty()).forEach(args -> {
+                        String k = args.substring(0, args.indexOf("="));
+                        String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
+                        data.put(k, v);
+                    });
                 }
                 arrayMsg.setData(data);
                 arrayMsgList.add(arrayMsg);

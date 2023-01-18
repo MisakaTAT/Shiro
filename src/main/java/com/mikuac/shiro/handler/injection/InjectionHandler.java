@@ -97,7 +97,7 @@ public class InjectionHandler {
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
                 AnyMessageHandler annotation = handlerMethod.getMethod().getAnnotation(AnyMessageHandler.class);
-                if (CommonEnum.GROUP.value().equals(event.getMessageType()) && checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
+                if (CommonEnum.GROUP.value().equals(event.getMessageType()) && atCheck(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
                 Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
@@ -116,51 +116,45 @@ public class InjectionHandler {
      *
      * @param arrayMsg 消息链
      * @param selfId   机器人QQ
-     * @param atEnum   at枚举
+     * @param at       at枚举
      * @return boolean
      */
-    @SuppressWarnings("squid:S3776")
-    private boolean checkAt(List<ArrayMsg> arrayMsg, long selfId, AtEnum atEnum) {
-        String all = "all";
-
-        if (atEnum == AtEnum.OFF) {
-            return false;
-        }
+    private boolean atCheck(List<ArrayMsg> arrayMsg, long selfId, AtEnum at) {
+        String atALL = "all";
 
         if (arrayMsg.isEmpty()) {
             return true;
         }
 
-        if (atEnum == AtEnum.NEED) {
-            ArrayMsg atObj = arrayMsg.get(0);
-            String atALL = atObj.getData().get("qq");
-            if (MsgTypeEnum.at != atObj.getType()) {
-                return true;
-            }
-            if (atALL == null || atALL.isEmpty()) {
-                return false;
-            }
-            if (all.equals(atALL)) {
-                return true;
-            }
-            long atUserId = Long.parseLong(atALL);
-            return selfId != atUserId;
-        }
+        ArrayMsg item = arrayMsg.get(0);
+        String target = item.getData().get("qq");
 
-        if (atEnum == AtEnum.NOT_NEED) {
-            ArrayMsg atObj = arrayMsg.get(0);
-            String atUserIdStr = atObj.getData().get("qq");
-            if (atUserIdStr == null || atUserIdStr.isEmpty()) {
+        switch (at) {
+            case NEED -> {
+                if (MsgTypeEnum.at != item.getType()) {
+                    return true;
+                }
+                if (target == null || target.isEmpty()) {
+                    return true;
+                }
+                if (atALL.equals(target)) {
+                    return true;
+                }
+                return selfId != Long.parseLong(target);
+            }
+            case NOT_NEED -> {
+                if (target == null || target.isEmpty()) {
+                    return false;
+                }
+                if (atALL.equals(target)) {
+                    return false;
+                }
+                return selfId == Long.parseLong(target);
+            }
+            default -> {
                 return false;
             }
-            if (all.equals(atUserIdStr)) {
-                return false;
-            }
-            long atUserId = Long.parseLong(atUserIdStr);
-            return selfId == atUserId;
         }
-
-        return true;
     }
 
     /**
@@ -175,7 +169,7 @@ public class InjectionHandler {
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
                 GuildMessageHandler annotation = handlerMethod.getMethod().getAnnotation(GuildMessageHandler.class);
-                if (checkAt(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
+                if (atCheck(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
                     return;
                 }
                 Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
@@ -218,7 +212,7 @@ public class InjectionHandler {
         if (handlerMethods != null && !handlerMethods.isEmpty()) {
             handlerMethods.forEach(handlerMethod -> {
                 GroupMessageHandler annotation = handlerMethod.getMethod().getAnnotation(GroupMessageHandler.class);
-                if (checkAt(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
+                if (atCheck(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
                 Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
