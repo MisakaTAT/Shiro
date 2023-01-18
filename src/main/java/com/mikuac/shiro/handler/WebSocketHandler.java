@@ -8,6 +8,7 @@ import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
@@ -113,7 +114,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * {@inheritDoc}
      */
     @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
+    public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         try {
             long xSelfId = parseSelfId(session);
             if (xSelfId == 0L) {
@@ -135,8 +136,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             log.info("Account {} connected", xSelfId);
             coreEvent.online(bot);
         } catch (IOException e) {
-            log.error("Websocket session close exception");
-            e.printStackTrace();
+            log.error("Websocket session close exception: {}", e.getMessage(), e);
         }
     }
 
@@ -144,7 +144,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * {@inheritDoc}
      */
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         long xSelfId = parseSelfId(session);
         if (xSelfId == 0L) {
             return;
@@ -160,7 +160,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * {@inheritDoc}
      */
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) {
         long xSelfId = parseSelfId(session);
         JSONObject result = JSON.parseObject(message.getPayload());
         log.debug("[Event] {}", result.toJSONString());

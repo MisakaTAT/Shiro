@@ -118,7 +118,8 @@ public class RateLimiter implements ApplicationRunner {
         lock.lock();
         try {
             while (!getToken(permits)) {
-                if (condition.await(timeout, TimeUnit.SECONDS)) {
+                boolean await = condition.await(timeout, TimeUnit.SECONDS);
+                if (await) {
                     return false;
                 }
             }

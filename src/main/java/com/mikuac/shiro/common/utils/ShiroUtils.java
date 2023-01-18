@@ -103,19 +103,14 @@ public class ShiroUtils {
      * @param userId QQ号
      * @return 用户昵称
      */
-    @SuppressWarnings("squid:S2142")
     public static String getNickname(long userId) {
         String url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
-        try {
-            String result = NetUtils.asyncGet(url);
-            if (result != null && !result.isEmpty()) {
-                String nickname = result.split(",")[6];
-                return nickname.substring(1, nickname.length() - 1);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        String result = NetUtils.asyncGet(url);
+        if (result != null && !result.isEmpty()) {
+            String nickname = result.split(",")[6];
+            return nickname.substring(1, nickname.length() - 1);
         }
-        return "";
+        return null;
     }
 
     /**

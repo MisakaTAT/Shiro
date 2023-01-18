@@ -16,6 +16,7 @@ import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
 import com.mikuac.shiro.enums.MsgTypeEnum;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
@@ -30,6 +31,7 @@ import java.util.regex.Matcher;
  * @author zero
  * @version $Id: $Id
  */
+@Slf4j
 @Component
 public class InjectionHandler {
 
@@ -301,7 +303,7 @@ public class InjectionHandler {
         try {
             handlerMethod.getMethod().invoke(handlerMethod.getObject(), objects);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Invoke method exception: {}", e.getMessage(), e);
         }
     }
 

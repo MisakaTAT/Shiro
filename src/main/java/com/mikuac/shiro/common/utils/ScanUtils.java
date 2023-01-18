@@ -1,5 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
+import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -19,7 +21,7 @@ import java.util.Set;
  * @author Zero
  * @version $Id: $Id
  */
-@SuppressWarnings("NullableProblems")
+@Slf4j
 public class ScanUtils implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
@@ -28,7 +30,7 @@ public class ScanUtils implements ResourceLoaderAware {
      * {@inheritDoc}
      */
     @Override
-    public void setResourceLoader(ResourceLoader resourceLoader) {
+    public void setResourceLoader(@NonNull ResourceLoader resourceLoader) {
         this.resourceLoader = resourceLoader;
     }
 
@@ -57,7 +59,7 @@ public class ScanUtils implements ResourceLoaderAware {
             }
             return classes;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Scan annotation exception: {}", e.getMessage(), e);
         }
         return classes;
     }

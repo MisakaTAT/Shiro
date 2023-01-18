@@ -10,6 +10,7 @@ import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.MessageEventEnum;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -20,6 +21,7 @@ import java.util.function.BiConsumer;
 /**
  * @author zero
  */
+@Slf4j
 @Component
 public class MessageEvent {
 
@@ -97,7 +99,7 @@ public class MessageEvent {
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Message event process exception: {}", e.getMessage(), e);
         }
     }
 

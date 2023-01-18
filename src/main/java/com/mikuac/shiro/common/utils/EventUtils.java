@@ -82,7 +82,7 @@ public class EventUtils {
         try {
             return !getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Set interceptor exception: {}", e.getMessage(), e);
             return true;
         }
     }
@@ -119,7 +119,7 @@ public class EventUtils {
             pushAnyMessageEvent(bot, resp, arrayMsg);
             return arrayMsg;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("Set any message event exception: {}", e.getMessage(), e);
         }
         return Collections.emptyList();
     }

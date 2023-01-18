@@ -7,6 +7,10 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created on 2021/7/7.
@@ -15,55 +19,52 @@ import java.util.Map;
  * @version $Id: $Id
  */
 @Slf4j
-@SuppressWarnings("all")
-public class ActionSendUtils extends Thread {
-
-    private final WebSocketSession session;
+public class ActionSendUtils {
 
     private final long timeout;
 
-    private JSONObject resp;
+    private final WebSocketSession session;
 
-    /**
-     * <p>Constructor for ActionSendUtils.</p>
-     *
-     * @param session {@link WebSocketSession}
-     * @param timeout Request Timeout
-     */
     public ActionSendUtils(WebSocketSession session, Long timeout) {
         this.session = session;
         this.timeout = timeout;
     }
 
-    /**
-     * <p>send.</p>
-     *
-     * @param payload json data
-     * @return Response json data
-     * @throws IOException          exception
-     * @throws InterruptedException exception
-     */
-    public Map<String, Object> send(Map<String, Object> payload) throws IOException, InterruptedException {
-        synchronized (session) {
+    private Map<String, Object> resp;
+
+    private final Lock lock = new ReentrantLock();
+
+    private final Condition condition = lock.newCondition();
+
+    public Map<String, Object> send(Map<String, Object> payload) {
+        lock.lock();
+        try {
             String json = JSONObject.toJSONString(payload);
-            log.debug("[Action] {}", json);
             session.sendMessage(new TextMessage(json));
-        }
-        synchronized (this) {
-            this.wait(timeout);
+            log.debug("[Action] {}", json);
+            while (true) {
+                boolean await = condition.await(timeout, TimeUnit.SECONDS);
+                if (await) {
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            log.error("Action send exception: {}", e.getMessage(), e);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            lock.unlock();
         }
         return resp;
     }
 
-    /**
-     * <p>onCallback.</p>
-     *
-     * @param resp Response json data
-     */
-    public void onCallback(JSONObject resp) {
-        this.resp = resp;
-        synchronized (this) {
-            this.notify();
+    public void onCallback(Map<String, Object> resp) {
+        lock.lock();
+        try {
+            this.resp = resp;
+            condition.signalAll();
+        } finally {
+            lock.unlock();
         }
     }
 

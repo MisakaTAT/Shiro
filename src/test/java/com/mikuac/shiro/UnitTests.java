@@ -2,8 +2,10 @@ package com.mikuac.shiro;
 
 import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.*;
+import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.enums.MsgTypeEnum;
+import com.mikuac.shiro.exception.ShiroException;
 import junit.framework.TestCase;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
@@ -27,19 +29,14 @@ import java.util.Arrays;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class UnitTests {
 
+    @Autowired
     private BotFactory botFactory;
 
     @Autowired
-    public void setBotFactory(BotFactory botFactory) {
-        this.botFactory = botFactory;
-    }
-
-    private RateLimiter rateLimiter;
+    private BotContainer botContainer;
 
     @Autowired
-    public void setRateLimiter(RateLimiter rateLimiter) {
-        this.rateLimiter = rateLimiter;
-    }
+    private RateLimiter rateLimiter;
 
     @Test
     public void testRateLimiter() {
@@ -189,6 +186,23 @@ public class UnitTests {
         val arrayMsg = ShiroUtils.rawToArrayMsg(raw);
         val cqCode = ShiroUtils.arrayMsgToCode(arrayMsg.get(0));
         TestCase.assertEquals(raw, cqCode);
+    }
+
+    @Test
+    public void testBotContainer() {
+        val selfId = 1140667337L;
+        botContainer.robots.put(selfId, botFactory.createBot(selfId, null));
+        val bot = botContainer.robots.get(selfId);
+        TestCase.assertEquals(selfId, bot.getSelfId());
+    }
+
+    @Test
+    public void testShiroException() {
+        try {
+            throw new ShiroException("test");
+        } catch (ShiroException e) {
+            TestCase.assertEquals(e.getMessage(), "test");
+        }
     }
 
 }

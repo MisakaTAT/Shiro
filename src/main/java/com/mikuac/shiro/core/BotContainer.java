@@ -12,12 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version $Id: $Id
  */
 @Component
-@SuppressWarnings("squid:S1104")
 public class BotContainer {
 
     /**
      * Bot容器
      */
-    public Map<Long, Bot> robots = new ConcurrentHashMap<>();
+    public final Map<Long, Bot> robots = new ConcurrentHashMap<>();
 
 }
