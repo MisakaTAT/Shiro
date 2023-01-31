@@ -46,7 +46,6 @@ public class Shiro {
     private ActionHandler actionHandler;
 
     @Autowired
-
     public void setActionHandler(ActionHandler actionHandler) {
         this.actionHandler = actionHandler;
     }

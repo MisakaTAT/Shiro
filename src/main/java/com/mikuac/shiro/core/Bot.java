@@ -1,6 +1,6 @@
 package com.mikuac.shiro.core;
 
-import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.constant.ActionParams;
@@ -16,7 +16,6 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -76,7 +75,7 @@ public class Bot {
      * @param event      {@link AnyMessageEvent}
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return {@link ActionData} of {@link MsgId}
+     * @return result != null ? {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendMsg(AnyMessageEvent event, String msg, boolean autoEscape) {
         if (ActionParams.PRIVATE.equals(event.getMessageType())) {
@@ -94,16 +93,16 @@ public class Bot {
      * @param userId     对方 QQ 号
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return {@link ActionData} of {@link MsgId}
+     * @return result != null ? {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long userId, String msg, boolean autoEscape) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -113,17 +112,17 @@ public class Bot {
      * @param userId     对方 QQ 号
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return {@link ActionData} of {@link MsgId}
+     * @return result != null ? {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, String msg, boolean autoEscape) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -132,16 +131,16 @@ public class Bot {
      * @param groupId    群号
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return {@link ActionData} of {@link MsgId}
+     * @return result != null ? {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendGroupMsg(long groupId, String msg, boolean autoEscape) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -152,15 +151,15 @@ public class Bot {
      *
      * @param guildId   频道ID
      * @param nextToken 翻页Token
-     * @return {@link ActionData} of {@link GuildMemberListResp}
+     * @return result != null ? {@link ActionData} of {@link GuildMemberListResp}
      */
     public ActionData<GuildMemberListResp> getGuildMemberList(String guildId, String nextToken) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.NEXT_TOKEN, nextToken);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMemberListResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, params);
+        return result != null ? result.to(new TypeReference<ActionData<GuildMemberListResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -169,16 +168,16 @@ public class Bot {
      * @param guildId   频道 ID
      * @param channelId 子频道 ID
      * @param msg       要发送的内容
-     * @return {@link ActionData} of {@link GuildMsgId}
+     * @return result != null ? {@link ActionData} of {@link GuildMsgId}
      */
     public ActionData<GuildMsgId> sendGuildMsg(String guildId, String channelId, String msg) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.CHANNEL_ID, channelId);
         params.put(ActionParams.MESSAGE, msg);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GUILD_CHANNEL_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMsgId>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GUILD_CHANNEL_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<GuildMsgId>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -186,51 +185,51 @@ public class Bot {
      *
      * @param guildMsgId 频道 ID
      * @param noCache    是否使用缓存
-     * @return {@link ActionData} of {@link GetGuildMsgResp}
+     * @return result != null ? {@link ActionData} of {@link GetGuildMsgResp}
      */
     public ActionData<GetGuildMsgResp> getGuildMsg(String guildMsgId, boolean noCache) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, guildMsgId);
         params.put(ActionParams.NO_CACHE, noCache);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GetGuildMsgResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<GetGuildMsgResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取频道系统内 BOT 的资料
      *
-     * @return {@link ActionData} of {@link GuildServiceProfileResp}
+     * @return result != null ? {@link ActionData} of {@link GuildServiceProfileResp}
      */
     public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_SERVICE_PROFILE, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_SERVICE_PROFILE, null);
+        return result != null ? result.to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取频道列表
      *
-     * @return {@link ActionList} of {@link GuildListResp}
+     * @return result != null ? {@link ActionList} of {@link GuildListResp}
      */
     public ActionList<GuildListResp> getGuildList() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<GuildListResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, null);
+        return result != null ? result.to(new TypeReference<ActionList<GuildListResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 通过访客获取频道元数据
      *
      * @param guildId 频道 ID
-     * @return {@link ActionData} of {@link GuildMetaByGuestResp}
+     * @return result != null ? {@link ActionData} of {@link GuildMetaByGuestResp}
      */
     public ActionData<GuildMetaByGuestResp> getGuildMetaByGuest(String guildId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_META_BY_GUEST, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMetaByGuestResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_META_BY_GUEST, params);
+        return result != null ? result.to(new TypeReference<ActionData<GuildMetaByGuestResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -238,15 +237,15 @@ public class Bot {
      *
      * @param guildId 频道 ID
      * @param noCache 是否无视缓存
-     * @return {@link ActionList} of {@link ChannelInfoResp}
+     * @return result != null ? {@link ActionList} of {@link ChannelInfoResp}
      */
     public ActionList<ChannelInfoResp> getGuildChannelList(String guildId, boolean noCache) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.NO_CACHE, noCache);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_CHANNEL_LIST, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<ChannelInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_CHANNEL_LIST, params);
+        return result != null ? result.to(new TypeReference<ActionList<ChannelInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -254,42 +253,42 @@ public class Bot {
      *
      * @param guildId 频道ID
      * @param userId  用户ID
-     * @return {@link ActionData} of {@link GuildMemberProfileResp}
+     * @return result != null ? {@link ActionData} of {@link GuildMemberProfileResp}
      */
     public ActionData<GuildMemberProfileResp> getGuildMemberProfile(String guildId, String userId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.USER_ID, userId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MEMBER_PROFILE, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GuildMemberProfileResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MEMBER_PROFILE, params);
+        return result != null ? result.to(new TypeReference<ActionData<GuildMemberProfileResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取消息
      *
      * @param msgId 消息 ID
-     * @return {@link ActionData} of {@link GetMsgResp}
+     * @return result != null ? {@link ActionData} of {@link GetMsgResp}
      */
     public ActionData<GetMsgResp> getMsg(int msgId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GetMsgResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<GetMsgResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 撤回消息
      *
      * @param msgId 消息 ID
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw deleteMsg(int msgId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -298,15 +297,15 @@ public class Bot {
      * @param groupId          群号
      * @param userId           要踢的 QQ 号
      * @param rejectAddRequest 拒绝此人的加群请求 (默认false)
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupKick(long groupId, long userId, boolean rejectAddRequest) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.REJECT_ADD_REQUEST, rejectAddRequest);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_KICK, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_KICK, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -315,15 +314,15 @@ public class Bot {
      * @param groupId  群号
      * @param userId   要禁言的 QQ 号
      * @param duration 禁言时长, 单位秒, 0 表示取消禁言 (默认30 * 60)
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupBan(long groupId, long userId, int duration) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.DURATION, duration);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_BAN, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_BAN, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -331,14 +330,14 @@ public class Bot {
      *
      * @param groupId 群号
      * @param enable  是否禁言（默认True,False为取消禁言）
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupWholeBan(long groupId, boolean enable) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.ENABLE, enable);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_WHOLE_BAN, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_WHOLE_BAN, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -347,15 +346,15 @@ public class Bot {
      * @param groupId 群号
      * @param userId  要设置管理员的 QQ 号
      * @param enable  true 为设置，false 为取消
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupAdmin(long groupId, long userId, boolean enable) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.ENABLE, enable);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADMIN, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADMIN, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -363,14 +362,14 @@ public class Bot {
      *
      * @param groupId 群号
      * @param enable  是否允许匿名聊天
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymous(long groupId, boolean enable) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.ENABLE, enable);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -379,15 +378,15 @@ public class Bot {
      * @param groupId 群号
      * @param userId  要设置的 QQ 号
      * @param card    群名片内容，不填或空字符串表示删除群名片
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupCard(long groupId, long userId, String card) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.CARD, card);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_CARD, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_CARD, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -395,14 +394,14 @@ public class Bot {
      *
      * @param groupId   群号
      * @param groupName 新群名
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupName(long groupId, String groupName) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.GROUP_NAME, groupName);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_NAME, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_NAME, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -410,14 +409,14 @@ public class Bot {
      *
      * @param groupId   群号
      * @param isDismiss 是否解散, 如果登录号是群主, 则仅在此项为 true 时能够解散
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupLeave(long groupId, boolean isDismiss) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.IS_DISMISS, isDismiss);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_LEAVE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_LEAVE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -427,16 +426,16 @@ public class Bot {
      * @param userId       要设置的 QQ 号
      * @param specialTitle 专属头衔，不填或空字符串表示删除专属头衔
      * @param duration     专属头衔有效期，单位秒，-1 表示永久，不过此项似乎没有效果，可能是只有某些特殊的时间长度有效，有待测试
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupSpecialTitle(long groupId, long userId, String specialTitle, int duration) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.SPECIAL_TITLE, specialTitle);
         params.put(ActionParams.DURATION, duration);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_SPECIAL_TITLE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_SPECIAL_TITLE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -445,15 +444,15 @@ public class Bot {
      * @param flag    加好友请求的 flag（需从上报的数据中获得）
      * @param approve 是否同意请求(默认为true)
      * @param remark  添加后的好友备注（仅在同意时有效）
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setFriendAddRequest(String flag, boolean approve, String remark) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.FLAG, flag);
         params.put(ActionParams.APPROVE, approve);
         params.put(ActionParams.REMARK, remark);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_FRIEND_ADD_REQUEST, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_FRIEND_ADD_REQUEST, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -463,27 +462,27 @@ public class Bot {
      * @param subType add 或 invite，请求类型（需要和上报消息中的 sub_type 字段相符）
      * @param approve 是否同意请求／邀请
      * @param reason  拒绝理由（仅在拒绝时有效）
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupAddRequest(String flag, String subType, boolean approve, String reason) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.FLAG, flag);
         params.put(ActionParams.SUB_TYPE, subType);
         params.put(ActionParams.APPROVE, approve);
         params.put(ActionParams.REASON, reason);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADD_REQUEST, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADD_REQUEST, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
      * 获取登录号信息
      *
-     * @return {@link ActionData} of @{@link LoginInfoResp}
+     * @return result != null ? {@link ActionData} of @{@link LoginInfoResp}
      */
     public ActionData<LoginInfoResp> getLoginInfo() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_LOGIN_INFO, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<LoginInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_LOGIN_INFO, null);
+        return result != null ? result.to(new TypeReference<ActionData<LoginInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -491,39 +490,39 @@ public class Bot {
      *
      * @param userId  QQ 号
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
-     * @return {@link ActionData} of {@link StrangerInfoResp}
+     * @return result != null ? {@link ActionData} of {@link StrangerInfoResp}
      */
     public ActionData<StrangerInfoResp> getStrangerInfo(long userId, boolean noCache) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.NO_CACHE, noCache);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_STRANGER_INFO, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<StrangerInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_STRANGER_INFO, params);
+        return result != null ? result.to(new TypeReference<ActionData<StrangerInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取好友列表
      *
-     * @return {@link ActionList} of {@link FriendInfoResp}
+     * @return result != null ? {@link ActionList} of {@link FriendInfoResp}
      */
     public ActionList<FriendInfoResp> getFriendList() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_LIST, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<FriendInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_LIST, null);
+        return result != null ? result.to(new TypeReference<ActionList<FriendInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 删除好友
      *
      * @param friendId 好友 QQ 号
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw deleteFriend(long friendId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, friendId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_FRIEND, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_FRIEND, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -531,26 +530,26 @@ public class Bot {
      *
      * @param groupId 群号
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
-     * @return {@link ActionData} of {@link GroupInfoResp}
+     * @return result != null ? {@link ActionData} of {@link GroupInfoResp}
      */
     public ActionData<GroupInfoResp> getGroupInfo(long groupId, boolean noCache) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.NO_CACHE, noCache);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_INFO, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_INFO, params);
+        return result != null ? result.to(new TypeReference<ActionData<GroupInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取群列表
      *
-     * @return {@link ActionList} of {@link GroupInfoResp}
+     * @return result != null ? {@link ActionList} of {@link GroupInfoResp}
      */
     public ActionList<GroupInfoResp> getGroupList() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_LIST, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<GroupInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_LIST, null);
+        return result != null ? result.to(new TypeReference<ActionList<GroupInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -559,30 +558,30 @@ public class Bot {
      * @param groupId 群号
      * @param userId  QQ 号
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
-     * @return {@link ActionData} of {@link GroupMemberInfoResp}
+     * @return result != null ? {@link ActionData} of {@link GroupMemberInfoResp}
      */
     public ActionData<GroupMemberInfoResp> getGroupMemberInfo(long groupId, long userId, boolean noCache) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.NO_CACHE, noCache);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_INFO, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupMemberInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_INFO, params);
+        return result != null ? result.to(new TypeReference<ActionData<GroupMemberInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取群成员列表
      *
      * @param groupId 群号
-     * @return {@link ActionList} of {@link GroupMemberInfoResp}
+     * @return result != null ? {@link ActionList} of {@link GroupMemberInfoResp}
      */
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
+        return result != null ? result.to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -590,37 +589,37 @@ public class Bot {
      *
      * @param groupId 群号
      * @param type    要获取的群荣誉类型, 可传入 talkative performer legend strong_newbie emotion 以分别获取单个类型的群荣誉数据, 或传入 all 获取所有数据
-     * @return {@link ActionData} of {@link GroupHonorInfoResp}
+     * @return result != null ? {@link ActionData} of {@link GroupHonorInfoResp}
      */
     public ActionData<GroupHonorInfoResp> getGroupHonorInfo(long groupId, String type) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.TYPE, type);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_HONOR_INFO, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupHonorInfoResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_HONOR_INFO, params);
+        return result != null ? result.to(new TypeReference<ActionData<GroupHonorInfoResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 检查是否可以发送图片
      *
-     * @return {@link ActionData} of {@link BooleanResp}
+     * @return result != null ? {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendImage() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CAN_SEND_IMAGE, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<BooleanResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.CAN_SEND_IMAGE, null);
+        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 检查是否可以发送语音
      *
-     * @return {@link ActionData} of {@link BooleanResp}
+     * @return result != null ? {@link ActionData} of {@link BooleanResp}
      */
     public ActionData<BooleanResp> canSendRecord() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CAN_SEND_RECORD, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<BooleanResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.CAN_SEND_RECORD, null);
+        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -630,15 +629,15 @@ public class Bot {
      * @param groupId 群号
      * @param file    图片文件名（支持绝对路径，网络URL，Base64编码）
      * @param cache   表示是否使用已缓存的文件 （通过网络URL发送时有效, 1表示使用缓存, 0关闭关闭缓存, 默认为1）
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupPortrait(long groupId, String file, int cache) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE, file);
         params.put(ActionParams.CACHE, cache);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_PORTRAIT, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_PORTRAIT, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -646,14 +645,14 @@ public class Bot {
      * 安全等级, 1: 安全 2: 未知 3: 危险
      *
      * @param url 需要检查的链接
-     * @return {@link ActionData} of {@link CheckUrlSafelyResp}
+     * @return result != null ? {@link ActionData} of {@link CheckUrlSafelyResp}
      */
     public ActionData<CheckUrlSafelyResp> checkUrlSafely(String url) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.URL, url);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CHECK_URL_SAFELY, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.CHECK_URL_SAFELY, params);
+        return result != null ? result.to(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -661,28 +660,28 @@ public class Bot {
      *
      * @param groupId 群号
      * @param content 公告内容
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw sendGroupNotice(long groupId, String content) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.CONTENT, content);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEN_GROUP_NOTICE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEN_GROUP_NOTICE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
      * 获取群 @全体成员 剩余次数
      *
      * @param groupId 群号
-     * @return {@link ActionData} of {@link GroupAtAllRemainResp}
+     * @return result != null ? {@link ActionData} of {@link GroupAtAllRemainResp}
      */
     public ActionData<GroupAtAllRemainResp> getGroupAtAllRemain(long groupId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_AT_ALL_REMAIN, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_AT_ALL_REMAIN, params);
+        return result != null ? result.to(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -694,16 +693,16 @@ public class Bot {
      * @param file    本地文件路径
      * @param name    储存名称
      * @param folder  父目录ID
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name, String folder) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE, file);
         params.put(ActionParams.NAME, name);
         params.put(ActionParams.FOLDER, folder);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -714,16 +713,16 @@ public class Bot {
      * @param groupId 群号
      * @param file    本地文件路径
      * @param name    储存名称
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw uploadGroupFile(long groupId, String file, String name) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put("file", file);
         params.put(ActionParams.NAME, name);
 
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -732,15 +731,15 @@ public class Bot {
      * @param groupId   群号
      * @param anonymous 要禁言的匿名用户对象（群消息上报的 anonymous 字段）
      * @param duration  禁言时长，单位秒，无法取消匿名用户禁言
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, int duration) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.ANONYMOUS, anonymous);
         params.put(ActionParams.DURATION, duration);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -749,15 +748,15 @@ public class Bot {
      * @param groupId  群号
      * @param flag     要禁言的匿名用户的 flag（需从群消息上报的数据中获得）
      * @param duration 禁言时长，单位秒，无法取消匿名用户禁言
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setGroupAnonymousBan(long groupId, String flag, int duration) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FLAG, flag);
         params.put(ActionParams.DURATION, duration);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -766,30 +765,30 @@ public class Bot {
      * @param url         链接地址
      * @param threadCount 下载线程数
      * @param headers     自定义请求头
-     * @return {@link ActionData} of {@link DownloadFileResp}
+     * @return result != null ? {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url, int threadCount, String headers) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.URL, url);
         params.put(ActionParams.HEADERS, headers);
         params.put(ActionParams.THREAD_COUNT, threadCount);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<DownloadFileResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
+        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 调用 go cq http 下载文件
      *
      * @param url 链接地址
-     * @return {@link ActionData} of {@link DownloadFileResp}
+     * @return result != null ? {@link ActionData} of {@link DownloadFileResp}
      */
     public ActionData<DownloadFileResp> downloadFile(String url) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.URL, url);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<DownloadFileResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
+        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
+        }.getType()) : null;
 
     }
 
@@ -799,29 +798,29 @@ public class Bot {
      * @param groupId 群号
      * @param msg     自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
      *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGES, msg);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取群根目录文件列表
      *
      * @param groupId 群号
-     * @return {@link ActionData} of {@link GroupFilesResp}
+     * @return result != null ? {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_ROOT_FILES, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupFilesResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_ROOT_FILES, params);
+        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -829,15 +828,15 @@ public class Bot {
      *
      * @param groupId  群号
      * @param folderId 文件夹ID 参考 Folder 对象
-     * @return {@link ActionData} of {@link GroupFilesResp}
+     * @return result != null ? {@link ActionData} of {@link GroupFilesResp}
      */
     public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FOLDER_ID, folderId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILES_BY_FOLDER, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<GroupFilesResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILES_BY_FOLDER, params);
+        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -845,52 +844,52 @@ public class Bot {
      *
      * @param action 请求路径
      * @param params 请求参数
-     * @return {@link ActionData}
+     * @return result != null ? {@link ActionData}
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRequest(ActionPath action, Map<String, Object> params) {
-        Map<String, Object> result = actionHandler.action(session, action, params);
-        return JSON.parseObject(result.toString()).to(ActionData.class);
+        JSONObject result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionData.class) : null;
     }
 
     /**
      * 获取精华消息列表
      *
      * @param groupId 群号
-     * @return {@link ActionList} of {@link EssenceMsgResp}
+     * @return result != null ? {@link ActionList} of {@link EssenceMsgResp}
      */
     public ActionList<EssenceMsgResp> getEssenceMsgList(long groupId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_ESSENCE_MSG_LIST, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<EssenceMsgResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_ESSENCE_MSG_LIST, params);
+        return result != null ? result.to(new TypeReference<ActionList<EssenceMsgResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 设置精华消息
      *
      * @param msgId 消息 ID
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setEssenceMsg(int msgId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_ESSENCE_MSG, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_ESSENCE_MSG, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
      * 移出精华消息
      *
      * @param msgId 消息 ID
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw deleteEssenceMsg(int msgId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_ESSENCE_MSG, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_ESSENCE_MSG, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -901,17 +900,17 @@ public class Bot {
      * @param email        邮箱
      * @param college      学校
      * @param personalNote 个性签名
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw setBotProfile(String nickname, String company, String email, String college, String personalNote) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.NICKNAME, nickname);
         params.put(ActionParams.COMPANY, company);
         params.put(ActionParams.EMAIL, email);
         params.put(ActionParams.COLLEGE, college);
         params.put(ActionParams.PERSONAL_NOTE, personalNote);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SET_QQ_PROFILE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_QQ_PROFILE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -920,15 +919,15 @@ public class Bot {
      * @param userId 目标用户
      * @param msg    自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
      *               <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGES, msg);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -937,10 +936,10 @@ public class Bot {
      * @param event 事件
      * @param msg   自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
      *              <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionData<MsgId> sendForwardMsg(AnyMessageEvent event, List<Map<String, Object>> msg) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGES, msg);
         if (ActionParams.GROUP.equals(event.getMessageType())) {
             params.put(ActionParams.GROUP_ID, event.getGroupId());
@@ -948,51 +947,51 @@ public class Bot {
         if (ActionParams.PRIVATE.equals(event.getMessageType())) {
             params.put(ActionParams.USER_ID, event.getUserId());
         }
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<MsgId>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取中文分词
      *
      * @param content 内容
-     * @return {@link ActionData} of {@link WordSlicesResp}
+     * @return result != null ? {@link ActionData} of {@link WordSlicesResp}
      */
     public ActionData<WordSlicesResp> getWordSlices(String content) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.CONTENT, content);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_WORD_SLICES, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<WordSlicesResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_WORD_SLICES, params);
+        return result != null ? result.to(new TypeReference<ActionData<WordSlicesResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 获取当前账号在线客户端列表
      *
      * @param noCache 是否无视缓存
-     * @return {@link ActionData} of {@link ClientsResp}
+     * @return result != null ? {@link ActionData} of {@link ClientsResp}
      */
     public ActionData<ClientsResp> getOnlineClients(boolean noCache) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.NO_CACHE, noCache);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_ONLINE_CLIENTS, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<ClientsResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_ONLINE_CLIENTS, params);
+        return result != null ? result.to(new TypeReference<ActionData<ClientsResp>>() {
+        }.getType()) : null;
     }
 
     /**
      * 图片 OCR
      *
      * @param image 图片ID
-     * @return {@link ActionData} of {@link OcrResp}
+     * @return result != null ? {@link ActionData} of {@link OcrResp}
      */
     public ActionData<OcrResp> ocrImage(String image) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.IMAGE, image);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.OCR_IMAGE, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<OcrResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.OCR_IMAGE, params);
+        return result != null ? result.to(new TypeReference<ActionData<OcrResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -1001,52 +1000,52 @@ public class Bot {
      * @param userId 目标用户
      * @param file   本地文件路径
      * @param name   文件名
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw uploadPrivateFile(long userId, String file, String name) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.FILE, file);
         params.put(ActionParams.NAME, name);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.UPLOAD_PRIVATE_FILE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.UPLOAD_PRIVATE_FILE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
      * 群打卡
      *
      * @param groupId 群号
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw sendGroupSign(long groupId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_SIGN, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_SIGN, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
      * 删除单向好友
      *
      * @param userId QQ号
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw deleteUnidirectionalFriend(long userId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
      * 获取单向好友列表
      *
-     * @return {@link ActionList} of {@link UnidirectionalFriendListResp}
+     * @return result != null ? {@link ActionList} of {@link UnidirectionalFriendListResp}
      */
     public ActionList<UnidirectionalFriendListResp> getUnidirectionalFriendList() {
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST, null);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionList<UnidirectionalFriendListResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST, null);
+        return result != null ? result.to(new TypeReference<ActionList<UnidirectionalFriendListResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -1055,16 +1054,16 @@ public class Bot {
      * @param groupId 群号
      * @param fileId  文件ID
      * @param busId   文件类型
-     * @return {@link ActionData} of {@link UrlResp}
+     * @return result != null ? {@link ActionData} of {@link UrlResp}
      */
     public ActionData<UrlResp> getGroupFileUrl(long groupId, String fileId, int busId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE_ID, fileId);
         params.put(ActionParams.BUS_ID, busId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILE_URL, params);
-        return JSON.parseObject(result.toString()).to(new TypeReference<ActionData<UrlResp>>() {
-        }.getType());
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILE_URL, params);
+        return result != null ? result.to(new TypeReference<ActionData<UrlResp>>() {
+        }.getType()) : null;
     }
 
     /**
@@ -1072,16 +1071,16 @@ public class Bot {
      *
      * @param groupId    群号
      * @param folderName 文件夹名
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw createGroupFileFolder(long groupId, String folderName) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.NAME, folderName);
         // 仅能在根目录创建文件夹
         params.put(ActionParams.PARENT_ID, "/");
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.CREATE_GROUP_FILE_FOLDER, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.CREATE_GROUP_FILE_FOLDER, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -1089,14 +1088,14 @@ public class Bot {
      *
      * @param groupId  群号
      * @param folderId 文件夹ID
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw deleteGroupFileFolder(long groupId, String folderId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FOLDER_ID, folderId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FOLDER, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FOLDER, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -1105,15 +1104,15 @@ public class Bot {
      * @param groupId 群号
      * @param fileId  文件ID
      * @param busId   文件类型
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw deleteGroupFile(long groupId, String fileId, int busId) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE_ID, fileId);
         params.put(ActionParams.BUS_ID, busId);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FILE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FILE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
     /**
@@ -1121,14 +1120,14 @@ public class Bot {
      *
      * @param userId 目标用户
      * @param times  点赞次数（每个好友每天最多 10 次，机器人为 Super VIP 则提高到 20次）
-     * @return {@link ActionRaw}
+     * @return result != null ? {@link ActionRaw}
      */
     public ActionRaw sendLike(long userId, int times) {
-        Map<String, Object> params = new LinkedHashMap<>();
+        JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.TIMES, times);
-        Map<String, Object> result = actionHandler.action(session, ActionPathEnum.SEND_LIKE, params);
-        return JSON.parseObject(result.toString()).to(ActionRaw.class);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_LIKE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
     }
 
 }
