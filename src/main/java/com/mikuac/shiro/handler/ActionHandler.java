@@ -11,9 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -89,27 +87,27 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public Map<String, Object> action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+    public JSONObject action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+        JSONObject result = new JSONObject();
         if (Boolean.TRUE.equals(rateLimiterProperties.getEnable())) {
             if (Boolean.TRUE.equals(rateLimiterProperties.getAwaitTask()) && !rateLimiter.acquire()) {
                 // 阻塞当前线程直到获取令牌成功
-                return Collections.emptyMap();
+                return result;
             }
             if (Boolean.TRUE.equals(!rateLimiterProperties.getAwaitTask()) && !rateLimiter.tryAcquire()) {
-                return Collections.emptyMap();
+                return result;
             }
         }
         if (!session.isOpen()) {
-            return Collections.emptyMap();
+            return result;
         }
-        Map<String, Object> payload = generatePayload(action, params);
+        JSONObject payload = generatePayload(action, params);
         ActionSendUtils actionSendUtils = new ActionSendUtils(session, webSocketProperties.getRequestTimeout());
         apiCallbackMap.put(payload.get("echo").toString(), actionSendUtils);
-        Map<String, Object> result;
         try {
             result = actionSendUtils.send(payload);
         } catch (Exception e) {
-            result = new LinkedHashMap<>();
+            result.clear();
             result.put("status", "failed");
             result.put("retcode", -1);
             Thread.currentThread().interrupt();
@@ -126,14 +124,14 @@ public class ActionHandler {
      * @param params 请求参数
      * @return 请求数据结构
      */
-    private Map<String, Object> generatePayload(ActionPath action, Map<String, Object> params) {
-        Map<String, Object> m = new LinkedHashMap<>();
-        m.put("action", action.getPath());
-        m.put("echo", echo++);
+    private JSONObject generatePayload(ActionPath action, Map<String, Object> params) {
+        JSONObject payload = new JSONObject();
+        payload.put("action", action.getPath());
+        payload.put("echo", echo++);
         if (params != null && !params.isEmpty()) {
-            m.put("params", params);
+            payload.put("params", params);
         }
-        return m;
+        return payload;
     }
 
 }

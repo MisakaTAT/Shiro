@@ -30,16 +30,16 @@ public class ActionSendUtils {
         this.timeout = timeout;
     }
 
-    private Map<String, Object> resp;
+    private JSONObject resp;
 
     private final Lock lock = new ReentrantLock();
 
     private final Condition condition = lock.newCondition();
 
-    public Map<String, Object> send(Map<String, Object> payload) {
+    public JSONObject send(JSONObject payload) {
         lock.lock();
         try {
-            String json = JSONObject.toJSONString(payload);
+            String json = payload.toJSONString();
             session.sendMessage(new TextMessage(json));
             log.debug("[Action] {}", json);
             while (true) {
@@ -58,7 +58,7 @@ public class ActionSendUtils {
         return resp;
     }
 
-    public void onCallback(Map<String, Object> resp) {
+    public void onCallback(JSONObject resp) {
         lock.lock();
         try {
             this.resp = resp;
