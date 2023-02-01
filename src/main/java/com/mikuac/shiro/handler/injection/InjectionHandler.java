@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 
@@ -296,8 +297,11 @@ public class InjectionHandler {
         }));
         try {
             handlerMethod.getMethod().invoke(handlerMethod.getObject(), objects);
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getTargetException();
+            log.error("Invocation target exception: {}", t.getMessage(), t);
         } catch (Exception e) {
-            log.error("Invoke method exception: {}", e.getMessage(), e);
+            log.error("Invoke exception: {}", e.getMessage(), e);
         }
     }
 

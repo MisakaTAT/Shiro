@@ -167,7 +167,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(API_RESULT_KEY)) {
             if (FAILED_STATUS.equals(result.get(RESULT_STATUS_KEY))) {
-                log.error("Request failed: {}", result.get("wording"));
+                log.error("Action failed: {}", result.get("wording"));
             }
             actionHandler.onReceiveActionResp(result);
         } else {

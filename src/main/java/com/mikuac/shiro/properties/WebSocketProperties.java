@@ -23,7 +23,7 @@ public class WebSocketProperties {
     /**
      * 超时回收，10秒
      */
-    private Long requestTimeout = 10 * 1000L;
+    private Integer timeout = 10;
 
     /**
      * ws地址
@@ -41,7 +41,7 @@ public class WebSocketProperties {
     private Integer maxBinaryMessageBufferSize = 512000;
 
     /**
-     * 最大空闲时间，超过这个时间将close session
+     * 最大空闲时间，超过这个时间将关闭会话
      */
     private Long maxSessionIdleTimeout = 15 * 60000L;
 

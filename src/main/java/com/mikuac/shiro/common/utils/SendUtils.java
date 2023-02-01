@@ -1,12 +1,12 @@
 package com.mikuac.shiro.common.utils;
 
 import com.alibaba.fastjson2.JSONObject;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -19,13 +19,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version $Id: $Id
  */
 @Slf4j
-public class ActionSendUtils {
+public class SendUtils {
 
     private final long timeout;
 
     private final WebSocketSession session;
 
-    public ActionSendUtils(WebSocketSession session, Long timeout) {
+    public SendUtils(WebSocketSession session, int timeout) {
         this.session = session;
         this.timeout = timeout;
     }
@@ -36,17 +36,16 @@ public class ActionSendUtils {
 
     private final Condition condition = lock.newCondition();
 
-    public JSONObject send(JSONObject payload) {
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S899", "squid:S2274"})
+    public JSONObject send(@NonNull JSONObject payload) {
         lock.lock();
         try {
             String json = payload.toJSONString();
             session.sendMessage(new TextMessage(json));
             log.debug("[Action] {}", json);
-            while (true) {
-                boolean await = condition.await(timeout, TimeUnit.SECONDS);
-                if (await) {
-                    break;
-                }
+            // Skip first action
+            if (payload.getIntValue("echo") != 0) {
+                condition.await(timeout, TimeUnit.SECONDS);
             }
         } catch (IOException e) {
             log.error("Action send exception: {}", e.getMessage(), e);

@@ -2,7 +2,7 @@ package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.limit.RateLimiter;
-import com.mikuac.shiro.common.utils.ActionSendUtils;
+import com.mikuac.shiro.common.utils.SendUtils;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.properties.RateLimiterProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
@@ -27,7 +27,7 @@ public class ActionHandler {
     /**
      * 请求回调数据
      */
-    private final Map<String, ActionSendUtils> apiCallbackMap = new HashMap<>();
+    private final Map<String, SendUtils> callback = new HashMap<>();
 
     /**
      * WebSocket 配置
@@ -71,11 +71,11 @@ public class ActionHandler {
      */
     public void onReceiveActionResp(JSONObject resp) {
         String e = resp.get("echo").toString();
-        ActionSendUtils actionSendUtils = apiCallbackMap.get(e);
-        if (actionSendUtils != null) {
+        SendUtils sendUtils = callback.get(e);
+        if (sendUtils != null) {
             // 唤醒挂起的线程
-            actionSendUtils.onCallback(resp);
-            apiCallbackMap.remove(e);
+            sendUtils.onCallback(resp);
+            callback.remove(e);
         }
     }
 
@@ -102,16 +102,16 @@ public class ActionHandler {
             return result;
         }
         JSONObject payload = generatePayload(action, params);
-        ActionSendUtils actionSendUtils = new ActionSendUtils(session, webSocketProperties.getRequestTimeout());
-        apiCallbackMap.put(payload.get("echo").toString(), actionSendUtils);
+        SendUtils sendUtils = new SendUtils(session, webSocketProperties.getTimeout());
+        callback.put(payload.get("echo").toString(), sendUtils);
         try {
-            result = actionSendUtils.send(payload);
+            result = sendUtils.send(payload);
         } catch (Exception e) {
             result.clear();
             result.put("status", "failed");
             result.put("retcode", -1);
             Thread.currentThread().interrupt();
-            log.error("Request failed: {}", e.getMessage());
+            log.error("Action failed: {}", e.getMessage());
         }
         return result;
     }
