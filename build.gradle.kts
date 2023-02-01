@@ -17,6 +17,10 @@ java {
     withJavadocJar()
 }
 
+tasks.withType<Test> {
+    useJUnitPlatform()
+}
+
 tasks.withType<JavaCompile> {
     options.encoding = "UTF-8"
 }
@@ -27,6 +31,10 @@ tasks.withType<Javadoc> {
     opts.addBooleanOption("Xdoclint:none", true)
 }
 
+tasks.withType<Jar> {
+    archiveClassifier.set("")
+}
+
 repositories {
     mavenCentral()
 }
@@ -35,7 +43,7 @@ dependencies {
     api("com.alibaba.fastjson2:fastjson2:2.0.23")
     api("org.springframework.boot:spring-boot-starter-websocket")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.2")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
