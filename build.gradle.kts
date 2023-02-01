@@ -31,7 +31,7 @@ tasks.withType<Javadoc> {
     opts.addBooleanOption("Xdoclint:none", true)
 }
 
-tasks.withType<Jar> {
+tasks.named<Jar>("jar") {
     archiveClassifier.set("")
 }
 
