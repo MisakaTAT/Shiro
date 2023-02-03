@@ -22,7 +22,10 @@ import org.springframework.util.MultiValueMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 
 /**
@@ -101,8 +104,11 @@ public class InjectionHandler {
                 if (CommonEnum.GROUP.value().equals(event.getMessageType()) && atCheck(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
-                if (params.isEmpty()) {
+                Map<Class<?>, Object> params = matcher(
+                        annotation.cmd(),
+                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
+                );
+                if (params == null) {
                     return;
                 }
                 params.put(Bot.class, bot);
@@ -173,8 +179,11 @@ public class InjectionHandler {
                 if (atCheck(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
-                if (params.isEmpty()) {
+                Map<Class<?>, Object> params = matcher(
+                        annotation.cmd(),
+                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
+                );
+                if (params == null) {
                     return;
                 }
                 params.put(Bot.class, bot);
@@ -216,8 +225,11 @@ public class InjectionHandler {
                 if (atCheck(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at()));
-                if (params.isEmpty()) {
+                Map<Class<?>, Object> params = matcher(
+                        annotation.cmd(),
+                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
+                );
+                if (params == null) {
                     return;
                 }
                 params.put(Bot.class, bot);
@@ -240,7 +252,7 @@ public class InjectionHandler {
             handlerMethods.forEach(handlerMethod -> {
                 PrivateMessageHandler annotation = handlerMethod.getMethod().getAnnotation(PrivateMessageHandler.class);
                 Map<Class<?>, Object> params = matcher(annotation.cmd(), event.getMessage());
-                if (params.isEmpty()) {
+                if (params == null) {
                     return;
                 }
                 params.put(PrivateMessageEvent.PrivateSender.class, event.getPrivateSender());
@@ -330,12 +342,13 @@ public class InjectionHandler {
      * @param msg 消息内容
      * @return params
      */
+    @SuppressWarnings("squid:S1168")
     private Map<Class<?>, Object> matcher(String cmd, String msg) {
         Map<Class<?>, Object> params = new HashMap<>();
         if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
             Matcher matcher = RegexUtils.regexMatcher(cmd, msg);
             if (matcher == null) {
-                return Collections.emptyMap();
+                return null;
             }
             params.put(Matcher.class, matcher);
         }
