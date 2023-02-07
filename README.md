@@ -37,9 +37,9 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 
 # Migration Guide
 
->⚠️ 由于相关依赖升级 `v2` 开始仅支持 `JDK 17` 及以上版本的开发环境
-
-详见文档 [v2迁移指南](https://github.com/MisakaTAT/Shiro)
+>从 `v2` 版本开始仅支持 `JDK 17+` 与 `SpringBoot 3.0.0+`
+> 
+>详见项目文档 [v2迁移指南](https://misakatat.github.io/shiro-docs/migration.html)
 
 # QuickStart
 
@@ -51,9 +51,9 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 
 ```xml
 <dependency>
-  <groupId>com.mikuac</groupId>
-  <artifactId>shiro</artifactId>
-  <version>latest</version>
+    <groupId>com.mikuac</groupId>
+    <artifactId>shiro</artifactId>
+    <version>latest</version>
 </dependency>
 ```
 
