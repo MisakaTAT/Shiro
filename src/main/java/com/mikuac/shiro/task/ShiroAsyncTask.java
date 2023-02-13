@@ -1,6 +1,7 @@
 package com.mikuac.shiro.task;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.handler.EventHandler;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +33,10 @@ public class ShiroAsyncTask {
      */
     @Async("shiroTaskExecutor")
     public void execHandlerMsg(EventHandler event, long xSelfId, JSONObject resp) {
-        event.handler(botContainer.robots.get(xSelfId), resp);
+        Bot bot = botContainer.robots.get(xSelfId);
+        if (bot != null) {
+            event.handler(bot, resp);
+        }
     }
 
 }
