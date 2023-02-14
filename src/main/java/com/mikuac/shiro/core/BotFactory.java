@@ -73,7 +73,7 @@ public class BotFactory {
      * @return {@link Bot}
      */
     public Bot createBot(long selfId, WebSocketSession session) {
-        log.debug("Creating bot instance {}", selfId);
+        log.debug("Create bot instance {}", selfId);
         // 获取 Spring 容器中所有指定类型的对象
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
         // 一键多值 注解为 Key 存放所有包含某个注解的方法
