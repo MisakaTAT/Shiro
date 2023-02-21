@@ -104,10 +104,7 @@ public class InjectionHandler {
                 if (CommonEnum.GROUP.value().equals(event.getMessageType()) && atCheck(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(
-                        annotation.cmd(),
-                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
-                );
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at(), event.getSelfId()));
                 if (params == null) {
                     return;
                 }
@@ -119,49 +116,31 @@ public class InjectionHandler {
     }
 
     /**
-     * at 检查
-     *
      * @param arrayMsg 消息链
      * @param selfId   机器人QQ
-     * @param at       at枚举
-     * @return boolean
+     * @param at       {@link AtEnum}
+     * @return 是否通过检查
      */
     private boolean atCheck(List<ArrayMsg> arrayMsg, long selfId, AtEnum at) {
-        String atALL = "all";
-
-        if (arrayMsg.isEmpty()) {
+        ArrayMsg item = parseAt(arrayMsg, selfId);
+        if (item == null) {
             return true;
         }
-
-        ArrayMsg item = arrayMsg.get(0);
-        String target = item.getData().get("qq");
-
+        long target = Long.parseLong(item.getData().get("qq"));
         switch (at) {
             case NEED -> {
-                if (MsgTypeEnum.at != item.getType()) {
+                if (target == 0L || target != selfId) {
                     return true;
                 }
-                if (target == null || target.isEmpty()) {
-                    return true;
-                }
-                if (atALL.equals(target)) {
-                    return true;
-                }
-                return selfId != Long.parseLong(target);
             }
             case NOT_NEED -> {
-                if (target == null || target.isEmpty()) {
-                    return false;
-                }
-                if (atALL.equals(target)) {
-                    return false;
-                }
-                return selfId == Long.parseLong(target);
+                return target == selfId;
             }
             default -> {
                 return false;
             }
         }
+        return false;
     }
 
     /**
@@ -179,10 +158,7 @@ public class InjectionHandler {
                 if (atCheck(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(
-                        annotation.cmd(),
-                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
-                );
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at(), event.getSelfId()));
                 if (params == null) {
                     return;
                 }
@@ -196,18 +172,51 @@ public class InjectionHandler {
     /**
      * 提取去除@后的消息内容
      *
-     * @param message  原始消息
-     * @param arrayMsg 数组消息
-     * @param atEnum   @枚举
+     * @param msg      原始消息
+     * @param arrayMsg {@link List} of {@link ArrayMsg}
+     * @param atEnum   {@link AtEnum}
      * @return 处理后的消息
      */
-    private String extractMsg(String message, List<ArrayMsg> arrayMsg, AtEnum atEnum) {
-        String msg = message;
-        if (atEnum == AtEnum.NEED) {
-            String atCode = ShiroUtils.arrayMsgToCode(arrayMsg.get(0));
-            msg = msg.replace(atCode, "").replace(" ", "");
+    private String extractMsg(String msg, List<ArrayMsg> arrayMsg, AtEnum atEnum, long selfId) {
+        if (atEnum != AtEnum.NEED) {
+            return msg;
+        }
+        ArrayMsg item = parseAt(arrayMsg, selfId);
+        if (item != null) {
+            String code = ShiroUtils.arrayMsgToCode(arrayMsg.get(arrayMsg.indexOf(item)));
+            return msg.replace(code, "").trim();
         }
         return msg;
+    }
+
+    /**
+     * @param arrayMsg {@link List} of {@link ArrayMsg}
+     * @param selfId   机器人账号
+     * @return {@link ArrayMsg}
+     */
+    private ArrayMsg parseAt(List<ArrayMsg> arrayMsg, long selfId) {
+        if (arrayMsg.isEmpty()) {
+            return null;
+        }
+        int index = 0;
+        ArrayMsg item = arrayMsg.get(index);
+        String rawTarget = item.getData().getOrDefault("qq", "0");
+        long target = Long.parseLong(CommonEnum.AT_ALL.value().equals(rawTarget) ? "0" : rawTarget);
+        index = arrayMsg.size() - 1;
+        if ((target == 0L || target != selfId) && index >= 0) {
+            item = arrayMsg.get(index);
+            // @ 右侧可能会有空格
+            index = arrayMsg.size() - 2;
+            if (MsgTypeEnum.text == item.getType() && index >= 0) {
+                item = arrayMsg.get(index);
+            }
+            rawTarget = item.getData().getOrDefault("qq", "0");
+            target = Long.parseLong(CommonEnum.AT_ALL.value().equals(rawTarget) ? "0" : rawTarget);
+            if (target == 0L || target != selfId) {
+                return null;
+            }
+        }
+        return item;
     }
 
     /**
@@ -225,10 +234,7 @@ public class InjectionHandler {
                 if (atCheck(event.getArrayMsg(), event.getSelfId(), annotation.at())) {
                     return;
                 }
-                Map<Class<?>, Object> params = matcher(
-                        annotation.cmd(),
-                        extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at())
-                );
+                Map<Class<?>, Object> params = matcher(annotation.cmd(), extractMsg(event.getMessage(), event.getArrayMsg(), annotation.at(), event.getSelfId()));
                 if (params == null) {
                     return;
                 }

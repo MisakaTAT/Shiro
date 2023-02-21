@@ -26,7 +26,12 @@ public enum CommonEnum {
     /**
      * group
      */
-    GROUP("group");
+    GROUP("group"),
+
+    /**
+     * at all
+     */
+    AT_ALL("all");
 
     private final String value;
 
