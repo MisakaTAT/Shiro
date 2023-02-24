@@ -39,7 +39,18 @@ public class OcrResp {
          * 坐标
          */
         @JSONField(name = "coordinates")
-        private Integer[][] coordinates;
+        private List<Coordinate> coordinates;
+
+    }
+
+    @Data
+    private static class Coordinate {
+
+        @JSONField(name = "x")
+        private Long x;
+
+        @JSONField(name = "y")
+        private Long y;
 
     }
 

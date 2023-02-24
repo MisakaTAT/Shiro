@@ -21,7 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Slf4j
 public class SendUtils {
 
-    private final long timeout;
+    private final int timeout;
 
     private final WebSocketSession session;
 
@@ -43,10 +43,7 @@ public class SendUtils {
             String json = payload.toJSONString();
             session.sendMessage(new TextMessage(json));
             log.debug("[Action] {}", json);
-            // Skip first action
-            if (payload.getIntValue("echo") != 0) {
-                condition.await(timeout, TimeUnit.SECONDS);
-            }
+            condition.await(payload.getIntValue("echo") == 0 ? 1 : timeout, TimeUnit.SECONDS);
         } catch (IOException e) {
             log.error("Action send exception: {}", e.getMessage(), e);
         } catch (InterruptedException e) {

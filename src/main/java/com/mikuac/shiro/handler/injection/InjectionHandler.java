@@ -123,17 +123,21 @@ public class InjectionHandler {
      */
     private boolean atCheck(List<ArrayMsg> arrayMsg, long selfId, AtEnum at) {
         ArrayMsg item = parseAt(arrayMsg, selfId);
-        if (item == null) {
-            return true;
-        }
-        long target = Long.parseLong(item.getData().get("qq"));
         switch (at) {
             case NEED -> {
+                if (item == null) {
+                    return true;
+                }
+                long target = Long.parseLong(item.getData().get("qq"));
                 if (target == 0L || target != selfId) {
                     return true;
                 }
             }
             case NOT_NEED -> {
+                if (item == null) {
+                    return true;
+                }
+                long target = Long.parseLong(item.getData().get("qq"));
                 return target == selfId;
             }
             default -> {
