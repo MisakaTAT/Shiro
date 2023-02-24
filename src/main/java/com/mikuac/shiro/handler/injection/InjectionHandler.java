@@ -135,7 +135,7 @@ public class InjectionHandler {
             }
             case NOT_NEED -> {
                 if (item == null) {
-                    return true;
+                    return false;
                 }
                 long target = Long.parseLong(item.getData().get("qq"));
                 return target == selfId;
