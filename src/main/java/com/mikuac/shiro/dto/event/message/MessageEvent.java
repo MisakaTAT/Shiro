@@ -1,8 +1,8 @@
 package com.mikuac.shiro.dto.event.message;
 
 import com.alibaba.fastjson2.annotation.JSONField;
-import com.mikuac.shiro.bo.ArrayMsg;
 import com.mikuac.shiro.dto.event.Event;
+import com.mikuac.shiro.model.ArrayMsg;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;

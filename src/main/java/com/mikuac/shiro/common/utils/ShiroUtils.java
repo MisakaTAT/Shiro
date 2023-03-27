@@ -1,7 +1,8 @@
 package com.mikuac.shiro.common.utils;
 
-import com.mikuac.shiro.bo.ArrayMsg;
 import com.mikuac.shiro.enums.MsgTypeEnum;
+import com.mikuac.shiro.model.ArrayMsg;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -170,31 +171,30 @@ public class ShiroUtils {
      * @param msg 需要修改客户端消息上报类型为 string
      * @return 消息链
      */
-    public static List<ArrayMsg> rawToArrayMsg(String msg) {
-        List<ArrayMsg> arrayMsgList = new ArrayList<>();
-        try {
-            Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
-                Matcher matcher = RegexUtils.regexMatcher(CQ_CODE_REGEX, s);
-                ArrayMsg arrayMsg = new ArrayMsg();
-                Map<String, String> data = new HashMap<>();
-                if (matcher == null) {
-                    arrayMsg.setType(MsgTypeEnum.text);
-                    data.put("text", s);
-                } else {
-                    arrayMsg.setType(MsgTypeEnum.valueOf(matcher.group(1)));
-                    Arrays.stream(matcher.group(2).split(",")).filter(args -> !args.isEmpty()).forEach(args -> {
-                        String k = args.substring(0, args.indexOf("="));
-                        String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
-                        data.put(k, v);
-                    });
-                }
-                arrayMsg.setData(data);
-                arrayMsgList.add(arrayMsg);
-            });
-        } catch (Exception e) {
-            log.error("Raw message convert failed: {}", e.getMessage());
-        }
-        return arrayMsgList;
+    public static List<ArrayMsg> rawToArrayMsg(@NonNull String msg) {
+        return Arrays.stream(msg.split(CQ_CODE_SPLIT))
+                .filter(s -> !s.isEmpty())
+                .map(s -> {
+                    ArrayMsg array = new ArrayMsg();
+                    Map<String, String> data = new HashMap<>();
+                    Optional<Matcher> matcher = RegexUtils.matcher(CQ_CODE_REGEX, s);
+                    if (matcher.isEmpty()) {
+                        array.setType(MsgTypeEnum.text);
+                        data.put("text", s);
+                    }
+                    if (matcher.isPresent()) {
+                        Matcher match = matcher.get();
+                        array.setType(MsgTypeEnum.valueOf(match.group(1)));
+                        Arrays.stream(match.group(2).split(","))
+                                .filter(args -> !args.isEmpty())
+                                .forEach(args -> data.put(
+                                        args.substring(0, args.indexOf("=")),
+                                        ShiroUtils.unescape(args.substring(args.indexOf("=") + 1))
+                                ));
+                    }
+                    array.setData(data);
+                    return array;
+                }).toList();
     }
 
     /**

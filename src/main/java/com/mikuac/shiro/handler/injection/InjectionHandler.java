@@ -1,8 +1,6 @@
 package com.mikuac.shiro.handler.injection;
 
 import com.mikuac.shiro.annotation.*;
-import com.mikuac.shiro.bo.ArrayMsg;
-import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.common.utils.InternalUtils;
 import com.mikuac.shiro.common.utils.RegexUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
@@ -16,16 +14,15 @@ import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
 import com.mikuac.shiro.enums.MsgTypeEnum;
+import com.mikuac.shiro.model.ArrayMsg;
+import com.mikuac.shiro.model.HandlerMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 
 /**
@@ -40,13 +37,50 @@ import java.util.regex.Matcher;
 public class InjectionHandler {
 
     /**
+     * @param handlerMethod {@link HandlerMethod}
+     * @param params        params
+     */
+    private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
+        Class<?>[] parameterTypes = handlerMethod.getMethod().getParameterTypes();
+        Object[] objects = new Object[parameterTypes.length];
+        Arrays.stream(parameterTypes).forEach(InternalUtils.consumerWithIndex((item, index) -> {
+            if (params.containsKey(item)) {
+                objects[index] = params.remove(item);
+            } else {
+                objects[index] = null;
+            }
+        }));
+        try {
+            handlerMethod.getMethod().invoke(handlerMethod.getObject(), objects);
+        } catch (InvocationTargetException e) {
+            Throwable t = e.getTargetException();
+            log.error("Invocation target exception: {}", t.getMessage(), t);
+        } catch (Exception e) {
+            log.error("Invoke exception: {}", e.getMessage(), e);
+        }
+    }
+
+    private <T> void invoke(Bot bot, T event, Class<? extends Annotation> handlerClass) {
+        List<HandlerMethod> handlerMethods = bot.getAnnotationHandler().get(handlerClass);
+        if (handlerMethods == null || handlerMethods.isEmpty()) {
+            return;
+        }
+        handlerMethods.forEach(handlerMethod -> {
+            Map<Class<?>, Object> params = new HashMap<>();
+            params.put(Bot.class, bot);
+            params.put(event.getClass(), event);
+            invokeMethod(handlerMethod, params);
+        });
+    }
+
+    /**
      * 群消息撤回事件
      *
      * @param bot   {@link Bot}
      * @param event {@link GroupMsgDeleteNoticeEvent}
      */
     public void invokeGroupRecall(Bot bot, GroupMsgDeleteNoticeEvent event) {
-        setParams(bot.getAnnotationHandler().get(GroupMsgDeleteNoticeHandler.class), bot, event);
+        invoke(bot, event, GroupMsgDeleteNoticeHandler.class);
     }
 
     /**
@@ -56,7 +90,7 @@ public class InjectionHandler {
      * @param event {@link PrivateMsgDeleteNoticeEvent}
      */
     public void invokeFriendRecall(Bot bot, PrivateMsgDeleteNoticeEvent event) {
-        setParams(bot.getAnnotationHandler().get(PrivateMsgDeleteNoticeHandler.class), bot, event);
+        invoke(bot, event, PrivateMsgDeleteNoticeHandler.class);
     }
 
     /**
@@ -66,7 +100,7 @@ public class InjectionHandler {
      * @param event {@link FriendAddNoticeEvent}
      */
     public void invokeFriendAdd(Bot bot, FriendAddNoticeEvent event) {
-        setParams(bot.getAnnotationHandler().get(FriendAddNoticeHandler.class), bot, event);
+        invoke(bot, event, FriendAddNoticeHandler.class);
     }
 
     /**
@@ -76,7 +110,7 @@ public class InjectionHandler {
      * @param event {@link GroupIncreaseNoticeEvent}
      */
     public void invokeGroupIncrease(Bot bot, GroupIncreaseNoticeEvent event) {
-        setParams(bot.getAnnotationHandler().get(GroupIncreaseHandler.class), bot, event);
+        invoke(bot, event, GroupIncreaseHandler.class);
     }
 
     /**
@@ -86,7 +120,7 @@ public class InjectionHandler {
      * @param event {@link GroupDecreaseNoticeEvent}
      */
     public void invokeGroupDecrease(Bot bot, GroupDecreaseNoticeEvent event) {
-        setParams(bot.getAnnotationHandler().get(GroupDecreaseHandler.class), bot, event);
+        invoke(bot, event, GroupDecreaseHandler.class);
     }
 
     /**
@@ -122,29 +156,18 @@ public class InjectionHandler {
      * @return 是否通过检查
      */
     private boolean atCheck(List<ArrayMsg> arrayMsg, long selfId, AtEnum at) {
-        ArrayMsg item = parseAt(arrayMsg, selfId);
-        switch (at) {
-            case NEED -> {
-                if (item == null) {
-                    return true;
-                }
+        Optional<ArrayMsg> opt = Optional.ofNullable(parseAt(arrayMsg, selfId));
+        return switch (at) {
+            case NEED -> opt.map(item -> {
                 long target = Long.parseLong(item.getData().get("qq"));
-                if (target == 0L || target != selfId) {
-                    return true;
-                }
-            }
-            case NOT_NEED -> {
-                if (item == null) {
-                    return false;
-                }
+                return target == 0L || target != selfId;
+            }).orElse(true);
+            case NOT_NEED -> opt.map(item -> {
                 long target = Long.parseLong(item.getData().get("qq"));
                 return target == selfId;
-            }
-            default -> {
-                return false;
-            }
-        }
-        return false;
+            }).orElse(false);
+            default -> false;
+        };
     }
 
     /**
@@ -304,65 +327,22 @@ public class InjectionHandler {
     }
 
     /**
-     * @param handlerMethod {@link HandlerMethod}
-     * @param params        params
-     */
-    private void invokeMethod(HandlerMethod handlerMethod, Map<Class<?>, Object> params) {
-        Class<?>[] parameterTypes = handlerMethod.getMethod().getParameterTypes();
-        Object[] objects = new Object[parameterTypes.length];
-        Arrays.stream(parameterTypes).forEach(InternalUtils.consumerWithIndex((item, index) -> {
-            if (params.containsKey(item)) {
-                objects[index] = params.remove(item);
-            } else {
-                objects[index] = null;
-            }
-        }));
-        try {
-            handlerMethod.getMethod().invoke(handlerMethod.getObject(), objects);
-        } catch (InvocationTargetException e) {
-            Throwable t = e.getTargetException();
-            log.error("Invocation target exception: {}", t.getMessage(), t);
-        } catch (Exception e) {
-            log.error("Invoke exception: {}", e.getMessage(), e);
-        }
-    }
-
-    /**
-     * 参数设置
-     *
-     * @param handlerMethods {@link HandlerMethod}
-     * @param bot            {@link Bot}
-     * @param event          {@link Object}
-     */
-    private void setParams(List<HandlerMethod> handlerMethods, Bot bot, Object event) {
-        if (handlerMethods != null && !handlerMethods.isEmpty()) {
-            handlerMethods.forEach(handlerMethod -> {
-                Map<Class<?>, Object> params = new HashMap<>();
-                params.put(Bot.class, bot);
-                params.put(event.getClass(), event);
-                invokeMethod(handlerMethod, params);
-            });
-        }
-    }
-
-    /**
      * 返回匹配的消息 Matcher 类
      *
      * @param cmd 正则表达式
      * @param msg 消息内容
      * @return params
      */
-    @SuppressWarnings("squid:S1168")
     private Map<Class<?>, Object> matcher(String cmd, String msg) {
-        Map<Class<?>, Object> params = new HashMap<>();
         if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
-            Matcher matcher = RegexUtils.regexMatcher(cmd, msg);
-            if (matcher == null) {
-                return null;
-            }
-            params.put(Matcher.class, matcher);
+            Optional<Matcher> matcher = RegexUtils.matcher(cmd, msg);
+            return matcher.map(it -> {
+                Map<Class<?>, Object> params = new HashMap<>();
+                params.put(Matcher.class, matcher);
+                return params;
+            }).orElse(new HashMap<>());
         }
-        return params;
+        return new HashMap<>();
     }
 
 }

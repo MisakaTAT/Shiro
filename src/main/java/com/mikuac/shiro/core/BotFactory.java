@@ -2,11 +2,11 @@ package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.annotation.common.Shiro;
-import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
 import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.handler.ActionHandler;
+import com.mikuac.shiro.model.HandlerMethod;
 import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

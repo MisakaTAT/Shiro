@@ -2,7 +2,6 @@ package com.mikuac.shiro.core;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
-import com.mikuac.shiro.bo.HandlerMethod;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
@@ -10,6 +9,7 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
+import com.mikuac.shiro.model.HandlerMethod;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.MultiValueMap;

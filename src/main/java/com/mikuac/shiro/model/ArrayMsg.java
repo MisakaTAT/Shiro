@@ -1,4 +1,4 @@
-package com.mikuac.shiro.bo;
+package com.mikuac.shiro.model;
 
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import lombok.Data;

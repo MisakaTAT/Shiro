@@ -104,7 +104,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
             return true;
         }
         String clientToken = session.getHandshakeHeaders().getFirst("authorization");
-        log.debug("Access Token: {}",clientToken);
+        log.debug("Access Token: {}", clientToken);
         if (clientToken == null || clientToken.isEmpty()) {
             return false;
         }

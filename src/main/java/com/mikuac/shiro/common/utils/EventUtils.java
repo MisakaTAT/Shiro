@@ -1,7 +1,6 @@
 package com.mikuac.shiro.common.utils;
 
 import com.alibaba.fastjson2.JSONObject;
-import com.mikuac.shiro.bo.ArrayMsg;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
@@ -9,6 +8,7 @@ import com.mikuac.shiro.core.DefaultBotMessageEventInterceptor;
 import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
+import com.mikuac.shiro.model.ArrayMsg;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
