@@ -172,29 +172,34 @@ public class ShiroUtils {
      * @return 消息链
      */
     public static List<ArrayMsg> rawToArrayMsg(@NonNull String msg) {
-        return Arrays.stream(msg.split(CQ_CODE_SPLIT))
-                .filter(s -> !s.isEmpty())
-                .map(s -> {
-                    ArrayMsg array = new ArrayMsg();
-                    Map<String, String> data = new HashMap<>();
-                    Optional<Matcher> matcher = RegexUtils.matcher(CQ_CODE_REGEX, s);
-                    if (matcher.isEmpty()) {
-                        array.setType(MsgTypeEnum.text);
-                        data.put("text", s);
-                    }
-                    if (matcher.isPresent()) {
-                        Matcher match = matcher.get();
-                        array.setType(MsgTypeEnum.valueOf(match.group(1)));
-                        Arrays.stream(match.group(2).split(","))
-                                .filter(args -> !args.isEmpty())
-                                .forEach(args -> data.put(
-                                        args.substring(0, args.indexOf("=")),
-                                        ShiroUtils.unescape(args.substring(args.indexOf("=") + 1))
-                                ));
-                    }
-                    array.setData(data);
-                    return array;
-                }).toList();
+        List<ArrayMsg> chain = new ArrayList<>();
+        try {
+            Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
+                Optional<Matcher> matcher = RegexUtils.matcher(CQ_CODE_REGEX, s);
+                ArrayMsg item = new ArrayMsg();
+                Map<String, String> data = new HashMap<>();
+                if (matcher.isEmpty()) {
+                    item.setType(MsgTypeEnum.text);
+                    data.put("text", s);
+                    item.setData(data);
+                }
+                if (matcher.isPresent()) {
+                    MsgTypeEnum type = MsgTypeEnum.valueOf(matcher.get().group(1));
+                    String[] params = matcher.get().group(2).split(",");
+                    item.setType(type);
+                    Arrays.stream(params).filter(args -> !args.isEmpty()).forEach(args -> {
+                        String k = args.substring(0, args.indexOf("="));
+                        String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
+                        data.put(k, v);
+                    });
+                    item.setData(data);
+                }
+                chain.add(item);
+            });
+        } catch (Exception e) {
+            log.error("Conversion failed: {}", e.getMessage());
+        }
+        return chain;
     }
 
     /**
