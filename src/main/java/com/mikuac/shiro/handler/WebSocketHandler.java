@@ -17,6 +17,7 @@ import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
+import java.util.Optional;
 
 /**
  * Created on 2021/7/16.
@@ -81,15 +82,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
      * @return QQ 号
      */
     private long parseSelfId(WebSocketSession session) {
-        String botId = session.getHandshakeHeaders().getFirst("x-self-id");
-        if (botId == null || botId.isEmpty()) {
-            return 0L;
-        }
-        try {
-            return Long.parseLong(botId);
-        } catch (Exception e) {
-            return 0L;
-        }
+        Optional<String> opt = Optional.ofNullable(session.getHandshakeHeaders().getFirst("x-self-id"));
+        return opt.map(botId -> {
+            try {
+                return Long.parseLong(botId);
+            } catch (NumberFormatException e) {
+                return 0L;
+            }
+        }).orElse(0L);
     }
 
     /**
@@ -119,7 +119,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
         try {
             long xSelfId = parseSelfId(session);
             if (xSelfId == 0L) {
-                log.error("Get client self account failed");
+                log.error("Account get failed for client");
                 session.close();
                 return;
             }

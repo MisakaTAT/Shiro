@@ -270,7 +270,6 @@ public class InjectionHandler {
                 invoke(bot, event, method);
             });
         }
-
     }
 
 }
