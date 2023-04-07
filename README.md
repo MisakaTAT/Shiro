@@ -24,7 +24,7 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
   ·
   <a href="https://github.com/MisakaTAT/Shiro/releases">下载</a>
   ·
-  <a href="https://misakatat.github.io/shiro-docs/quickstart">快速开始</a>
+  <a href="https://misakatat.github.io/shiro-docs">快速开始</a>
   ·
   <a href="">参与贡献</a>
 </p>
