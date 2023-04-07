@@ -27,7 +27,7 @@ public class CommonUtils {
      * @return 是否通过检查
      */
     public static boolean atCheck(List<ArrayMsg> arrayMsg, long selfId, AtEnum at) {
-        Optional<ArrayMsg> opt = Optional.ofNullable(parseAt(arrayMsg, selfId));
+        Optional<ArrayMsg> opt = Optional.ofNullable(atParse(arrayMsg, selfId));
         return switch (at) {
             case NEED -> opt.map(item -> {
                 long target = Long.parseLong(item.getData().get("qq"));
@@ -49,11 +49,11 @@ public class CommonUtils {
      * @param atEnum   {@link AtEnum}
      * @return 处理后的消息
      */
-    public static String extractMsg(String msg, List<ArrayMsg> arrayMsg, AtEnum atEnum, long selfId) {
+    public static String msgExtract(String msg, List<ArrayMsg> arrayMsg, AtEnum atEnum, long selfId) {
         if (atEnum != AtEnum.NEED) {
             return msg;
         }
-        ArrayMsg item = parseAt(arrayMsg, selfId);
+        ArrayMsg item = atParse(arrayMsg, selfId);
         if (item != null) {
             String code = ShiroUtils.arrayMsgToCode(arrayMsg.get(arrayMsg.indexOf(item)));
             return msg.replace(code, "").trim();
@@ -66,7 +66,7 @@ public class CommonUtils {
      * @param selfId   机器人账号
      * @return {@link ArrayMsg}
      */
-    public static ArrayMsg parseAt(List<ArrayMsg> arrayMsg, long selfId) {
+    public static ArrayMsg atParse(List<ArrayMsg> arrayMsg, long selfId) {
         if (arrayMsg.isEmpty()) {
             return null;
         }
@@ -96,18 +96,19 @@ public class CommonUtils {
      *
      * @param cmd 正则表达式
      * @param msg 消息内容
-     * @return params
+     * @return {@link Map} of {@link Matcher}
      */
+    @SuppressWarnings("squid:S1168")
     public static Map<Class<?>, Object> matcher(String cmd, String msg) {
+        Map<Class<?>, Object> params = new HashMap<>();
         if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
-            Optional<Matcher> matcher = RegexUtils.matcher(cmd, msg);
-            return matcher.map(it -> {
-                Map<Class<?>, Object> params = new HashMap<>();
-                params.put(Matcher.class, matcher);
-                return params;
-            }).orElse(new HashMap<>());
+            Optional<Matcher> match = RegexUtils.matcher(cmd, msg);
+            if (match.isEmpty()) {
+                return null;
+            }
+            params.put(Matcher.class, match.get());
         }
-        return new HashMap<>();
+        return params;
     }
 
 }

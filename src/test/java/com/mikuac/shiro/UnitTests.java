@@ -220,16 +220,16 @@ class UnitTests {
 
         // 定义 AtEnum 为 NEED，期望 At 标识被解析并去除
         val expected1 = "测试消息1";
-        val actual1 = CommonUtils.extractMsg(msg, arrayMsg, AtEnum.NEED, 1122334455L);
+        val actual1 = CommonUtils.msgExtract(msg, arrayMsg, AtEnum.NEED, 1122334455L);
         Assertions.assertEquals(expected1, actual1);
 
         // 定义 AtEnum 为 NOT_NEED，期望原始消息内容不变
-        val actual2 = CommonUtils.extractMsg(msg, arrayMsg, AtEnum.NOT_NEED, 1122334455L);
+        val actual2 = CommonUtils.msgExtract(msg, arrayMsg, AtEnum.NOT_NEED, 1122334455L);
         Assertions.assertEquals(msg, actual2);
 
         // 定义 AtEnum 为 NEED，但消息中未包含 At 标识，期望原始消息内容不变
         val expected2 = "测试消息2";
-        val actual3 = CommonUtils.extractMsg(expected2, arrayMsg, AtEnum.NEED, 1122334455L);
+        val actual3 = CommonUtils.msgExtract(expected2, arrayMsg, AtEnum.NEED, 1122334455L);
         Assertions.assertEquals(expected2, actual3);
     }
 
@@ -243,7 +243,7 @@ class UnitTests {
         // 定义期望解析出的 At 标识对应的 ArrayMsg
         val expected1 = arrayMsg1.get(0);
         // 调用 parseAt 函数进行测试
-        val actual1 = CommonUtils.parseAt(arrayMsg1, 1122334455L);
+        val actual1 = CommonUtils.atParse(arrayMsg1, 1122334455L);
         // 使用 assertEquals 函数比较期望值和实际值是否相等
         Assertions.assertEquals(expected1, actual1);
 
@@ -252,7 +252,7 @@ class UnitTests {
                 new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
         );
         // 调用 parseAt 函数进行测试，期望返回 null
-        val actual2 = CommonUtils.parseAt(arrayMsg2, 1122334455L);
+        val actual2 = CommonUtils.atParse(arrayMsg2, 1122334455L);
         // 使用 assertNull 函数比较期望值和实际值是否相等
         Assertions.assertNull(actual2);
 
@@ -262,7 +262,7 @@ class UnitTests {
                 new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
         );
         // 调用 parseAt 函数进行测试，期望返回 null
-        val actual3 = CommonUtils.parseAt(arrayMsg3, 1122334455L);
+        val actual3 = CommonUtils.atParse(arrayMsg3, 1122334455L);
         // 使用 assertNull 函数比较期望值和实际值是否相等
         Assertions.assertNull(actual3);
     }

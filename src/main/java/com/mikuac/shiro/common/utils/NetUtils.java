@@ -6,6 +6,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
@@ -21,8 +22,8 @@ public class NetUtils {
     private NetUtils() {
     }
 
-    public static String asyncGet(String url) {
-        HttpClient client = HttpClient.newHttpClient();
+    public static String asyncGet(String url, int timeout) {
+        HttpClient client = HttpClient.newBuilder().connectTimeout(Duration.ofSeconds(timeout)).build();
         HttpRequest request = HttpRequest.newBuilder().uri(URI.create(url)).build();
         CompletableFuture<String> result = client.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
         try {

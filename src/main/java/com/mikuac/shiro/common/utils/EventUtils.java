@@ -119,7 +119,7 @@ public class EventUtils {
             pushAnyMessageEvent(bot, resp, arrayMsg);
             return arrayMsg;
         } catch (Exception e) {
-            log.error("Set any message event exception: {}", e.getMessage(), e);
+            log.error("Push any message event exception: {}", e.getMessage(), e);
         }
         return Collections.emptyList();
     }
