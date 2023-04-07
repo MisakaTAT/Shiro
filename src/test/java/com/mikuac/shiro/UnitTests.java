@@ -218,7 +218,7 @@ class UnitTests {
         // 将 msg 字符串转换成 ArrayMsg 数组
         val arrayMsg = ShiroUtils.rawToArrayMsg(msg);
 
-        // 定义 AtEnum 为 NEED，期望 At 标识被解析并去除
+        // 定义 AtEnum 为 NEED，期望 @ 标识被解析并去除
         val expected1 = "测试消息1";
         val actual1 = CommonUtils.msgExtract(msg, arrayMsg, AtEnum.NEED, 1122334455L);
         Assertions.assertEquals(expected1, actual1);
@@ -227,41 +227,41 @@ class UnitTests {
         val actual2 = CommonUtils.msgExtract(msg, arrayMsg, AtEnum.NOT_NEED, 1122334455L);
         Assertions.assertEquals(msg, actual2);
 
-        // 定义 AtEnum 为 NEED，但消息中未包含 At 标识，期望原始消息内容不变
+        // 定义 AtEnum 为 NEED，但消息中未包含 @ 标识，期望原始消息内容不变
         val expected2 = "测试消息2";
         val actual3 = CommonUtils.msgExtract(expected2, arrayMsg, AtEnum.NEED, 1122334455L);
         Assertions.assertEquals(expected2, actual3);
     }
 
     @Test
-    void testParseAt() {
-        // 定义包含 At 标识的 ArrayMsg 数组
+    void testAtParse() {
+        // 定义包含 @ 标识的 ArrayMsg 数组
         val arrayMsg1 = Arrays.asList(
                 new ArrayMsg().setType(MsgTypeEnum.at).setData(Map.of("qq", "1122334455")),
                 new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
         );
-        // 定义期望解析出的 At 标识对应的 ArrayMsg
+        // 定义期望解析出的 @ 标识对应的 ArrayMsg
         val expected1 = arrayMsg1.get(0);
-        // 调用 parseAt 函数进行测试
+        // 调用 atParse 函数进行测试
         val actual1 = CommonUtils.atParse(arrayMsg1, 1122334455L);
         // 使用 assertEquals 函数比较期望值和实际值是否相等
         Assertions.assertEquals(expected1, actual1);
 
-        // 定义不包含 At 标识的 ArrayMsg 数组
+        // 定义不包含 @ 标识的 ArrayMsg 数组
         val arrayMsg2 = Collections.singletonList(
                 new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
         );
-        // 调用 parseAt 函数进行测试，期望返回 null
+        // 调用 atParse 函数进行测试，期望返回 null
         val actual2 = CommonUtils.atParse(arrayMsg2, 1122334455L);
         // 使用 assertNull 函数比较期望值和实际值是否相等
         Assertions.assertNull(actual2);
 
-        // 定义包含 At 标识但不是机器人账号的 ArrayMsg 数组
+        // 定义包含 @ 标识但不是机器人账号的 ArrayMsg 数组
         val arrayMsg3 = Arrays.asList(
                 new ArrayMsg().setType(MsgTypeEnum.at).setData(Map.of("qq", "123456789")),
                 new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
         );
-        // 调用 parseAt 函数进行测试，期望返回 null
+        // 调用 atParse 函数进行测试，期望返回 null
         val actual3 = CommonUtils.atParse(arrayMsg3, 1122334455L);
         // 使用 assertNull 函数比较期望值和实际值是否相等
         Assertions.assertNull(actual3);
