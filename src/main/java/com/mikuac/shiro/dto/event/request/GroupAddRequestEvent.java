@@ -26,4 +26,7 @@ public class GroupAddRequestEvent extends RequestEvent {
     @JSONField(name = "group_id")
     private Long groupId;
 
+    @JSONField(name = "invitor_id")
+    private Long invitorId;
+
 }
