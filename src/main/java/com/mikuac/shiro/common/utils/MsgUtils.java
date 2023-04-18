@@ -37,8 +37,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils img(String url) {
-        String imgCode = String.format("[CQ:image,file=%s]", ShiroUtils.escape(url));
-        builder.append(imgCode);
+        String code = String.format("[CQ:image,file=%s]", ShiroUtils.escape(url));
+        builder.append(code);
         return this;
     }
 
@@ -61,8 +61,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils video(String video, String cover) {
-        String videoCode = String.format("[CQ:video,file=%s,cover=%s]", ShiroUtils.escape(video), ShiroUtils.escape(cover));
-        builder.append(videoCode);
+        String code = String.format("[CQ:video,file=%s,cover=%s]", ShiroUtils.escape(video), ShiroUtils.escape(cover));
+        builder.append(code);
         return this;
     }
 
@@ -73,8 +73,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils flashImg(String img) {
-        String flashImgCode = String.format("[CQ:image,type=flash,file=%s]", ShiroUtils.escape(img));
-        builder.append(flashImgCode);
+        String code = String.format("[CQ:image,type=flash,file=%s]", ShiroUtils.escape(img));
+        builder.append(code);
         return this;
     }
 
@@ -86,8 +86,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils face(int id) {
-        String faceCode = String.format("[CQ:face,id=%s]", id);
-        builder.append(faceCode);
+        String code = String.format("[CQ:face,id=%s]", id);
+        builder.append(code);
         return this;
     }
 
@@ -98,8 +98,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils voice(String file) {
-        String recordCode = String.format("[CQ:record,file=%s]", ShiroUtils.escape(file));
-        builder.append(recordCode);
+        String code = String.format("[CQ:record,file=%s]", ShiroUtils.escape(file));
+        builder.append(code);
         return this;
     }
 
@@ -110,8 +110,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils at(long userId) {
-        String atCode = String.format("[CQ:at,qq=%s]", userId);
-        builder.append(atCode);
+        String code = String.format("[CQ:at,qq=%s]", userId);
+        builder.append(code);
         return this;
     }
 
@@ -132,8 +132,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils poke(long userId) {
-        String pokeCode = String.format("[CQ:poke,qq=%s]", userId);
-        builder.append(pokeCode);
+        String code = String.format("[CQ:poke,qq=%s]", userId);
+        builder.append(code);
         return this;
     }
 
@@ -144,8 +144,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils reply(int msgId) {
-        String replyCode = String.format("[CQ:reply,id=%s]", msgId);
-        builder.append(replyCode);
+        String code = String.format("[CQ:reply,id=%s]", msgId);
+        builder.append(code);
         return this;
     }
 
@@ -156,8 +156,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils reply(String msgId) {
-        String replyCode = String.format("[CQ:reply,id=\"%s\"]", msgId);
-        builder.append(replyCode);
+        String code = String.format("[CQ:reply,id=\"%s\"]", msgId);
+        builder.append(code);
         return this;
     }
 
@@ -170,8 +170,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils gift(long userId, int giftId) {
-        String giftCode = String.format("[CQ:gift,qq=%s,id=%s]", userId, giftId);
-        builder.append(giftCode);
+        String code = String.format("[CQ:gift,qq=%s,id=%s]", userId, giftId);
+        builder.append(code);
         return this;
     }
 
@@ -183,8 +183,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils tts(String text) {
-        String ttsCode = String.format("[CQ:tts,text=%s]", ShiroUtils.escape(text));
-        builder.append(ttsCode);
+        String code = String.format("[CQ:tts,text=%s]", ShiroUtils.escape(text));
+        builder.append(code);
         return this;
     }
 
@@ -208,8 +208,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils xml(String data, int resId) {
-        String xmlCode = String.format("[CQ:xml,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
-        builder.append(xmlCode);
+        String code = String.format("[CQ:xml,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
+        builder.append(code);
         return this;
     }
 
@@ -220,8 +220,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils json(String data) {
-        String ttsCode = String.format("[CQ:json,data=%s]", ShiroUtils.escape(data));
-        builder.append(ttsCode);
+        String code = String.format("[CQ:json,data=%s]", ShiroUtils.escape(data));
+        builder.append(code);
         return this;
     }
 
@@ -233,8 +233,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils json(String data, int resId) {
-        String jsonCode = String.format("[CQ:json,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
-        builder.append(jsonCode);
+        String code = String.format("[CQ:json,data=%s,resid=%s]", ShiroUtils.escape(data), resId);
+        builder.append(code);
         return this;
     }
 
@@ -246,8 +246,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils cardImage(String file) {
-        String cardImageCode = String.format("[CQ:cardimage,file=%s]", ShiroUtils.escape(file));
-        builder.append(cardImageCode);
+        String code = String.format("[CQ:cardimage,file=%s]", ShiroUtils.escape(file));
+        builder.append(code);
         return this;
     }
 
@@ -265,11 +265,11 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source, String icon) {
-        String cardImageCode =
+        String code =
                 String.format("[CQ:cardimage,file=%s,minwidth=%s,minheight=%s,maxwidth=%s,maxheight=%s,source=%s,icon=%s]",
                         ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, ShiroUtils.escape(source),
                         ShiroUtils.escape(icon));
-        builder.append(cardImageCode);
+        builder.append(code);
         return this;
     }
 
@@ -281,8 +281,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils music(String type, long id) {
-        String musicCode = String.format("[CQ:music,type=%s,id=%s]", ShiroUtils.escape(type), id);
-        builder.append(musicCode);
+        String code = String.format("[CQ:music,type=%s,id=%s]", ShiroUtils.escape(type), id);
+        builder.append(code);
         return this;
     }
 
@@ -297,12 +297,12 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils customMusic(String url, String audio, String title, String content, String image) {
-        String customMusicCode = String.format(
+        String code = String.format(
                 "[CQ:music,type=custom,url=%s,audio=%s,title=%s,content=%s,image=%s]",
                 ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title), ShiroUtils.escape(content),
                 ShiroUtils.escape(image)
         );
-        builder.append(customMusicCode);
+        builder.append(code);
         return this;
     }
 
@@ -315,11 +315,11 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils customMusic(String url, String audio, String title) {
-        String customMusicCode = String.format(
+        String code = String.format(
                 "[CQ:music,type=custom,url=%s,audio=%s,title=%s]",
                 ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title)
         );
-        builder.append(customMusicCode);
+        builder.append(code);
         return this;
     }
 
@@ -330,8 +330,8 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils rps(int value) {
-        String rpsCode = String.format("[CQ:rps,value=%s]", value);
-        builder.append(rpsCode);
+        String code = String.format("[CQ:rps,value=%s]", value);
+        builder.append(code);
         return this;
     }
 
