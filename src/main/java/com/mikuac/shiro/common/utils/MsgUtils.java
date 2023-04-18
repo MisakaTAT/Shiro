@@ -32,12 +32,13 @@ public class MsgUtils {
 
     /**
      * 图片
+     * 支持本地图片、网络图片、Base64 详见 <a href="https://misakatat.github.io/shiro-docs/advanced.html#">消息构建工具</a>
      *
-     * @param url 图片 URL
+     * @param img 图片
      * @return {@link MsgUtils}
      */
-    public MsgUtils img(String url) {
-        String code = String.format("[CQ:image,file=%s]", ShiroUtils.escape(url));
+    public MsgUtils img(String img) {
+        String code = String.format("[CQ:image,file=%s]", ShiroUtils.escape(img));
         builder.append(code);
         return this;
     }
@@ -45,11 +46,11 @@ public class MsgUtils {
     /**
      * 图片
      *
-     * @param img {@link OneBotMedia}
+     * @param media {@link OneBotMedia}
      * @return {@link MsgUtils}
      */
-    public MsgUtils img(OneBotMedia img) {
-        builder.append("[CQ:image,").append(img.escape()).append("]");
+    public MsgUtils img(OneBotMedia media) {
+        builder.append("[CQ:image,").append(media.escape()).append("]");
         return this;
     }
 
@@ -94,11 +95,22 @@ public class MsgUtils {
     /**
      * 语音
      *
-     * @param file 语音文件名
+     * @param media {@link OneBotMedia}
      * @return {@link MsgUtils}
      */
-    public MsgUtils voice(String file) {
-        String code = String.format("[CQ:record,file=%s]", ShiroUtils.escape(file));
+    public MsgUtils voice(OneBotMedia media) {
+        builder.append("[CQ:record,").append(media.escape()).append("]");
+        return this;
+    }
+
+    /**
+     * 语音
+     *
+     * @param voice 语音, 支持本地文件和 URL
+     * @return {@link MsgUtils}
+     */
+    public MsgUtils voice(String voice) {
+        String code = String.format("[CQ:record,file=%s]", ShiroUtils.escape(voice));
         builder.append(code);
         return this;
     }
