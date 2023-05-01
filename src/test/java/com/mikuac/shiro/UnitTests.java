@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -70,6 +67,14 @@ class UnitTests {
         );
         val actual = ShiroUtils.rawToArrayMsg(msg);
         assertEquals(expected, actual);
+    }
+
+    @Test
+    void testRawToArrayMsg2() {
+        val msg = "[CQ:at,qq=1122334455]测试消息1[CQ:face,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
+        List<ArrayMsg> arrayMsgs = ShiroUtils.rawToArrayMsg(msg);
+        val actual = ShiroUtils.arrayMsgToCode(arrayMsgs);
+        assertEquals(msg, actual);
     }
 
     @Test

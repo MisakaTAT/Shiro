@@ -92,10 +92,11 @@ public class EventUtils {
      *
      * @param bot      {@link Bot}
      * @param resp     {@link JSONObject}
-     * @param arrayMsg {@link ArrayMsg}
+     * @return {@link ArrayMsg}
      */
-    private void pushAnyMessageEvent(Bot bot, JSONObject resp, List<ArrayMsg> arrayMsg) {
+    private List<ArrayMsg> pushAnyMessageEvent(Bot bot, JSONObject resp) {
         AnyMessageEvent event = resp.to(AnyMessageEvent.class);
+        List<ArrayMsg> arrayMsg = ShiroUtils.rawToArrayMsg(event.getMessage(),event);
         event.setArrayMsg(arrayMsg);
         injection.invokeAnyMessage(bot, event);
         for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
@@ -103,6 +104,7 @@ public class EventUtils {
                 break;
             }
         }
+        return arrayMsg;
     }
 
     /**
@@ -115,9 +117,7 @@ public class EventUtils {
      */
     public List<ArrayMsg> setAnyMessageEvent(Bot bot, JSONObject resp, MessageEvent event) {
         try {
-            List<ArrayMsg> arrayMsg = ShiroUtils.rawToArrayMsg(event.getMessage());
-            pushAnyMessageEvent(bot, resp, arrayMsg);
-            return arrayMsg;
+            return pushAnyMessageEvent(bot, resp);
         } catch (Exception e) {
             log.error("Push any message event exception: {}", e.getMessage(), e);
         }
