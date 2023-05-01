@@ -1,5 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
+import com.alibaba.fastjson2.JSON;
+import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
 import lombok.NonNull;
@@ -203,6 +205,24 @@ public class ShiroUtils {
     }
 
     /**
+     * 支持 array 消息上报转消息链
+     *
+     * @param msg
+     * @return 消息链
+     */
+    public static List<ArrayMsg> rawToArrayMsg(@NonNull String msg, MessageEvent event) {
+        //支持cqhttp的array格式消息上报，如果msg是json则是array上报
+        if (JSON.isValid(msg)){
+            List<ArrayMsg> arrayMsgs = JSON.parseArray(msg, ArrayMsg.class);
+            //将event的message转换回CQ格式给后面使用
+            event.setMessage(ShiroUtils.arrayMsgToCode(arrayMsgs));
+            return arrayMsgs;
+        }
+        //string格式消息上报
+        return rawToArrayMsg(msg);
+    }
+
+    /**
      * 从 ArrayMsg 生成 CQ Code
      *
      * @param o {@link ArrayMsg}
@@ -213,6 +233,26 @@ public class ShiroUtils {
         builder.append("[CQ:").append(o.getType());
         o.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
         builder.append("]");
+        return builder.toString();
+    }
+
+    /**
+     * 从 List<ArrayMsg> 生成 CQ Code
+     *
+     * @param arrayMsgs {@link ArrayMsg}
+     * @return CQ Code
+     */
+    public static String arrayMsgToCode(List<ArrayMsg> arrayMsgs) {
+        StringBuilder builder = new StringBuilder();
+        for (ArrayMsg o : arrayMsgs) {
+            if (!o.getType().equals(MsgTypeEnum.text)){
+                builder.append("[CQ:").append(o.getType());
+                o.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
+                builder.append("]");
+            }else {
+                builder.append(o.getData().get(MsgTypeEnum.text.toString()));
+            }
+        }
         return builder.toString();
     }
 
