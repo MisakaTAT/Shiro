@@ -207,18 +207,19 @@ public class ShiroUtils {
     /**
      * 支持 array 消息上报转消息链
      *
-     * @param msg
+     * @param msg 上报内容
      * @return 消息链
      */
+    @SuppressWarnings("SpellCheckingInspection")
     public static List<ArrayMsg> rawToArrayMsg(@NonNull String msg, MessageEvent event) {
-        //支持cqhttp的array格式消息上报，如果msg是json则是array上报
-        if (JSON.isValid(msg)){
+        // 支持 go-cqhttp array 格式消息上报，如果 msg 是一个有效的 json 字符串则作为 array 上报
+        if (JSON.isValid(msg)) {
             List<ArrayMsg> arrayMsgs = JSON.parseArray(msg, ArrayMsg.class);
-            //将event的message转换回CQ格式给后面使用
+            // 将 event 的 message 转换回 CQ 格式给后面使用
             event.setMessage(ShiroUtils.arrayMsgToCode(arrayMsgs));
             return arrayMsgs;
         }
-        //string格式消息上报
+        // string 格式消息上报
         return rawToArrayMsg(msg);
     }
 
@@ -242,14 +243,15 @@ public class ShiroUtils {
      * @param arrayMsgs {@link ArrayMsg}
      * @return CQ Code
      */
+    @SuppressWarnings("SpellCheckingInspection")
     public static String arrayMsgToCode(List<ArrayMsg> arrayMsgs) {
         StringBuilder builder = new StringBuilder();
         for (ArrayMsg o : arrayMsgs) {
-            if (!o.getType().equals(MsgTypeEnum.text)){
+            if (!o.getType().equals(MsgTypeEnum.text)) {
                 builder.append("[CQ:").append(o.getType());
                 o.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
                 builder.append("]");
-            }else {
+            } else {
                 builder.append(o.getData().get(MsgTypeEnum.text.toString()));
             }
         }

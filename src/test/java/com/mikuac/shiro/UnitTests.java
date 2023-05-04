@@ -4,7 +4,6 @@ import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.*;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
-import com.mikuac.shiro.core.ChatCTX;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.exception.ShiroException;
@@ -18,8 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,8 +69,8 @@ class UnitTests {
     @Test
     void testRawToArrayMsg2() {
         val msg = "[CQ:at,qq=1122334455]测试消息1[CQ:face,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
-        List<ArrayMsg> arrayMsgs = ShiroUtils.rawToArrayMsg(msg);
-        val actual = ShiroUtils.arrayMsgToCode(arrayMsgs);
+        List<ArrayMsg> arrayMsgList = ShiroUtils.rawToArrayMsg(msg);
+        val actual = ShiroUtils.arrayMsgToCode(arrayMsgList);
         assertEquals(msg, actual);
     }
 
@@ -276,43 +273,5 @@ class UnitTests {
         assertNull(actual3);
     }
 
-
-    @Test
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    void testChatCTX() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(3);
-        ChatCTX ctx = new ChatCTX();
-        ctx.create()
-                .next(latch::countDown)
-                .next(latch::countDown)
-                .next(latch::countDown)
-                .execute();
-        latch.await(5, TimeUnit.SECONDS);
-        assertEquals(0, latch.getCount());
-    }
-
-    @Test
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2925"})
-    void testChatCTXWithTimeout() throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(4);
-        ChatCTX ctx = new ChatCTX();
-        ctx.create()
-                .next(() -> {
-                    try {
-                        Thread.sleep(4000);
-                        ctx.reset(5);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                    latch.countDown();
-                })
-                .next(latch::countDown)
-                .next(latch::countDown)
-                .next(latch::countDown)
-                .timout(5)
-                .execute();
-        latch.await(10, TimeUnit.SECONDS);
-        assertEquals(0, latch.getCount());
-    }
 
 }
