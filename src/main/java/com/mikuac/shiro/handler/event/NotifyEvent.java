@@ -65,7 +65,7 @@ public class NotifyEvent {
         if (type == NotifyEventEnum.POKE) {
             PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);
             // 如果群号不为空则作为群内戳一戳处理
-            if (event.getGroupId() > 0L) {
+            if (event.getGroupId() != null && event.getGroupId() > 0L) {
                 injection.invokeGroupPokeNotice(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupPokeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
             } else {
