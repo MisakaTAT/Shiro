@@ -90,13 +90,13 @@ public class EventUtils {
     /**
      * 推送消息
      *
-     * @param bot      {@link Bot}
-     * @param resp     {@link JSONObject}
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
      * @return {@link ArrayMsg}
      */
     private List<ArrayMsg> pushAnyMessageEvent(Bot bot, JSONObject resp) {
         AnyMessageEvent event = resp.to(AnyMessageEvent.class);
-        List<ArrayMsg> arrayMsg = ShiroUtils.rawToArrayMsg(event.getMessage(),event);
+        List<ArrayMsg> arrayMsg = ShiroUtils.rawToArrayMsg(event.getMessage(), event);
         event.setArrayMsg(arrayMsg);
         injection.invokeAnyMessage(bot, event);
         for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {

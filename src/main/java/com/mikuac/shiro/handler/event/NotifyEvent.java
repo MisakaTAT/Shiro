@@ -8,6 +8,7 @@ import com.mikuac.shiro.dto.event.notice.GroupHonorChangeNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.GroupLuckyKingNoticeEvent;
 import com.mikuac.shiro.dto.event.notice.PokeNoticeEvent;
 import com.mikuac.shiro.enums.NotifyEventEnum;
+import com.mikuac.shiro.handler.injection.InjectionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +27,13 @@ public class NotifyEvent {
     @Autowired
     public void setUtils(EventUtils utils) {
         this.utils = utils;
+    }
+
+    private InjectionHandler injection;
+
+    @Autowired
+    public void setInjection(InjectionHandler injection) {
+        this.injection = injection;
     }
 
     /**
@@ -58,8 +66,10 @@ public class NotifyEvent {
             PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);
             // 如果群号不为空则作为群内戳一戳处理
             if (event.getGroupId() > 0L) {
+                injection.invokeGroupPokeNotice(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupPokeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
             } else {
+                injection.invokePrivatePokeNotice(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onPrivatePokeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
             }
         }

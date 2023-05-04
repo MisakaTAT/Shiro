@@ -18,7 +18,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
-public class GroupCardChangeNotice extends NoticeEvent {
+public class GroupCardChangeNoticeEvent extends NoticeEvent {
 
     @JSONField(name = "card_new")
     private String cardNew;

@@ -6,6 +6,8 @@ import com.mikuac.shiro.common.utils.InternalUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.*;
 import com.mikuac.shiro.dto.event.notice.*;
+import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
+import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
@@ -123,6 +125,77 @@ public class InjectionHandler {
      */
     public void invokeGroupDecrease(Bot bot, GroupDecreaseNoticeEvent event) {
         invoke(bot, event, GroupDecreaseHandler.class);
+    }
+
+    /**
+     * 加好友请求事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link FriendAddRequestEvent}
+     */
+    public void invokeFriendAddRequest(Bot bot, FriendAddRequestEvent event) {
+        invoke(bot, event, FriendAddRequestHandler.class);
+    }
+
+    /**
+     * 加群请求事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupAddRequestEvent}
+     */
+    public void invokeGroupAddRequest(Bot bot, GroupAddRequestEvent event) {
+        invoke(bot, event, GroupAddRequestHandler.class);
+    }
+
+    /**
+     * 群禁言事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupBanNoticeEvent}
+     */
+    public void invokeGroupBanNotice(Bot bot, GroupBanNoticeEvent event) {
+        invoke(bot, event, GroupBanNoticeHandler.class);
+    }
+
+    /**
+     * 群名片变更事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupCardChangeNoticeEvent}
+     */
+    public void invokeGroupCardChangeNotice(Bot bot, GroupCardChangeNoticeEvent event) {
+        invoke(bot, event, GroupCardChangeNoticeHandler.class);
+    }
+
+    /**
+     * 群戳一戳事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link PokeNoticeEvent}
+     */
+    public void invokeGroupPokeNotice(Bot bot, PokeNoticeEvent event) {
+        invoke(bot, event, GroupPokeNoticeHandler.class);
+    }
+
+
+    /**
+     * 群文件上传事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupUploadNoticeEvent}
+     */
+    public void invokeGroupUploadNotice(Bot bot, GroupUploadNoticeEvent event) {
+        invoke(bot, event, GroupUploadNoticeHandler.class);
+    }
+
+    /**
+     * 私聊戳一戳事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link PokeNoticeEvent}
+     */
+    public void invokePrivatePokeNotice(Bot bot, PokeNoticeEvent event) {
+        invoke(bot, event, PrivatePokeNoticeHandler.class);
     }
 
     /**

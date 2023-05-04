@@ -72,6 +72,7 @@ public class NoticeEvent {
     private void process(Bot bot, JSONObject resp, NoticeEventEnum type) {
         if (type == NoticeEventEnum.GROUP_UPLOAD) {
             GroupUploadNoticeEvent event = resp.to(GroupUploadNoticeEvent.class);
+            injection.invokeGroupUploadNotice(bot, event);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupUploadNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
         }
 
@@ -95,6 +96,7 @@ public class NoticeEvent {
 
         if (type == NoticeEventEnum.GROUP_BAN) {
             GroupBanNoticeEvent event = resp.to(GroupBanNoticeEvent.class);
+            injection.invokeGroupBanNotice(bot, event);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupBanNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
         }
 
@@ -117,7 +119,8 @@ public class NoticeEvent {
         }
 
         if (type == NoticeEventEnum.GROUP_CARD_CHANGE) {
-            GroupCardChangeNotice event = resp.to(GroupCardChangeNotice.class);
+            GroupCardChangeNoticeEvent event = resp.to(GroupCardChangeNoticeEvent.class);
+            injection.invokeGroupCardChangeNotice(bot, event);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupCardChangeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
         }
 

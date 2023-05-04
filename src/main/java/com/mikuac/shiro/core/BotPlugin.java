@@ -209,10 +209,10 @@ public class BotPlugin {
      * 群名片修改事件
      *
      * @param bot   {@link Bot}
-     * @param event {@link GroupCardChangeNotice}
+     * @param event {@link GroupCardChangeNoticeEvent}
      * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
      */
-    public int onGroupCardChangeNotice(Bot bot, GroupCardChangeNotice event) {
+    public int onGroupCardChangeNotice(Bot bot, GroupCardChangeNoticeEvent event) {
         return MESSAGE_IGNORE;
     }
 

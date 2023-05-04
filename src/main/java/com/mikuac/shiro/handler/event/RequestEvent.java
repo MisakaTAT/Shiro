@@ -7,6 +7,7 @@ import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import com.mikuac.shiro.enums.RequestEventEnum;
+import com.mikuac.shiro.handler.injection.InjectionHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -31,6 +32,14 @@ public class RequestEvent {
      * 存储请求事件处理器
      */
     public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+
+
+    private InjectionHandler injection;
+
+    @Autowired
+    public void setInjection(InjectionHandler injection) {
+        this.injection = injection;
+    }
 
     /**
      * 请求事件分发
@@ -58,10 +67,12 @@ public class RequestEvent {
     private void process(Bot bot, JSONObject resp, RequestEventEnum type) {
         if (type == RequestEventEnum.GROUP) {
             GroupAddRequestEvent event = resp.to(GroupAddRequestEvent.class);
+            injection.invokeGroupAddRequest(bot, event);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK);
         }
         if (type == RequestEventEnum.FRIEND) {
             FriendAddRequestEvent event = resp.to(FriendAddRequestEvent.class);
+            injection.invokeFriendAddRequest(bot, event);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onFriendAddRequest(bot, event) == BotPlugin.MESSAGE_BLOCK);
         }
     }
