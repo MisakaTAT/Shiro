@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    api("com.alibaba.fastjson2:fastjson2:2.0.29")
+    api("com.alibaba.fastjson2:fastjson2:2.0.31")
     api("org.springframework.boot:spring-boot-starter-websocket")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
