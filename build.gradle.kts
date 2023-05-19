@@ -8,7 +8,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.freefair.lombok") version "8.0.1"
-    id("org.springframework.boot") version "3.0.6"
+    id("org.springframework.boot") version "3.1.0"
     id("io.spring.dependency-management") version "1.1.0"
 }
 
