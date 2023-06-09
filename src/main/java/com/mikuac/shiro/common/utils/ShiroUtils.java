@@ -1,6 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
@@ -213,7 +214,7 @@ public class ShiroUtils {
     @SuppressWarnings("SpellCheckingInspection")
     public static List<ArrayMsg> rawToArrayMsg(@NonNull String msg, MessageEvent event) {
         // 支持 go-cqhttp array 格式消息上报，如果 msg 是一个有效的 json 字符串则作为 array 上报
-        if (JSON.isValid(msg)) {
+        if (JSON.isValidArray(msg)) {
             List<ArrayMsg> arrayMsgs = JSON.parseArray(msg, ArrayMsg.class);
             // 将 event 的 message 转换回 CQ 格式给后面使用
             event.setMessage(ShiroUtils.arrayMsgToCode(arrayMsgs));
