@@ -2,14 +2,17 @@ package com.mikuac.shiro.handler.event;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.EventUtils;
+import com.mikuac.shiro.common.utils.GroupMessageFilterUtil;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
+import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import com.mikuac.shiro.dto.event.message.PrivateMessageEvent;
 import com.mikuac.shiro.enums.MessageEventEnum;
 import com.mikuac.shiro.handler.injection.InjectionHandler;
+import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -26,10 +29,14 @@ import java.util.function.BiConsumer;
 public class MessageEvent {
 
     private EventUtils utils;
+    private ShiroProperties shiroProperties;
+    private BotContainer botContainer;
 
     @Autowired
-    public void setUtils(EventUtils utils) {
+    public void setUtils(EventUtils utils, ShiroProperties shiroProperties, BotContainer botContainer) {
         this.utils = utils;
+        this.shiroProperties = shiroProperties;
+        this.botContainer = botContainer;
     }
 
     private InjectionHandler injection;
@@ -79,6 +86,17 @@ public class MessageEvent {
 
             if (type == MessageEventEnum.GROUP) {
                 GroupMessageEvent event = resp.to(GroupMessageEvent.class);
+                if (shiroProperties.getGroupEventFilter()) {
+                    //当开启群组消息过滤时:
+                    Integer messageId = event.getMessageId();
+                    Long senderId = event.getSender().getUserId();
+                    // 不满足 指定时间内无重复消息 && 发送人并非连接本机的bot实例发送 则忽略消息
+                    if (!GroupMessageFilterUtil.insertMessageId(messageId, shiroProperties.getGroupEventFilterTime())
+                        || (shiroProperties.getGroupSelfBotEventFilter() && botContainer.robots.containsKey(senderId))) {
+                        // 忽略此条消息
+                        return;
+                    }
+                }
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }

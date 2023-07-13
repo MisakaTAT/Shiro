@@ -43,7 +43,7 @@ public class GroupMessageEvent extends MessageEvent {
     public static class GroupSender {
 
         @JSONField(name = "user_id")
-        private String userId;
+        private Long userId;
 
         @JSONField(name = "nickname")
         private String nickname;
