@@ -2,7 +2,7 @@ package com.mikuac.shiro.handler.event;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.EventUtils;
-import com.mikuac.shiro.common.utils.GroupMessageFilterUtil;
+import com.mikuac.shiro.common.utils.GroupMessageFilterUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
@@ -70,7 +70,7 @@ public class MessageEvent {
      * @param resp {@link JSONObject}
      * @param type {@link MessageEventEnum}
      */
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201", "squid:S3776"})
     private void process(Bot bot, JSONObject resp, MessageEventEnum type) {
         try {
             if (type == MessageEventEnum.FRIEND) {
@@ -87,12 +87,12 @@ public class MessageEvent {
             if (type == MessageEventEnum.GROUP) {
                 GroupMessageEvent event = resp.to(GroupMessageEvent.class);
                 if (shiroProperties.getGroupEventFilter()) {
-                    //当开启群组消息过滤时:
+                    // 当开启群组消息过滤时
                     Integer messageId = event.getMessageId();
                     Long senderId = event.getSender().getUserId();
                     // 不满足 指定时间内无重复消息 && 发送人并非连接本机的bot实例发送 则忽略消息
-                    if (!GroupMessageFilterUtil.insertMessageId(messageId, shiroProperties.getGroupEventFilterTime())
-                        || (shiroProperties.getGroupSelfBotEventFilter() && botContainer.robots.containsKey(senderId))) {
+                    if (!GroupMessageFilterUtils.insertMessageId(messageId, shiroProperties.getGroupEventFilterTime())
+                            || (shiroProperties.getGroupSelfBotEventFilter() && botContainer.robots.containsKey(senderId))) {
                         // 忽略此条消息
                         return;
                     }
