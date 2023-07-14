@@ -37,10 +37,12 @@ public class ShiroProperties {
      * 仅过滤群组消息,私聊消息不可能会重复
      */
     private Boolean groupEventFilter = false;
+
     /**
      * 在开启 groupEventFilter 的情况下,此选项控制是否过滤连接到框架的其他实例的qq号发出的消息
      */
     private Boolean groupSelfBotEventFilter = true;
+
     /**
      * 如果开启重复的群聊消息过滤,设定缓存的毫秒数时间
      * 也就是当多少毫秒之后如果受到重复的群聊消息 则剔除
