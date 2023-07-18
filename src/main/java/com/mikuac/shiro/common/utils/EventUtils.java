@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -90,38 +89,23 @@ public class EventUtils {
     /**
      * 推送消息
      *
-     * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
-     * @return {@link ArrayMsg}
+     * @param bot      {@link Bot}
+     * @param resp     {@link JSONObject}
+     * @param arrayMsg {@link ArrayMsg}
      */
-    private List<ArrayMsg> pushAnyMessageEvent(Bot bot, JSONObject resp) {
-        AnyMessageEvent event = resp.to(AnyMessageEvent.class);
-        List<ArrayMsg> arrayMsg = ShiroUtils.rawToArrayMsg(event.getMessage(), event);
-        event.setArrayMsg(arrayMsg);
-        injection.invokeAnyMessage(bot, event);
-        for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
-            if (getPlugin(pluginClass).onAnyMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
-                break;
-            }
-        }
-        return arrayMsg;
-    }
-
-    /**
-     * 推送消息并返回消息链
-     *
-     * @param bot   {@link Bot}
-     * @param resp  {@link JSONObject}
-     * @param event {@link MessageEvent}
-     * @return {@link ArrayMsg}
-     */
-    public List<ArrayMsg> setAnyMessageEvent(Bot bot, JSONObject resp, MessageEvent event) {
+    public void pushAnyMessageEvent(Bot bot, JSONObject resp, List<ArrayMsg> arrayMsg) {
         try {
-            return pushAnyMessageEvent(bot, resp);
+            AnyMessageEvent event = resp.to(AnyMessageEvent.class);
+            event.setArrayMsg(arrayMsg);
+            injection.invokeAnyMessage(bot, event);
+            for (Class<? extends BotPlugin> pluginClass : bot.getPluginList()) {
+                if (getPlugin(pluginClass).onAnyMessage(bot, event) == BotPlugin.MESSAGE_BLOCK) {
+                    break;
+                }
+            }
         } catch (Exception e) {
-            log.error("Push any message event exception: {}", e.getMessage(), e);
+            log.error("Any message event push exception: {}", e.getMessage(), e);
         }
-        return Collections.emptyList();
     }
 
 }

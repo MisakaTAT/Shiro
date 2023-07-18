@@ -78,7 +78,9 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
+                ShiroUtils.rawConvert(event.getMessage(), event);
+                resp.put("message", event.getMessage());
+                utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
                 injection.invokePrivateMessage(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
@@ -86,7 +88,7 @@ public class MessageEvent {
 
             if (type == MessageEventEnum.GROUP) {
                 GroupMessageEvent event = resp.to(GroupMessageEvent.class);
-                if (shiroProperties.getGroupEventFilter()) {
+                if (Boolean.TRUE.equals(shiroProperties.getGroupEventFilter())) {
                     // 当开启群组消息过滤时
                     Integer messageId = event.getMessageId();
                     Long senderId = event.getSender().getUserId();
@@ -100,7 +102,9 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                event.setArrayMsg(utils.setAnyMessageEvent(bot, resp, event));
+                ShiroUtils.rawConvert(event.getMessage(), event);
+                resp.put("message", event.getMessage());
+                utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
                 injection.invokeGroupMessage(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
@@ -111,7 +115,7 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                event.setArrayMsg(ShiroUtils.rawToArrayMsg(event.getMessage(), event));
+                ShiroUtils.rawConvert(event.getMessage(), event);
                 injection.invokeGuildMessage(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
