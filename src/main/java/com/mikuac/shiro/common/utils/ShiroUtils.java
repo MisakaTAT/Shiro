@@ -182,7 +182,7 @@ public class ShiroUtils {
                 Map<String, String> data = new HashMap<>();
                 if (matcher.isEmpty()) {
                     item.setType(MsgTypeEnum.text);
-                    data.put("text", s);
+                    data.put("text", ShiroUtils.unescape(s));
                     item.setData(data);
                 }
                 if (matcher.isPresent()) {
@@ -246,7 +246,7 @@ public class ShiroUtils {
                 item.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(ShiroUtils.escape(v)));
                 builder.append("]");
             } else {
-                builder.append(item.getData().get(MsgTypeEnum.text.toString()));
+                builder.append(ShiroUtils.escape(item.getData().get(MsgTypeEnum.text.toString())));
             }
         }
         return builder.toString();
