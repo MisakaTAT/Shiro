@@ -21,7 +21,7 @@ public class HeartbeatMetaEvent extends MetaEvent {
     private Status status;
 
     @Data
-    private static class Status {
+    public static class Status {
         @JSONField(name = "app_initialized")
         Boolean appInitialized;
 
@@ -43,7 +43,7 @@ public class HeartbeatMetaEvent extends MetaEvent {
     }
 
     @Data
-    private static class StatusStatistics {
+    public static class StatusStatistics {
 
         @JSONField(name = "packet_received")
         Long packet_received;
