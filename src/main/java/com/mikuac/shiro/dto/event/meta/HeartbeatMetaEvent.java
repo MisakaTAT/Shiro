@@ -46,27 +46,29 @@ public class HeartbeatMetaEvent extends MetaEvent {
     public static class StatusStatistics {
 
         @JSONField(name = "packet_received")
-        Long packet_received;
+        Long packetReceived;
 
         @JSONField(name = "packet_sent")
-        Long packet_sent;
+        Long packetSent;
 
         @JSONField(name = "packet_lost")
-        Long packet_lost;
+        Long packetLost;
 
         @JSONField(name = "message_received")
-        Long message_received;
+        Long messageReceived;
 
         @JSONField(name = "message_sent")
-        Long message_sent;
+        Long messageSent;
 
         @JSONField(name = "disconnect_times")
-        Long disconnect_times;
+        Long disconnectTimes;
 
         @JSONField(name = "lost_times")
-        Long lost_times;
+        Long lostTimes;
 
         @JSONField(name = "last_message_time")
-        Long last_message_time;
+        Long lastMessageTime;
+
     }
+
 }

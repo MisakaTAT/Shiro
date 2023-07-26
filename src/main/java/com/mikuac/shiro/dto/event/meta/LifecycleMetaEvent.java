@@ -12,7 +12,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @SuperBuilder(toBuilder = true)
 @EqualsAndHashCode(callSuper = true)
-public class LifecycleMetaEvent extends MetaEvent{
+public class LifecycleMetaEvent extends MetaEvent {
 
     /***
      * just is `enable`, `disable`, `connect`
