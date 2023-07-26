@@ -261,7 +261,12 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 发送好友赞
      */
-    SEND_LIKE("send_like");
+    SEND_LIKE("send_like"),
+    /**
+     * 获取状态
+     */
+    GET_STATUS("get_status"),
+    ;
 
     /**
      * 请求路径
