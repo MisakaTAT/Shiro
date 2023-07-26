@@ -16,6 +16,11 @@ import org.springframework.stereotype.Component;
 public class TaskPoolProperties {
 
     /**
+     * 是否启用shiro的线程池, 无配置或者 true 为开启, 默认值开启
+     */
+    private Boolean enableTaskPool = true;
+
+    /**
      * 线程池名前缀
      */
     private String threadNamePrefix = "ShiroTaskPool-";
