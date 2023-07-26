@@ -5,12 +5,15 @@ import com.mikuac.shiro.common.utils.CommonUtils;
 import com.mikuac.shiro.common.utils.InternalUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.message.*;
+import com.mikuac.shiro.dto.event.meta.HeartbeatMetaEvent;
+import com.mikuac.shiro.dto.event.meta.LifecycleMetaEvent;
 import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
+import com.mikuac.shiro.enums.MetaEventEnum;
 import com.mikuac.shiro.model.HandlerMethod;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -298,6 +301,54 @@ public class InjectionHandler {
                 return;
             }
             invoke(bot, event, GroupAdminHandler.class);
+        });
+    }
+
+    /***
+     * 心跳包
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link HeartbeatMetaEvent}
+     */
+    public void invokeHeartbeat(Bot bot, HeartbeatMetaEvent event) {
+        Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(MetaHandler.class));
+        if (methods.isEmpty()) {
+            return;
+        }
+        Map<Class<?>, Object> params = new HashMap<>();
+        params.put(Bot.class, bot);
+        params.put(HeartbeatMetaEvent.class, event);
+        methods.get().forEach(method -> {
+            MetaHandler anno = method.getMethod().getAnnotation(MetaHandler.class);
+            if (anno.type() != MetaEventEnum.HEARTBEAT) {
+                return;
+            }
+
+            invokeMethod(method, params);
+        });
+    }
+
+    /***
+     * 生命周期
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link LifecycleMetaEvent}
+     */
+    public void invokeLifecycle(Bot bot, LifecycleMetaEvent event) {
+        Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(MetaHandler.class));
+        Map<Class<?>, Object> params = new HashMap<>();
+        if (methods.isEmpty()) {
+            return;
+        }
+        params.put(Bot.class, bot);
+        params.put(LifecycleMetaEvent.class, event);
+        methods.get().forEach(method -> {
+            MetaHandler anno = method.getMethod().getAnnotation(MetaHandler.class);
+            if (anno.type() != MetaEventEnum.LIFECYCLE) {
+                return;
+            }
+
+            invokeMethod(method, params);
         });
     }
 

@@ -71,6 +71,12 @@ public class EventHandler implements ApplicationRunner {
         handlers.put("notice", notice::handler);
         handlers.put("request", request::handler);
 
+        // Register Meta Handler
+        // go-cqhttp meta event post_type: meta_event
+        // onebot meta event type: meta
+        meta.handlers.put("heartbeat", meta::heartbeat);
+        meta.handlers.put("lifecycle", meta::lifecycle);
+
         // Register Message Handler
         message.handlers.put("private", message::friend);
         message.handlers.put("group", message::group);
