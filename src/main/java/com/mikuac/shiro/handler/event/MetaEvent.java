@@ -63,7 +63,6 @@ public class MetaEvent {
      */
     @SuppressWarnings("unsed")
     private void process(Bot bot, JSONObject resp, MetaEventEnum type) {
-
         switch (type) {
             case HEARTBEAT -> {
                 HeartbeatMetaEvent event = resp.to(HeartbeatMetaEvent.class);
@@ -72,6 +71,9 @@ public class MetaEvent {
             case LIFECYCLE -> {
                 LifecycleMetaEvent event = resp.to(LifecycleMetaEvent.class);
                 injection.invokeLifecycle(bot, event);
+            }
+            default -> {
+                // Ignore
             }
         }
     }

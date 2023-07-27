@@ -37,15 +37,15 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 
 # Migration Guide
 
->从 `v2` 版本开始仅支持 `JDK 17+` 与 `SpringBoot 3.0.0+`
-> 
+> 从 `v2` 版本开始仅支持 `JDK 17+` 与 `SpringBoot 3.0.0+`
+>
 >详见项目文档 [v2迁移指南](https://misakatat.github.io/shiro-docs/migration.html)
 
 # QuickStart
 
 ## 依赖引入
 
->引入依赖时请替换版本 `latest` 为 `Maven Central` 实际的最新版本
+> 引入依赖时请替换版本 `latest` 为 `Maven Central` 实际的最新版本
 
 ### Maven
 
@@ -73,7 +73,8 @@ implementation 'com.mikuac:shiro:latest'
 
 ### 注解调用
 
-> 编写 `application.yaml` 配置文件 或参考 [进阶配置文件](https://misakatat.github.io/shiro-docs/advanced.html#进阶配置文件)
+> 编写 `application.yaml` 配置文件
+> 或参考 [进阶配置文件](https://misakatat.github.io/shiro-docs/advanced.html#进阶配置文件)
 
 ```yaml
 server:
@@ -117,7 +118,8 @@ public class ExamplePlugin {
 - 服务端配置文件 `resources/application.yaml` 追加如下内容
 - 插件列表为顺序执行，如果前一个插件返回了 `MESSAGE_BLOCK` 将不会执行后续插件
 
-> 编写 `application.yaml` 配置文件 或参考 [进阶配置文件](https://misakatat.github.io/shiro-docs/advanced.html#进阶配置文件)
+> 编写 `application.yaml` 配置文件
+> 或参考 [进阶配置文件](https://misakatat.github.io/shiro-docs/advanced.html#进阶配置文件)
 
 ```yaml
 server:
@@ -167,15 +169,16 @@ public class ExamplePlugin extends BotPlugin {
 
 # Client
 
-Shiro 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs) 标准协议进行开发，兼容所有支持反向WebSocket的OneBot协议客户端
+Shiro 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs)
+标准协议进行开发，兼容所有支持反向WebSocket的OneBot协议客户端
 
-| 项目地址 | 平台 | 核心作者 | 备注 |
-| --- | --- | --- | --- |
-| [Yiwen-Chan/OneBot-YaYa](https://github.com/Yiwen-Chan/OneBot-YaYa) | [先驱](https://www.xianqubot.com/) | kanri |  |
-| [richardchien/coolq-http-api](https://github.com/richardchien/coolq-http-api) | CKYU | richardchien | 可在 Mirai 平台使用 [mirai-native](https://github.com/iTXTech/mirai-native) 加载 |
-| [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp) | [MiraiGo](https://github.com/Mrs4s/MiraiGo) | Mrs4s |  |
-| [yyuueexxiinngg/OneBot-Mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) | [Mirai](https://github.com/mamoe/mirai) | yyuueexxiinngg |  |
-| [takayama-lily/onebot](https://github.com/takayama-lily/onebot) | [OICQ](https://github.com/takayama-lily/oicq) | takayama |  |
+| 项目地址                                                                           | 平台                                            | 核心作者           | 备注                                                                       |
+|--------------------------------------------------------------------------------|-----------------------------------------------|----------------|--------------------------------------------------------------------------|
+| [Yiwen-Chan/OneBot-YaYa](https://github.com/Yiwen-Chan/OneBot-YaYa)            | [先驱](https://www.xianqubot.com/)              | kanri          |                                                                          |
+| [richardchien/coolq-http-api](https://github.com/richardchien/coolq-http-api)  | CKYU                                          | richardchien   | 可在 Mirai 平台使用 [mirai-native](https://github.com/iTXTech/mirai-native) 加载 |
+| [Mrs4s/go-cqhttp](https://github.com/Mrs4s/go-cqhttp)                          | [MiraiGo](https://github.com/Mrs4s/MiraiGo)   | Mrs4s          |                                                                          |
+| [yyuueexxiinngg/OneBot-Mirai](https://github.com/yyuueexxiinngg/onebot-kotlin) | [Mirai](https://github.com/mamoe/mirai)       | yyuueexxiinngg |                                                                          |
+| [takayama-lily/onebot](https://github.com/takayama-lily/onebot)                | [OICQ](https://github.com/takayama-lily/oicq) | takayama       |                                                                          |
 
 # Contributors
 

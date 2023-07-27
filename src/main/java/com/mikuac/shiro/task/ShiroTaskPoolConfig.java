@@ -31,7 +31,7 @@ public class ShiroTaskPoolConfig {
      * @return {@link ThreadPoolTaskExecutor}
      */
     @Bean("shiroTaskExecutor")
-    @ConditionalOnProperty(value = "shiro.task-pool.enable-task-pool" , havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(value = "shiro.task-pool.enable-task-pool", havingValue = "true", matchIfMissing = true)
     public ThreadPoolTaskExecutor shiroTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(taskPoolProperties.getCorePoolSize());
