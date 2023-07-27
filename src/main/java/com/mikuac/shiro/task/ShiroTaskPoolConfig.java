@@ -2,6 +2,7 @@ package com.mikuac.shiro.task;
 
 import com.mikuac.shiro.properties.TaskPoolProperties;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -30,6 +31,7 @@ public class ShiroTaskPoolConfig {
      * @return {@link ThreadPoolTaskExecutor}
      */
     @Bean("shiroTaskExecutor")
+    @ConditionalOnProperty(value = "shiro.task-pool.enable-task-pool" , havingValue = "true", matchIfMissing = true)
     public ThreadPoolTaskExecutor shiroTaskExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(taskPoolProperties.getCorePoolSize());
