@@ -1130,4 +1130,14 @@ public class Bot {
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
+    /**
+     * 获取状态
+     *
+     * @return result {@link GetStatusResp}
+     */
+    public GetStatusResp getStatus() {
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_STATUS, null);
+        return result != null ? result.to(new TypeReference<ActionData<GetStatusResp>>() {
+        }).getData() : null;
+    }
 }

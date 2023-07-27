@@ -1,8 +1,8 @@
 package com.mikuac.shiro.common.utils;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -17,7 +17,7 @@ public class RegexUtils {
     private RegexUtils() {
     }
 
-    private static final Map<String, Pattern> cache = new HashMap<>();
+    private static final Map<String, Pattern> cache = new ConcurrentHashMap<>();
 
     /**
      * 正则匹配
