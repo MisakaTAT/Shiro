@@ -212,6 +212,7 @@ public class ShiroUtils {
             // 将 array message 转换回 string message
             event.setArrayMsg(arrayMsg);
             event.setMessage(ShiroUtils.arrayMsgToCode(arrayMsg));
+            return;
         }
         // string 格式消息上报
         event.setArrayMsg(rawToArrayMsg(msg));
