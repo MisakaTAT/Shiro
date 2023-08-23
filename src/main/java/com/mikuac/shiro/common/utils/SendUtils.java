@@ -45,7 +45,7 @@ public class SendUtils {
             log.debug("[Action] {}", json);
             condition.await(payload.getIntValue("echo") == 0 ? 1 : timeout, TimeUnit.SECONDS);
         } catch (IOException e) {
-            log.error("Action send exception: {}", e.getMessage(), e);
+            log.error("Send action payload exception: {}", e.getMessage(), e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {

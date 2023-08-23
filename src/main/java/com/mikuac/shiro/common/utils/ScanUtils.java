@@ -59,7 +59,7 @@ public class ScanUtils implements ResourceLoaderAware {
             }
             return classes;
         } catch (Exception e) {
-            log.error("Scan annotation exception: {}", e.getMessage(), e);
+            log.error("An exception occurred during annotation scanning: {}", e.getMessage(), e);
         }
         return classes;
     }

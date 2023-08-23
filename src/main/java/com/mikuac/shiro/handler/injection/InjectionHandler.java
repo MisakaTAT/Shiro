@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 
 /**
@@ -45,11 +44,8 @@ public class InjectionHandler {
         }));
         try {
             method.getMethod().invoke(method.getObject(), objects);
-        } catch (InvocationTargetException e) {
-            Throwable t = e.getTargetException();
-            log.error("Invocation target exception: {}", t.getMessage(), t);
         } catch (Exception e) {
-            log.error("Invoke exception: {}", e.getMessage(), e);
+            log.error("Invoke method exception: {}", e.getMessage(), e);
         }
     }
 

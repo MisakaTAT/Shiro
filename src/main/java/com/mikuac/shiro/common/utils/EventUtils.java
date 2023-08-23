@@ -50,7 +50,7 @@ public class EventUtils {
         try {
             return ctx.getBean(pluginClass);
         } catch (Exception e) {
-            log.warn("Plugin {} skip, Please check @Component annotation", pluginClass.getSimpleName());
+            log.warn("Plugin {} is skipped. Please check the @Component annotation.", pluginClass.getSimpleName());
             return defaultPlugin;
         }
     }
@@ -65,7 +65,7 @@ public class EventUtils {
         try {
             return ctx.getBean(interceptorClass);
         } catch (Exception e) {
-            log.warn("Interceptor {} skip, Please check @Component annotation", interceptorClass.getSimpleName());
+            log.warn("Interceptor {} is skipped. Please check the @Component annotation.", interceptorClass.getSimpleName());
             return ctx.getBean(DefaultBotMessageEventInterceptor.class);
         }
     }
@@ -81,7 +81,7 @@ public class EventUtils {
         try {
             return !getInterceptor(bot.getBotMessageEventInterceptor()).preHandle(bot, event);
         } catch (Exception e) {
-            log.error("Set interceptor exception: {}", e.getMessage(), e);
+            log.error("Interceptor set exception: {}", e.getMessage(), e);
             return true;
         }
     }
@@ -104,7 +104,7 @@ public class EventUtils {
                 }
             }
         } catch (Exception e) {
-            log.error("Any message event push exception: {}", e.getMessage(), e);
+            log.error("An exception occurred while pushing the message event: {}", e.getMessage(), e);
         }
     }
 
