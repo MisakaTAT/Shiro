@@ -1,14 +1,15 @@
 package com.mikuac.shiro.common.utils;
 
+import com.mikuac.shiro.annotation.MessageHandlerFilter;
+import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
 import com.mikuac.shiro.enums.MsgTypeEnum;
+import com.mikuac.shiro.enums.ReplyEnum;
 import com.mikuac.shiro.model.ArrayMsg;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Matcher;
 
 /**
@@ -24,7 +25,7 @@ public class CommonUtils {
      * @param arrayMsg 消息链
      * @param selfId   机器人QQ
      * @param at       {@link AtEnum}
-     * @return 是否通过检查
+     * @return 是否通过检查 true: 未通过(不符合)
      */
     public static boolean atCheck(List<ArrayMsg> arrayMsg, long selfId, AtEnum at) {
         Optional<ArrayMsg> opt = Optional.ofNullable(atParse(arrayMsg, selfId));
@@ -39,6 +40,64 @@ public class CommonUtils {
             }).orElse(false);
             default -> false;
         };
+    }
+
+    /**
+     * 对消息过滤
+     * @param event 消息事件
+     * @param selfId 机器人 QQ
+     * @param filter 过滤器
+     * @return 是否通过校验, true: 满足所有过滤条件, 全部通过
+     */
+    public static boolean allFilterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
+        return !filter.invert() == filterCheck(event, selfId, filter);
+    }
+    private static boolean filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
+
+        if (!filter.cmd().isBlank() && RegexUtils.matcher(filter.cmd(), event.getRawMessage()).isEmpty()) {
+            return false;
+        }
+        if (filter.at() != AtEnum.OFF && atCheck(event.getArrayMsg(), selfId, filter.at())) {
+            return false;
+        }
+        if (!filter.reply().equals(ReplyEnum.OFF)) {
+            Optional<ArrayMsg> reply = event.getArrayMsg().stream().filter(e->e.getType() == MsgTypeEnum.reply).findFirst();
+            boolean flag = switch (filter.reply()) {
+                case OFF -> throw new RuntimeException("exception that cannot be thrown");
+                case NONE -> reply.isEmpty();
+                case REPLY_ALL -> reply.isPresent();
+                case REPLY_ME -> reply.map(e -> e.getData().get("qq").equals(String.valueOf(selfId))).orElse(false);
+                case REPLY_OTHER -> reply.map(e -> !e.getData().get("qq").equals(String.valueOf(selfId))).orElse(false);
+            };
+            if (!flag) return false;
+        }
+        if (filter.types().length != 0) {
+            boolean flag = event
+                    .getArrayMsg()
+                    .stream()
+                    .anyMatch(e->Arrays.binarySearch(filter.types(), e.getType()) != 0);
+            if (!flag) return false;
+        }
+
+        if (filter.groups().length != 0 && CommonEnum.GROUP.value().equals(event.getMessageType())) {
+            GroupMessageEvent groupMessageEvent = (GroupMessageEvent) event;
+            boolean flag = Arrays.binarySearch(filter.groups(), groupMessageEvent.getGroupId()) != 0;
+            if (!flag) return false;
+        }
+
+        if (filter.senders().length != 0) {
+            boolean flag = Arrays.binarySearch(filter.senders(), event.getUserId()) != 0;
+            if (!flag) return false;
+        }
+
+        for (String start : filter.startWith()) {
+            if (!event.getRawMessage().startsWith(start)) return false;
+        }
+        for (String end : filter.endWith()) {
+            if (!event.getRawMessage().endsWith(end)) return false;
+        }
+
+        return true;
     }
 
     /**

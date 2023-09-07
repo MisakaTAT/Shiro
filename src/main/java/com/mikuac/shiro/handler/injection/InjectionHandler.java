@@ -213,6 +213,8 @@ public class InjectionHandler {
             if (CommonEnum.GROUP.value().equals(event.getMessageType()) && CommonUtils.atCheck(event.getArrayMsg(), event.getSelfId(), anno.at())) {
                 return;
             }
+            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
+            if (filter != null && !CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)) return;
             invoke(bot, event, method, anno.cmd(), anno.at());
         });
     }
@@ -233,6 +235,8 @@ public class InjectionHandler {
             if (CommonUtils.atCheck(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), anno.at())) {
                 return;
             }
+            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
+            if (filter != null && !CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)) return;
             invoke(bot, event, method, anno.cmd(), anno.at());
         });
     }
@@ -253,6 +257,8 @@ public class InjectionHandler {
             if (CommonUtils.atCheck(event.getArrayMsg(), event.getSelfId(), anno.at())) {
                 return;
             }
+            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
+            if (filter != null && !CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)) return;
             invoke(bot, event, method, anno.cmd(), anno.at());
         });
     }
@@ -269,6 +275,8 @@ public class InjectionHandler {
             return;
         }
         methods.get().forEach(method -> {
+            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
+            if (filter != null && !CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)) return;
             PrivateMessageHandler anno = method.getMethod().getAnnotation(PrivateMessageHandler.class);
             invoke(bot, event, method, anno.cmd(), AtEnum.OFF);
         });
