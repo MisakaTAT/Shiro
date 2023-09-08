@@ -6,6 +6,8 @@ import com.mikuac.shiro.enums.ReplyEnum;
 
 import java.lang.annotation.*;
 
+import static com.mikuac.shiro.common.utils.CommonUtils.CMD_DEFAULT_VALUE;
+
 /**
  * 此注解仅与 @xxxMessageHandler 一起使用才有效
  */
@@ -21,7 +23,7 @@ public @interface MessageHandlerFilter {
      *
      * @return 正则表达式
      */
-    String cmd() default "";
+    String cmd() default CMD_DEFAULT_VALUE;
 
     /**
      * 检查是否被at

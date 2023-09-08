@@ -4,6 +4,8 @@ import com.mikuac.shiro.enums.AtEnum;
 
 import java.lang.annotation.*;
 
+import static com.mikuac.shiro.common.utils.CommonUtils.CMD_DEFAULT_VALUE;
+
 /**
  * 频道消息事件注解
  *
@@ -20,7 +22,7 @@ public @interface GuildMessageHandler {
      *
      * @return 正则表达式
      */
-    String cmd() default "none";
+    String cmd() default CMD_DEFAULT_VALUE;
 
     /**
      * 检查是否被at

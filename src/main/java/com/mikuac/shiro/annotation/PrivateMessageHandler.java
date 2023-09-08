@@ -2,6 +2,8 @@ package com.mikuac.shiro.annotation;
 
 import java.lang.annotation.*;
 
+import static com.mikuac.shiro.common.utils.CommonUtils.CMD_DEFAULT_VALUE;
+
 /**
  * 私聊事件注解
  *
@@ -18,6 +20,6 @@ public @interface PrivateMessageHandler {
      *
      * @return 正则表达式
      */
-    String cmd() default "none";
+    String cmd() default CMD_DEFAULT_VALUE;
 
 }

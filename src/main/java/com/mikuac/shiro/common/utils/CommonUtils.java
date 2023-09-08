@@ -17,6 +17,7 @@ import java.util.regex.Matcher;
  * @version $Id: $Id
  */
 public class CommonUtils {
+    public static final String CMD_DEFAULT_VALUE = "";
 
     private CommonUtils() {
     }
@@ -160,7 +161,7 @@ public class CommonUtils {
     @SuppressWarnings("squid:S1168")
     public static Map<Class<?>, Object> matcher(String cmd, String msg) {
         Map<Class<?>, Object> params = new HashMap<>();
-        if (!CommonEnum.DEFAULT_CMD.value().equals(cmd)) {
+        if (!CMD_DEFAULT_VALUE.equals(cmd)) {
             Optional<Matcher> match = RegexUtils.matcher(cmd, msg);
             if (match.isEmpty()) {
                 return null;
