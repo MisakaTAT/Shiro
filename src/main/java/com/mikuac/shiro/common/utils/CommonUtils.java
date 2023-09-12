@@ -50,17 +50,35 @@ public class CommonUtils {
      * @param filter 过滤器
      * @return 是否通过校验, true: 满足所有过滤条件, 全部通过
      */
-    public static boolean allFilterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
-        return !filter.invert() == filterCheck(event, selfId, filter);
+    public static CheckResult allFilterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
+        var result = filterCheck(event, selfId, filter);
+        if (filter.invert()) {
+            result.changeResult();
+            // 反转后 cmd 匹配参数失效
+            result.setMatcher(null);
+        }
+        return result;
     }
-    private static boolean filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
+    private static CheckResult filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
+        Optional<Matcher> matcherOptional = Optional.empty();
+        String rawMessage;
+        if (filter.at().equals(AtEnum.OFF)) {
+            rawMessage = msgExtract(event.getMessage(), event.getArrayMsg(), filter.at(), event.getSelfId());
+        } else {
+            rawMessage = event.getMessage();
+        }
 
-        if (!filter.cmd().isBlank() && RegexUtils.matcher(filter.cmd(), event.getRawMessage()).isEmpty()) {
-            return false;
+        // 检查 正则
+        if (!filter.cmd().isBlank() && (matcherOptional = RegexUtils.matcher(filter.cmd(), rawMessage)).isEmpty()) {
+            return new CheckResult();
         }
-        if (filter.at() != AtEnum.OFF && atCheck(event.getArrayMsg(), selfId, filter.at())) {
-            return false;
+
+        // 检查 @at
+        if (CommonEnum.GROUP.value().equals(event.getMessageType()) && filter.at() != AtEnum.OFF && atCheck(event.getArrayMsg(), selfId, filter.at())) {
+            return new CheckResult();
         }
+
+        // 检查 reply
         if (!filter.reply().equals(ReplyEnum.OFF)) {
             Optional<ArrayMsg> reply = event.getArrayMsg().stream().filter(e->e.getType() == MsgTypeEnum.reply).findFirst();
             boolean flag = switch (filter.reply()) {
@@ -70,35 +88,42 @@ public class CommonUtils {
                 case REPLY_ME -> reply.map(e -> e.getData().get("qq").equals(String.valueOf(selfId))).orElse(false);
                 case REPLY_OTHER -> reply.map(e -> !e.getData().get("qq").equals(String.valueOf(selfId))).orElse(false);
             };
-            if (!flag) return false;
+            if (!flag) return new CheckResult();
         }
+
+        // 检查包含类型
         if (filter.types().length != 0) {
             boolean flag = event
                     .getArrayMsg()
                     .stream()
                     .anyMatch(e->Arrays.binarySearch(filter.types(), e.getType()) != 0);
-            if (!flag) return false;
+            if (!flag) return new CheckResult();
         }
 
+        // 检查群消息来源(没使用过频道消息, 所以不知道频道消息的来源如何处理)
         if (filter.groups().length != 0 && CommonEnum.GROUP.value().equals(event.getMessageType())) {
             GroupMessageEvent groupMessageEvent = (GroupMessageEvent) event;
             boolean flag = Arrays.binarySearch(filter.groups(), groupMessageEvent.getGroupId()) != 0;
-            if (!flag) return false;
+            if (!flag) return new CheckResult();
         }
 
+        // 检查发送者
         if (filter.senders().length != 0) {
             boolean flag = Arrays.binarySearch(filter.senders(), event.getUserId()) != 0;
-            if (!flag) return false;
+            if (!flag) return new CheckResult();
         }
 
+        // 前缀匹配
         for (String start : filter.startWith()) {
-            if (!event.getRawMessage().startsWith(start)) return false;
-        }
-        for (String end : filter.endWith()) {
-            if (!event.getRawMessage().endsWith(end)) return false;
+            if (!rawMessage.startsWith(start)) return new CheckResult();
         }
 
-        return true;
+        // 后缀匹配
+        for (String end : filter.endWith()) {
+            if (!rawMessage.endsWith(end)) return new CheckResult();
+        }
+
+        return new CheckResult().setResult(true).setMatcher(matcherOptional.orElse(null));
     }
 
     /**
