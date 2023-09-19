@@ -203,18 +203,7 @@ public class InjectionHandler {
      */
     public void invokeAnyMessage(Bot bot, AnyMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(AnyMessageHandler.class));
-        if (methods.isEmpty()) {
-            return;
-        }
-        methods.get().forEach(method -> {
-            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
-            CheckResult result;
-            if (Objects.isNull(filter)) {
-                invoke(bot, event, method, null);
-            } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
-                invoke(bot, event, method, result.getMatcher());
-            }
-        });
+        invokeMessage(bot, event, methods);
     }
 
     /**
@@ -225,18 +214,7 @@ public class InjectionHandler {
      */
     public void invokeGuildMessage(Bot bot, GuildMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(GuildMessageHandler.class));
-        if (methods.isEmpty()) {
-            return;
-        }
-        methods.get().forEach(method -> {
-            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
-            CheckResult result;
-            if (Objects.isNull(filter)) {
-                invoke(bot, event, method, null);
-            } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
-                invoke(bot, event, method, result.getMatcher());
-            }
-        });
+        invokeMessage(bot, event, methods);
     }
 
     /**
@@ -247,18 +225,7 @@ public class InjectionHandler {
      */
     public void invokeGroupMessage(Bot bot, GroupMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(GroupMessageHandler.class));
-        if (methods.isEmpty()) {
-            return;
-        }
-        methods.get().forEach(method -> {
-            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
-            CheckResult result;
-            if (Objects.isNull(filter)) {
-                invoke(bot, event, method, null);
-            } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
-                invoke(bot, event, method, result.getMatcher());
-            }
-        });
+        invokeMessage(bot, event, methods);
     }
 
     /**
@@ -269,10 +236,20 @@ public class InjectionHandler {
      */
     public void invokePrivateMessage(Bot bot, PrivateMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(PrivateMessageHandler.class));
-        if (methods.isEmpty()) {
+        invokeMessage(bot, event, methods);
+    }
+
+    /**
+     * 处理消息的过滤器于消息的分发
+     * @param bot {@link Bot}
+     * @param event {@link MessageEvent}
+     * @param handlerMethods 消息处理方法
+     */
+    public void invokeMessage(Bot bot,MessageEvent event , Optional<List<HandlerMethod>> handlerMethods) {
+        if (handlerMethods.isEmpty()) {
             return;
         }
-        methods.get().forEach(method -> {
+        handlerMethods.get().forEach(method -> {
             MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
             CheckResult result;
             if (Objects.isNull(filter)) {
