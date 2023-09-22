@@ -8,7 +8,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("io.freefair.lombok") version "8.3"
-    id("org.springframework.boot") version "3.1.3"
+    id("org.springframework.boot") version "3.1.4"
     id("io.spring.dependency-management") version "1.1.3"
 }
 
@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    api("com.alibaba.fastjson2:fastjson2:2.0.39")
+    api("com.alibaba.fastjson2:fastjson2:2.0.40")
     api("org.springframework.boot:spring-boot-starter-websocket")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
