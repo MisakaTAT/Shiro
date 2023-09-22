@@ -1,6 +1,7 @@
 package com.mikuac.shiro.handler.injection;
 
 import com.mikuac.shiro.annotation.*;
+import com.mikuac.shiro.common.utils.CheckResult;
 import com.mikuac.shiro.common.utils.CommonUtils;
 import com.mikuac.shiro.common.utils.InternalUtils;
 import com.mikuac.shiro.core.Bot;
@@ -11,7 +12,6 @@ import com.mikuac.shiro.dto.event.notice.*;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
 import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import com.mikuac.shiro.enums.AdminNoticeTypeEnum;
-import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
 import com.mikuac.shiro.enums.MetaEventEnum;
 import com.mikuac.shiro.model.HandlerMethod;
@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
 import java.util.*;
+import java.util.regex.Matcher;
 
 /**
  * <p>InjectionHandler class.</p>
@@ -60,16 +61,13 @@ public class InjectionHandler {
         methods.get().forEach(method -> invokeMethod(method, params));
     }
 
-    private <T> void invoke(Bot bot, T event, HandlerMethod method, String cmd, AtEnum at) {
-        Map<Class<?>, Object> params;
+    private <T> void invoke(Bot bot, T event, HandlerMethod method, Matcher matcher) {
+        Map<Class<?>, Object> params = new HashMap<>();
         MessageEvent e = (MessageEvent) event;
-        if (at.equals(AtEnum.OFF)) {
-            params = CommonUtils.matcher(cmd, e.getMessage());
-        } else {
-            params = CommonUtils.matcher(cmd, CommonUtils.msgExtract(e.getMessage(), e.getArrayMsg(), at, e.getSelfId()));
-        }
-        if (params == null) {
-            return;
+
+        // 此处逻辑修改,因为如果包含 cmd 但是校验未通过, 在之前就被拦截掉了, 所以到达此处若matcher 为空则说明 cmd 参数未填写, 不影响参数传递
+        if (matcher != null) {
+            params.put(Matcher.class, matcher);
         }
         params.put(Bot.class, bot);
         params.put(event.getClass(), event);
@@ -205,16 +203,7 @@ public class InjectionHandler {
      */
     public void invokeAnyMessage(Bot bot, AnyMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(AnyMessageHandler.class));
-        if (methods.isEmpty()) {
-            return;
-        }
-        methods.get().forEach(method -> {
-            AnyMessageHandler anno = method.getMethod().getAnnotation(AnyMessageHandler.class);
-            if (CommonEnum.GROUP.value().equals(event.getMessageType()) && CommonUtils.atCheck(event.getArrayMsg(), event.getSelfId(), anno.at())) {
-                return;
-            }
-            invoke(bot, event, method, anno.cmd(), anno.at());
-        });
+        invokeMessage(bot, event, methods);
     }
 
     /**
@@ -225,16 +214,7 @@ public class InjectionHandler {
      */
     public void invokeGuildMessage(Bot bot, GuildMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(GuildMessageHandler.class));
-        if (methods.isEmpty()) {
-            return;
-        }
-        methods.get().forEach(method -> {
-            GuildMessageHandler anno = method.getMethod().getAnnotation(GuildMessageHandler.class);
-            if (CommonUtils.atCheck(event.getArrayMsg(), Long.parseLong(event.getSelfTinyId()), anno.at())) {
-                return;
-            }
-            invoke(bot, event, method, anno.cmd(), anno.at());
-        });
+        invokeMessage(bot, event, methods);
     }
 
     /**
@@ -245,16 +225,7 @@ public class InjectionHandler {
      */
     public void invokeGroupMessage(Bot bot, GroupMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(GroupMessageHandler.class));
-        if (methods.isEmpty()) {
-            return;
-        }
-        methods.get().forEach(method -> {
-            GroupMessageHandler anno = method.getMethod().getAnnotation(GroupMessageHandler.class);
-            if (CommonUtils.atCheck(event.getArrayMsg(), event.getSelfId(), anno.at())) {
-                return;
-            }
-            invoke(bot, event, method, anno.cmd(), anno.at());
-        });
+        invokeMessage(bot, event, methods);
     }
 
     /**
@@ -265,12 +236,27 @@ public class InjectionHandler {
      */
     public void invokePrivateMessage(Bot bot, PrivateMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(PrivateMessageHandler.class));
-        if (methods.isEmpty()) {
+        invokeMessage(bot, event, methods);
+    }
+
+    /**
+     * 处理消息的过滤器于消息的分发
+     * @param bot {@link Bot}
+     * @param event {@link MessageEvent}
+     * @param handlerMethods 消息处理方法
+     */
+    public void invokeMessage(Bot bot,MessageEvent event , Optional<List<HandlerMethod>> handlerMethods) {
+        if (handlerMethods.isEmpty()) {
             return;
         }
-        methods.get().forEach(method -> {
-            PrivateMessageHandler anno = method.getMethod().getAnnotation(PrivateMessageHandler.class);
-            invoke(bot, event, method, anno.cmd(), AtEnum.OFF);
+        handlerMethods.get().forEach(method -> {
+            MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
+            CheckResult result;
+            if (Objects.isNull(filter)) {
+                invoke(bot, event, method, null);
+            } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
+                invoke(bot, event, method, result.getMatcher());
+            }
         });
     }
 
