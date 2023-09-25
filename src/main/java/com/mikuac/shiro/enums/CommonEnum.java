@@ -1,7 +1,5 @@
 package com.mikuac.shiro.enums;
 
-import static com.mikuac.shiro.common.utils.CommonUtils.CMD_DEFAULT_VALUE;
-
 /**
  * <p>CommonEnum class.</p>
  *

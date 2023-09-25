@@ -63,9 +63,7 @@ public class InjectionHandler {
 
     private <T> void invoke(Bot bot, T event, HandlerMethod method, Matcher matcher) {
         Map<Class<?>, Object> params = new HashMap<>();
-        MessageEvent e = (MessageEvent) event;
-
-        // 此处逻辑修改,因为如果包含 cmd 但是校验未通过, 在之前就被拦截掉了, 所以到达此处若matcher 为空则说明 cmd 参数未填写, 不影响参数传递
+        // 此处逻辑修改，因为如果包含 cmd 但是校验未通过，在之前就被拦截掉了，所以到达此处若 matcher 为空则说明 cmd 参数未填写，不影响参数传递。
         if (matcher != null) {
             params.put(Matcher.class, matcher);
         }
@@ -241,11 +239,12 @@ public class InjectionHandler {
 
     /**
      * 处理消息的过滤器于消息的分发
-     * @param bot {@link Bot}
-     * @param event {@link MessageEvent}
+     *
+     * @param bot            {@link Bot}
+     * @param event          {@link MessageEvent}
      * @param handlerMethods 消息处理方法
      */
-    public void invokeMessage(Bot bot,MessageEvent event , Optional<List<HandlerMethod>> handlerMethods) {
+    public void invokeMessage(Bot bot, MessageEvent event, Optional<List<HandlerMethod>> handlerMethods) {
         if (handlerMethods.isEmpty()) {
             return;
         }

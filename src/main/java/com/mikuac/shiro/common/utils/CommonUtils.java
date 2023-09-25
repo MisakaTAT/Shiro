@@ -7,6 +7,7 @@ import com.mikuac.shiro.enums.AtEnum;
 import com.mikuac.shiro.enums.CommonEnum;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.enums.ReplyEnum;
+import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.model.ArrayMsg;
 
 import java.util.*;
@@ -45,7 +46,8 @@ public class CommonUtils {
 
     /**
      * 对消息过滤
-     * @param event 消息事件
+     *
+     * @param event  消息事件
      * @param selfId 机器人 QQ
      * @param filter 过滤器
      * @return 是否通过校验, true: 满足所有过滤条件, 全部通过
@@ -59,6 +61,7 @@ public class CommonUtils {
         }
         return result;
     }
+
     private static CheckResult filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
         Optional<Matcher> matcherOptional = Optional.empty();
         String rawMessage;
@@ -80,9 +83,9 @@ public class CommonUtils {
 
         // 检查 reply
         if (!filter.reply().equals(ReplyEnum.OFF)) {
-            Optional<ArrayMsg> reply = event.getArrayMsg().stream().filter(e->e.getType() == MsgTypeEnum.reply).findFirst();
+            Optional<ArrayMsg> reply = event.getArrayMsg().stream().filter(e -> e.getType() == MsgTypeEnum.reply).findFirst();
             boolean flag = switch (filter.reply()) {
-                case OFF -> throw new RuntimeException("exception that cannot be thrown");
+                case OFF -> throw new ShiroException("exception that cannot be thrown");
                 case NONE -> reply.isEmpty();
                 case REPLY_ALL -> reply.isPresent();
                 case REPLY_ME -> reply.map(e -> e.getData().get("qq").equals(String.valueOf(selfId))).orElse(false);
@@ -96,7 +99,7 @@ public class CommonUtils {
             boolean flag = event
                     .getArrayMsg()
                     .stream()
-                    .anyMatch(e->Arrays.binarySearch(filter.types(), e.getType()) != 0);
+                    .anyMatch(e -> Arrays.binarySearch(filter.types(), e.getType()) != 0);
             if (!flag) return new CheckResult();
         }
 

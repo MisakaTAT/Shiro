@@ -50,7 +50,6 @@ public @interface MessageHandlerFilter {
      * 消息中包含某一类型的
      * 注0: reply 如果设为 REPLY_XXX, types 默认增加一条额外的 type.reply, types 为空不受影响
      * 注1: 若 reply 为 NONE, types 包含 type.reply, 则本规则的 type.reply 条件无效
-     *
      */
     MsgTypeEnum[] types() default {};
 
@@ -90,4 +89,5 @@ public @interface MessageHandlerFilter {
      * @return true 则反转
      */
     boolean invert() default false;
+
 }
