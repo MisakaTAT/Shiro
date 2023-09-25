@@ -250,10 +250,10 @@ public class InjectionHandler {
         }
         handlerMethods.get().forEach(method -> {
             MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
-            CheckResult result;
+            CheckResult result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter);
             if (Objects.isNull(filter)) {
                 invoke(bot, event, method, null);
-            } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
+            } else if (result.isResult()) {
                 invoke(bot, event, method, result.getMatcher());
             }
         });
