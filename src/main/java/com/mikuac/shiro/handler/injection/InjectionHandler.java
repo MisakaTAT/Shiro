@@ -244,16 +244,17 @@ public class InjectionHandler {
      * @param event          {@link MessageEvent}
      * @param handlerMethods 消息处理方法
      */
+    @SuppressWarnings("squid:S1121")
     public void invokeMessage(Bot bot, MessageEvent event, Optional<List<HandlerMethod>> handlerMethods) {
         if (handlerMethods.isEmpty()) {
             return;
         }
         handlerMethods.get().forEach(method -> {
             MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
-            CheckResult result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter);
+            CheckResult result;
             if (Objects.isNull(filter)) {
                 invoke(bot, event, method, null);
-            } else if (result.isResult()) {
+            } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
                 invoke(bot, event, method, result.getMatcher());
             }
         });

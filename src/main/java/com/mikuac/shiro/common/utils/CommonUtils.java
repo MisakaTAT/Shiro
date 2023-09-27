@@ -53,7 +53,7 @@ public class CommonUtils {
      * @return 是否通过校验, true: 满足所有过滤条件, 全部通过
      */
     public static CheckResult allFilterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
-        var result = filterCheck(event, selfId, filter);
+        CheckResult result = filterCheck(event, selfId, filter);
         if (filter.invert()) {
             result.changeResult();
             // 反转后 cmd 匹配参数失效
@@ -62,6 +62,7 @@ public class CommonUtils {
         return result;
     }
 
+    @SuppressWarnings({"squid:S3776", "squid:S1121"})
     private static CheckResult filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
         Optional<Matcher> matcherOptional = Optional.empty();
         String rawMessage;
