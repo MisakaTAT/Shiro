@@ -90,10 +90,9 @@ public class MessageEvent {
                 GroupMessageEvent event = resp.to(GroupMessageEvent.class);
                 if (Boolean.TRUE.equals(shiroProperties.getGroupEventFilter())) {
                     // 当开启群组消息过滤时
-                    Integer messageId = event.getMessageId();
                     Long senderId = event.getSender().getUserId();
                     // 不满足 指定时间内无重复消息 && 发送人并非连接本机的bot实例发送 则忽略消息
-                    if (!GroupMessageFilterUtils.insertMessageId(messageId, shiroProperties.getGroupEventFilterTime())
+                    if (!GroupMessageFilterUtils.insertMessage(event, shiroProperties.getGroupEventFilterTime())
                             || (shiroProperties.getGroupSelfBotEventFilter() && botContainer.robots.containsKey(senderId))) {
                         // 忽略此条消息
                         return;
