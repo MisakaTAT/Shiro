@@ -44,6 +44,9 @@ public class GroupUploadNoticeEvent extends NoticeEvent {
         @JSONField(name = "busid")
         private Long busid;
 
+        @JSONField(name = "url")
+        private String url;
+
     }
 
 }
