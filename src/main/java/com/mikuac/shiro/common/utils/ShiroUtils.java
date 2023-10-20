@@ -100,10 +100,14 @@ public class ShiroUtils {
 
     /**
      * 获取用户昵称
+     * 该接口已经无法使用
      *
      * @param userId QQ号
      * @return 用户昵称
+     * @deprecated
      */
+    @Deprecated(since = "2.1.3")
+    @SuppressWarnings("squid:S1133")
     public static String getNickname(long userId) {
         String url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
         String result = NetUtils.asyncGet(url, 10);

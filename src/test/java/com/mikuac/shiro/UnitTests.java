@@ -124,13 +124,6 @@ class UnitTests {
     }
 
     @Test
-    void testGetNickname() {
-        val nickname = ShiroUtils.getNickname(1140667337L);
-        assertNotNull(nickname);
-        assertEquals("Zero", nickname);
-    }
-
-    @Test
     void testDebugMode() {
         assertTrue(log.isDebugEnabled());
     }
@@ -273,5 +266,12 @@ class UnitTests {
         assertNull(actual3);
     }
 
+    @Test
+    void testBinarySearch() {
+        long[] groups = {987654321, 123456789};
+        assertFalse(Arrays.binarySearch(groups, 123456789) >= 0);
+        Arrays.sort(groups);
+        assertTrue(Arrays.binarySearch(groups, 123456789) >= 0);
+    }
 
 }

@@ -100,20 +100,24 @@ public class CommonUtils {
             boolean flag = event
                     .getArrayMsg()
                     .stream()
-                    .anyMatch(e -> Arrays.binarySearch(filter.types(), e.getType()) != -1);
+                    .anyMatch(e -> Arrays.binarySearch(filter.types(), e.getType()) >= 0);
             if (!flag) return new CheckResult();
         }
 
         // 检查群消息来源(没使用过频道消息, 所以不知道频道消息的来源如何处理)
         if (filter.groups().length != 0 && CommonEnum.GROUP.value().equals(event.getMessageType())) {
             GroupMessageEvent groupMessageEvent = (GroupMessageEvent) event;
-            boolean flag = Arrays.binarySearch(filter.groups(), groupMessageEvent.getGroupId()) != -1;
+            long[] groups = filter.groups();
+            Arrays.sort(groups);
+            boolean flag = Arrays.binarySearch(groups, groupMessageEvent.getGroupId()) >= 0;
             if (!flag) return new CheckResult();
         }
 
         // 检查发送者
         if (filter.senders().length != 0) {
-            boolean flag = Arrays.binarySearch(filter.senders(), event.getUserId()) != -1;
+            long[] senders = filter.senders();
+            Arrays.sort(senders);
+            boolean flag = Arrays.binarySearch(senders, event.getUserId()) >= 0;
             if (!flag) return new CheckResult();
         }
 
