@@ -274,4 +274,12 @@ class UnitTests {
         assertTrue(Arrays.binarySearch(groups, 123456789) >= 0);
     }
 
+    @Test
+    void testCacheUtils() {
+        long[] groups = {987654321, 123456789};
+        val cache = new CacheUtils();
+        assertFalse(Arrays.binarySearch(groups, 123456789) >= 0);
+        assertTrue(Arrays.binarySearch(cache.getSortedGroups(groups), 123456789) >= 0);
+    }
+
 }

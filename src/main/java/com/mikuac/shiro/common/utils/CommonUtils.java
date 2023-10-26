@@ -18,7 +18,10 @@ import java.util.regex.Matcher;
  * @version $Id: $Id
  */
 public class CommonUtils {
+
     public static final String CMD_DEFAULT_VALUE = "";
+
+    private static final CacheUtils cache = new CacheUtils();
 
     private CommonUtils() {
     }
@@ -107,9 +110,7 @@ public class CommonUtils {
         // 检查群消息来源(没使用过频道消息, 所以不知道频道消息的来源如何处理)
         if (filter.groups().length != 0 && CommonEnum.GROUP.value().equals(event.getMessageType())) {
             GroupMessageEvent groupMessageEvent = (GroupMessageEvent) event;
-            long[] groups = filter.groups();
-            Arrays.sort(groups);
-            boolean flag = Arrays.binarySearch(groups, groupMessageEvent.getGroupId()) >= 0;
+            boolean flag = Arrays.binarySearch(cache.getSortedGroups(filter.groups()), groupMessageEvent.getGroupId()) >= 0;
             if (!flag) return new CheckResult();
         }
 
@@ -117,7 +118,7 @@ public class CommonUtils {
         if (filter.senders().length != 0) {
             long[] senders = filter.senders();
             Arrays.sort(senders);
-            boolean flag = Arrays.binarySearch(senders, event.getUserId()) >= 0;
+            boolean flag = Arrays.binarySearch(cache.getSortedSenders(filter.senders()), event.getUserId()) >= 0;
             if (!flag) return new CheckResult();
         }
 
