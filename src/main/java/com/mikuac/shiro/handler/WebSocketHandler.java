@@ -44,7 +44,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private static final String SESSION_STATUS_KEY        = "session_status";
 
     public enum SessionStatus {
-        Online, Offline, Die
+        /**
+         * 正常在线
+         */
+        Online,
+        /**
+         * 断开连接, 等待重连状态
+         */
+        Offline,
+        /**
+         * 断开连接, 不会恢复
+         */
+        Die
     }
 
     private final EventHandler eventHandler;
@@ -266,8 +277,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
         bot.setSession(session);
     }
 
-    public static SessionStatus getSessionStatus(Bot bot) {
-        var sessionContext = bot.getSession().getAttributes();
+    public static SessionStatus getSessionStatus(WebSocketSession session) {
+        var sessionContext = session.getAttributes();
         Object statusObj = sessionContext.getOrDefault(SESSION_STATUS_KEY, SessionStatus.Die);
         if (statusObj instanceof SessionStatus status) {
             return status;

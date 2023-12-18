@@ -16,4 +16,21 @@ public class ShiroException extends RuntimeException {
         super(cause);
     }
 
+    /**
+     * session 断联状态, 但是会尝试恢复.
+     */
+    public static class SendMessageException extends ShiroException {
+        public SendMessageException() {
+            super("session been closed, but you can attempt again later.");
+        }
+    }
+
+    /**
+     * session 断联, 且未恢复.
+     */
+    public static class SessionCloseException extends ShiroException {
+        public SessionCloseException() {
+            super("session been closed.");
+        }
+    }
 }
