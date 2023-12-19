@@ -175,13 +175,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     sessionContext.clear();
                     session.close();
                 } else {
-                    this.handleFirstConnect(xSelfId, session);
+                    var bot = this.handleFirstConnect(xSelfId, session);
+                    botContainer.robots.put(xSelfId, bot);
                 }
                 return;
             }
             botContainer.robots.compute(xSelfId, (id, bot) -> {
                 if (Objects.isNull(bot)) {
-                    this.handleFirstConnect(xSelfId, session);
+                    bot = this.handleFirstConnect(xSelfId, session);
                 } else {
                     this.handleReConnect(bot, xSelfId, session);
                 }
@@ -244,13 +245,13 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @SneakyThrows
-    private void handleFirstConnect(long xSelfId, WebSocketSession session){
+    private Bot handleFirstConnect(long xSelfId, WebSocketSession session){
         // if the session has never connected
         // or has been handled
         log.info("Account {} connected", xSelfId);
         var bot = botFactory.createBot(xSelfId, session);
         coreEvent.online(bot);
-        botContainer.robots.put(xSelfId, bot);
+        return bot;
     }
 
     @SneakyThrows
