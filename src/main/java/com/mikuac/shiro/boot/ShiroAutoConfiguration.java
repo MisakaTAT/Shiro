@@ -42,6 +42,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
     @Autowired
     public void setShiroProperties(ShiroProperties shiroProperties) {
         this.shiroProperties = shiroProperties;
+        WebSocketHandler.setWaitWebsocketConnect(shiroProperties.getWaitBotConnect());
     }
 
     private WebSocketHandler webSocketHandler;
