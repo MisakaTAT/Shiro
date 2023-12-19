@@ -23,7 +23,10 @@ import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.concurrent.*;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 2021/7/16.
@@ -39,9 +42,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
     private static final String FAILED_STATUS = "failed";
 
     private static final String RESULT_STATUS_KEY = "status";
-    private static final String FUTURE_KEY        = "future";
+    private static final String FUTURE_KEY = "future";
     private static int WAIT_WEBSOCKET_CONNECT = 0;
-    private static final String SESSION_STATUS_KEY        = "session_status";
+    private static final String SESSION_STATUS_KEY = "session_status";
 
     public enum SessionStatus {
         /**
@@ -157,12 +160,12 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 session.close();
                 return;
             }
-            if (! checkToken(session)) {
+            if (!checkToken(session)) {
                 log.error("Access token invalid");
                 session.close();
                 return;
             }
-            if (! coreEvent.session(session)) {
+            if (!coreEvent.session(session)) {
                 session.close();
                 return;
             }
@@ -245,7 +248,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @SneakyThrows
-    private Bot handleFirstConnect(long xSelfId, WebSocketSession session){
+    private Bot handleFirstConnect(long xSelfId, WebSocketSession session) {
         // if the session has never connected
         // or has been handled
         log.info("Account {} connected", xSelfId);
@@ -255,7 +258,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     @SneakyThrows
-    private void handleReConnect(Bot bot, long xSelfId, WebSocketSession session){
+    private void handleReConnect(Bot bot, long xSelfId, WebSocketSession session) {
         // this bot has connected before but was interrupted, updating its session
         // or handling simultaneous connections from different instances of the same account.
         log.info("Account {} reconnected", xSelfId);
