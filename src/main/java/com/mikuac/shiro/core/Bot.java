@@ -144,6 +144,26 @@ public class Bot {
     }
 
     /**
+     * 发送群消息
+     *
+     * @param groupId    群号
+     * @param userId     调用者的QQ号 , 在QQ开放平台中用于设定@对象，如果不设置此参数会导致: 在bot返回前如果被不同用户多次调用，只会@最后一次调用的用户
+     * @param msg        要发送的内容
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    public ActionData<MsgId> sendGroupMsg(long groupId, long userId, String msg, boolean autoEscape) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
+
+    /**
      * 获取频道成员列表
      * 由于频道人数较多(数万), 请尽量不要全量拉取成员列表, 这将会导致严重的性能问题
      * 尽量使用 getGuildMemberProfile 接口代替全量拉取
