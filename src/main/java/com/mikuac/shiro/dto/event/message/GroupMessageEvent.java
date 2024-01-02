@@ -27,6 +27,9 @@ public class GroupMessageEvent extends MessageEvent {
     @JSONField(name = "sub_type")
     private String subType;
 
+    @JSONField(name = "is_binded_group_id")
+    private Boolean isBindedGroupId;
+
     @JSONField(name = "group_id")
     private Long groupId;
 
@@ -35,6 +38,11 @@ public class GroupMessageEvent extends MessageEvent {
 
     @JSONField(name = "sender")
     private GroupSender sender;
+
+
+
+    @JSONField(name = "is_binded_user_id")
+    private Boolean isBindedUserId;
 
     /**
      * sender信息
