@@ -264,7 +264,7 @@ public class ShiroUtils {
      * @param name     发送者显示名字
      * @param contents 消息列表，每个元素视为一个消息节点
      *                 <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
-     * @return 转发消息
+     * @return 消息结构
      */
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
@@ -275,6 +275,57 @@ public class ShiroUtils {
             data.put("name", name);
             data.put("uin", uin);
             data.put("content", msg);
+            node.put("data", data);
+            nodes.add(node);
+        });
+        return nodes;
+    }
+
+    /**
+     * 兼容 Shamrock
+     * 生成自定义合并转发消息
+     *
+     * @param contents 消息列表，每个元素视为一个消息节点
+     * @return 消息结构
+     */
+    @SuppressWarnings("Duplicates")
+    public static List<Map<String, Object>> generateForwardMsg(List<String> contents) {
+        List<Map<String, Object>> nodes = new ArrayList<>();
+        contents.forEach(msg -> {
+            Map<String, Object> node = new HashMap<>();
+            node.put("type", "node");
+            Map<String, Object> data = new HashMap<>();
+            data.put("content", msg);
+            node.put("data", data);
+            nodes.add(node);
+        });
+        return nodes;
+    }
+
+    /**
+     * 兼容 Shamrock
+     * 生成引用消息和自定义消息混合合并转发
+     *
+     * @param contents   消息列表，每个元素视为一个消息节点
+     * @param quoteMsgId 引用的消息ID
+     * @return 消息结构
+     */
+    @SuppressWarnings("Duplicates")
+    public static List<Map<String, Object>> generateForwardMsg(List<String> contents, List<String> quoteMsgId) {
+        List<Map<String, Object>> nodes = new ArrayList<>();
+        contents.forEach(msg -> {
+            Map<String, Object> node = new HashMap<>();
+            node.put("type", "node");
+            Map<String, Object> data = new HashMap<>();
+            data.put("content", msg);
+            node.put("data", data);
+            nodes.add(node);
+        });
+        quoteMsgId.forEach(id -> {
+            Map<String, Object> node = new HashMap<>();
+            node.put("type", "node");
+            Map<String, Object> data = new HashMap<>();
+            data.put("id", id);
             node.put("data", data);
             nodes.add(node);
         });
