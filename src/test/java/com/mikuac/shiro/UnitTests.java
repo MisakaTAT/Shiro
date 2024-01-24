@@ -75,6 +75,15 @@ class UnitTests {
     }
 
     @Test
+    void testRawToArrayMsg3() {
+        val msg = "[CQ:at,qq=1122334455]测试消息1[CQ:1111,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
+        val expected = "[CQ:at,qq=1122334455]测试消息1[CQ:unknown,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
+        List<ArrayMsg> arrayMsgList = ShiroUtils.rawToArrayMsg(msg);
+        val actual = ShiroUtils.arrayMsgToCode(arrayMsgList);
+        assertEquals(expected, actual);
+    }
+
+    @Test
     void testMsgUtils() {
         val build = MsgUtils.builder().at(1122334455L).text("Hello").img("https://test.com/1.jpg");
         val msg = "[CQ:at,qq=1122334455]Hello[CQ:image,file=https://test.com/1.jpg]";

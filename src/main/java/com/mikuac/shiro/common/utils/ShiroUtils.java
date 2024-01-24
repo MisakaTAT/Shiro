@@ -190,7 +190,7 @@ public class ShiroUtils {
                     item.setData(data);
                 }
                 if (matcher.isPresent()) {
-                    MsgTypeEnum type = MsgTypeEnum.valueOf(matcher.get().group(1));
+                    MsgTypeEnum type = MsgTypeEnum.typeOf(matcher.get().group(1));
                     String[] params = matcher.get().group(2).split(",");
                     item.setType(type);
                     Arrays.stream(params).filter(args -> !args.isEmpty()).forEach(args -> {
