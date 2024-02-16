@@ -7,7 +7,7 @@ plugins {
     signing
     `java-library`
     `maven-publish`
-    id("io.freefair.lombok") version "8.4"
+    id("io.freefair.lombok") version "8.6"
     id("org.springframework.boot") version "3.2.2"
     id("io.spring.dependency-management") version "1.1.4"
 }
