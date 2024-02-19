@@ -15,7 +15,12 @@ public class GroupMessageFilterUtils {
 
     // 插入消息并指定缓存时间
     public static boolean insertMessage(GroupMessageEvent messageEvent, int cacheTime) {
-        String md5 = DigestUtils.md5DigestAsHex(messageEvent.getRawMessage().getBytes(StandardCharsets.UTF_8));
+        // 消息缓存
+        ByteBuffer buffer = ByteBuffer.wrap(messageEvent.getRawMessage().getBytes(StandardCharsets.UTF_8));
+        // 针对发送群以及发送者加盐, 防止误伤复读消息
+        buffer.putLong(messageEvent.getGroupId());
+        buffer.putLong(messageEvent.getSender().getUserId());
+        String md5 = DigestUtils.md5DigestAsHex(buffer.array());
         long now = System.currentTimeMillis();
         removeExpiredMessageId(now);
         if (CACHE.containsKey(md5)) {
