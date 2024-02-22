@@ -3,6 +3,7 @@ package com.mikuac.shiro.common.utils;
 import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
 import org.springframework.util.DigestUtils;
 
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.ConcurrentHashMap;
 
