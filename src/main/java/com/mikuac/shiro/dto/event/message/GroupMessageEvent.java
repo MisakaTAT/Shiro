@@ -27,6 +27,12 @@ public class GroupMessageEvent extends MessageEvent {
     @JSONField(name = "sub_type")
     private String subType;
 
+    @JSONField(name = "avatar")
+    private String avatar;
+
+    @JSONField(name = "real_message_type")
+    private String real_message_type;
+
     @JSONField(name = "is_binded_group_id")
     private Boolean isBindedGroupId;
 
