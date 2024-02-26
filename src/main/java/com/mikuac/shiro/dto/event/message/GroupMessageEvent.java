@@ -31,7 +31,7 @@ public class GroupMessageEvent extends MessageEvent {
     private String avatar;
 
     @JSONField(name = "real_message_type")
-    private String real_message_type;
+    private String realMessageType;
 
     @JSONField(name = "is_binded_group_id")
     private Boolean isBindedGroupId;

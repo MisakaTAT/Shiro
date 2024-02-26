@@ -2,6 +2,7 @@ package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
+import com.mikuac.shiro.common.utils.CommonUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
@@ -226,13 +227,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
     protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) {
         long xSelfId = parseSelfId(session);
         JSONObject result = JSON.parseObject(message.getPayload());
-
-
-        if (!message.getPayload().contains("base64://")) {
-            log.debug("[Event] {}", result.toJSONString());
-        } else {
-            log.debug("[Event] {}", result.toJSONString().replaceAll("base64://.*]", "base64]"));
-        }
+        log.debug("[Event] {}", CommonUtils.debugMsgDeleteBase64Content(result.toJSONString()));
         // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(API_RESULT_KEY)) {
             if (FAILED_STATUS.equals(result.get(RESULT_STATUS_KEY))) {
