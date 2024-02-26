@@ -229,12 +229,13 @@ public class ShiroUtils {
      * @return CQ Code
      */
     public static String arrayMsgToCode(ArrayMsg arrayMsg) {
+        StringBuilder builder = new StringBuilder();
         if (Objects.isNull(arrayMsg.getType()) || MsgTypeEnum.unknown.equals(arrayMsg.getType())) {
             // 未知类型的消息, 忽略?
-            return "";
+            builder.append("[CQ:unknown");
+        } else {
+            builder.append("[CQ:").append(arrayMsg.getType());
         }
-        StringBuilder builder = new StringBuilder();
-        builder.append("[CQ:").append(arrayMsg.getType());
         arrayMsg.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
         builder.append("]");
         return builder.toString();
