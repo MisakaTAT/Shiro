@@ -881,7 +881,7 @@ public class Bot {
      */
     public <T> ActionData<T> customRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
         JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<ActionData<T>>(clazz) {
+        return result != null ? result.to(new TypeReference<>(clazz) {
         }) : null;
     }
 
