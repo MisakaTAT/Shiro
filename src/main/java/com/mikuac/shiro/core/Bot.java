@@ -873,6 +873,19 @@ public class Bot {
     }
 
     /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    public <T> ActionData<T> customRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
+        JSONObject result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<ActionData<T>>() {
+        }.getType()) : null;
+    }
+
+    /**
      * 获取精华消息列表
      *
      * @param groupId 群号
