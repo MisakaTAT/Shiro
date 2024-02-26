@@ -291,4 +291,12 @@ class UnitTests {
         assertTrue(Arrays.binarySearch(cache.getSortedGroups(groups), 123456789) >= 0);
     }
 
+    @Test
+    void testDebugMsgDeleteBase64Content() {
+        val msg = "[CQ:image,file=\"base64://ABCDEFG\"][CQ:video,file=\"base64://1234567\"]";
+        val expected = "[CQ:image,file=\"(base64)\"][CQ:video,file=\"(base64)\"]";
+        String s = CommonUtils.debugMsgDeleteBase64Content(msg);
+        assertEquals(expected, s);
+    }
+
 }

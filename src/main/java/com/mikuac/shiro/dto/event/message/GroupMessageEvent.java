@@ -40,7 +40,6 @@ public class GroupMessageEvent extends MessageEvent {
     private GroupSender sender;
 
 
-
     @JSONField(name = "is_binded_user_id")
     private Boolean isBindedUserId;
 

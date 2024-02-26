@@ -231,8 +231,7 @@ public class ShiroUtils {
     public static String arrayMsgToCode(ArrayMsg arrayMsg) {
         StringBuilder builder = new StringBuilder();
         if (Objects.isNull(arrayMsg.getType()) || MsgTypeEnum.unknown.equals(arrayMsg.getType())) {
-            // 未知类型的消息, 忽略?
-            builder.append("[CQ:unknown");
+            builder.append("[CQ:").append(MsgTypeEnum.unknown);
         } else {
             builder.append("[CQ:").append(arrayMsg.getType());
         }
@@ -251,7 +250,6 @@ public class ShiroUtils {
     public static String arrayMsgToCode(List<ArrayMsg> arrayMsgs) {
         StringBuilder builder = new StringBuilder();
         for (ArrayMsg item : arrayMsgs) {
-            // 使用 Shamrock 框架仍然会出现类型不存在的消息
             if (!MsgTypeEnum.text.equals(item.getType())) {
                 builder.append("[CQ:").append(item.getType());
                 item.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(ShiroUtils.escape(v)));

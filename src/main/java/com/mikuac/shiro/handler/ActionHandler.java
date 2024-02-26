@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.SendUtils;
 import com.mikuac.shiro.enums.ActionPath;
+import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.properties.RateLimiterProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
@@ -99,16 +100,16 @@ public class ActionHandler {
                 return result;
             }
         }
-        WebSocketHandler.SessionStatus status;
-        if (!(status = WebSocketHandler.getSessionStatus(session)).
-                equals(WebSocketHandler.SessionStatus.Online)) {
-            if (status.equals(WebSocketHandler.SessionStatus.Die)) {
+
+        SessionStatusEnum status = WebSocketHandler.getSessionStatus(session);
+        if (!status.equals(SessionStatusEnum.ONLINE)) {
+            if (status.equals(SessionStatusEnum.DIE)) {
                 throw new ShiroException.SessionCloseException();
             } else {
                 throw new ShiroException.SendMessageException();
             }
-
         }
+
         JSONObject payload = generatePayload(action, params);
         SendUtils sendUtils = new SendUtils(session, webSocketProperties.getTimeout());
         callback.put(payload.get("echo").toString(), sendUtils);

@@ -12,6 +12,7 @@ import com.mikuac.shiro.model.ArrayMsg;
 
 import java.util.*;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author zero
@@ -203,6 +204,17 @@ public class CommonUtils {
             params.put(Matcher.class, match.get());
         }
         return params;
+    }
+
+    /**
+     * @param msg 消息文本内容
+     * @return 替换 base64 后的内容
+     */
+    public static String debugMsgDeleteBase64Content(String msg) {
+        String regex = "base64://[a-zA-Z\\d+/=]+";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(msg);
+        return matcher.replaceAll("(base64)");
     }
 
 }
