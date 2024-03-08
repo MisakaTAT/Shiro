@@ -124,13 +124,37 @@ public class CommonUtils {
         }
 
         // 前缀匹配
-        for (String start : filter.startWith()) {
-            if (!rawMessage.startsWith(start)) return new CheckResult();
+        if (filter.startWith().length != 0) {
+            boolean flag = false;
+            for (String start : filter.startWith()) {
+                flag = rawMessage.startsWith(start);
+                if (flag) {
+                    if (matcherOptional.isEmpty()) {
+                        matcherOptional = RegexUtils.matcher("(" + start + ")(.*)", rawMessage);
+                    }
+                    break;
+                }
+            }
+            if (!flag) {
+                return new CheckResult();
+            }
         }
 
         // 后缀匹配
-        for (String end : filter.endWith()) {
-            if (!rawMessage.endsWith(end)) return new CheckResult();
+        if (filter.endWith().length != 0) {
+            boolean flag = false;
+            for (String end : filter.endWith()) {
+                flag = rawMessage.endsWith(end);
+                if (flag) {
+                    if (matcherOptional.isEmpty()) {
+                        matcherOptional = RegexUtils.matcher("(.*)(" + end + ")", rawMessage);
+                    }
+                    break;
+                }
+            }
+            if (!flag) {
+                return new CheckResult();
+            }
         }
 
         return new CheckResult().setResult(true).setMatcher(matcherOptional.orElse(null));
