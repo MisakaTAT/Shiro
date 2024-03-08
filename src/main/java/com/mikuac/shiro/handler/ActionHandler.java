@@ -2,6 +2,7 @@ package com.mikuac.shiro.handler;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.limit.RateLimiter;
+import com.mikuac.shiro.common.utils.ConnectionUtils;
 import com.mikuac.shiro.common.utils.SendUtils;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.SessionStatusEnum;
@@ -101,7 +102,7 @@ public class ActionHandler {
             }
         }
 
-        SessionStatusEnum status = WebSocketHandler.getSessionStatus(session);
+        SessionStatusEnum status = ConnectionUtils.getSessionStatus(session);
         if (!status.equals(SessionStatusEnum.ONLINE)) {
             if (status.equals(SessionStatusEnum.DIE)) {
                 throw new ShiroException.SessionCloseException();

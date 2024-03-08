@@ -3,17 +3,17 @@ package com.mikuac.shiro.handler;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.CommonUtils;
+import com.mikuac.shiro.common.utils.ConnectionUtils;
+import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.enums.SessionStatusEnum;
-import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.NonNull;
 import lombok.Setter;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -25,7 +25,6 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
@@ -40,18 +39,8 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class WebSocketHandler extends TextWebSocketHandler {
 
-    private static final String API_RESULT_KEY = "echo";
-
-    private static final String FAILED_STATUS = "failed";
-
-    private static final String RESULT_STATUS_KEY = "status";
-
-    private static final String FUTURE_KEY = "future";
-
     @Setter
     private static int waitWebsocketConnect = 0;
-
-    private static final String SESSION_STATUS_KEY = "session_status";
 
     private final EventHandler eventHandler;
 
@@ -105,54 +94,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
     }
 
     /**
-     * 获取连接的 QQ 号
-     *
-     * @param session {@link WebSocketSession}
-     * @return QQ 号
-     */
-    private long parseSelfId(WebSocketSession session) {
-        Optional<String> opt = Optional.ofNullable(session.getHandshakeHeaders().getFirst("x-self-id"));
-        return opt.map(botId -> {
-            try {
-                return Long.parseLong(botId);
-            } catch (NumberFormatException e) {
-                return 0L;
-            }
-        }).orElse(0L);
-    }
-
-    /**
-     * 访问密钥检查
-     *
-     * @param session WebSocketSession
-     * @return 是否验证通过
-     */
-    private boolean checkToken(WebSocketSession session) {
-        String token = webSocketProperties.getAccessToken();
-        if (token.isEmpty()) {
-            return true;
-        }
-        String clientToken = session.getHandshakeHeaders().getFirst("authorization");
-        log.debug("Access Token: {}", clientToken);
-        if (clientToken == null || clientToken.isEmpty()) {
-            return false;
-        }
-        return token.equals(clientToken);
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         try {
-            long xSelfId = parseSelfId(session);
+            long xSelfId = ConnectionUtils.parseSelfId(session);
             if (xSelfId == 0L) {
                 log.error("Account get failed for client");
                 session.close();
                 return;
             }
-            if (!checkToken(session)) {
+            if (!ConnectionUtils.checkToken(session, webSocketProperties.getAccessToken())) {
                 log.error("Access token invalid");
                 session.close();
                 return;
@@ -162,7 +115,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 return;
             }
             var sessionContext = session.getAttributes();
-            sessionContext.put(SESSION_STATUS_KEY, SessionStatusEnum.ONLINE);
+            sessionContext.put(Connection.SESSION_STATUS_KEY, SessionStatusEnum.ONLINE);
 
             if (waitWebsocketConnect <= 0) {
                 if (botContainer.robots.containsKey(xSelfId)) {
@@ -170,16 +123,16 @@ public class WebSocketHandler extends TextWebSocketHandler {
                     sessionContext.clear();
                     session.close();
                 } else {
-                    var bot = this.handleFirstConnect(xSelfId, session);
+                    Bot bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent);
                     botContainer.robots.put(xSelfId, bot);
                 }
                 return;
             }
             botContainer.robots.compute(xSelfId, (id, bot) -> {
                 if (Objects.isNull(bot)) {
-                    bot = this.handleFirstConnect(xSelfId, session);
+                    bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent);
                 } else {
-                    this.handleReConnect(bot, xSelfId, session);
+                    ConnectionUtils.handleReConnect(bot, xSelfId, session);
                 }
                 return bot;
             });
@@ -193,7 +146,7 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
-        long xSelfId = parseSelfId(session);
+        long xSelfId = ConnectionUtils.parseSelfId(session);
         if (xSelfId == 0L || !botContainer.robots.containsKey(xSelfId)) {
             return;
         }
@@ -215,8 +168,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
                 coreEvent.offline(xSelfId);
             }
         }, waitWebsocketConnect, TimeUnit.SECONDS);
-        sessionContext.put(SESSION_STATUS_KEY, SessionStatusEnum.OFFLINE);
-        sessionContext.put(FUTURE_KEY, removeSelfFuture);
+        sessionContext.put(Connection.SESSION_STATUS_KEY, SessionStatusEnum.OFFLINE);
+        sessionContext.put(Connection.FUTURE_KEY, removeSelfFuture);
 
     }
 
@@ -225,63 +178,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
      */
     @Override
     protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) {
-        long xSelfId = parseSelfId(session);
+        long xSelfId = ConnectionUtils.parseSelfId(session);
         JSONObject result = JSON.parseObject(message.getPayload());
         log.debug("[Event] {}", CommonUtils.debugMsgDeleteBase64Content(result.toJSONString()));
         // if resp contains echo field, this resp is action resp, else event resp.
-        if (result.containsKey(API_RESULT_KEY)) {
-            if (FAILED_STATUS.equals(result.get(RESULT_STATUS_KEY))) {
+        if (result.containsKey(Connection.API_RESULT_KEY)) {
+            if (Connection.FAILED_STATUS.equals(result.get(Connection.RESULT_STATUS_KEY))) {
                 log.error("Action failed: {}", result.get("wording"));
             }
             actionHandler.onReceiveActionResp(result);
         } else {
             shiroAsyncTask.execHandlerMsg(eventHandler, xSelfId, result);
         }
-    }
-
-    @SneakyThrows
-    private Bot handleFirstConnect(long xSelfId, WebSocketSession session) {
-        // if the session has never connected
-        // or has been handled
-        log.info("Account {} connected", xSelfId);
-        var bot = botFactory.createBot(xSelfId, session);
-        coreEvent.online(bot);
-        return bot;
-    }
-
-
-    @SneakyThrows
-    private void handleReConnect(Bot bot, long xSelfId, WebSocketSession session) {
-        // this bot has connected before but was interrupted, updating its session
-        // or handling simultaneous connections from different instances of the same account.
-        log.info("Account {} reconnected", xSelfId);
-        var oldSessionContext = bot.getSession().getAttributes();
-        if (oldSessionContext.get(SESSION_STATUS_KEY) instanceof SessionStatusEnum status &&
-                SessionStatusEnum.ONLINE.equals(status)) {
-            // when multiple sessions with the same ID are connected
-            session.close();
-            return;
-        }
-        oldSessionContext.computeIfPresent(FUTURE_KEY, (e, obj) -> {
-            // cancel the scheduled task of the bot
-            if (obj instanceof ScheduledFuture<?> future && future.getDelay(TimeUnit.MILLISECONDS) > 0) {
-                future.cancel(false);
-            }
-            return null;
-        });
-        // preventing memory leaks
-        oldSessionContext.clear();
-        bot.setSession(session);
-    }
-
-    public static SessionStatusEnum getSessionStatus(WebSocketSession session) {
-        var sessionContext = session.getAttributes();
-        Object statusObj = sessionContext.getOrDefault(SESSION_STATUS_KEY, SessionStatusEnum.DIE);
-        if (statusObj instanceof SessionStatusEnum status) {
-            return status;
-        }
-        // this type of exception will not occur unless there are external modifications to session.getAttributes()
-        throw new ShiroException("session status type wrong");
     }
 
 }
