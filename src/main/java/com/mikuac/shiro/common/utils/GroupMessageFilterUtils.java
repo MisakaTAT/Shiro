@@ -5,6 +5,8 @@ import org.springframework.util.DigestUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupMessageFilterUtils {
@@ -17,22 +19,20 @@ public class GroupMessageFilterUtils {
     // 插入消息并指定缓存时间
     public static boolean insertMessage(GroupMessageEvent messageEvent, int cacheTime) {
         // 消息缓存
-        byte[] messageByte = messageEvent.getRawMessage().getBytes(StandardCharsets.UTF_8);
-        ByteBuffer buffer = ByteBuffer.allocate(messageByte.length + 16);
-        buffer.put(messageByte);
-        buffer.putLong(messageEvent.getGroupId());
-        buffer.putLong(messageEvent.getSender().getUserId());
-        // 针对发送群以及发送者加盐, 防止误伤复读消息
-        String md5 = DigestUtils.md5DigestAsHex(buffer.array());
+
+        String messageKey = String.valueOf(messageEvent.getTime()) +
+                // 针对发送群以及发送者加盐, 防止误伤复读消息
+                messageEvent.getGroupId() +
+                messageEvent.getUserId();
         long now = System.currentTimeMillis();
         removeExpiredMessageId(now);
-        if (CACHE.containsKey(md5)) {
-            long cacheNow = CACHE.get(md5);
+        if (CACHE.containsKey(messageKey)) {
+            long cacheNow = CACHE.get(messageKey);
             if (cacheNow + cacheTime >= now) {
                 return false;
             }
         }
-        CACHE.put(md5, now + cacheTime);
+        CACHE.put(messageKey, now + cacheTime);
         return true;
     }
 
