@@ -14,8 +14,41 @@ import java.util.Map;
 @Accessors(chain = true)
 public class ArrayMsg {
 
-    private MsgTypeEnum type;
+    private String type;
 
     private Map<String, String> data;
 
+    public MsgTypeEnum getType() {
+        return MsgTypeEnum.typeOf(type);
+    }
+
+    public ArrayMsg setType(MsgTypeEnum typeEnum) {
+        type = typeEnum.name();
+        return this;
+    }
+
+    public String getRowType() {
+        return type;
+    }
+
+    public ArrayMsg setRowType(String type) {
+        this.type = type;
+        return this;
+    }
+
+    public String toCqCode() {
+        if ("text".equalsIgnoreCase(type)) {
+            return data.getOrDefault("text", "");
+        }
+        StringBuilder stringBuilder = new StringBuilder("[CQ:");
+        stringBuilder.append(getRowType());
+        data.forEach((key, val) -> {
+            stringBuilder.append(',');
+            stringBuilder.append(key);
+            stringBuilder.append('=');
+            stringBuilder.append(val);
+        });
+        stringBuilder.append(']');
+        return stringBuilder.toString();
+    }
 }
