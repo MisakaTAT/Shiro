@@ -105,6 +105,7 @@ public class Bot {
         return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
+
     public ActionData<MsgId> sendPrivateMsg(long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -134,6 +135,7 @@ public class Bot {
         return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
+
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -162,6 +164,7 @@ public class Bot {
         return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
+
     public ActionData<MsgId> sendGroupMsg(long groupId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -191,6 +194,7 @@ public class Bot {
         return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
+
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);

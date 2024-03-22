@@ -172,7 +172,6 @@ public class InjectionHandler {
         invoke(bot, event, GroupPokeNoticeHandler.class);
     }
 
-
     /**
      * 群文件上传事件
      *

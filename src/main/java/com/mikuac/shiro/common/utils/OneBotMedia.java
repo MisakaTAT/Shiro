@@ -62,13 +62,13 @@ public class OneBotMedia {
     public void escape(Map<String, String> map) {
         map.put("file", this.file);
         if (this.cache != null) {
-        map.put("cache", Boolean.TRUE.equals(this.cache) ? "1" : "0");
+            map.put("cache", Boolean.TRUE.equals(this.cache) ? "1" : "0");
         }
         if (this.proxy != null) {
-        map.put("proxy", Boolean.TRUE.equals(this.proxy) ? "1" : "0");
+            map.put("proxy", Boolean.TRUE.equals(this.proxy) ? "1" : "0");
         }
         if (this.timeout != null) {
-        map.put("timeout", this.timeout.toString());
+            map.put("timeout", this.timeout.toString());
         }
     }
 

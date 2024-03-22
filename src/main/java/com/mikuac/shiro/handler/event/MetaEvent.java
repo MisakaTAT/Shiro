@@ -49,7 +49,6 @@ public class MetaEvent {
         process(bot, resp, MetaEventEnum.HEARTBEAT);
     }
 
-
     public void lifecycle(Bot bot, JSONObject resp) {
         process(bot, resp, MetaEventEnum.LIFECYCLE);
     }

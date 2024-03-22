@@ -19,12 +19,14 @@ public class ArrayMsgUtil extends MsgUtils {
     }
 
     @Override
+    @SuppressWarnings({"java:S1192"})
     public MsgUtils img(String img) {
         builder.add(getJsonData("image", m -> m.put("file", ShiroUtils.escape(img))));
         return this;
     }
 
     @Override
+    @SuppressWarnings({"java:S1192"})
     public MsgUtils img(OneBotMedia media) {
         builder.add(getJsonData("image", media::escape));
         return this;
@@ -162,6 +164,7 @@ public class ArrayMsgUtil extends MsgUtils {
     }
 
     @Override
+    @SuppressWarnings({"java:S1192"})
     public MsgUtils music(String type, long id) {
         builder.add(getJsonData("music", m -> {
             m.put("type", String.valueOf(type));
@@ -171,6 +174,7 @@ public class ArrayMsgUtil extends MsgUtils {
     }
 
     @Override
+    @SuppressWarnings({"java:S1192"})
     public MsgUtils customMusic(String url, String audio, String title, String content, String image) {
         builder.add(getJsonData("music", m -> {
             m.put("type", "custom");
@@ -184,6 +188,7 @@ public class ArrayMsgUtil extends MsgUtils {
     }
 
     @Override
+    @SuppressWarnings({"java:S1192"})
     public MsgUtils customMusic(String url, String audio, String title) {
         builder.add(getJsonData("music", m -> {
             m.put("type", "custom");

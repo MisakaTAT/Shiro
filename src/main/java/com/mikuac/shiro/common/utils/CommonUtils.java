@@ -66,7 +66,7 @@ public class CommonUtils {
         return result;
     }
 
-    @SuppressWarnings({"squid:S3776", "squid:S1121"})
+    @SuppressWarnings({"squid:S3776", "squid:S1121", "java:S6541"})
     private static CheckResult filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
         Optional<Matcher> matcherOptional = Optional.empty();
         String rawMessage;

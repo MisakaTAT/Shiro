@@ -33,7 +33,6 @@ public class RequestEvent {
      */
     public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
 
-
     private InjectionHandler injection;
 
     @Autowired
