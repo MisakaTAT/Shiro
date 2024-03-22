@@ -9,6 +9,7 @@ import com.mikuac.shiro.dto.event.message.AnyMessageEvent;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
+import com.mikuac.shiro.model.ArrayMsg;
 import com.mikuac.shiro.model.HandlerMethod;
 import lombok.Getter;
 import lombok.Setter;
@@ -104,6 +105,15 @@ public class Bot {
         return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
+    public ActionData<MsgId> sendPrivateMsg(long userId, List<ArrayMsg> msg, boolean autoEscape) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
 
     /**
      * 临时会话
@@ -115,6 +125,16 @@ public class Bot {
      * @return result {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, String msg, boolean autoEscape) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
+    public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
@@ -142,6 +162,15 @@ public class Bot {
         return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
+    public ActionData<MsgId> sendGroupMsg(long groupId, List<ArrayMsg> msg, boolean autoEscape) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
 
     /**
      * 发送群消息
@@ -153,6 +182,16 @@ public class Bot {
      * @return result {@link ActionData} of {@link MsgId}
      */
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, String msg, boolean autoEscape) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGE, msg);
+        params.put(ActionParams.AUTO_ESCAPE, autoEscape);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
+    public ActionData<MsgId> sendGroupMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);

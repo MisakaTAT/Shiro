@@ -1,5 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
+import java.util.Map;
+
 /**
  * <p>OneBotMedia class.</p>
  *
@@ -55,6 +57,19 @@ public class OneBotMedia {
             stringBuilder.append(",timeout=").append(this.timeout);
         }
         return stringBuilder.toString();
+    }
+
+    public void escape(Map<String, String> map) {
+        map.put("file", this.file);
+        if (this.cache != null) {
+        map.put("cache", Boolean.TRUE.equals(this.cache) ? "1" : "0");
+        }
+        if (this.proxy != null) {
+        map.put("proxy", Boolean.TRUE.equals(this.proxy) ? "1" : "0");
+        }
+        if (this.timeout != null) {
+        map.put("timeout", this.timeout.toString());
+        }
     }
 
     /**
