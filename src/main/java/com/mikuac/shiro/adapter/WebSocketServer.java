@@ -1,4 +1,4 @@
-package com.mikuac.shiro.handler;
+package com.mikuac.shiro.adapter;
 
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
@@ -10,6 +10,8 @@ import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.enums.SessionStatusEnum;
+import com.mikuac.shiro.handler.ActionHandler;
+import com.mikuac.shiro.handler.EventHandler;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.NonNull;
@@ -37,7 +39,7 @@ import java.util.concurrent.TimeUnit;
  * @version $Id: $Id
  */
 @Slf4j
-public class WebSocketHandler extends TextWebSocketHandler {
+public class WebSocketServer extends TextWebSocketHandler {
 
     @Setter
     private static int waitWebsocketConnect = 0;
@@ -52,8 +54,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     private final BotContainer botContainer;
 
-    private WebSocketProperties webSocketProperties;
-
     private ScheduledExecutorService scheduledExecutorService;
 
     @Autowired
@@ -64,11 +64,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         scheduledExecutorService = executor;
     }
 
-    @Autowired
-    public void setWebSocketProperties(WebSocketProperties webSocketProperties) {
-        this.webSocketProperties = webSocketProperties;
-    }
-
     private CoreEvent coreEvent;
 
     @Autowired
@@ -76,16 +71,14 @@ public class WebSocketHandler extends TextWebSocketHandler {
         this.coreEvent = coreEvent;
     }
 
-    /**
-     * 构造函数
-     *
-     * @param eventHandler   {@link EventHandler}
-     * @param botFactory     {@link BotFactory}
-     * @param actionHandler  {@link ActionHandler}
-     * @param shiroAsyncTask {@link ShiroAsyncTask}
-     * @param botContainer   {@link BotContainer}
-     */
-    public WebSocketHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+    private WebSocketProperties wsProp;
+
+    @Autowired
+    public void setWebSocketProperties(WebSocketProperties wsProp) {
+        this.wsProp = wsProp;
+    }
+
+    public WebSocketServer(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
@@ -93,20 +86,17 @@ public class WebSocketHandler extends TextWebSocketHandler {
         this.botContainer = botContainer;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         try {
             long xSelfId = ConnectionUtils.parseSelfId(session);
             if (xSelfId == 0L) {
-                log.error("Account get failed for client");
+                log.error("Failed parse x-self-id for websocket session");
                 session.close();
                 return;
             }
-            if (!ConnectionUtils.checkToken(session, webSocketProperties.getAccessToken())) {
-                log.error("Access token invalid");
+            if (!ConnectionUtils.checkToken(session, wsProp.getAccessToken())) {
+                log.error("Invalid access token");
                 session.close();
                 return;
             }
@@ -141,9 +131,6 @@ public class WebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         long xSelfId = ConnectionUtils.parseSelfId(session);
@@ -173,11 +160,9 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    protected void handleTextMessage(@NonNull WebSocketSession session, TextMessage message) {
+    @SuppressWarnings("Duplicates")
+    protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
         long xSelfId = ConnectionUtils.parseSelfId(session);
         JSONObject result = JSON.parseObject(message.getPayload());
         log.debug("[Event] {}", CommonUtils.debugMsgDeleteBase64Content(result.toJSONString()));

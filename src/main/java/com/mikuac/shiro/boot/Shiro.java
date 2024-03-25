@@ -1,14 +1,16 @@
 package com.mikuac.shiro.boot;
 
+import com.mikuac.shiro.adapter.WebSocketClient;
+import com.mikuac.shiro.adapter.WebSocketServer;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
-import com.mikuac.shiro.handler.WebSocketHandler;
-import com.mikuac.shiro.properties.WebSocketProperties;
+import com.mikuac.shiro.properties.WebSocketServerProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
@@ -22,11 +24,11 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 @Configuration
 public class Shiro {
 
-    private WebSocketProperties webSocketProperties;
+    private WebSocketServerProperties wsServerProp;
 
     @Autowired
-    public void setWebSocketProperties(WebSocketProperties webSocketProperties) {
-        this.webSocketProperties = webSocketProperties;
+    public void setWebSocketServerProperties(WebSocketServerProperties wsServerProp) {
+        this.wsServerProp = wsServerProp;
     }
 
     private BotFactory botFactory;
@@ -64,15 +66,18 @@ public class Shiro {
         this.botContainer = botContainer;
     }
 
-    /**
-     * <p>createShiroWebSocketHandler.</p>
-     *
-     * @return {@link WebSocketHandler}
-     */
     @Bean
     @ConditionalOnMissingBean
-    public WebSocketHandler createShiroWebSocketHandler() {
-        return new WebSocketHandler(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
+    @ConditionalOnProperty(value = "shiro.ws.server.enable", havingValue = "true")
+    public WebSocketServer createWebSocketServer() {
+        return new WebSocketServer(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(value = "shiro.ws.client.enable", havingValue = "true")
+    public WebSocketClient createWebSocketClient() {
+        return new WebSocketClient(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
     }
 
     /**
@@ -82,11 +87,11 @@ public class Shiro {
      */
     @Bean
     @ConditionalOnMissingBean
-    public ServletServerContainerFactoryBean createWebSocketContainer() {
+    public ServletServerContainerFactoryBean createWebSocketServerContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxTextMessageBufferSize(webSocketProperties.getMaxTextMessageBufferSize());
-        container.setMaxBinaryMessageBufferSize(webSocketProperties.getMaxBinaryMessageBufferSize());
-        container.setMaxSessionIdleTimeout(webSocketProperties.getMaxSessionIdleTimeout());
+        container.setMaxTextMessageBufferSize(wsServerProp.getMaxTextMessageBufferSize());
+        container.setMaxBinaryMessageBufferSize(wsServerProp.getMaxBinaryMessageBufferSize());
+        container.setMaxSessionIdleTimeout(wsServerProp.getMaxSessionIdleTimeout());
         return container;
     }
 

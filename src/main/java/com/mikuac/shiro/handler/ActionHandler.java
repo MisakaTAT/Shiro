@@ -35,11 +35,11 @@ public class ActionHandler {
     /**
      * WebSocket 配置
      */
-    private WebSocketProperties webSocketProperties;
+    private WebSocketProperties wsProp;
 
     @Autowired
-    public void setWebSocketProperties(WebSocketProperties webSocketProperties) {
-        this.webSocketProperties = webSocketProperties;
+    public void setWebSocketProperties(WebSocketProperties wsProp) {
+        this.wsProp = wsProp;
     }
 
     /**
@@ -112,7 +112,7 @@ public class ActionHandler {
         }
 
         JSONObject payload = generatePayload(action, params);
-        SendUtils sendUtils = new SendUtils(session, webSocketProperties.getTimeout());
+        SendUtils sendUtils = new SendUtils(session, wsProp.getTimeout());
         callback.put(payload.get("echo").toString(), sendUtils);
         try {
             result = sendUtils.send(payload);
@@ -144,4 +144,11 @@ public class ActionHandler {
         return payload;
     }
 
+    public void setWsProp(WebSocketProperties wsProp) {
+        this.wsProp = wsProp;
+    }
+
+    public WebSocketProperties getWsProp() {
+        return wsProp;
+    }
 }

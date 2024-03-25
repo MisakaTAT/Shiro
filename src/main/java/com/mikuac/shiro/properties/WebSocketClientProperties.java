@@ -11,17 +11,17 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @Component
-@ConfigurationProperties(prefix = "shiro.ws")
-public class WebSocketProperties {
+@ConfigurationProperties(prefix = "shiro.ws.client")
+public class WebSocketClientProperties {
 
     /**
-     * 访问密钥, 强烈推荐在公网的服务器设置
+     * 是否启用正向 Websocket 连接
      */
-    private String accessToken = "";
+    private Boolean enable = false;
 
     /**
-     * 超时回收，10秒
+     * ws地址
      */
-    private Integer timeout = 10;
+    private String url = "";
 
 }

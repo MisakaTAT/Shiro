@@ -71,14 +71,14 @@ public class ConnectionUtils {
      * @return QQ 号
      */
     public static long parseSelfId(WebSocketSession session) {
-        Optional<String> opt = Optional.ofNullable(session.getHandshakeHeaders().getFirst("x-self-id"));
-        return opt.map(botId -> {
-            try {
-                return Long.parseLong(botId);
-            } catch (NumberFormatException e) {
-                return 0L;
-            }
-        }).orElse(0L);
+        String selfIdStr = Optional.ofNullable(session.getHandshakeHeaders().getFirst("x-self-id"))
+                .orElse((String) session.getAttributes().get("x-self-id"));
+        try {
+            return Long.parseLong(selfIdStr);
+        } catch (NumberFormatException e) {
+            // 如果无法解析为长整型，返回默认值
+            return 0L;
+        }
     }
 
     /**
