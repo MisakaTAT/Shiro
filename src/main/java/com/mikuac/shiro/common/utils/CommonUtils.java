@@ -70,7 +70,7 @@ public class CommonUtils {
     private static CheckResult filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
         Optional<Matcher> matcherOptional = Optional.empty();
         String rawMessage;
-        if (filter.at().equals(AtEnum.OFF)) {
+        if (filter.at().equals(AtEnum.NEED)) {
             rawMessage = msgExtract(event.getMessage(), event.getArrayMsg(), filter.at(), event.getSelfId());
         } else {
             rawMessage = event.getMessage();

@@ -76,7 +76,6 @@ public class ConnectionUtils {
         try {
             return Long.parseLong(selfIdStr);
         } catch (NumberFormatException e) {
-            // 如果无法解析为长整型，返回默认值
             return 0L;
         }
     }
