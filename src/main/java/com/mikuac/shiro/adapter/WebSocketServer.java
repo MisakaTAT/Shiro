@@ -9,6 +9,7 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
+import com.mikuac.shiro.enums.AdapterEnum;
 import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
@@ -89,6 +90,7 @@ public class WebSocketServer extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         try {
+            session.getAttributes().put(Connection.ADAPTER_KEY, AdapterEnum.SERVER);
             long xSelfId = ConnectionUtils.parseSelfId(session);
             if (xSelfId == 0L) {
                 log.error("Failed parse x-self-id for websocket session");

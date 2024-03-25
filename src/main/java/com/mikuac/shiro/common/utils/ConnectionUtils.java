@@ -4,6 +4,7 @@ import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
+import com.mikuac.shiro.enums.AdapterEnum;
 import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.exception.ShiroException;
 import lombok.SneakyThrows;
@@ -96,6 +97,15 @@ public class ConnectionUtils {
             return false;
         }
         return token.equals(clientToken);
+    }
+
+    public static AdapterEnum getAdapter(WebSocketSession session) {
+        var sessionContext = session.getAttributes();
+        Object adapterObj = sessionContext.get(Connection.ADAPTER_KEY);
+        if (adapterObj instanceof AdapterEnum adapter) {
+            return adapter;
+        }
+        throw new ShiroException("adapter type wrong");
     }
 
 }

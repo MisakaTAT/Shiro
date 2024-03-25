@@ -5,6 +5,7 @@ import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
 import com.mikuac.shiro.common.utils.SendUtils;
 import com.mikuac.shiro.enums.ActionPath;
+import com.mikuac.shiro.enums.AdapterEnum;
 import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.properties.RateLimiterProperties;
@@ -102,12 +103,14 @@ public class ActionHandler {
             }
         }
 
-        SessionStatusEnum status = ConnectionUtils.getSessionStatus(session);
-        if (!status.equals(SessionStatusEnum.ONLINE)) {
-            if (status.equals(SessionStatusEnum.DIE)) {
-                throw new ShiroException.SessionCloseException();
-            } else {
-                throw new ShiroException.SendMessageException();
+        if (ConnectionUtils.getAdapter(session) == AdapterEnum.SERVER) {
+            SessionStatusEnum status = ConnectionUtils.getSessionStatus(session);
+            if (!status.equals(SessionStatusEnum.ONLINE)) {
+                if (status.equals(SessionStatusEnum.DIE)) {
+                    throw new ShiroException.SessionCloseException();
+                } else {
+                    throw new ShiroException.SendMessageException();
+                }
             }
         }
 
@@ -144,11 +147,4 @@ public class ActionHandler {
         return payload;
     }
 
-    public void setWsProp(WebSocketProperties wsProp) {
-        this.wsProp = wsProp;
-    }
-
-    public WebSocketProperties getWsProp() {
-        return wsProp;
-    }
 }

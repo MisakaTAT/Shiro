@@ -9,6 +9,7 @@ import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
+import com.mikuac.shiro.enums.AdapterEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
 import com.mikuac.shiro.task.ShiroAsyncTask;
@@ -60,6 +61,7 @@ public class WebSocketClient extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         try {
+            session.getAttributes().put(Connection.ADAPTER_KEY, AdapterEnum.CLIENT);
             long xSelfId = ConnectionUtils.parseSelfId(session);
             if (xSelfId == 0L) {
                 return;

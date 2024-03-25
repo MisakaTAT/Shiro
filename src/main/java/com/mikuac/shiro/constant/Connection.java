@@ -15,4 +15,6 @@ public class Connection {
 
     public static final String SESSION_STATUS_KEY = "session_status";
 
+    public static final String ADAPTER_KEY = "adapter";
+
 }
