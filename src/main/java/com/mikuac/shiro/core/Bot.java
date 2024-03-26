@@ -2,6 +2,10 @@ package com.mikuac.shiro.core;
 
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
+import com.mikuac.shiro.action.GensokyoExtend;
+import com.mikuac.shiro.action.GoCQHTTPExtend;
+import com.mikuac.shiro.action.LagrangeExtend;
+import com.mikuac.shiro.action.OneBot;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
@@ -10,13 +14,10 @@ import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.ArrayMsg;
-import com.mikuac.shiro.model.HandlerMethod;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
@@ -27,47 +28,17 @@ import java.util.Map;
  * @version $Id: $Id
  */
 @SuppressWarnings({"unused", "Duplicates"})
-public class Bot {
+public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend {
 
     private final ActionHandler actionHandler;
 
     @Getter
     @Setter
-    private long selfId;
-
-    @Getter
-    @Setter
     private WebSocketSession session;
 
-    @Getter
-    @Setter
-    private List<Class<? extends BotPlugin>> pluginList;
-
-    @Getter
-    @Setter
-    private MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler;
-
-    @Getter
-    @Setter
-    private Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor;
-
-    /**
-     * <p>Constructor for Bot.</p>
-     *
-     * @param selfId                     机器人账号
-     * @param session                    {@link WebSocketSession}
-     * @param actionHandler              {@link ActionHandler}
-     * @param pluginList                 插件列表
-     * @param annotationHandler          注解 (key) 下的所有方法
-     * @param botMessageEventInterceptor 消息拦截器
-     */
-    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList, MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
-        this.selfId = selfId;
+    public Bot(WebSocketSession session, ActionHandler actionHandler) {
         this.session = session;
         this.actionHandler = actionHandler;
-        this.pluginList = pluginList;
-        this.annotationHandler = annotationHandler;
-        this.botMessageEventInterceptor = botMessageEventInterceptor;
     }
 
     /**
@@ -78,6 +49,7 @@ public class Bot {
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return result {@link ActionData} of {@link MsgId}
      */
+    @Override
     public ActionData<MsgId> sendMsg(AnyMessageEvent event, String msg, boolean autoEscape) {
         if (ActionParams.PRIVATE.equals(event.getMessageType())) {
             return sendPrivateMsg(event.getUserId(), msg, autoEscape);
@@ -96,6 +68,7 @@ public class Bot {
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return result {@link ActionData} of {@link MsgId}
      */
+    @Override
     public ActionData<MsgId> sendPrivateMsg(long userId, String msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -106,6 +79,15 @@ public class Bot {
         }.getType()) : null;
     }
 
+    /**
+     * 发送私聊消息
+     *
+     * @param userId     对方 QQ 号
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    @Override
     public ActionData<MsgId> sendPrivateMsg(long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -125,6 +107,7 @@ public class Bot {
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return result {@link ActionData} of {@link MsgId}
      */
+    @Override
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, String msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -136,6 +119,16 @@ public class Bot {
         }.getType()) : null;
     }
 
+    /**
+     * 临时会话
+     *
+     * @param groupId    主动发起临时会话群号(机器人本身必须是管理员/群主)
+     * @param userId     对方 QQ 号
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    @Override
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -155,6 +148,7 @@ public class Bot {
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return result {@link ActionData} of {@link MsgId}
      */
+    @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, String msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -165,6 +159,15 @@ public class Bot {
         }.getType()) : null;
     }
 
+    /**
+     * 发送群消息
+     *
+     * @param groupId    群号
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -184,6 +187,7 @@ public class Bot {
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return result {@link ActionData} of {@link MsgId}
      */
+    @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, String msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -195,6 +199,16 @@ public class Bot {
         }.getType()) : null;
     }
 
+    /**
+     * 发送群消息
+     *
+     * @param groupId    群号
+     * @param userId     调用者的QQ号 , 在QQ开放平台中用于设定@对象，如果不设置此参数会导致: 在bot返回前如果被不同用户多次调用，只会@最后一次调用的用户
+     * @param msg        要发送的内容
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -216,6 +230,7 @@ public class Bot {
      * @param nextToken 翻页Token
      * @return result {@link ActionData} of {@link GuildMemberListResp}
      */
+    @Override
     public ActionData<GuildMemberListResp> getGuildMemberList(String guildId, String nextToken) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
@@ -233,6 +248,7 @@ public class Bot {
      * @param msg       要发送的内容
      * @return result {@link ActionData} of {@link GuildMsgId}
      */
+    @Override
     public ActionData<GuildMsgId> sendGuildMsg(String guildId, String channelId, String msg) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
@@ -250,6 +266,7 @@ public class Bot {
      * @param noCache    是否使用缓存
      * @return result {@link ActionData} of {@link GetGuildMsgResp}
      */
+    @Override
     public ActionData<GetGuildMsgResp> getGuildMsg(String guildMsgId, boolean noCache) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, guildMsgId);
@@ -264,6 +281,7 @@ public class Bot {
      *
      * @return result {@link ActionData} of {@link GuildServiceProfileResp}
      */
+    @Override
     public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_SERVICE_PROFILE, null);
         return result != null ? result.to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
@@ -275,6 +293,7 @@ public class Bot {
      *
      * @return result {@link ActionList} of {@link GuildListResp}
      */
+    @Override
     public ActionList<GuildListResp> getGuildList() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, null);
         return result != null ? result.to(new TypeReference<ActionList<GuildListResp>>() {
@@ -287,6 +306,7 @@ public class Bot {
      * @param guildId 频道 ID
      * @return result {@link ActionData} of {@link GuildMetaByGuestResp}
      */
+    @Override
     public ActionData<GuildMetaByGuestResp> getGuildMetaByGuest(String guildId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
@@ -302,6 +322,7 @@ public class Bot {
      * @param noCache 是否无视缓存
      * @return result {@link ActionList} of {@link ChannelInfoResp}
      */
+    @Override
     public ActionList<ChannelInfoResp> getGuildChannelList(String guildId, boolean noCache) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
@@ -318,6 +339,7 @@ public class Bot {
      * @param userId  用户ID
      * @return result {@link ActionData} of {@link GuildMemberProfileResp}
      */
+    @Override
     public ActionData<GuildMemberProfileResp> getGuildMemberProfile(String guildId, String userId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GUILD_ID, guildId);
@@ -333,6 +355,7 @@ public class Bot {
      * @param msgId 消息 ID
      * @return result {@link ActionData} of {@link GetMsgResp}
      */
+    @Override
     public ActionData<GetMsgResp> getMsg(int msgId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
@@ -347,6 +370,7 @@ public class Bot {
      * @param msgId 消息 ID
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw deleteMsg(int msgId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
@@ -362,6 +386,7 @@ public class Bot {
      * @param rejectAddRequest 拒绝此人的加群请求 (默认false)
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupKick(long groupId, long userId, boolean rejectAddRequest) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -379,6 +404,7 @@ public class Bot {
      * @param duration 禁言时长, 单位秒, 0 表示取消禁言 (默认30 * 60)
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupBan(long groupId, long userId, int duration) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -395,6 +421,7 @@ public class Bot {
      * @param enable  是否禁言（默认True,False为取消禁言）
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupWholeBan(long groupId, boolean enable) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -411,6 +438,7 @@ public class Bot {
      * @param enable  true 为设置，false 为取消
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupAdmin(long groupId, long userId, boolean enable) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -427,6 +455,7 @@ public class Bot {
      * @param enable  是否允许匿名聊天
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupAnonymous(long groupId, boolean enable) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -443,6 +472,7 @@ public class Bot {
      * @param card    群名片内容，不填或空字符串表示删除群名片
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupCard(long groupId, long userId, String card) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -459,6 +489,7 @@ public class Bot {
      * @param groupName 新群名
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupName(long groupId, String groupName) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -474,6 +505,7 @@ public class Bot {
      * @param isDismiss 是否解散, 如果登录号是群主, 则仅在此项为 true 时能够解散
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupLeave(long groupId, boolean isDismiss) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -491,6 +523,7 @@ public class Bot {
      * @param duration     专属头衔有效期，单位秒，-1 表示永久，不过此项似乎没有效果，可能是只有某些特殊的时间长度有效，有待测试
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupSpecialTitle(long groupId, long userId, String specialTitle, int duration) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -509,6 +542,7 @@ public class Bot {
      * @param remark  添加后的好友备注（仅在同意时有效）
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setFriendAddRequest(String flag, boolean approve, String remark) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.FLAG, flag);
@@ -527,6 +561,7 @@ public class Bot {
      * @param reason  拒绝理由（仅在拒绝时有效）
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupAddRequest(String flag, String subType, boolean approve, String reason) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.FLAG, flag);
@@ -542,6 +577,7 @@ public class Bot {
      *
      * @return result {@link ActionData} of @{@link LoginInfoResp}
      */
+    @Override
     public ActionData<LoginInfoResp> getLoginInfo() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_LOGIN_INFO, null);
         return result != null ? result.to(new TypeReference<ActionData<LoginInfoResp>>() {
@@ -555,6 +591,7 @@ public class Bot {
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
      * @return result {@link ActionData} of {@link StrangerInfoResp}
      */
+    @Override
     public ActionData<StrangerInfoResp> getStrangerInfo(long userId, boolean noCache) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -569,6 +606,7 @@ public class Bot {
      *
      * @return result {@link ActionList} of {@link FriendInfoResp}
      */
+    @Override
     public ActionList<FriendInfoResp> getFriendList() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_LIST, null);
         return result != null ? result.to(new TypeReference<ActionList<FriendInfoResp>>() {
@@ -581,6 +619,7 @@ public class Bot {
      * @param friendId 好友 QQ 号
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw deleteFriend(long friendId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, friendId);
@@ -595,6 +634,7 @@ public class Bot {
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
      * @return result {@link ActionData} of {@link GroupInfoResp}
      */
+    @Override
     public ActionData<GroupInfoResp> getGroupInfo(long groupId, boolean noCache) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -609,6 +649,7 @@ public class Bot {
      *
      * @return result {@link ActionList} of {@link GroupInfoResp}
      */
+    @Override
     public ActionList<GroupInfoResp> getGroupList() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_LIST, null);
         return result != null ? result.to(new TypeReference<ActionList<GroupInfoResp>>() {
@@ -623,6 +664,7 @@ public class Bot {
      * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
      * @return result {@link ActionData} of {@link GroupMemberInfoResp}
      */
+    @Override
     public ActionData<GroupMemberInfoResp> getGroupMemberInfo(long groupId, long userId, boolean noCache) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -639,6 +681,7 @@ public class Bot {
      * @param groupId 群号
      * @return result {@link ActionList} of {@link GroupMemberInfoResp}
      */
+    @Override
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -654,6 +697,7 @@ public class Bot {
      * @param type    要获取的群荣誉类型, 可传入 talkative performer legend strong_newbie emotion 以分别获取单个类型的群荣誉数据, 或传入 all 获取所有数据
      * @return result {@link ActionData} of {@link GroupHonorInfoResp}
      */
+    @Override
     public ActionData<GroupHonorInfoResp> getGroupHonorInfo(long groupId, String type) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -668,6 +712,7 @@ public class Bot {
      *
      * @return result {@link ActionData} of {@link BooleanResp}
      */
+    @Override
     public ActionData<BooleanResp> canSendImage() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.CAN_SEND_IMAGE, null);
         return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
@@ -679,6 +724,7 @@ public class Bot {
      *
      * @return result {@link ActionData} of {@link BooleanResp}
      */
+    @Override
     public ActionData<BooleanResp> canSendRecord() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.CAN_SEND_RECORD, null);
         return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
@@ -694,6 +740,7 @@ public class Bot {
      * @param cache   表示是否使用已缓存的文件 （通过网络URL发送时有效, 1表示使用缓存, 0关闭关闭缓存, 默认为1）
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupPortrait(long groupId, String file, int cache) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -710,6 +757,7 @@ public class Bot {
      * @param url 需要检查的链接
      * @return result {@link ActionData} of {@link CheckUrlSafelyResp}
      */
+    @Override
     public ActionData<CheckUrlSafelyResp> checkUrlSafely(String url) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.URL, url);
@@ -725,6 +773,7 @@ public class Bot {
      * @param content 公告内容
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw sendGroupNotice(long groupId, String content) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -739,6 +788,7 @@ public class Bot {
      * @param groupId 群号
      * @return result {@link ActionData} of {@link GroupAtAllRemainResp}
      */
+    @Override
     public ActionData<GroupAtAllRemainResp> getGroupAtAllRemain(long groupId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -758,6 +808,7 @@ public class Bot {
      * @param folder  父目录ID
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw uploadGroupFile(long groupId, String file, String name, String folder) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -778,6 +829,7 @@ public class Bot {
      * @param name    储存名称
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw uploadGroupFile(long groupId, String file, String name) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -796,6 +848,7 @@ public class Bot {
      * @param duration  禁言时长，单位秒，无法取消匿名用户禁言
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, int duration) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -813,6 +866,7 @@ public class Bot {
      * @param duration 禁言时长，单位秒，无法取消匿名用户禁言
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setGroupAnonymousBan(long groupId, String flag, int duration) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -830,6 +884,7 @@ public class Bot {
      * @param headers     自定义请求头
      * @return result {@link ActionData} of {@link DownloadFileResp}
      */
+    @Override
     public ActionData<DownloadFileResp> downloadFile(String url, int threadCount, String headers) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.URL, url);
@@ -846,6 +901,7 @@ public class Bot {
      * @param url 链接地址
      * @return result {@link ActionData} of {@link DownloadFileResp}
      */
+    @Override
     public ActionData<DownloadFileResp> downloadFile(String url) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.URL, url);
@@ -863,6 +919,7 @@ public class Bot {
      *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -878,6 +935,7 @@ public class Bot {
      * @param groupId 群号
      * @return result {@link ActionData} of {@link GroupFilesResp}
      */
+    @Override
     public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -893,6 +951,7 @@ public class Bot {
      * @param folderId 文件夹ID 参考 Folder 对象
      * @return result {@link ActionData} of {@link GroupFilesResp}
      */
+    @Override
     public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -903,37 +962,12 @@ public class Bot {
     }
 
     /**
-     * 自定义请求
-     *
-     * @param action 请求路径
-     * @param params 请求参数
-     * @return result {@link ActionData}
-     */
-    @SuppressWarnings("rawtypes")
-    public ActionData customRequest(ActionPath action, Map<String, Object> params) {
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(ActionData.class) : null;
-    }
-
-    /**
-     * 自定义请求
-     *
-     * @param action 请求路径
-     * @param params 请求参数
-     * @return result {@link ActionData}
-     */
-    public <T> ActionData<T> customRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<>(clazz) {
-        }) : null;
-    }
-
-    /**
      * 获取精华消息列表
      *
      * @param groupId 群号
      * @return result {@link ActionList} of {@link EssenceMsgResp}
      */
+    @Override
     public ActionList<EssenceMsgResp> getEssenceMsgList(long groupId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -948,6 +982,7 @@ public class Bot {
      * @param msgId 消息 ID
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setEssenceMsg(int msgId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
@@ -961,6 +996,7 @@ public class Bot {
      * @param msgId 消息 ID
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw deleteEssenceMsg(int msgId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
@@ -978,6 +1014,7 @@ public class Bot {
      * @param personalNote 个性签名
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw setBotProfile(String nickname, String company, String email, String college, String personalNote) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.NICKNAME, nickname);
@@ -997,6 +1034,7 @@ public class Bot {
      *               <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -1014,6 +1052,7 @@ public class Bot {
      *              <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionData<MsgId> sendForwardMsg(AnyMessageEvent event, List<Map<String, Object>> msg) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGES, msg);
@@ -1034,6 +1073,7 @@ public class Bot {
      * @param content 内容
      * @return result {@link ActionData} of {@link WordSlicesResp}
      */
+    @Override
     public ActionData<WordSlicesResp> getWordSlices(String content) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.CONTENT, content);
@@ -1048,6 +1088,7 @@ public class Bot {
      * @param noCache 是否无视缓存
      * @return result {@link ActionData} of {@link ClientsResp}
      */
+    @Override
     public ActionData<ClientsResp> getOnlineClients(boolean noCache) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.NO_CACHE, noCache);
@@ -1078,6 +1119,7 @@ public class Bot {
      * @param name   文件名
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw uploadPrivateFile(long userId, String file, String name) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -1093,6 +1135,7 @@ public class Bot {
      * @param groupId 群号
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw sendGroupSign(long groupId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -1106,6 +1149,7 @@ public class Bot {
      * @param userId QQ号
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw deleteUnidirectionalFriend(long userId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -1118,6 +1162,7 @@ public class Bot {
      *
      * @return result {@link ActionList} of {@link UnidirectionalFriendListResp}
      */
+    @Override
     public ActionList<UnidirectionalFriendListResp> getUnidirectionalFriendList() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST, null);
         return result != null ? result.to(new TypeReference<ActionList<UnidirectionalFriendListResp>>() {
@@ -1132,6 +1177,7 @@ public class Bot {
      * @param busId   文件类型
      * @return result {@link ActionData} of {@link UrlResp}
      */
+    @Override
     public ActionData<UrlResp> getGroupFileUrl(long groupId, String fileId, int busId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -1149,6 +1195,7 @@ public class Bot {
      * @param folderName 文件夹名
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw createGroupFileFolder(long groupId, String folderName) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -1166,6 +1213,7 @@ public class Bot {
      * @param folderId 文件夹ID
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw deleteGroupFileFolder(long groupId, String folderId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -1182,6 +1230,7 @@ public class Bot {
      * @param busId   文件类型
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw deleteGroupFile(long groupId, String fileId, int busId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.GROUP_ID, groupId);
@@ -1198,6 +1247,7 @@ public class Bot {
      * @param times  点赞次数（每个好友每天最多 10 次，机器人为 Super VIP 则提高到 20次）
      * @return result {@link ActionRaw}
      */
+    @Override
     public ActionRaw sendLike(long userId, int times) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.USER_ID, userId);
@@ -1211,9 +1261,49 @@ public class Bot {
      *
      * @return result {@link GetStatusResp}
      */
+    @Override
     public GetStatusResp getStatus() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_STATUS, null);
         return result != null ? result.to(new TypeReference<ActionData<GetStatusResp>>() {
         }).getData() : null;
     }
+
+    /**
+     * 获取收藏表情
+     *
+     * @return 表情的下载 URL
+     */
+    @Override
+    public ActionList<String> fetchCustomFace() {
+        JSONObject result = actionHandler.action(session, ActionPathEnum.FETCH_CUSTOM_FACE, null);
+        return result != null ? result.to(new TypeReference<ActionList<String>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    @SuppressWarnings("rawtypes")
+    public ActionData customRequest(ActionPath action, Map<String, Object> params) {
+        JSONObject result = actionHandler.action(session, action, params);
+        return result != null ? result.to(ActionData.class) : null;
+    }
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    public <T> ActionData<T> customRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
+        JSONObject result = actionHandler.action(session, action, params);
+        return result != null ? result.to(new TypeReference<>(clazz) {
+        }) : null;
+    }
+
 }

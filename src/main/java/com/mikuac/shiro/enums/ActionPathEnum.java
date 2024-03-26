@@ -266,7 +266,10 @@ public enum ActionPathEnum implements ActionPath {
      * 获取状态
      */
     GET_STATUS("get_status"),
-    ;
+    /**
+     * 获取收藏表情
+     */
+    FETCH_CUSTOM_FACE("fetch_custom_face");
 
     /**
      * 请求路径
