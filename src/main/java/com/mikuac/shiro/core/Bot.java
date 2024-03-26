@@ -14,10 +14,13 @@ import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.ArrayMsg;
+import com.mikuac.shiro.model.HandlerMethod;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 
@@ -27,18 +30,30 @@ import java.util.Map;
  * @author Zero
  * @version $Id: $Id
  */
+@Getter
+@Setter
 @SuppressWarnings({"unused", "Duplicates"})
 public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend {
 
-    private final ActionHandler actionHandler;
+    private long selfId;
 
-    @Getter
-    @Setter
+    private ActionHandler actionHandler;
+
     private WebSocketSession session;
 
-    public Bot(WebSocketSession session, ActionHandler actionHandler) {
+    private List<Class<? extends BotPlugin>> pluginList;
+
+    private MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler;
+
+    private Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor;
+
+    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList, MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
+        this.selfId = selfId;
         this.session = session;
         this.actionHandler = actionHandler;
+        this.pluginList = pluginList;
+        this.annotationHandler = annotationHandler;
+        this.botMessageEventInterceptor = botMessageEventInterceptor;
     }
 
     /**

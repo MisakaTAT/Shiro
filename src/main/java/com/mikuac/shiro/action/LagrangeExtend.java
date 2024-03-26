@@ -2,8 +2,6 @@ package com.mikuac.shiro.action;
 
 import com.mikuac.shiro.dto.action.common.ActionList;
 
-import java.util.List;
-
 public interface LagrangeExtend {
 
     /**
