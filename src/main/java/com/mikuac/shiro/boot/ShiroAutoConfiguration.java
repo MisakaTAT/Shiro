@@ -134,7 +134,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
             if (!manager.isConnected()) {
                 manager.startInternal();
             }
-        }, 0, 5, TimeUnit.SECONDS);
+        }, 0, wsClientProp.getReconnectInterval(), TimeUnit.SECONDS);
     }
 
 }

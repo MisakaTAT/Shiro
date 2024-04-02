@@ -24,4 +24,9 @@ public class WebSocketClientProperties {
      */
     private String url = "";
 
+    /**
+     * 断线重连时间（秒）
+     */
+    private Integer reconnectInterval = 5;
+
 }
