@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  * @version $Id: $Id
  */
 @Slf4j
-public class WebSocketServer extends TextWebSocketHandler {
+public class WebSocketServerHandler extends TextWebSocketHandler {
 
     @Setter
     private static int waitWebsocketConnect = 0;
@@ -79,7 +79,7 @@ public class WebSocketServer extends TextWebSocketHandler {
         this.wsProp = wsProp;
     }
 
-    public WebSocketServer(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+    public WebSocketServerHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
@@ -159,7 +159,6 @@ public class WebSocketServer extends TextWebSocketHandler {
         }, waitWebsocketConnect, TimeUnit.SECONDS);
         sessionContext.put(Connection.SESSION_STATUS_KEY, SessionStatusEnum.OFFLINE);
         sessionContext.put(Connection.FUTURE_KEY, removeSelfFuture);
-
     }
 
     @Override

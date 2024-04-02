@@ -1,7 +1,7 @@
 package com.mikuac.shiro.boot;
 
-import com.mikuac.shiro.adapter.WebSocketClient;
-import com.mikuac.shiro.adapter.WebSocketServer;
+import com.mikuac.shiro.adapter.WebSocketClientHandler;
+import com.mikuac.shiro.adapter.WebSocketServerHandler;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.handler.ActionHandler;
@@ -69,15 +69,15 @@ public class Shiro {
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "shiro.ws.server.enable", havingValue = "true")
-    public WebSocketServer createWebSocketServer() {
-        return new WebSocketServer(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
+    public WebSocketServerHandler webSocketServerHandler() {
+        return new WebSocketServerHandler(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "shiro.ws.client.enable", havingValue = "true")
-    public WebSocketClient createWebSocketClient() {
-        return new WebSocketClient(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
+    public WebSocketClientHandler webSocketClientHandler() {
+        return new WebSocketClientHandler(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
     }
 
     /**

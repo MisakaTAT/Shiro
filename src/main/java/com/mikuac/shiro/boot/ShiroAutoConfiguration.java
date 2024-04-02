@@ -2,8 +2,8 @@ package com.mikuac.shiro.boot;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import com.mikuac.shiro.adapter.WebSocketClient;
-import com.mikuac.shiro.adapter.WebSocketServer;
+import com.mikuac.shiro.adapter.WebSocketClientHandler;
+import com.mikuac.shiro.adapter.WebSocketServerHandler;
 import com.mikuac.shiro.properties.ShiroProperties;
 import com.mikuac.shiro.properties.WebSocketClientProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
@@ -24,6 +25,9 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import java.util.Objects;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created on 2021/7/15.
@@ -53,6 +57,16 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         this.wsClientProp = wsClientProp;
     }
 
+    private ScheduledExecutorService scheduledExecutorService;
+
+    @Autowired
+    public void setScheduledExecutorService(ThreadPoolTaskExecutor shiroTaskExecutor) {
+        var executor = new ScheduledThreadPoolExecutor(shiroTaskExecutor.getCorePoolSize(),
+                shiroTaskExecutor.getThreadPoolExecutor().getThreadFactory());
+        executor.setRemoveOnCancelPolicy(true);
+        scheduledExecutorService = executor;
+    }
+
     private WebSocketProperties wsProp;
 
     @Autowired
@@ -65,26 +79,23 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
     @Autowired
     public void setShiroProperties(ShiroProperties shiroProperties) {
         this.shiroProperties = shiroProperties;
-        WebSocketServer.setWaitWebsocketConnect(shiroProperties.getWaitBotConnect());
+        WebSocketServerHandler.setWaitWebsocketConnect(shiroProperties.getWaitBotConnect());
     }
 
-    private WebSocketServer wsServer;
+    private WebSocketServerHandler webSocketServerHandler;
 
     @Autowired(required = false)
-    public void setWebSocketServer(WebSocketServer webSocketServer) {
-        this.wsServer = webSocketServer;
+    public void setWebSocketServerHandler(WebSocketServerHandler webSocketServerHandler) {
+        this.webSocketServerHandler = webSocketServerHandler;
     }
 
-    private WebSocketClient wsClient;
+    private WebSocketClientHandler webSocketClientHandler;
 
     @Autowired(required = false)
-    public void setWebSocketClient(WebSocketClient webSocketClient) {
-        this.wsClient = webSocketClient;
+    public void setWebSocketClientHandler(WebSocketClientHandler webSocketClientHandler) {
+        this.webSocketClientHandler = webSocketClientHandler;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void registerWebSocketHandlers(@Nonnull WebSocketHandlerRegistry registry) {
         setLogLevel();
@@ -94,7 +105,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
             return;
         }
         if (Boolean.TRUE.equals(wsServerProp.getEnable())) {
-            registry.addHandler(wsServer, wsServerProp.getUrl()).setAllowedOrigins("*");
+            registry.addHandler(webSocketServerHandler, wsServerProp.getUrl()).setAllowedOrigins("*");
         }
         if (Boolean.TRUE.equals(wsClientProp.getEnable())) {
             createWebsocketClient();
@@ -115,9 +126,15 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         if (!Objects.equals(wsProp.getAccessToken(), "")) {
             headers.add("Authorization", "Bearer " + wsProp.getAccessToken());
         }
-        WebSocketConnectionManager manager = new WebSocketConnectionManager(client, wsClient, wsClientProp.getUrl());
+        WebSocketConnectionManager manager = new WebSocketConnectionManager(client, webSocketClientHandler, wsClientProp.getUrl());
         manager.setHeaders(headers);
-        manager.start();
+        manager.setAutoStartup(true);
+
+        scheduledExecutorService.scheduleAtFixedRate(() -> {
+            if (!manager.isConnected()) {
+                manager.startInternal();
+            }
+        }, 0, 5, TimeUnit.SECONDS);
     }
 
 }

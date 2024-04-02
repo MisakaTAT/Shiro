@@ -31,7 +31,7 @@ import java.util.Map;
  * @version $Id: $Id
  */
 @Slf4j
-public class WebSocketClient extends TextWebSocketHandler {
+public class WebSocketClientHandler extends TextWebSocketHandler {
 
     private final EventHandler eventHandler;
 
@@ -50,7 +50,7 @@ public class WebSocketClient extends TextWebSocketHandler {
         this.coreEvent = coreEvent;
     }
 
-    public WebSocketClient(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+    public WebSocketClientHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
