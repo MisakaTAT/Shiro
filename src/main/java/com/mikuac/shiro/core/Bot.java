@@ -1,5 +1,6 @@
 package com.mikuac.shiro.core;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.action.*;
@@ -1216,6 +1217,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         params.put(ActionParams.BUS_ID, busId);
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FILE, params);
         System.out.println("-------------------------");
+
         System.out.println(result != null ? result.toJSONString() : null);
         System.out.println("-------------------------");
         return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
