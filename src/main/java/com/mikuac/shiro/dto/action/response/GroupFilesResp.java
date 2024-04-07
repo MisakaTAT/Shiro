@@ -54,6 +54,12 @@ public class GroupFilesResp {
         @JSONField(name = "uploader_name")
         private String uploaderName;
 
+        @JSONField(name = "base64")
+        private String base64;
+
+        @JSONField(name = "file")
+        private String file;
+
     }
 
     /**
