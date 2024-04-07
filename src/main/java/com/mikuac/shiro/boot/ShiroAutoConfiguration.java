@@ -108,7 +108,6 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
             registry.addHandler(webSocketServerHandler, wsServerProp.getUrl()).setAllowedOrigins("*");
         }
         if (Boolean.TRUE.equals(wsClientProp.getEnable())) {
-            System.out.println("==============");
             createWebsocketClient();
         }
     }
