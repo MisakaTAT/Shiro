@@ -1216,10 +1216,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         params.put(ActionParams.FILE_ID, fileId);
         params.put(ActionParams.BUS_ID, busId);
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FILE, params);
-        System.out.println("-------------------------");
 
-        System.out.println(result != null ? result.toJSONString() : null);
-        System.out.println("-------------------------");
         return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
         }.getType()) : null;
     }
