@@ -3,10 +3,9 @@ server:
 
 shiro:
   ws:
-    access-token: "QygwBXx2fTrNKEU19F73ievMjmODatsl"
     client:
-      enable: false
+      enable: true
       url: "ws://192.168.100.253:3001"
     server:
-      enable: true
+      enable: false
       url: "/ws/shiro"
