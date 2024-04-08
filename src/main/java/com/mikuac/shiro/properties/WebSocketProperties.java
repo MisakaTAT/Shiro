@@ -19,6 +19,7 @@ public class WebSocketProperties {
      */
     private String accessToken = "";
 
+
     /**
      * 超时回收，10秒
      */

@@ -259,6 +259,10 @@ public enum ActionPathEnum implements ActionPath {
      */
     GET_GROUP_FILE_URL("get_group_file_url"),
     /**
+     * 下载收到的群文件或私聊文件（LLOneBot）
+     */
+    GET_FILE("get_file"),
+    /**
      * 发送好友赞
      */
     SEND_LIKE("send_like"),

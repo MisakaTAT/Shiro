@@ -19,6 +19,21 @@ public class GroupFilesResp {
     private List<Folders> folders;
 
     /**
+     * 仅适用于LLOneBot
+     */
+    @JSONField(name = "base64")
+    private String base64;
+
+    @JSONField(name = "file")
+    private String file;
+
+    @JSONField(name = "file_name")
+    private String fileName;
+
+    @JSONField(name = "file_size")
+    private Long fileSize;
+
+    /**
      * 群文件
      */
     @Data

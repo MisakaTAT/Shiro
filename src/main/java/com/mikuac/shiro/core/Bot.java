@@ -1,11 +1,9 @@
 package com.mikuac.shiro.core;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
-import com.mikuac.shiro.action.GensokyoExtend;
-import com.mikuac.shiro.action.GoCQHTTPExtend;
-import com.mikuac.shiro.action.LagrangeExtend;
-import com.mikuac.shiro.action.OneBot;
+import com.mikuac.shiro.action.*;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
@@ -33,7 +31,7 @@ import java.util.Map;
 @Getter
 @Setter
 @SuppressWarnings({"unused", "Duplicates"})
-public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend {
+public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend, LLOneBotExtend {
 
     private long selfId;
 
@@ -1200,6 +1198,26 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         params.put(ActionParams.BUS_ID, busId);
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILE_URL, params);
         return result != null ? result.to(new TypeReference<ActionData<UrlResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
+     * 获取群文件资源链接
+     *
+     * @param groupId 群号
+     * @param fileId  文件ID
+     * @param busId   文件类型
+     * @return result {@link ActionData} of {@link UrlResp}
+     */
+    @Override
+    public ActionData<GroupFilesResp> getFile(long groupId, String fileId, int busId) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.FILE_ID, fileId);
+        params.put(ActionParams.BUS_ID, busId);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FILE, params);
+
+        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
         }.getType()) : null;
     }
 
