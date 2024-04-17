@@ -66,6 +66,14 @@ class CommonUtilsTest {
         val expected2 = "测试消息2";
         val actual3 = CommonUtils.msgExtract(expected2, arrayMsg, AtEnum.NEED, 1122334455L);
         assertEquals(expected2, actual3);
+
+        // 定义 AtEnum 为 BOTH，期望 @ 标识被解析并去除
+        val actual4 = CommonUtils.msgExtract(msg, arrayMsg, AtEnum.BOTH, 1122334455L);
+        assertEquals(expected1, actual4);
+
+        // 定义 AtEnum 为 BOTH，但消息中未包含 @ 标识，期望原始消息内容不变
+        val actual5 = CommonUtils.msgExtract(expected2, arrayMsg, AtEnum.BOTH, 1122334455L);
+        assertEquals(expected2, actual5);
     }
 
     @Test
