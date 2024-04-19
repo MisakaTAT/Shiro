@@ -1,5 +1,6 @@
 package com.mikuac.shiro.common.utils;
 
+import com.alibaba.fastjson2.JSON;
 import com.mikuac.shiro.model.ArrayMsg;
 
 import java.util.ArrayList;
@@ -181,6 +182,15 @@ public class ArrayMsgUtils {
 
     public ArrayMsgUtils rps(int value) {
         builder.add(getJsonData("rps", m -> m.put("value", String.valueOf(value))));
+        return this;
+    }
+
+    public ArrayMsgUtils markdown(String content) {
+        builder.add(getJsonData("markdown", m -> {
+            HashMap<String, String> map = new HashMap<>();
+            map.put("content", content);
+            m.put("content", JSON.toJSONString(map));
+        }));
         return this;
     }
 
