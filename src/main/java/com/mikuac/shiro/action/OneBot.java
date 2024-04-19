@@ -105,7 +105,7 @@ public interface OneBot {
      * @param msgId 消息 ID
      * @return result {@link ActionRaw}
      */
-    ActionRaw deleteMsg(int msgId);
+    ActionRaw deleteMsg(long groupCode, long user_id, int msgId);
 
     /**
      * 群组踢人
