@@ -105,6 +105,15 @@ public interface OneBot {
      * @param msgId 消息 ID
      * @return result {@link ActionRaw}
      */
+    ActionRaw deleteMsg(int msgId);
+    /**
+     * 撤回消息（兼容gsk）
+     *
+     * @param groupCode 群号
+     * @param user_id 用户id
+     * @param msgId 消息 ID
+     * @return result {@link ActionRaw}
+     */
     ActionRaw deleteMsg(long groupCode, long user_id, int msgId);
 
     /**
