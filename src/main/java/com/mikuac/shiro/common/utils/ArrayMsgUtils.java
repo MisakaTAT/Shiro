@@ -9,31 +9,31 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class ArrayMsgUtil extends MsgUtils {
+@SuppressWarnings({"unused", "java:S1192"})
+public class ArrayMsgUtils {
+
     private final List<ArrayMsg> builder = new ArrayList<>();
 
-    @Override
-    public MsgUtils text(String text) {
+    public static ArrayMsgUtils builder() {
+        return new ArrayMsgUtils();
+    }
+
+    public ArrayMsgUtils text(String text) {
         builder.add(getJsonData("text", m -> m.put("text", text)));
         return this;
     }
 
-    @Override
-    @SuppressWarnings({"java:S1192"})
-    public MsgUtils img(String img) {
+    public ArrayMsgUtils img(String img) {
         builder.add(getJsonData("image", m -> m.put("file", ShiroUtils.escape(img))));
         return this;
     }
 
-    @Override
-    @SuppressWarnings({"java:S1192"})
-    public MsgUtils img(OneBotMedia media) {
+    public ArrayMsgUtils img(OneBotMedia media) {
         builder.add(getJsonData("image", media::escape));
         return this;
     }
 
-    @Override
-    public MsgUtils video(String video, String cover) {
+    public ArrayMsgUtils video(String video, String cover) {
         builder.add(getJsonData("video", m -> {
             m.put("file", ShiroUtils.escape(video));
             m.put("cover", ShiroUtils.escape(cover));
@@ -41,8 +41,7 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
-    public MsgUtils flashImg(String img) {
+    public ArrayMsgUtils flashImg(String img) {
         builder.add(getJsonData("image", m -> {
             m.put("flash", "flash");
             m.put("file", ShiroUtils.escape(img));
@@ -50,56 +49,47 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
-    public MsgUtils face(int id) {
+    public ArrayMsgUtils face(int id) {
         builder.add(getJsonData("face", m -> m.put("id", String.valueOf(id))));
         return this;
     }
 
-    @Override
-    public MsgUtils voice(OneBotMedia media) {
+    public ArrayMsgUtils voice(OneBotMedia media) {
         builder.add(getJsonData("record", media::escape));
         return this;
     }
 
-    @Override
-    public MsgUtils voice(String voice) {
+    public ArrayMsgUtils voice(String voice) {
         builder.add(getJsonData("record", m -> m.put("file", ShiroUtils.escape(voice))));
         return this;
     }
 
-    @Override
-    public MsgUtils at(long userId) {
+    public ArrayMsgUtils at(long userId) {
         builder.add(getJsonData("at", m -> m.put("qq", String.valueOf(userId))));
         return this;
     }
 
-    @Override
-    public MsgUtils atAll() {
+    public ArrayMsgUtils atAll() {
         builder.add(getJsonData("at", m -> m.put("qq", "all")));
         return this;
     }
 
-    @Override
-    public MsgUtils poke(long userId) {
+    public ArrayMsgUtils poke(long userId) {
         builder.add(getJsonData("poke", m -> m.put("qq", String.valueOf(userId))));
         return this;
     }
 
-    @Override
-    public MsgUtils reply(int msgId) {
+    public ArrayMsgUtils reply(int msgId) {
         builder.add(getJsonData("reply", m -> m.put("id", String.valueOf(msgId))));
         return this;
     }
 
-    @Override
-    public MsgUtils reply(String msgId) {
+    public ArrayMsgUtils reply(String msgId) {
         builder.add(getJsonData("reply", m -> m.put("id", msgId)));
         return this;
     }
 
-    @Override
-    public MsgUtils gift(long userId, int giftId) {
+    public ArrayMsgUtils gift(long userId, int giftId) {
         builder.add(getJsonData("gift", m -> {
             m.put("qq", String.valueOf(userId));
             m.put("id", String.valueOf(giftId));
@@ -107,20 +97,17 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
-    public MsgUtils tts(String text) {
+    public ArrayMsgUtils tts(String text) {
         builder.add(getJsonData("tts", m -> m.put("text", text)));
         return this;
     }
 
-    @Override
-    public MsgUtils xml(String data) {
+    public ArrayMsgUtils xml(String data) {
         builder.add(getJsonData("xml", m -> m.put("data", data)));
         return this;
     }
 
-    @Override
-    public MsgUtils xml(String data, int resId) {
+    public ArrayMsgUtils xml(String data, int resId) {
         builder.add(getJsonData("xml", m -> {
             m.put("data", String.valueOf(data));
             m.put("resid", String.valueOf(resId));
@@ -128,14 +115,12 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
-    public MsgUtils json(String data) {
+    public ArrayMsgUtils json(String data) {
         builder.add(getJsonData("json", m -> m.put("data", data)));
         return this;
     }
 
-    @Override
-    public MsgUtils json(String data, int resId) {
+    public ArrayMsgUtils json(String data, int resId) {
         builder.add(getJsonData("json", m -> {
             m.put("data", String.valueOf(data));
             m.put("resid", String.valueOf(resId));
@@ -143,17 +128,15 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
-    public MsgUtils cardImage(String file) {
+    public ArrayMsgUtils cardImage(String file) {
         builder.add(getJsonData("cardimage", m -> m.put("file", String.valueOf(file))));
         return this;
     }
 
-    @Override
-    public MsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source, String icon) {
+    public ArrayMsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source, String icon) {
         builder.add(getJsonData("cardimage", m -> {
             m.put("file", ShiroUtils.escape(file));
-            m.put("minwidth", String.valueOf(minHeight));
+            m.put("minwidth", String.valueOf(minWidth));
             m.put("minheight", String.valueOf(minHeight));
             m.put("maxwidth", String.valueOf(maxWidth));
             m.put("maxheight", String.valueOf(maxHeight));
@@ -163,9 +146,8 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
     @SuppressWarnings({"java:S1192"})
-    public MsgUtils music(String type, long id) {
+    public ArrayMsgUtils music(String type, long id) {
         builder.add(getJsonData("music", m -> {
             m.put("type", String.valueOf(type));
             m.put("id", String.valueOf(id));
@@ -173,9 +155,8 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
     @SuppressWarnings({"java:S1192"})
-    public MsgUtils customMusic(String url, String audio, String title, String content, String image) {
+    public ArrayMsgUtils customMusic(String url, String audio, String title, String content, String image) {
         builder.add(getJsonData("music", m -> {
             m.put("type", "custom");
             m.put("url", ShiroUtils.escape(url));
@@ -187,9 +168,8 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
     @SuppressWarnings({"java:S1192"})
-    public MsgUtils customMusic(String url, String audio, String title) {
+    public ArrayMsgUtils customMusic(String url, String audio, String title) {
         builder.add(getJsonData("music", m -> {
             m.put("type", "custom");
             m.put("url", ShiroUtils.escape(url));
@@ -199,13 +179,11 @@ public class ArrayMsgUtil extends MsgUtils {
         return this;
     }
 
-    @Override
-    public MsgUtils rps(int value) {
+    public ArrayMsgUtils rps(int value) {
         builder.add(getJsonData("rps", m -> m.put("value", String.valueOf(value))));
         return this;
     }
 
-    @Override
     public String build() {
         return builder.stream().map(ArrayMsg::toCqCode).collect(Collectors.joining());
     }
@@ -219,4 +197,5 @@ public class ArrayMsgUtil extends MsgUtils {
         consumer.accept(data);
         return new ArrayMsg().setRowType(type).setData(data);
     }
+
 }

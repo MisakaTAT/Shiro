@@ -1,7 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 
 group = "com.mikuac"
-version = "2.2.1"
+version = "2.2.2"
 
 plugins {
     signing
@@ -40,7 +40,7 @@ repositories {
 }
 
 dependencies {
-    api("com.alibaba.fastjson2:fastjson2:2.0.48")
+    api("com.alibaba.fastjson2:fastjson2:2.0.49")
     api("org.springframework.boot:spring-boot-starter-websocket")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")

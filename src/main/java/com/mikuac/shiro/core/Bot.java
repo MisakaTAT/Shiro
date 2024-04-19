@@ -1,6 +1,5 @@
 package com.mikuac.shiro.core;
 
-import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.action.*;
@@ -387,26 +386,6 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     public ActionRaw deleteMsg(int msgId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
-        return result != null ? result.to(ActionRaw.class) : null;
-    }
-
-    /**
-     * 撤回消息
-     *
-     * 撤回消息（兼容gsk）
-     *
-     * @param groupCode 群号
-     * @param user_id 用户id
-     * @param msgId 消息 ID
-     * @return result {@link ActionRaw}
-     */
-    @Override
-    public ActionRaw deleteMsg(long groupCode, long user_id, int msgId) {
-        JSONObject params = new JSONObject();
-        params.put(ActionParams.MESSAGE_ID, msgId);
-        params.put(ActionParams.GROUP_ID, groupCode);
-        params.put(ActionParams.USER_ID, user_id);
         JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
@@ -1235,9 +1214,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE_ID, fileId);
         params.put(ActionParams.BUS_ID, busId);
-        System.out.println(groupId + "," +selfId+ "," + fileId +  "***********");
         JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FILE, params);
-        System.out.println(result);
         return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
         }.getType()) : null;
     }

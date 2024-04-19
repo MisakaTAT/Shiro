@@ -2,10 +2,17 @@ package com.mikuac.shiro.action;
 
 import com.mikuac.shiro.dto.action.common.ActionData;
 import com.mikuac.shiro.dto.action.response.GroupFilesResp;
-import com.mikuac.shiro.dto.action.response.UrlResp;
 
 public interface LLOneBotExtend {
-    ActionData<GroupFilesResp> getFile(long groupId, String fileId, int busId);
 
+    /**
+     * 获取群文件资源链接
+     *
+     * @param groupId 群号
+     * @param fileId  文件ID
+     * @param busId   文件类型
+     * @return result {@link ActionData} of {@link GroupFilesResp}
+     */
+    ActionData<GroupFilesResp> getFile(long groupId, String fileId, int busId);
 
 }

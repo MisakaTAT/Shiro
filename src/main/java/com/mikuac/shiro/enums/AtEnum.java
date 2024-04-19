@@ -23,4 +23,9 @@ public enum AtEnum {
      */
     NOT_NEED,
 
+    /**
+     * AtEnum.NEED 和 AtEnum.NOT_NEED 的合并
+     */
+    BOTH,
+
 }

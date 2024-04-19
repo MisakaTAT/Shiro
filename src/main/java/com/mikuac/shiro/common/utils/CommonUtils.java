@@ -69,12 +69,7 @@ public class CommonUtils {
     @SuppressWarnings({"squid:S3776", "squid:S1121", "java:S6541"})
     private static CheckResult filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
         Optional<Matcher> matcherOptional = Optional.empty();
-        String rawMessage;
-        if (filter.at().equals(AtEnum.NEED)) {
-            rawMessage = msgExtract(event.getMessage(), event.getArrayMsg(), filter.at(), event.getSelfId());
-        } else {
-            rawMessage = event.getMessage();
-        }
+        String rawMessage = msgExtract(event.getMessage(), event.getArrayMsg(), filter.at(), event.getSelfId());
 
         // 检查 正则
         if (!filter.cmd().isBlank() && (matcherOptional = RegexUtils.matcher(filter.cmd(), rawMessage)).isEmpty()) {
@@ -169,7 +164,7 @@ public class CommonUtils {
      * @return 处理后的消息
      */
     public static String msgExtract(String msg, List<ArrayMsg> arrayMsg, AtEnum atEnum, long selfId) {
-        if (atEnum != AtEnum.NEED) {
+        if (!List.of(AtEnum.NEED, AtEnum.BOTH).contains(atEnum)) {
             return msg;
         }
         ArrayMsg item = atParse(arrayMsg, selfId);
