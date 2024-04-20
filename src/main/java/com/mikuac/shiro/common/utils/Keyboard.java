@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 自定义按钮内容，最多可以发送5行按钮，每一行最多5个按钮。
+ * 自定义按钮内容，一般可以发送5行按钮，每一行一般5个按钮。
  */
 @Getter
 @Setter
@@ -25,9 +25,6 @@ public class Keyboard {
     public static final int PERMISSION_TYPE_ROLE = 3;
     public static final int ANCHOR_NONE = 0;
     public static final int ANCHOR_SELECT = 1;
-
-    private static final int MAX_BUTTON_NUM = 5;
-    private static final int MAX_ROW_NUM = 5;
 
     private final String type = "keyboard";
     private Data data = new Data();
@@ -48,84 +45,27 @@ public class Keyboard {
         return new ButtonBuilder().actionType(ACTION_TYPE_JUMP);
     }
 
-    public Keyboard addButton(ButtonBuilder builder) {
-        List<Long> specifyUserIds = null;
-        List<Long> specifyRoleIds = null;
-        if (builder.permissionType() == PERMISSION_TYPE_USER) {
-            specifyUserIds = builder.specifies();
-        } else if (builder.permissionType() == PERMISSION_TYPE_ROLE) {
-            specifyRoleIds = builder.specifies();
-        }
-        if (builder.visitedLabel() == null) {
-            builder.visitedLabel(builder.text());
-        }
-        return addButton(builder.id(), builder.text(), builder.visitedLabel(), builder.style(), builder.actionType(), builder.data(), builder.reply(), builder.enter(), builder.anchor(), builder.unSupportTips(), builder.permissionType(), specifyUserIds, specifyRoleIds);
+    public Keyboard build() {
+        return this;
     }
 
     /**
      * 添加按钮
      *
-     * @param label          按钮上的文字
-     * @param visitedLabel   点击后按钮的上文字
-     * @param style          按钮样式:<br/>
-     *                       {@link Keyboard#STYLE_GREY} 灰色线框<br/>
-     *                       {@link Keyboard#STYLE_BLUE} 蓝色线框
-     * @param actionType     按钮类型:<br/>
-     *                       {@link Keyboard#ACTION_TYPE_JUMP} 跳转按钮: http 或 小程序 客户端识别 scheme<br/>
-     *                       {@link Keyboard#ACTION_TYPE_CALLBACK} 回调按钮: 回调后台接口, data 传给后台<br/>
-     *                       {@link Keyboard#ACTION_TYPE_CMD} 指令按钮: 自动在输入框插入 @bot data<br/>
-     * @param data           操作相关的数据
-     * @param reply          指令按钮可用，指令是否带引用回复本消息，默认 false。支持版本 8983
-     * @param enter          指令按钮可用，点击按钮后直接自动发送 data，默认 false。支持版本 8983
-     * @param permissionType 按钮权限类型:<br/>
-     *                       {@link Keyboard#PERMISSION_TYPE_USER} 指定用户可操作<br/>
-     *                       {@link Keyboard#PERMISSION_TYPE_MANAGER} 仅管理者可操作<br/>
-     *                       {@link Keyboard#PERMISSION_TYPE_ALL} 所有人可操作<br/>
-     *                       {@link Keyboard#PERMISSION_TYPE_ROLE} 指定身份组可操作（仅频道可用）<br/>
-     * @param specifyUserIds 有权限的用户 id 的列表
-     * @param specifyRoleIds 有权限的身份组 id 的列表（仅频道可用）
+     * @param button    {@code Keyboard.TextButtonBuilder().build()}
      * @return {@link Keyboard}
      */
-    public Keyboard addButton(String id, String label, String visitedLabel, Integer style, Integer actionType, String data, Boolean reply, Boolean enter, Integer anchor, String unSupportTips, Integer permissionType, List<Long> specifyUserIds, List<Long> specifyRoleIds) {
-        Button button = new Button();
-        button.setId(id);
-        button.getRenderData()
-                .setLabel(label)
-                .setVisitedLabel(visitedLabel)
-                .setStyle(style);
-        button.getAction()
-                .setType(actionType)
-                .setData(data)
-                .setReply(reply)
-                .setEnter(enter)
-                .setAnchor(anchor)
-                .setUnSupportTips(unSupportTips);
-        Permission permission = button.getAction().getPermission()
-                .setType(permissionType);
-        if (specifyUserIds != null && !specifyUserIds.isEmpty()) {
-            List<String> list = specifyUserIds.stream().map(String::valueOf).toList();
-            permission.setSpecifyUserIds(list);
-        }
-        if (specifyRoleIds != null && !specifyRoleIds.isEmpty()) {
-            List<String> list = specifyRoleIds.stream().map(String::valueOf).toList();
-            permission.setSpecifyRoleIds(list);
-        }
+    public Keyboard addButton(Button button) {
         List<Row> rows = getData().getContent().getRows();
         if (rows.isEmpty()) {
             addRow();
         }
-        if (!rows.get(rows.size() - 1).addButton(button)) {
-            addRow();
-            rows.get(rows.size() - 1).addButton(button);
-        }
+        rows.get(rows.size() - 1).addButton(button);
         return this;
     }
 
     public Keyboard addRow() {
         List<Row> rows = getData().getContent().getRows();
-        if (rows.size() >= MAX_ROW_NUM) {
-            return this;
-        }
         if (!rows.isEmpty() && rows.get(rows.size() - 1).getButtons().isEmpty()) {
             return this;
         }
@@ -150,12 +90,8 @@ public class Keyboard {
     public static class Row {
         private List<Button> buttons = new ArrayList<>();
 
-        public boolean addButton(Button button) {
-            if (getButtons().size() >= MAX_BUTTON_NUM) {
-                return false;
-            }
+        public void addButton(Button button) {
             getButtons().add(button);
-            return true;
         }
     }
 
@@ -274,7 +210,7 @@ public class Keyboard {
         /**
          * 按钮上的文字
          */
-        private String text = "按钮";
+        private String label = "按钮";
         /**
          * 点击后按钮的上文字
          */
@@ -313,12 +249,16 @@ public class Keyboard {
          */
         private int permissionType = PERMISSION_TYPE_ALL;
         /**
-         * 有权限的 id 的列表
+         * 有权限的用户 id 的列表
          */
-        private List<Long> specifies;
+        private List<String> specifyUserIds;
+        /**
+         * 有权限的身份组 id 的列表（仅频道可用）
+         */
+        private List<String> specifyRoleIds;
         /**
          * 本字段仅在指令按钮下有效，设置后后会忽略 action.enter 配置。
-         * 设置为 1 时 ，点击按钮自动唤起启手Q选图器，其他值暂无效果。
+         * 设置为 {@link Keyboard#ANCHOR_SELECT} 时 ，点击按钮自动唤起启手Q选图器，其他值暂无效果。
          * 仅支持手机端版本 8983+ 的单聊场景，桌面端不支持）
          */
         private Integer anchor = ANCHOR_NONE;
@@ -326,6 +266,27 @@ public class Keyboard {
          * 客户端不支持本action的时候，弹出的toast文案
          */
         private String unSupportTips = "暂不支持当前版本";
+
+        public Button build() {
+            Button button = new Button();
+            button.setId(id);
+            button.getRenderData()
+                    .setLabel(label)
+                    .setVisitedLabel(visitedLabel)
+                    .setStyle(style);
+            button.getAction()
+                    .setType(actionType)
+                    .setData(data)
+                    .setReply(reply)
+                    .setEnter(enter)
+                    .setAnchor(anchor)
+                    .setUnSupportTips(unSupportTips);
+            button.getAction().getPermission()
+                    .setType(permissionType)
+                    .setSpecifyUserIds(specifyUserIds)
+                    .setSpecifyRoleIds(specifyRoleIds);
+            return button;
+        }
     }
 
 }

@@ -194,6 +194,23 @@ public class ArrayMsgUtils {
         return this;
     }
 
+    /**
+     * <pre>{@code
+     *     Keyboard keyboard = Keyboard.Builder()
+     *     .addRow()
+     *     .addButton(Keyboard.TextButtonBuilder()
+     *          .text("+1")
+     *          .data("md2")
+     *          .build()
+     *          )
+     *     .build();
+     * }</pre>
+     */
+    public ArrayMsgUtils keyboard(Keyboard keyboard) {
+        builder.add(getJsonData("keyboard", m -> m.put("keyboard", JSON.toJSONString(keyboard))));
+        return this;
+    }
+
     public String build() {
         return builder.stream().map(ArrayMsg::toCqCode).collect(Collectors.joining());
     }

@@ -126,6 +126,12 @@ public enum MsgTypeEnum {
      */
     markdown,
 
+
+    /**
+     * 富文本下的按钮
+     */
+    keyboard,
+
     /**
      * 合并转发消息节点
      */

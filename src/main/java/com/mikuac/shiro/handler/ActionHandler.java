@@ -1,13 +1,17 @@
 package com.mikuac.shiro.handler;
 
+import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
 import com.mikuac.shiro.common.utils.SendUtils;
+import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.AdapterEnum;
+import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.exception.ShiroException;
+import com.mikuac.shiro.model.ArrayMsg;
 import com.mikuac.shiro.properties.RateLimiterProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -15,8 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created on 2021/7/7.
@@ -142,9 +145,27 @@ public class ActionHandler {
         payload.put("action", action.getPath());
         payload.put("echo", echo++);
         if (params != null && !params.isEmpty()) {
+            convert(params);
             payload.put("params", params);
         }
         return payload;
+    }
+
+    private static void convert(Map<String, Object> params) {
+        Object msg = params.get(ActionParams.MESSAGE);
+        if (msg instanceof List it) {
+            ArrayList<Object> msgList = new ArrayList<>();
+            for (Object o : it) {
+                if (o instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
+                    String data = arrayMsg.getData().get("keyboard");
+                    JSONObject jsonObject = JSON.parseObject(data);
+                    msgList.add(jsonObject);
+                } else {
+                    msgList.add(o);
+                }
+            }
+            params.put(ActionParams.MESSAGE, msgList);
+        }
     }
 
 }

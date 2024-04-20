@@ -75,6 +75,25 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
+     * 发送消息
+     *
+     * @param event      {@link AnyMessageEvent}
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    @Override
+    public ActionData<MsgId> sendMsg(AnyMessageEvent event, List<ArrayMsg> msg, boolean autoEscape) {
+        if (ActionParams.PRIVATE.equals(event.getMessageType())) {
+            return sendPrivateMsg(event.getUserId(), msg, autoEscape);
+        }
+        if (ActionParams.GROUP.equals(event.getMessageType())) {
+            return sendGroupMsg(event.getGroupId(), msg, autoEscape);
+        }
+        return null;
+    }
+
+    /**
      * 发送私聊消息
      *
      * @param userId     对方 QQ 号
@@ -1310,70 +1329,6 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     public ActionList<String> fetchCustomFace() {
         JSONObject result = actionHandler.action(session, ActionPathEnum.FETCH_CUSTOM_FACE, null);
         return result != null ? result.to(new TypeReference<ActionList<String>>() {
-        }.getType()) : null;
-    }
-
-    /**
-     * 发送消息
-     *
-     * @param event      {@link AnyMessageEvent}
-     * @param msg        消息链
-     * @param keyboard   使用{@link Keyboard}构造 不需要按钮就填 null
-     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return result {@link ActionData} of {@link MsgId}
-     */
-    @Override
-    public ActionData<MsgId> sendMarkdownMsg(AnyMessageEvent event, List<ArrayMsg> msg, Keyboard keyboard, boolean autoEscape) {
-        if (ActionParams.PRIVATE.equals(event.getMessageType())) {
-            return sendPrivateMarkdownMsg(event.getUserId(), msg, keyboard, autoEscape);
-        }
-        if (ActionParams.GROUP.equals(event.getMessageType())) {
-            return sendGroupMarkdownMsg(event.getGroupId(), msg, keyboard, autoEscape);
-        }
-        return null;
-    }
-
-    /**
-     * 发送私聊消息
-     *
-     * @param userId     对方 QQ 号
-     * @param msg        消息链
-     * @param keyboard   使用{@link Keyboard}构造 不需要按钮就填 null
-     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return result {@link ActionData} of {@link MsgId}
-     */
-    @Override
-    public ActionData<MsgId> sendPrivateMarkdownMsg(long userId, List<ArrayMsg> msg, Keyboard keyboard, boolean autoEscape) {
-        List<Object> contents = new ArrayList<>(msg);
-        contents.add(keyboard);
-        JSONObject params = new JSONObject();
-        params.put(ActionParams.USER_ID, userId);
-        params.put(ActionParams.MESSAGE, contents);
-        params.put(ActionParams.AUTO_ESCAPE, false);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
-    }
-
-    /**
-     * 发送私聊消息
-     *
-     * @param groupId    群号
-     * @param msg        消息链
-     * @param keyboard   使用{@link Keyboard}构造 不需要按钮就填 null
-     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
-     * @return result {@link ActionData} of {@link MsgId}
-     */
-    @Override
-    public ActionData<MsgId> sendGroupMarkdownMsg(long groupId, List<ArrayMsg> msg, Keyboard keyboard, boolean autoEscape) {
-        List<Object> contents = new ArrayList<>(msg);
-        contents.add(keyboard);
-        JSONObject params = new JSONObject();
-        params.put(ActionParams.GROUP_ID, groupId);
-        params.put(ActionParams.MESSAGE, contents);
-        params.put(ActionParams.AUTO_ESCAPE, false);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
         }.getType()) : null;
     }
 
