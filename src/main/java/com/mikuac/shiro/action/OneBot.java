@@ -17,6 +17,15 @@ public interface OneBot {
      * @return result {@link ActionData} of {@link MsgId}
      */
     ActionData<MsgId> sendMsg(AnyMessageEvent event, String msg, boolean autoEscape);
+    /**
+     * 发送消息
+     *
+     * @param event      {@link AnyMessageEvent}
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    ActionData<MsgId> sendMsg(AnyMessageEvent event, List<ArrayMsg> msg, boolean autoEscape);
 
     /**
      * 发送私聊消息

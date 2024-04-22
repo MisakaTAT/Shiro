@@ -3,6 +3,7 @@ package com.mikuac.shiro.core;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.action.*;
+import com.mikuac.shiro.common.utils.Keyboard;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
@@ -18,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -63,6 +65,25 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendMsg(AnyMessageEvent event, String msg, boolean autoEscape) {
+        if (ActionParams.PRIVATE.equals(event.getMessageType())) {
+            return sendPrivateMsg(event.getUserId(), msg, autoEscape);
+        }
+        if (ActionParams.GROUP.equals(event.getMessageType())) {
+            return sendGroupMsg(event.getGroupId(), msg, autoEscape);
+        }
+        return null;
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param event      {@link AnyMessageEvent}
+     * @param msg        消息链
+     * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
+     * @return result {@link ActionData} of {@link MsgId}
+     */
+    @Override
+    public ActionData<MsgId> sendMsg(AnyMessageEvent event, List<ArrayMsg> msg, boolean autoEscape) {
         if (ActionParams.PRIVATE.equals(event.getMessageType())) {
             return sendPrivateMsg(event.getUserId(), msg, autoEscape);
         }
