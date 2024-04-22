@@ -199,7 +199,7 @@ public class ArrayMsgUtils {
      *     Keyboard keyboard = Keyboard.Builder()
      *     .addRow()
      *     .addButton(Keyboard.TextButtonBuilder()
-     *          .text("+1")
+     *          .label("+1")
      *          .data("md2")
      *          .build()
      *          )

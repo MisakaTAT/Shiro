@@ -19,7 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2021/7/7.
@@ -153,7 +156,7 @@ public class ActionHandler {
 
     private static void convert(Map<String, Object> params) {
         Object msg = params.get(ActionParams.MESSAGE);
-        if (msg instanceof List it) {
+        if (msg instanceof List<?> it) {
             ArrayList<Object> msgList = new ArrayList<>();
             for (Object o : it) {
                 if (o instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {

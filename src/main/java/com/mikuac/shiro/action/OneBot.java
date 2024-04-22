@@ -17,6 +17,7 @@ public interface OneBot {
      * @return result {@link ActionData} of {@link MsgId}
      */
     ActionData<MsgId> sendMsg(AnyMessageEvent event, String msg, boolean autoEscape);
+
     /**
      * 发送消息
      *

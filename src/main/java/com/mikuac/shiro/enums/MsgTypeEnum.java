@@ -126,7 +126,6 @@ public enum MsgTypeEnum {
      */
     markdown,
 
-
     /**
      * 富文本下的按钮
      */
