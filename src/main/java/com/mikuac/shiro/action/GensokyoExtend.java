@@ -1,6 +1,7 @@
 package com.mikuac.shiro.action;
 
 import com.mikuac.shiro.dto.action.common.ActionData;
+import com.mikuac.shiro.dto.action.common.ActionRaw;
 import com.mikuac.shiro.dto.action.common.MsgId;
 import com.mikuac.shiro.model.ArrayMsg;
 
@@ -19,5 +20,15 @@ public interface GensokyoExtend {
      * @return result {@link ActionData} of {@link MsgId}
      */
     ActionData<MsgId> sendGroupMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape);
+
+    /**
+     * 撤回消息（兼容gsk）
+     *
+     * @param groupId 群号
+     * @param userId  用户id
+     * @param msgId   消息 ID
+     * @return result {@link ActionRaw}
+     */
+    ActionRaw deleteMsg(long groupId, long userId, int msgId);
 
 }

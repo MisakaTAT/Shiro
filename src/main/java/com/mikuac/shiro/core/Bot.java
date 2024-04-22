@@ -410,24 +410,23 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
-     * 撤回消息
-     *
      * 撤回消息（兼容gsk）
      *
-     * @param groupCode 群号
-     * @param user_id 用户id
-     * @param msgId 消息 ID
+     * @param groupId 群号
+     * @param userId  用户id
+     * @param msgId   消息 ID
      * @return result {@link ActionRaw}
      */
     @Override
-    public ActionRaw deleteMsg(long groupCode, long user_id, int msgId) {
+    public ActionRaw deleteMsg(long groupId, long userId, int msgId) {
         JSONObject params = new JSONObject();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        params.put(ActionParams.GROUP_ID, groupCode);
-        params.put(ActionParams.USER_ID, user_id);
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.USER_ID, userId);
         JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
+
     /**
      * 群组踢人
      *
