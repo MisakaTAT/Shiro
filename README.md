@@ -188,6 +188,7 @@ Shiro 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/spe
 
 
 # Contributors
+See [Contributing](https://github.com/MisakaTAT/Shiro/graphs/contributors) for details. Thanks to all the people who already contributed!
 
 [![contributors](https://stg.contrib.rocks/image?repo=MisakaTAT/Shiro)](https://github.com/MisakaTAT/Shiro/graphs/contributors)
 
