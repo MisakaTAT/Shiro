@@ -27,7 +27,7 @@ public class Keyboard {
     public static final int PERMISSION_TYPE_ROLE = 3;
     public static final int ANCHOR_NONE = 0;
     public static final int ANCHOR_SELECT = 1;
-    private static final String TYPE = "keyboard";
+    private String type = "keyboard";
 
     private Data data = new Data();
 
