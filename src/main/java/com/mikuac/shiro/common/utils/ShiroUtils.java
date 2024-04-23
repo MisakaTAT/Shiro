@@ -314,7 +314,7 @@ public class ShiroUtils {
      * @return 消息结构
      */
     @SuppressWarnings("Duplicates")
-    public static List<Map<String, Object>> generateForwardMsg(String uin, String name, List<Object> contents) {
+    public static List<Map<String, Object>> generateForwardMsg(String uin, String name, List<?> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
             Map<String, Object> node = new HashMap<>();
