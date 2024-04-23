@@ -1349,6 +1349,21 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
+     * 获取合并转发消息Id
+     *
+     * @param msg 自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
+     * @return result {@link ActionData} of {@link String} 合并转发的消息Id
+     */
+    @Override
+    public ActionData<String> sendForwardMsg(List<Map<String, Object>> msg) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.MESSAGES, msg);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<String>>() {
+        }.getType()) : null;
+    }
+
+    /**
      * 自定义请求
      *
      * @param action 请求路径

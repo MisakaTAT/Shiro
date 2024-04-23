@@ -185,6 +185,16 @@ public class ArrayMsgUtils {
         return this;
     }
 
+    public ArrayMsgUtils longMsg(String id) {
+        builder.add(getJsonData("longmsg", m -> m.put("id", id)));
+        return this;
+    }
+
+    public ArrayMsgUtils forward(String id) {
+        builder.add(getJsonData("forward", m -> m.put("id", id)));
+        return this;
+    }
+
     public ArrayMsgUtils markdown(String content) {
         builder.add(getJsonData("markdown", m -> {
             HashMap<String, String> map = new HashMap<>();

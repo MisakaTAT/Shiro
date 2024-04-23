@@ -157,6 +157,11 @@ public enum MsgTypeEnum {
     tts,
 
     /**
+     * 长消息
+     */
+    longmsg,
+
+    /**
      * 未知类型
      */
     unknown;

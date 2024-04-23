@@ -310,11 +310,11 @@ public class ShiroUtils {
      * 兼容 Lagrange
      * 生成自定义合并转发消息
      *
-     * @param contents 消息列表，每个元素视为一个消息节点
+     * @param contents 消息列表，每个元素视为一个消息节点 Object 可为 List<ArrayMsg> 或 CQCode
      * @return 消息结构
      */
     @SuppressWarnings("Duplicates")
-    public static List<Map<String, Object>> generateForwardMsg(String uin, String name, List<String> contents) {
+    public static List<Map<String, Object>> generateForwardMsg(String uin, String name, List<Object> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
             Map<String, Object> node = new HashMap<>();
