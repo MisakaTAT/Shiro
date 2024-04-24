@@ -348,6 +348,30 @@ public class MsgUtils {
     }
 
     /**
+     * 发送长消息
+     *
+     * @param id 长消息Id
+     * @return {@link MsgUtils}
+     */
+    public MsgUtils longMsg(String id) {
+        String code = String.format("[CQ:longmsg,id=%s]", id);
+        builder.append(code);
+        return this;
+    }
+
+    /**
+     * 发送合并转发消息
+     *
+     * @param id 合并转发消息Id
+     * @return {@link MsgUtils}
+     */
+    public MsgUtils forward(String id) {
+        String code = String.format("[CQ:forward,id=%s]", id);
+        builder.append(code);
+        return this;
+    }
+
+    /**
      * 构建消息链
      *
      * @return {@link String}
