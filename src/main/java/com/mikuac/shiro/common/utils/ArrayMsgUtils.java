@@ -221,11 +221,11 @@ public class ArrayMsgUtils {
         return this;
     }
 
-    public String build() {
-        return builder.stream().map(ArrayMsg::toCqCode).collect(Collectors.joining());
+    public String buildCQ() {
+        return builder.stream().map(ArrayMsg::toCQCode).collect(Collectors.joining());
     }
 
-    public List<ArrayMsg> buildList() {
+    public List<ArrayMsg> build() {
         return builder;
     }
 

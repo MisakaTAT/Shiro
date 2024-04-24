@@ -36,7 +36,7 @@ public class ArrayMsg {
         return this;
     }
 
-    public String toCqCode() {
+    public String toCQCode() {
         if ("text".equalsIgnoreCase(type)) {
             return data.getOrDefault("text", "");
         }
@@ -51,4 +51,5 @@ public class ArrayMsg {
         stringBuilder.append(']');
         return stringBuilder.toString();
     }
+
 }
