@@ -31,6 +31,11 @@ public class OneBotMedia {
     private Integer timeout;
 
     /**
+     * 自定义文本
+     */
+    private String summary;
+
+    /**
      * <p>builder.</p>
      *
      * @return {@link OneBotMedia}
@@ -46,7 +51,7 @@ public class OneBotMedia {
      */
     public String escape() {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("file=").append(this.file);
+        stringBuilder.append("file=").append(ShiroUtils.escape(this.file));
         if (this.cache != null) {
             stringBuilder.append(",cache=").append(Boolean.TRUE.equals(this.cache) ? 1 : 0);
         }
@@ -55,6 +60,9 @@ public class OneBotMedia {
         }
         if (this.timeout != null) {
             stringBuilder.append(",timeout=").append(this.timeout);
+        }
+        if (this.summary != null) {
+            stringBuilder.append(",summary=").append(ShiroUtils.escape(this.summary));
         }
         return stringBuilder.toString();
     }
@@ -70,6 +78,9 @@ public class OneBotMedia {
         if (this.timeout != null) {
             map.put("timeout", this.timeout.toString());
         }
+        if (this.summary != null) {
+            map.put("summary", this.summary);
+        }
     }
 
     /**
@@ -79,7 +90,7 @@ public class OneBotMedia {
      * @return {@link OneBotMedia}
      */
     public OneBotMedia file(String file) {
-        this.file = ShiroUtils.escape(file);
+        this.file = file;
         return this;
     }
 
@@ -113,6 +124,17 @@ public class OneBotMedia {
      */
     public OneBotMedia timeout(Integer timeout) {
         this.timeout = timeout;
+        return this;
+    }
+
+    /**
+     * <p>summary.</p>
+     *
+     * @param summary 自定义文本
+     * @return {@link OneBotMedia}
+     */
+    public OneBotMedia summary(String summary) {
+        this.summary = summary;
         return this;
     }
 
