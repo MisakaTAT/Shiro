@@ -86,7 +86,6 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
         Map.Entry<Long, Bot> bot = botContainer.robots.entrySet().stream().findFirst().orElse(null);
         if (bot != null) {
-            System.out.println(status);
             log.warn("Account {} disconnected", bot.getKey());
             coreEvent.offline(bot.getKey());
             botContainer.robots.clear();
