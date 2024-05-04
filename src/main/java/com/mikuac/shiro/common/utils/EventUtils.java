@@ -24,21 +24,19 @@ import java.util.List;
 @Component
 public class EventUtils {
 
+    private final BotPlugin defaultPlugin = new BotPlugin();
     private ApplicationContext ctx;
+    private InjectionHandler injection;
 
     @Autowired
     public void setCtx(ApplicationContext ctx) {
         this.ctx = ctx;
     }
 
-    private InjectionHandler injection;
-
     @Autowired
     public void setInjection(InjectionHandler injection) {
         this.injection = injection;
     }
-
-    private final BotPlugin defaultPlugin = new BotPlugin();
 
     /**
      * 获取插件

@@ -14,10 +14,10 @@ import java.util.regex.Pattern;
  */
 public class RegexUtils {
 
+    private static final Map<String, Pattern> cache = new ConcurrentHashMap<>();
+
     private RegexUtils() {
     }
-
-    private static final Map<String, Pattern> cache = new ConcurrentHashMap<>();
 
     /**
      * 正则匹配

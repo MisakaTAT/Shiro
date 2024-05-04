@@ -43,36 +43,50 @@ public class ActionHandler {
      * WebSocket 配置
      */
     private WebSocketProperties wsProp;
+    /**
+     * 限速器配置
+     */
+    private RateLimiterProperties rateLimiterProperties;
+    /**
+     * 限速器
+     */
+    private RateLimiter rateLimiter;
+    /**
+     * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
+     */
+    private int echo = 0;
+
+    private static void convert(Map<String, Object> params) {
+        Object msg = params.get(ActionParams.MESSAGE);
+        if (msg instanceof List<?> it) {
+            ArrayList<Object> msgList = new ArrayList<>();
+            for (Object o : it) {
+                if (o instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
+                    String data = arrayMsg.getData().get("keyboard");
+                    JSONObject jsonObject = JSON.parseObject(data);
+                    msgList.add(jsonObject);
+                } else {
+                    msgList.add(o);
+                }
+            }
+            params.put(ActionParams.MESSAGE, msgList);
+        }
+    }
 
     @Autowired
     public void setWebSocketProperties(WebSocketProperties wsProp) {
         this.wsProp = wsProp;
     }
 
-    /**
-     * 限速器配置
-     */
-    private RateLimiterProperties rateLimiterProperties;
-
     @Autowired
     public void setRateLimiterProperties(RateLimiterProperties rateLimiterProperties) {
         this.rateLimiterProperties = rateLimiterProperties;
     }
 
-    /**
-     * 限速器
-     */
-    private RateLimiter rateLimiter;
-
     @Autowired
     public void setRateLimiter(RateLimiter rateLimiter) {
         this.rateLimiter = rateLimiter;
     }
-
-    /**
-     * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
-     */
-    private int echo = 0;
 
     /**
      * 处理响应结果
@@ -152,23 +166,6 @@ public class ActionHandler {
             payload.put("params", params);
         }
         return payload;
-    }
-
-    private static void convert(Map<String, Object> params) {
-        Object msg = params.get(ActionParams.MESSAGE);
-        if (msg instanceof List<?> it) {
-            ArrayList<Object> msgList = new ArrayList<>();
-            for (Object o : it) {
-                if (o instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
-                    String data = arrayMsg.getData().get("keyboard");
-                    JSONObject jsonObject = JSON.parseObject(data);
-                    msgList.add(jsonObject);
-                } else {
-                    msgList.add(o);
-                }
-            }
-            params.put(ActionParams.MESSAGE, msgList);
-        }
     }
 
 }

@@ -23,45 +23,40 @@ import java.util.function.BiConsumer;
 @Component
 public class EventHandler implements ApplicationRunner {
 
+    /**
+     * 存储事件处理器
+     */
+    private final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
     private MetaEvent meta;
+    private NoticeEvent notice;
+    private NotifyEvent notify;
+    private MessageEvent message;
+    private RequestEvent request;
 
     @Autowired
     public void setMeta(MetaEvent meta) {
         this.meta = meta;
     }
 
-    private NoticeEvent notice;
-
     @Autowired
     public void setNotice(NoticeEvent notice) {
         this.notice = notice;
     }
-
-    private NotifyEvent notify;
 
     @Autowired
     public void setNotify(NotifyEvent notify) {
         this.notify = notify;
     }
 
-    private MessageEvent message;
-
     @Autowired
     public void setMessage(MessageEvent message) {
         this.message = message;
     }
 
-    private RequestEvent request;
-
     @Autowired
     public void setRequest(RequestEvent request) {
         this.request = request;
     }
-
-    /**
-     * 存储事件处理器
-     */
-    private final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
 
     @Override
     public void run(ApplicationArguments args) {

@@ -20,12 +20,11 @@ import java.util.regex.Matcher;
 @SuppressWarnings({"unused", "squid:S1192"})
 public class ShiroUtils {
 
+    private static final String CQ_CODE_SPLIT = "(?<=\\[CQ:[^]]{1,99999}])|(?=\\[CQ:[^]]{1,99999}])";
+    private static final String CQ_CODE_REGEX = "\\[CQ:([^,\\[\\]]+)((?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
+
     private ShiroUtils() {
     }
-
-    private static final String CQ_CODE_SPLIT = "(?<=\\[CQ:[^]]{1,99999}])|(?=\\[CQ:[^]]{1,99999}])";
-
-    private static final String CQ_CODE_REGEX = "\\[CQ:([^,\\[\\]]+)((?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
 
     /**
      * 判断是否为全体at

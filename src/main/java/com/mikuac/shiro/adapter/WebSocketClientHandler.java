@@ -45,17 +45,17 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
 
     private CoreEvent coreEvent;
 
-    @Autowired
-    public void setCoreEvent(CoreEvent coreEvent) {
-        this.coreEvent = coreEvent;
-    }
-
     public WebSocketClientHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
         this.shiroAsyncTask = shiroAsyncTask;
         this.botContainer = botContainer;
+    }
+
+    @Autowired
+    public void setCoreEvent(CoreEvent coreEvent) {
+        this.coreEvent = coreEvent;
     }
 
     @Override

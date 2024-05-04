@@ -44,20 +44,22 @@ import java.util.concurrent.TimeUnit;
 public class ShiroAutoConfiguration implements WebSocketConfigurer {
 
     private WebSocketServerProperties wsServerProp;
+    private WebSocketClientProperties wsClientProp;
+    private ScheduledExecutorService scheduledExecutorService;
+    private WebSocketProperties wsProp;
+    private ShiroProperties shiroProperties;
+    private WebSocketServerHandler webSocketServerHandler;
+    private WebSocketClientHandler webSocketClientHandler;
 
     @Autowired
     public void setWebSocketServerProperties(WebSocketServerProperties wsServerProp) {
         this.wsServerProp = wsServerProp;
     }
 
-    private WebSocketClientProperties wsClientProp;
-
     @Autowired
     public void setWebSocketClientProperties(WebSocketClientProperties wsClientProp) {
         this.wsClientProp = wsClientProp;
     }
-
-    private ScheduledExecutorService scheduledExecutorService;
 
     @Autowired
     public void setScheduledExecutorService(ThreadPoolTaskExecutor shiroTaskExecutor) {
@@ -67,14 +69,10 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         scheduledExecutorService = executor;
     }
 
-    private WebSocketProperties wsProp;
-
     @Autowired
     public void setWebSocketProperties(WebSocketProperties wsProp) {
         this.wsProp = wsProp;
     }
-
-    private ShiroProperties shiroProperties;
 
     @Autowired
     public void setShiroProperties(ShiroProperties shiroProperties) {
@@ -82,14 +80,10 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         WebSocketServerHandler.setWaitWebsocketConnect(shiroProperties.getWaitBotConnect());
     }
 
-    private WebSocketServerHandler webSocketServerHandler;
-
     @Autowired(required = false)
     public void setWebSocketServerHandler(WebSocketServerHandler webSocketServerHandler) {
         this.webSocketServerHandler = webSocketServerHandler;
     }
-
-    private WebSocketClientHandler webSocketClientHandler;
 
     @Autowired(required = false)
     public void setWebSocketClientHandler(WebSocketClientHandler webSocketClientHandler) {

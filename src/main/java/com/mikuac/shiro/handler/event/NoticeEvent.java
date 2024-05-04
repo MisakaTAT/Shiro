@@ -20,31 +20,28 @@ import java.util.function.BiConsumer;
 @Component
 public class NoticeEvent {
 
+    /**
+     * 存储通知事件处理器
+     */
+    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
     private EventUtils utils;
+    private InjectionHandler injection;
+    private NotifyEvent notify;
 
     @Autowired
     public void setUtils(EventUtils utils) {
         this.utils = utils;
     }
 
-    private InjectionHandler injection;
-
     @Autowired
     public void setInjection(InjectionHandler injection) {
         this.injection = injection;
     }
 
-    private NotifyEvent notify;
-
     @Autowired
     public void setNotify(NotifyEvent notify) {
         this.notify = notify;
     }
-
-    /**
-     * 存储通知事件处理器
-     */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
 
     /**
      * 通知事件分发
