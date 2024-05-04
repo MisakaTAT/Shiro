@@ -80,7 +80,6 @@ publishing {
         }
     }
     repositories {
-        mavenLocal()
         maven {
             val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots")
             val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
