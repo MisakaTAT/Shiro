@@ -56,16 +56,6 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
     private final BotContainer botContainer;
 
     private ScheduledExecutorService scheduledExecutorService;
-    private CoreEvent coreEvent;
-    private WebSocketProperties wsProp;
-
-    public WebSocketServerHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
-        this.eventHandler = eventHandler;
-        this.botFactory = botFactory;
-        this.actionHandler = actionHandler;
-        this.shiroAsyncTask = shiroAsyncTask;
-        this.botContainer = botContainer;
-    }
 
     @Autowired
     public void setScheduledExecutorService(ThreadPoolTaskExecutor shiroTaskExecutor) {
@@ -75,14 +65,26 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
         scheduledExecutorService = executor;
     }
 
+    private CoreEvent coreEvent;
+
     @Autowired
     public void setCoreEvent(CoreEvent coreEvent) {
         this.coreEvent = coreEvent;
     }
 
+    private WebSocketProperties wsProp;
+
     @Autowired
     public void setWebSocketProperties(WebSocketProperties wsProp) {
         this.wsProp = wsProp;
+    }
+
+    public WebSocketServerHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+        this.eventHandler = eventHandler;
+        this.botFactory = botFactory;
+        this.actionHandler = actionHandler;
+        this.shiroAsyncTask = shiroAsyncTask;
+        this.botContainer = botContainer;
     }
 
     @Override

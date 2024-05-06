@@ -28,14 +28,9 @@ import java.util.function.BiConsumer;
 @Component
 public class MessageEvent {
 
-    /**
-     * 存储消息事件处理器
-     */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
     private EventUtils utils;
     private ShiroProperties shiroProperties;
     private BotContainer botContainer;
-    private InjectionHandler injection;
 
     @Autowired
     public void setUtils(EventUtils utils, ShiroProperties shiroProperties, BotContainer botContainer) {
@@ -44,10 +39,17 @@ public class MessageEvent {
         this.botContainer = botContainer;
     }
 
+    private InjectionHandler injection;
+
     @Autowired
     public void setInjection(InjectionHandler injection) {
         this.injection = injection;
     }
+
+    /**
+     * 存储消息事件处理器
+     */
+    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
 
     /**
      * 消息事件分发

@@ -32,8 +32,25 @@ public class BotFactory {
     private static Set<Class<?>> annotations = new LinkedHashSet<>();
 
     private ActionHandler actionHandler;
+
+    @Autowired
+    public void setActionHandler(ActionHandler actionHandler) {
+        this.actionHandler = actionHandler;
+    }
+
     private ShiroProperties shiroProperties;
+
+    @Autowired
+    public void setShiroProperties(ShiroProperties shiroProperties) {
+        this.shiroProperties = shiroProperties;
+    }
+
     private ApplicationContext applicationContext;
+
+    @Autowired
+    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     /**
      * 获取所有注解类
@@ -46,21 +63,6 @@ public class BotFactory {
         }
         annotations = new ScanUtils().scanAnnotation("com.mikuac.shiro.annotation");
         return annotations;
-    }
-
-    @Autowired
-    public void setActionHandler(ActionHandler actionHandler) {
-        this.actionHandler = actionHandler;
-    }
-
-    @Autowired
-    public void setShiroProperties(ShiroProperties shiroProperties) {
-        this.shiroProperties = shiroProperties;
-    }
-
-    @Autowired
-    public void setApplicationContext(ApplicationContext applicationContext) {
-        this.applicationContext = applicationContext;
     }
 
     /**

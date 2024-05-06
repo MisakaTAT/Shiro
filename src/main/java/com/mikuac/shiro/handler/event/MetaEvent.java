@@ -21,16 +21,17 @@ import java.util.function.BiConsumer;
 @SuppressWarnings("unused")
 public class MetaEvent {
 
-    /**
-     * 存储元事件处理器
-     */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
     private InjectionHandler injection;
 
     @Autowired
     public void setInjection(InjectionHandler injection) {
         this.injection = injection;
     }
+
+    /**
+     * 存储元事件处理器
+     */
+    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
 
     /**
      * 元事件分发

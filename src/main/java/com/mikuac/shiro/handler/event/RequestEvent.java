@@ -21,17 +21,19 @@ import java.util.function.BiConsumer;
 @Component
 public class RequestEvent {
 
-    /**
-     * 存储请求事件处理器
-     */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
     private EventUtils utils;
-    private InjectionHandler injection;
 
     @Autowired
     public void setUtils(EventUtils utils) {
         this.utils = utils;
     }
+
+    /**
+     * 存储请求事件处理器
+     */
+    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+
+    private InjectionHandler injection;
 
     @Autowired
     public void setInjection(InjectionHandler injection) {

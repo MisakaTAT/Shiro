@@ -25,36 +25,41 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 public class Shiro {
 
     private WebSocketServerProperties wsServerProp;
-    private BotFactory botFactory;
-    private EventHandler eventHandler;
-    private ActionHandler actionHandler;
-    private ShiroAsyncTask shiroAsyncTask;
-    private BotContainer botContainer;
 
     @Autowired
     public void setWebSocketServerProperties(WebSocketServerProperties wsServerProp) {
         this.wsServerProp = wsServerProp;
     }
 
+    private BotFactory botFactory;
+
     @Autowired
     public void setBotFactory(BotFactory botFactory) {
         this.botFactory = botFactory;
     }
+
+    private EventHandler eventHandler;
 
     @Autowired
     public void setEventHandler(EventHandler eventHandler) {
         this.eventHandler = eventHandler;
     }
 
+    private ActionHandler actionHandler;
+
     @Autowired
     public void setActionHandler(ActionHandler actionHandler) {
         this.actionHandler = actionHandler;
     }
 
+    private ShiroAsyncTask shiroAsyncTask;
+
     @Autowired
     public void setShiroAsyncTask(ShiroAsyncTask shiroAsyncTask) {
         this.shiroAsyncTask = shiroAsyncTask;
     }
+
+    private BotContainer botContainer;
 
     @Autowired
     public void setBotContainer(BotContainer botContainer) {

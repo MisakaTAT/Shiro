@@ -24,14 +24,17 @@ public class SendUtils {
     private final int timeout;
 
     private final WebSocketSession session;
-    private final Lock lock = new ReentrantLock();
-    private final Condition condition = lock.newCondition();
-    private JSONObject resp;
 
     public SendUtils(WebSocketSession session, int timeout) {
         this.session = session;
         this.timeout = timeout;
     }
+
+    private JSONObject resp;
+
+    private final Lock lock = new ReentrantLock();
+
+    private final Condition condition = lock.newCondition();
 
     @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S899", "squid:S2274"})
     public JSONObject send(@NonNull JSONObject payload) {
