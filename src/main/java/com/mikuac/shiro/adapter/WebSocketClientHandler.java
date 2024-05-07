@@ -60,6 +60,9 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
+        session.setTextMessageSizeLimit(1024 * 1024);
+        session.setBinaryMessageSizeLimit(1024 * 1024);
+
         try {
             session.getAttributes().put(Connection.ADAPTER_KEY, AdapterEnum.CLIENT);
             long xSelfId = ConnectionUtils.parseSelfId(session);
