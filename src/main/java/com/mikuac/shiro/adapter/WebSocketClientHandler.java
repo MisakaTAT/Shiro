@@ -12,6 +12,7 @@ import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.enums.AdapterEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
+import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,13 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
         this.coreEvent = coreEvent;
     }
 
+    private WebSocketProperties wsProp;
+
+    @Autowired
+    public void setWebSocketProperties(WebSocketProperties wsProp) {
+        this.wsProp = wsProp;
+    }
+
     public WebSocketClientHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
@@ -60,10 +68,9 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
-        session.setTextMessageSizeLimit(1024 * 1024);
-        session.setBinaryMessageSizeLimit(1024 * 1024);
-
         try {
+            session.setTextMessageSizeLimit(wsProp.getMaxTextMessageBufferSize());
+            session.setBinaryMessageSizeLimit(wsProp.getMaxBinaryMessageBufferSize());
             session.getAttributes().put(Connection.ADAPTER_KEY, AdapterEnum.CLIENT);
             long xSelfId = ConnectionUtils.parseSelfId(session);
             if (xSelfId == 0L) {

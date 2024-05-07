@@ -24,4 +24,14 @@ public class WebSocketProperties {
      */
     private Integer timeout = 10;
 
+    /**
+     * 最大文本消息缓冲区 512KB
+     */
+    private Integer maxTextMessageBufferSize = 512000;
+
+    /**
+     * 二进制消息的最大长度 512KB
+     */
+    private Integer maxBinaryMessageBufferSize = 512000;
+
 }

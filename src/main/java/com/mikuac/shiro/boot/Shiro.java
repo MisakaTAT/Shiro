@@ -6,6 +6,7 @@ import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
+import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.properties.WebSocketServerProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,13 @@ public class Shiro {
     @Autowired
     public void setWebSocketServerProperties(WebSocketServerProperties wsServerProp) {
         this.wsServerProp = wsServerProp;
+    }
+
+    private WebSocketProperties wsProp;
+
+    @Autowired
+    public void setWebSocketProperties(WebSocketProperties wsProp) {
+        this.wsProp = wsProp;
     }
 
     private BotFactory botFactory;
@@ -89,8 +97,8 @@ public class Shiro {
     @ConditionalOnMissingBean
     public ServletServerContainerFactoryBean createWebSocketServerContainer() {
         ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxTextMessageBufferSize(wsServerProp.getMaxTextMessageBufferSize());
-        container.setMaxBinaryMessageBufferSize(wsServerProp.getMaxBinaryMessageBufferSize());
+        container.setMaxTextMessageBufferSize(wsProp.getMaxTextMessageBufferSize());
+        container.setMaxBinaryMessageBufferSize(wsProp.getMaxBinaryMessageBufferSize());
         container.setMaxSessionIdleTimeout(wsServerProp.getMaxSessionIdleTimeout());
         return container;
     }
