@@ -67,11 +67,11 @@ public enum ActionPathEnum implements ActionPath {
      */
     SET_FRIEND_ADD_REQUEST("set_friend_add_request"),
     /**
-     * 《处理加群请求／邀请
+     * 处理加群请求／邀请
      */
     SET_GROUP_ADD_REQUEST("set_group_add_request"),
     /**
-     * 《获取登录号信息
+     * 获取登录号信息
      */
     GET_LOGIN_INFO("get_login_info"),
     /**

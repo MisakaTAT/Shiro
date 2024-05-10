@@ -91,13 +91,6 @@ public interface GoCQHTTPExtend {
     ActionRaw setGroupSpecialTitle(long groupId, long userId, String specialTitle, int duration);
 
     /**
-     * 获取登录号信息
-     *
-     * @return result {@link ActionData} of @{@link LoginInfoResp}
-     */
-    ActionData<LoginInfoResp> getLoginInfo();
-
-    /**
      * 删除好友
      *
      * @param friendId 好友 QQ 号

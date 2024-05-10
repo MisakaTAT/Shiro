@@ -322,4 +322,12 @@ public interface OneBot {
      * @return result {@link ActionRaw}
      */
     ActionRaw setGroupWholeBan(long groupId, boolean enable);
+
+    /**
+     * 获取登录号信息
+     *
+     * @return result {@link ActionData} of @{@link LoginInfoResp}
+     */
+    ActionData<LoginInfoResp> getLoginInfo();
+
 }
