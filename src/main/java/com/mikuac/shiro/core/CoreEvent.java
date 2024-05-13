@@ -10,7 +10,7 @@ import org.springframework.web.socket.WebSocketSession;
  * @version $Id: $Id
  */
 @Component
-@SuppressWarnings("unused")
+@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
 public class CoreEvent {
 
     /**

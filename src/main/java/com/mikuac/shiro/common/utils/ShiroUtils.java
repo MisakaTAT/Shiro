@@ -270,6 +270,7 @@ public class ShiroUtils {
      *                 <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return 消息结构
      */
+    @SuppressWarnings("Duplicates")
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
@@ -337,17 +338,8 @@ public class ShiroUtils {
      * @param quoteMsgId 引用的消息ID
      * @return 消息结构
      */
-    @SuppressWarnings("Duplicates")
     public static List<Map<String, Object>> generateForwardMsg(List<String> contents, List<String> quoteMsgId) {
-        List<Map<String, Object>> nodes = new ArrayList<>();
-        contents.forEach(msg -> {
-            Map<String, Object> node = new HashMap<>();
-            node.put("type", "node");
-            Map<String, Object> data = new HashMap<>();
-            data.put("content", msg);
-            node.put("data", data);
-            nodes.add(node);
-        });
+        List<Map<String, Object>> nodes = generateForwardMsg(contents);
         quoteMsgId.forEach(id -> {
             Map<String, Object> node = new HashMap<>();
             node.put("type", "node");
