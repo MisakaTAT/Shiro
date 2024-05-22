@@ -27,6 +27,11 @@ public enum MsgTypeEnum {
     mface,
 
     /**
+     * 商城大表情消息
+     **/
+    marketface,
+
+    /**
      * 投篮表情
      */
     basketball,
@@ -173,6 +178,15 @@ public enum MsgTypeEnum {
             }
         }
         return unknown;
+    }
+
+    public static boolean isValidMsgType(MsgTypeEnum typeEnum) {
+        for (MsgTypeEnum t : MsgTypeEnum.values()) {
+            if (t == typeEnum) {
+                return true;
+            }
+        }
+        return false;
     }
 
 }

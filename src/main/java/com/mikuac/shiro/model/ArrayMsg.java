@@ -23,7 +23,11 @@ public class ArrayMsg {
     }
 
     public ArrayMsg setType(MsgTypeEnum typeEnum) {
-        type = typeEnum.name();
+        if (typeEnum == null || !MsgTypeEnum.isValidMsgType(typeEnum)) {
+            type = MsgTypeEnum.unknown.name();
+        } else {
+            type = typeEnum.name();
+        }
         return this;
     }
 
