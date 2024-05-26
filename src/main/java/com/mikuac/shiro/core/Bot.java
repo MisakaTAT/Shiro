@@ -740,6 +740,23 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
+     * 获取群成员列表
+     *
+     * @param groupId 群号
+     * @param noCache 是否不使用缓存（使用缓存可能更新不及时，但响应更快）
+     * @return result {@link ActionList} of {@link GroupMemberInfoResp}
+     */
+    @Override
+    public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId, boolean noCache) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.NO_CACHE, noCache);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
+        return result != null ? result.to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
      * 获取群荣誉信息
      *
      * @param groupId 群号
