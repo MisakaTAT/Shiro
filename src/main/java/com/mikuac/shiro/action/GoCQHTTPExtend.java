@@ -355,4 +355,13 @@ public interface GoCQHTTPExtend {
      * @return result {@link ActionRaw}
      */
     ActionRaw deleteGroupFile(long groupId, String fileId, int busId);
+
+    /**
+     * 获取群成员列表
+     *
+     * @param groupId 群号
+     * @param noCache 是否无视缓存
+     * @return result {@link ActionList} of {@link GroupMemberInfoResp}
+     */
+    ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId, boolean noCache);
 }
