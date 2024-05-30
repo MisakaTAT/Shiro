@@ -124,7 +124,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         StandardWebSocketClient client = new StandardWebSocketClient();
         WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
         if (!Objects.equals(wsProp.getAccessToken(), "")) {
-            headers.add("Authorization", "Bearer " + wsProp.getAccessToken());
+            headers.add("Authorization", wsProp.getAccessToken());
         }
         WebSocketConnectionManager manager = new WebSocketConnectionManager(client, webSocketClientHandler, wsClientProp.getUrl());
         manager.setHeaders(headers);
