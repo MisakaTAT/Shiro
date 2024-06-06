@@ -90,6 +90,7 @@ public class ActionHandler {
 
     /**
      * <p>action.</p>
+     * 可以处理带 keyboard 的请求
      *
      * @param session Session
      * @param action  请求路径
@@ -97,20 +98,40 @@ public class ActionHandler {
      * @return 请求结果
      */
     public JSONObject action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+        if (params != null && ! params.isEmpty()) {
+            convert(params);
+        }
+        return $action(session, action, params);
+    }
+
+    /**
+     * <p>action.</p>
+     * 直接进行原始请求
+     *
+     * @param session Session
+     * @param action  请求路径
+     * @param params  请求参数
+     * @return 请求结果
+     */
+    public JSONObject rawAction(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+        return $action(session, action, params);
+    }
+
+    private JSONObject $action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
         JSONObject result = new JSONObject();
         if (Boolean.TRUE.equals(rateLimiterProperties.getEnable())) {
-            if (Boolean.TRUE.equals(rateLimiterProperties.getAwaitTask()) && !rateLimiter.acquire()) {
+            if (Boolean.TRUE.equals(rateLimiterProperties.getAwaitTask()) && ! rateLimiter.acquire()) {
                 // 阻塞当前线程直到获取令牌成功
                 return result;
             }
-            if (Boolean.TRUE.equals(!rateLimiterProperties.getAwaitTask()) && !rateLimiter.tryAcquire()) {
+            if (Boolean.TRUE.equals(! rateLimiterProperties.getAwaitTask()) && ! rateLimiter.tryAcquire()) {
                 return result;
             }
         }
 
         if (ConnectionUtils.getAdapter(session) == AdapterEnum.SERVER) {
             SessionStatusEnum status = ConnectionUtils.getSessionStatus(session);
-            if (!status.equals(SessionStatusEnum.ONLINE)) {
+            if (! status.equals(SessionStatusEnum.ONLINE)) {
                 if (status.equals(SessionStatusEnum.DIE)) {
                     throw new ShiroException.SessionCloseException();
                 } else {
@@ -127,7 +148,7 @@ public class ActionHandler {
         } catch (Exception e) {
             result.clear();
             result.put("status", "failed");
-            result.put("retcode", -1);
+            result.put("retcode", - 1);
             Thread.currentThread().interrupt();
             log.error("Action failed: {}", e.getMessage());
         }
