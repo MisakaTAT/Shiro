@@ -1406,4 +1406,30 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         }) : null;
     }
 
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    @SuppressWarnings("rawtypes")
+    public ActionData customRawRequest(ActionPath action, Map<String, Object> params) {
+        JSONObject result = actionHandler.rawAction(session, action, params);
+        return result != null ? result.to(ActionData.class) : null;
+    }
+
+    /**
+     * 自定义请求
+     *
+     * @param action 请求路径
+     * @param params 请求参数
+     * @return result {@link ActionData}
+     */
+    public <T> ActionData<T> customRawRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
+        JSONObject result = actionHandler.rawAction(session, action, params);
+        return result != null ? result.to(new TypeReference<>(clazz) {
+        }) : null;
+    }
+
 }

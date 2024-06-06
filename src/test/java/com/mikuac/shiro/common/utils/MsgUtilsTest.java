@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
- class MsgUtilsTest {
+class MsgUtilsTest {
 
     @Test
     void oneBotMediaTest() {
@@ -21,6 +21,5 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
         val msg = "[CQ:at,qq=1122334455]Hello[CQ:image,file=https://test.com/1.jpg]";
         assertEquals(msg, build.build());
     }
-
 
 }
