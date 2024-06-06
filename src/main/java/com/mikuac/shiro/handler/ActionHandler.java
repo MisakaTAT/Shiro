@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -148,27 +147,31 @@ public class ActionHandler {
         payload.put("action", action.getPath());
         payload.put("echo", echo++);
         if (params != null && !params.isEmpty()) {
-            convert(params);
-            payload.put("params", params);
+            payload.put("params", keyboardSerialize(params));
         }
         return payload;
     }
 
-    private static void convert(Map<String, Object> params) {
+    private static Map<String, Object> keyboardSerialize(Map<String, Object> params) {
         Object msg = params.get(ActionParams.MESSAGE);
-        if (msg instanceof List<?> it) {
-            ArrayList<Object> msgList = new ArrayList<>();
-            for (Object o : it) {
-                if (o instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
-                    String data = arrayMsg.getData().get("keyboard");
-                    JSONObject jsonObject = JSON.parseObject(data);
-                    msgList.add(jsonObject);
-                } else {
-                    msgList.add(o);
-                }
-            }
-            params.put(ActionParams.MESSAGE, msgList);
+        if (!(msg instanceof List<?> original)) {
+            return params;
         }
+        List<Object> modified = original.stream().map(v -> {
+            if (v instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
+                String data = arrayMsg.getData().get("keyboard");
+                return JSON.parseObject(data);
+            }
+            return v;
+        }).toList();
+
+        // 检查是否有过修改
+        if (!modified.equals(original)) {
+            Map<String, Object> copy = new HashMap<>(params);
+            copy.put(ActionParams.MESSAGE, modified);
+            return copy;
+        }
+        return params;
     }
 
 }
