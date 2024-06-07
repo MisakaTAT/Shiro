@@ -18,10 +18,10 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class ShiroTaskPoolConfig {
 
-    private TaskPoolProperties taskPoolProperties;
+    private final TaskPoolProperties taskPoolProperties;
 
     @Autowired
-    public void setTaskPoolProperties(TaskPoolProperties taskPoolProperties) {
+    public ShiroTaskPoolConfig(TaskPoolProperties taskPoolProperties) {
         this.taskPoolProperties = taskPoolProperties;
     }
 

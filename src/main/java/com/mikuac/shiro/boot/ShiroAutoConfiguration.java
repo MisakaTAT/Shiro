@@ -8,6 +8,7 @@ import com.mikuac.shiro.properties.ShiroProperties;
 import com.mikuac.shiro.properties.WebSocketClientProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.properties.WebSocketServerProperties;
+import com.mikuac.shiro.task.ScheduledTask;
 import jakarta.annotation.Nonnull;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.LoggerFactory;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
@@ -25,8 +25,7 @@ import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
 
 import java.util.Objects;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,57 +42,32 @@ import java.util.concurrent.TimeUnit;
 @ComponentScan("com.mikuac.shiro")
 public class ShiroAutoConfiguration implements WebSocketConfigurer {
 
-    private WebSocketServerProperties wsServerProp;
+    private final WebSocketServerProperties wsServerProp;
+    private final WebSocketClientProperties wsClientProp;
+    private final WebSocketProperties wsProp;
+    private final ScheduledTask scheduledTask;
+    private final ShiroProperties shiroProperties;
+    private final WebSocketServerHandler webSocketServerHandler;
+    private final WebSocketClientHandler webSocketClientHandler;
 
     @Autowired
-    public void setWebSocketServerProperties(WebSocketServerProperties wsServerProp) {
+    public ShiroAutoConfiguration(
+            WebSocketServerProperties wsServerProp,
+            WebSocketClientProperties wsClientProp,
+            WebSocketProperties wsProp,
+            ShiroProperties shiroProperties,
+            ScheduledTask scheduledTask,
+            Optional<WebSocketServerHandler> webSocketServerHandler,
+            Optional<WebSocketClientHandler> webSocketClientHandler
+    ) {
+
         this.wsServerProp = wsServerProp;
-    }
-
-    private WebSocketClientProperties wsClientProp;
-
-    @Autowired
-    public void setWebSocketClientProperties(WebSocketClientProperties wsClientProp) {
         this.wsClientProp = wsClientProp;
-    }
-
-    private ScheduledExecutorService scheduledExecutorService;
-
-    @Autowired
-    public void setScheduledExecutorService(ThreadPoolTaskExecutor shiroTaskExecutor) {
-        var executor = new ScheduledThreadPoolExecutor(shiroTaskExecutor.getCorePoolSize(),
-                shiroTaskExecutor.getThreadPoolExecutor().getThreadFactory());
-        executor.setRemoveOnCancelPolicy(true);
-        scheduledExecutorService = executor;
-    }
-
-    private WebSocketProperties wsProp;
-
-    @Autowired
-    public void setWebSocketProperties(WebSocketProperties wsProp) {
+        this.scheduledTask = scheduledTask;
         this.wsProp = wsProp;
-    }
-
-    private ShiroProperties shiroProperties;
-
-    @Autowired
-    public void setShiroProperties(ShiroProperties shiroProperties) {
         this.shiroProperties = shiroProperties;
-        WebSocketServerHandler.setWaitWebsocketConnect(shiroProperties.getWaitBotConnect());
-    }
-
-    private WebSocketServerHandler webSocketServerHandler;
-
-    @Autowired(required = false)
-    public void setWebSocketServerHandler(WebSocketServerHandler webSocketServerHandler) {
-        this.webSocketServerHandler = webSocketServerHandler;
-    }
-
-    private WebSocketClientHandler webSocketClientHandler;
-
-    @Autowired(required = false)
-    public void setWebSocketClientHandler(WebSocketClientHandler webSocketClientHandler) {
-        this.webSocketClientHandler = webSocketClientHandler;
+        this.webSocketServerHandler = webSocketServerHandler.orElse(null);
+        this.webSocketClientHandler = webSocketClientHandler.orElse(null);
     }
 
     @Override
@@ -130,7 +104,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         manager.setHeaders(headers);
         manager.setAutoStartup(true);
 
-        scheduledExecutorService.scheduleAtFixedRate(() -> {
+        scheduledTask.executor().scheduleAtFixedRate(() -> {
             if (!manager.isConnected()) {
                 manager.startInternal();
             }

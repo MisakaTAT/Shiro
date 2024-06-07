@@ -4,10 +4,13 @@ import com.mikuac.shiro.adapter.WebSocketClientHandler;
 import com.mikuac.shiro.adapter.WebSocketServerHandler;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotFactory;
+import com.mikuac.shiro.core.CoreEvent;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
+import com.mikuac.shiro.properties.ShiroProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.properties.WebSocketServerProperties;
+import com.mikuac.shiro.task.ScheduledTask;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,74 +28,55 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 @Configuration
 public class Shiro {
 
-    private WebSocketServerProperties wsServerProp;
+    private final WebSocketServerProperties wsServerProp;
+    private final WebSocketProperties wsProp;
+    private final BotFactory botFactory;
+    private final EventHandler eventHandler;
+    private final ActionHandler actionHandler;
+    private final ShiroAsyncTask shiroAsyncTask;
+    private final BotContainer botContainer;
+    private final CoreEvent coreEvent;
+    private final ScheduledTask scheduledTask;
+    private final ShiroProperties shiroProps;
 
     @Autowired
-    public void setWebSocketServerProperties(WebSocketServerProperties wsServerProp) {
+    public Shiro(
+            WebSocketServerProperties wsServerProp, WebSocketProperties wsProp, BotFactory botFactory,
+            EventHandler eventHandler, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask,
+            BotContainer botContainer, CoreEvent coreEvent, ScheduledTask scheduledTask, ShiroProperties shiroProps
+    ) {
         this.wsServerProp = wsServerProp;
-    }
-
-    private WebSocketProperties wsProp;
-
-    @Autowired
-    public void setWebSocketProperties(WebSocketProperties wsProp) {
         this.wsProp = wsProp;
-    }
-
-    private BotFactory botFactory;
-
-    @Autowired
-    public void setBotFactory(BotFactory botFactory) {
         this.botFactory = botFactory;
-    }
-
-    private EventHandler eventHandler;
-
-    @Autowired
-    public void setEventHandler(EventHandler eventHandler) {
         this.eventHandler = eventHandler;
-    }
-
-    private ActionHandler actionHandler;
-
-    @Autowired
-    public void setActionHandler(ActionHandler actionHandler) {
         this.actionHandler = actionHandler;
-    }
-
-    private ShiroAsyncTask shiroAsyncTask;
-
-    @Autowired
-    public void setShiroAsyncTask(ShiroAsyncTask shiroAsyncTask) {
         this.shiroAsyncTask = shiroAsyncTask;
-    }
-
-    private BotContainer botContainer;
-
-    @Autowired
-    public void setBotContainer(BotContainer botContainer) {
         this.botContainer = botContainer;
+        this.coreEvent = coreEvent;
+        this.scheduledTask = scheduledTask;
+        this.shiroProps = shiroProps;
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "shiro.ws.server.enable", havingValue = "true")
     public WebSocketServerHandler webSocketServerHandler() {
-        return new WebSocketServerHandler(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
+        return new WebSocketServerHandler(
+                eventHandler, botFactory, actionHandler, shiroAsyncTask,
+                botContainer, coreEvent, wsProp, scheduledTask, shiroProps
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
     @ConditionalOnProperty(value = "shiro.ws.client.enable", havingValue = "true")
     public WebSocketClientHandler webSocketClientHandler() {
-        return new WebSocketClientHandler(eventHandler, botFactory, actionHandler, shiroAsyncTask, botContainer);
+        return new WebSocketClientHandler(
+                eventHandler, botFactory, actionHandler, shiroAsyncTask,
+                botContainer, coreEvent, wsProp
+        );
     }
 
-    /**
-     * <p>createWebSocketContainer.</p>
-     *
-     * @return {@link ServletServerContainerFactoryBean}
-     */
     @Bean
     @ConditionalOnMissingBean
     public ServletServerContainerFactoryBean createWebSocketServerContainer() {

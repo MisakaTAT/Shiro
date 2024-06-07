@@ -21,6 +21,13 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class RateLimiter implements ApplicationRunner {
 
+    private final RateLimiterProperties props;
+
+    @Autowired
+    public RateLimiter(RateLimiterProperties props) {
+        this.props = props;
+    }
+
     /**
      * 重入锁
      */
@@ -32,41 +39,16 @@ public class RateLimiter implements ApplicationRunner {
     private final Condition condition = lock.newCondition();
 
     /**
-     * 补充速率（每秒补充的令牌数量）
-     */
-    private long rate;
-
-    /**
-     * 令牌桶容量
-     */
-    private long capacity;
-
-    /**
      * 桶内剩余令牌数量
      */
     private long currentTokenQuantities;
-
-    /**
-     * 等待超时
-     */
-    private int timeout;
-
-    /**
-     * @param properties {@link RateLimiterProperties}
-     */
-    @Autowired
-    public void setProperties(RateLimiterProperties properties) {
-        this.capacity = properties.getCapacity();
-        this.rate = properties.getRate();
-        this.timeout = properties.getTimeout();
-        currentTokenQuantities = capacity;
-    }
 
     /**
      * 令牌定时补充器
      */
     @Override
     public void run(ApplicationArguments args) {
+        currentTokenQuantities = props.getCapacity();
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
@@ -118,7 +100,7 @@ public class RateLimiter implements ApplicationRunner {
         lock.lock();
         try {
             while (!getToken(permits)) {
-                boolean await = condition.await(timeout, TimeUnit.SECONDS);
+                boolean await = condition.await(props.getTimeout(), TimeUnit.SECONDS);
                 if (await) {
                     return false;
                 }
@@ -152,7 +134,7 @@ public class RateLimiter implements ApplicationRunner {
     private void supplementToken() {
         lock.lock();
         try {
-            currentTokenQuantities = Math.min(currentTokenQuantities + rate, capacity);
+            currentTokenQuantities = Math.min(currentTokenQuantities + props.getRate(), props.getCapacity());
             condition.signalAll();
         } finally {
             lock.unlock();

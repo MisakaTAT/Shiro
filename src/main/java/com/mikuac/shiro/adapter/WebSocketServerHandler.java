@@ -13,13 +13,12 @@ import com.mikuac.shiro.enums.AdapterEnum;
 import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
+import com.mikuac.shiro.properties.ShiroProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
+import com.mikuac.shiro.task.ScheduledTask;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.NonNull;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -28,9 +27,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -42,49 +39,31 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class WebSocketServerHandler extends TextWebSocketHandler {
 
-    @Setter
-    private static int waitWebsocketConnect = 0;
-
     private final EventHandler eventHandler;
-
     private final BotFactory botFactory;
-
     private final ActionHandler actionHandler;
-
     private final ShiroAsyncTask shiroAsyncTask;
-
     private final BotContainer botContainer;
+    private final CoreEvent coreEvent;
+    private final WebSocketProperties wsProp;
+    private final ScheduledTask scheduledTask;
+    private final ShiroProperties shiroProps;
 
-    private ScheduledExecutorService scheduledExecutorService;
-
-    @Autowired
-    public void setScheduledExecutorService(ThreadPoolTaskExecutor shiroTaskExecutor) {
-        var executor = new ScheduledThreadPoolExecutor(shiroTaskExecutor.getCorePoolSize(),
-                shiroTaskExecutor.getThreadPoolExecutor().getThreadFactory());
-        executor.setRemoveOnCancelPolicy(true);
-        scheduledExecutorService = executor;
-    }
-
-    private CoreEvent coreEvent;
-
-    @Autowired
-    public void setCoreEvent(CoreEvent coreEvent) {
-        this.coreEvent = coreEvent;
-    }
-
-    private WebSocketProperties wsProp;
-
-    @Autowired
-    public void setWebSocketProperties(WebSocketProperties wsProp) {
-        this.wsProp = wsProp;
-    }
-
-    public WebSocketServerHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+    @SuppressWarnings("java:S107")
+    public WebSocketServerHandler(
+            EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler,
+            ShiroAsyncTask shiroAsyncTask, BotContainer botContainer, CoreEvent coreEvent,
+            WebSocketProperties wsProp, ScheduledTask scheduledTask, ShiroProperties shiroProps
+    ) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
         this.shiroAsyncTask = shiroAsyncTask;
         this.botContainer = botContainer;
+        this.coreEvent = coreEvent;
+        this.wsProp = wsProp;
+        this.shiroProps = shiroProps;
+        this.scheduledTask = scheduledTask;
     }
 
     @Override
@@ -109,7 +88,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
             var sessionContext = session.getAttributes();
             sessionContext.put(Connection.SESSION_STATUS_KEY, SessionStatusEnum.ONLINE);
 
-            if (waitWebsocketConnect <= 0) {
+            if (shiroProps.getWaitBotConnect() <= 0) {
                 if (botContainer.robots.containsKey(xSelfId)) {
                     log.info("Bot {} already connected with another instance", xSelfId);
                     sessionContext.clear();
@@ -141,7 +120,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
         }
         var sessionContext = session.getAttributes();
 
-        if (waitWebsocketConnect <= 0) {
+        if (shiroProps.getWaitBotConnect() <= 0) {
             sessionContext.clear();
             botContainer.robots.remove(xSelfId);
             log.warn("Account {} disconnected", xSelfId);
@@ -150,13 +129,13 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
         }
         // after the session is disconnected, postpone deletion instead of immediate removal
         // if not reconnected within a certain timeframe, execute the deletion scheduled task
-        ScheduledFuture<?> removeSelfFuture = scheduledExecutorService.schedule(() -> {
+        ScheduledFuture<?> removeSelfFuture = scheduledTask.executor().schedule(() -> {
             if (botContainer.robots.containsKey(xSelfId)) {
                 botContainer.robots.remove(xSelfId);
                 log.warn("Account {} disconnected", xSelfId);
                 coreEvent.offline(xSelfId);
             }
-        }, waitWebsocketConnect, TimeUnit.SECONDS);
+        }, shiroProps.getWaitBotConnect(), TimeUnit.SECONDS);
         sessionContext.put(Connection.SESSION_STATUS_KEY, SessionStatusEnum.OFFLINE);
         sessionContext.put(Connection.FUTURE_KEY, removeSelfFuture);
     }

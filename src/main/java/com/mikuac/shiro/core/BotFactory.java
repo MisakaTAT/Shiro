@@ -2,9 +2,7 @@ package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.annotation.common.Shiro;
-import com.mikuac.shiro.common.utils.AopTargetUtils;
 import com.mikuac.shiro.common.utils.ScanUtils;
-import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.HandlerMethod;
 import com.mikuac.shiro.properties.ShiroProperties;
@@ -31,29 +29,24 @@ public class BotFactory {
 
     private static Set<Class<?>> annotations = new LinkedHashSet<>();
 
-    private ActionHandler actionHandler;
+    private final ActionHandler actionHandler;
+    private final ShiroProperties shiroProps;
+    private final ApplicationContext applicationContext;
 
     @Autowired
-    public void setActionHandler(ActionHandler actionHandler) {
+    public BotFactory(
+            ActionHandler actionHandler, ShiroProperties shiroProps, ApplicationContext applicationContext
+    ) {
         this.actionHandler = actionHandler;
-    }
-
-    private ShiroProperties shiroProperties;
-
-    @Autowired
-    public void setShiroProperties(ShiroProperties shiroProperties) {
-        this.shiroProperties = shiroProperties;
-    }
-
-    private ApplicationContext applicationContext;
-
-    @Autowired
-    public void setApplicationContext(ApplicationContext applicationContext) {
+        this.shiroProps = shiroProps;
         this.applicationContext = applicationContext;
     }
 
+    // 以注解为键，存放包含此注解的处理方法
+    MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
+
     /**
-     * 获取所有注解类
+     * 获取所有注解
      *
      * @return 注解集合
      */
@@ -65,32 +58,18 @@ public class BotFactory {
         return annotations;
     }
 
-    /**
-     * 创建Bot对象
-     *
-     * @param selfId  机器人账号
-     * @param session {@link WebSocketSession}
-     * @return {@link Bot}
-     */
-    public Bot createBot(long selfId, WebSocketSession session) {
-
-        log.debug("Start creating bot instance: {}", selfId);
+    private MultiValueMap<Class<? extends Annotation>, HandlerMethod> getAnnotationHandler() {
+        if (!annotationHandler.isEmpty()) {
+            return annotationHandler;
+        }
         // 获取 Spring 容器中所有指定类型的对象
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
-        // 一键多值 注解为 Key 存放所有包含某个注解的方法
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
         beans.values().forEach(obj -> {
-            Object target;
-            try {
-                target = AopTargetUtils.getTarget(obj);
-            } catch (Exception e) {
-                throw new ShiroException(e);
-            }
-            Class<?> beanClass = target.getClass();
-            Arrays.stream(beanClass.getMethods()).forEach(method -> {
+            Class<?> clazz = obj.getClass();
+            Arrays.stream(clazz.getMethods()).forEach(method -> {
                 HandlerMethod handlerMethod = new HandlerMethod();
                 handlerMethod.setMethod(method);
-                handlerMethod.setType(beanClass);
+                handlerMethod.setType(clazz);
                 handlerMethod.setObject(obj);
                 Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
                     Set<Class<?>> as = getAnnotations();
@@ -102,7 +81,19 @@ public class BotFactory {
             });
         });
         this.sort(annotationHandler);
-        return new Bot(selfId, session, actionHandler, shiroProperties.getPluginList(), annotationHandler, shiroProperties.getInterceptor());
+        return annotationHandler;
+    }
+
+    /**
+     * 创建Bot对象
+     *
+     * @param selfId  机器人账号
+     * @param session {@link WebSocketSession}
+     * @return {@link Bot}
+     */
+    public Bot createBot(long selfId, WebSocketSession session) {
+        log.debug("Bot instance creation started: {}", selfId);
+        return new Bot(selfId, session, actionHandler, shiroProps.getPluginList(), getAnnotationHandler(), shiroProps.getInterceptor());
     }
 
     /**

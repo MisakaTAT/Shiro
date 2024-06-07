@@ -23,38 +23,20 @@ import java.util.function.BiConsumer;
 @Component
 public class EventHandler implements ApplicationRunner {
 
-    private MetaEvent meta;
+    private final MetaEvent meta;
+    private final NoticeEvent notice;
+    private final NotifyEvent notify;
+    private final MessageEvent message;
+    private final RequestEvent request;
 
     @Autowired
-    public void setMeta(MetaEvent meta) {
+    public EventHandler(
+            MetaEvent meta, NoticeEvent notice, NotifyEvent notify, MessageEvent message, RequestEvent request
+    ) {
         this.meta = meta;
-    }
-
-    private NoticeEvent notice;
-
-    @Autowired
-    public void setNotice(NoticeEvent notice) {
         this.notice = notice;
-    }
-
-    private NotifyEvent notify;
-
-    @Autowired
-    public void setNotify(NotifyEvent notify) {
         this.notify = notify;
-    }
-
-    private MessageEvent message;
-
-    @Autowired
-    public void setMessage(MessageEvent message) {
         this.message = message;
-    }
-
-    private RequestEvent request;
-
-    @Autowired
-    public void setRequest(RequestEvent request) {
         this.request = request;
     }
 

@@ -24,17 +24,12 @@ import java.util.List;
 @Component
 public class EventUtils {
 
-    private ApplicationContext ctx;
+    private final ApplicationContext ctx;
+    private final InjectionHandler injection;
 
     @Autowired
-    public void setCtx(ApplicationContext ctx) {
+    public EventUtils(ApplicationContext ctx, InjectionHandler injection) {
         this.ctx = ctx;
-    }
-
-    private InjectionHandler injection;
-
-    @Autowired
-    public void setInjection(InjectionHandler injection) {
         this.injection = injection;
     }
 

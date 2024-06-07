@@ -16,7 +16,6 @@ import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -34,36 +33,26 @@ import java.util.Map;
 @Slf4j
 public class WebSocketClientHandler extends TextWebSocketHandler {
 
+    private final CoreEvent coreEvent;
     private final EventHandler eventHandler;
-
     private final BotFactory botFactory;
-
     private final ActionHandler actionHandler;
-
     private final ShiroAsyncTask shiroAsyncTask;
-
     private final BotContainer botContainer;
+    private final WebSocketProperties wsProp;
 
-    private CoreEvent coreEvent;
-
-    @Autowired
-    public void setCoreEvent(CoreEvent coreEvent) {
-        this.coreEvent = coreEvent;
-    }
-
-    private WebSocketProperties wsProp;
-
-    @Autowired
-    public void setWebSocketProperties(WebSocketProperties wsProp) {
-        this.wsProp = wsProp;
-    }
-
-    public WebSocketClientHandler(EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask, BotContainer botContainer) {
+    public WebSocketClientHandler(
+            EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler,
+            ShiroAsyncTask shiroAsyncTask, BotContainer botContainer, CoreEvent coreEvent,
+            WebSocketProperties wsProp
+    ) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
         this.actionHandler = actionHandler;
         this.shiroAsyncTask = shiroAsyncTask;
         this.botContainer = botContainer;
+        this.coreEvent = coreEvent;
+        this.wsProp = wsProp;
     }
 
     @Override

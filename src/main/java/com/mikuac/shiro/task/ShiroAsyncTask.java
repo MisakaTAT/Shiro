@@ -17,10 +17,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class ShiroAsyncTask {
 
-    private BotContainer botContainer;
+    private final BotContainer botContainer;
 
     @Autowired
-    public void setBotContainer(BotContainer botContainer) {
+    public ShiroAsyncTask(BotContainer botContainer) {
         this.botContainer = botContainer;
     }
 

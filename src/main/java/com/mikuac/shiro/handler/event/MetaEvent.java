@@ -21,11 +21,11 @@ import java.util.function.BiConsumer;
 @SuppressWarnings("unused")
 public class MetaEvent {
 
-    private InjectionHandler injection;
+    private final InjectionHandler injection;
 
     @Autowired
-    public void setInjection(InjectionHandler injection) {
-        this.injection = injection;
+    public MetaEvent(InjectionHandler injectionHandler) {
+        this.injection = injectionHandler;
     }
 
     /**

@@ -1,7 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 
 group = "com.mikuac"
-version = "2.2.7"
+version = "9.9.9"
 
 plugins {
     signing

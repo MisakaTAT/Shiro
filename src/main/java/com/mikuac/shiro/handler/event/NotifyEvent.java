@@ -22,17 +22,12 @@ import java.util.function.BiConsumer;
 @Component
 public class NotifyEvent {
 
-    private EventUtils utils;
+    private final EventUtils utils;
+    private final InjectionHandler injection;
 
     @Autowired
-    public void setUtils(EventUtils utils) {
+    public NotifyEvent(EventUtils utils, InjectionHandler injection) {
         this.utils = utils;
-    }
-
-    private InjectionHandler injection;
-
-    @Autowired
-    public void setInjection(InjectionHandler injection) {
         this.injection = injection;
     }
 

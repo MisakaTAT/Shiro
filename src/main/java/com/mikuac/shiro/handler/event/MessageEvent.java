@@ -28,21 +28,18 @@ import java.util.function.BiConsumer;
 @Component
 public class MessageEvent {
 
-    private EventUtils utils;
-    private ShiroProperties shiroProperties;
-    private BotContainer botContainer;
+    private final EventUtils utils;
+    private final ShiroProperties shiroProperties;
+    private final BotContainer botContainer;
+    private final InjectionHandler injection;
 
     @Autowired
-    public void setUtils(EventUtils utils, ShiroProperties shiroProperties, BotContainer botContainer) {
+    public MessageEvent(
+            EventUtils utils, ShiroProperties shiroProperties, BotContainer botContainer, InjectionHandler injection
+    ) {
         this.utils = utils;
         this.shiroProperties = shiroProperties;
         this.botContainer = botContainer;
-    }
-
-    private InjectionHandler injection;
-
-    @Autowired
-    public void setInjection(InjectionHandler injection) {
         this.injection = injection;
     }
 

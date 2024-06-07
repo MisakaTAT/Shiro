@@ -41,37 +41,29 @@ public class ActionHandler {
     /**
      * WebSocket 配置
      */
-    private WebSocketProperties wsProp;
-
-    @Autowired
-    public void setWebSocketProperties(WebSocketProperties wsProp) {
-        this.wsProp = wsProp;
-    }
+    private final WebSocketProperties wsProp;
 
     /**
      * 限速器配置
      */
-    private RateLimiterProperties rateLimiterProperties;
-
-    @Autowired
-    public void setRateLimiterProperties(RateLimiterProperties rateLimiterProperties) {
-        this.rateLimiterProperties = rateLimiterProperties;
-    }
+    private final RateLimiterProperties rateLimiterProps;
 
     /**
      * 限速器
      */
-    private RateLimiter rateLimiter;
-
-    @Autowired
-    public void setRateLimiter(RateLimiter rateLimiter) {
-        this.rateLimiter = rateLimiter;
-    }
+    private final RateLimiter rateLimiter;
 
     /**
      * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
      */
     private int echo = 0;
+
+    @Autowired
+    public ActionHandler(WebSocketProperties wsProp, RateLimiterProperties rateLimiterProps, RateLimiter rateLimiter) {
+        this.wsProp = wsProp;
+        this.rateLimiterProps = rateLimiterProps;
+        this.rateLimiter = rateLimiter;
+    }
 
     /**
      * 处理响应结果
@@ -114,12 +106,12 @@ public class ActionHandler {
 
     private JSONObject act(WebSocketSession session, ActionPath action, Map<String, Object> params) {
         JSONObject result = new JSONObject();
-        if (Boolean.TRUE.equals(rateLimiterProperties.getEnable())) {
-            if (Boolean.TRUE.equals(rateLimiterProperties.getAwaitTask()) && !rateLimiter.acquire()) {
+        if (Boolean.TRUE.equals(rateLimiterProps.getEnable())) {
+            if (Boolean.TRUE.equals(rateLimiterProps.getAwaitTask()) && !rateLimiter.acquire()) {
                 // 阻塞当前线程直到获取令牌成功
                 return result;
             }
-            if (Boolean.TRUE.equals(!rateLimiterProperties.getAwaitTask()) && !rateLimiter.tryAcquire()) {
+            if (Boolean.TRUE.equals(!rateLimiterProps.getAwaitTask()) && !rateLimiter.tryAcquire()) {
                 return result;
             }
         }

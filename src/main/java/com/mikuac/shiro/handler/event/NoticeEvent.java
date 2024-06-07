@@ -20,25 +20,15 @@ import java.util.function.BiConsumer;
 @Component
 public class NoticeEvent {
 
-    private EventUtils utils;
+    private final EventUtils utils;
+    private final NotifyEvent notify;
+    private final InjectionHandler injection;
 
     @Autowired
-    public void setUtils(EventUtils utils) {
-        this.utils = utils;
-    }
-
-    private InjectionHandler injection;
-
-    @Autowired
-    public void setInjection(InjectionHandler injection) {
-        this.injection = injection;
-    }
-
-    private NotifyEvent notify;
-
-    @Autowired
-    public void setNotify(NotifyEvent notify) {
-        this.notify = notify;
+    public NoticeEvent(EventUtils eventUtils, NotifyEvent notifyEvent, InjectionHandler injectionHandler) {
+        this.utils = eventUtils;
+        this.notify = notifyEvent;
+        this.injection = injectionHandler;
     }
 
     /**
