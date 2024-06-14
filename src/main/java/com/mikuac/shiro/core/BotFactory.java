@@ -7,6 +7,7 @@ import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.HandlerMethod;
 import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -65,11 +66,11 @@ public class BotFactory {
         // 获取 Spring 容器中所有指定类型的对象
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
         beans.values().forEach(obj -> {
-            Class<?> clazz = obj.getClass();
-            Arrays.stream(clazz.getMethods()).forEach(method -> {
+            Class<?> targetClass = AopProxyUtils.ultimateTargetClass(obj);
+            Arrays.stream(targetClass.getMethods()).forEach(method -> {
                 HandlerMethod handlerMethod = new HandlerMethod();
                 handlerMethod.setMethod(method);
-                handlerMethod.setType(clazz);
+                handlerMethod.setType(targetClass);
                 handlerMethod.setObject(obj);
                 Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
                     Set<Class<?>> as = getAnnotations();
