@@ -30,6 +30,6 @@ public class GroupMsgDeleteNoticeEvent extends NoticeEvent {
     private Long operatorId;
 
     @JSONField(name = "message_id")
-    private Long msgId;
+    private Integer messageId;
 
 }

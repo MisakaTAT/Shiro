@@ -24,6 +24,6 @@ public class PrivateMsgDeleteNoticeEvent extends NoticeEvent {
     private Long userId;
 
     @JSONField(name = "message_id")
-    private Long msgId;
+    private Integer messageId;
 
 }
