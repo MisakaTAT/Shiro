@@ -757,6 +757,19 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
+     * https://docs.go-cqhttp.org/api/#%E8%8E%B7%E5%8F%96%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF
+     * 获取版本信息
+     * @return result {@link ActionData} of {@link VersionInfoResp}
+     */
+    @Override
+    public ActionData<VersionInfoResp> getVersionInfo() {
+
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_VERSION_INFO, null);
+        return result != null ? result.to(new TypeReference<ActionData<VersionInfoResp>>() {
+        }.getType()) : null;
+    }
+
+    /**
      * 获取群荣誉信息
      *
      * @param groupId 群号

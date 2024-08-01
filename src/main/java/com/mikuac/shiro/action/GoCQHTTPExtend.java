@@ -364,4 +364,10 @@ public interface GoCQHTTPExtend {
      * @return result {@link ActionList} of {@link GroupMemberInfoResp}
      */
     ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId, boolean noCache);
+
+    /**
+     * 获取版本信息
+     * @return result {@link ActionList} of {@link VersionInfoResp}
+     */
+    public ActionData<VersionInfoResp> getVersionInfo();
 }
