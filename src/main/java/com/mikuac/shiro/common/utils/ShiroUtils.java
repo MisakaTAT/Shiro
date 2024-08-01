@@ -340,17 +340,17 @@ public class ShiroUtils {
      */
     @SuppressWarnings("Duplicates")
     public static List<Map<String, Object>> generateForwardMsg(Bot bot, List<?> contents) {
-        List<Map<String, Object>> nodes = new ArrayList();
-        contents.forEach((msg) -> {
-            Map<String, Object> node = new HashMap();
+        List<Map<String, Object>> nodes = new ArrayList<>();
+        contents.forEach(msg -> {
+            Map<String, Object> node = new HashMap<>();
             node.put("type", "node");
-            Map<String, Object> data = new HashMap();
+            Map<String, Object> data = new HashMap<>();
             data.put("name", bot.getLoginInfo().getData().getNickname());
             String appName = bot.getVersionInfo().getData().getAppName();
-            //兼容Lagrange
-            if (appName.equals("Lagrange.OneBot")){
+            // 兼容Lagrange
+            if (appName.equals("Lagrange.OneBot")) {
                 data.put("uin", String.valueOf(bot.getSelfId()));
-            }else {
+            } else {
                 data.put("uin", bot.getSelfId());
             }
             data.put("content", msg);

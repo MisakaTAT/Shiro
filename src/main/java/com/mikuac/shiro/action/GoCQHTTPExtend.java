@@ -367,6 +367,7 @@ public interface GoCQHTTPExtend {
 
     /**
      * 获取版本信息
+     *
      * @return result {@link ActionList} of {@link VersionInfoResp}
      */
     public ActionData<VersionInfoResp> getVersionInfo();
