@@ -43,7 +43,7 @@ dependencies {
     api("com.alibaba.fastjson2:fastjson2:2.0.52")
     api("org.springframework.boot:spring-boot-starter-websocket")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.3")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.11.0")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
