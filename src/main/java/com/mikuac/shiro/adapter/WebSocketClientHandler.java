@@ -97,6 +97,7 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
             if (valid) {
                 String selfId = JSONObject.parseObject(message.getPayload()).getOrDefault("self_id", "").toString();
                 session.getAttributes().put("x-self-id", selfId);
+                xSelfId = ConnectionUtils.parseSelfId(session);
             }
             if (!botContainer.robots.containsKey(xSelfId)) {
                 afterConnectionEstablished(session);
