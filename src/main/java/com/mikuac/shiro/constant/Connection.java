@@ -17,4 +17,8 @@ public class Connection {
 
     public static final String ADAPTER_KEY = "adapter";
 
+    public static final String X_SELF_ID = "x-self-id";
+
+    public static final String SELF_ID = "self_id";
+
 }

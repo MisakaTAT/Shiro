@@ -5,11 +5,11 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class ScanUtilsTest {
+class AnnotationScannerTest {
 
     @Test
     void scanAnnotationTest() {
-        val annotations = new ScanUtils().scanAnnotation("com.mikuac.shiro.annotation");
+        val annotations = new AnnotationScanner().scan("com.mikuac.shiro.annotation");
         annotations.forEach(a -> assertTrue(a.isAnnotation()));
     }
 

@@ -4,7 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
-import com.mikuac.shiro.common.utils.SendUtils;
+import com.mikuac.shiro.common.utils.PayloadSender;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.enums.ActionPath;
 import com.mikuac.shiro.enums.AdapterEnum;
@@ -36,7 +36,7 @@ public class ActionHandler {
     /**
      * 请求回调数据
      */
-    private final Map<String, SendUtils> callback = new HashMap<>();
+    private final Map<String, PayloadSender> callback = new HashMap<>();
 
     /**
      * WebSocket 配置
@@ -72,10 +72,10 @@ public class ActionHandler {
      */
     public void onReceiveActionResp(JSONObject resp) {
         String e = resp.get("echo").toString();
-        SendUtils sendUtils = callback.get(e);
-        if (sendUtils != null) {
+        PayloadSender sender = callback.get(e);
+        if (sender != null) {
             // 唤醒挂起的线程
-            sendUtils.onCallback(resp);
+            sender.onCallback(resp);
             callback.remove(e);
         }
     }
@@ -128,15 +128,14 @@ public class ActionHandler {
         }
 
         JSONObject payload = generatePayload(action, params);
-        SendUtils sendUtils = new SendUtils(session, wsProp.getTimeout());
-        callback.put(payload.get("echo").toString(), sendUtils);
+        PayloadSender sender = new PayloadSender(session, wsProp.getTimeout());
+        callback.put(payload.get("echo").toString(), sender);
         try {
-            result = sendUtils.send(payload);
+            result = sender.send(payload);
         } catch (Exception e) {
             result.clear();
             result.put("status", "failed");
             result.put("retcode", -1);
-            Thread.currentThread().interrupt();
             log.error("Action failed: {}", e.getMessage());
         }
         return result;

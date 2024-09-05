@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -61,7 +62,7 @@ public class ConnectionUtils {
         // or has been handled
         log.info("Account {} connected", xSelfId);
         var bot = botFactory.createBot(xSelfId, session);
-        coreEvent.online(bot);
+        CompletableFuture.runAsync(() -> coreEvent.online(bot));
         return bot;
     }
 
@@ -72,8 +73,8 @@ public class ConnectionUtils {
      * @return QQ 号
      */
     public static long parseSelfId(WebSocketSession session) {
-        String selfIdStr = Optional.ofNullable(session.getHandshakeHeaders().getFirst("x-self-id"))
-                .orElse((String) session.getAttributes().get("x-self-id"));
+        String selfIdStr = Optional.ofNullable(session.getHandshakeHeaders().getFirst(Connection.X_SELF_ID))
+                .orElse((String) session.getAttributes().get(Connection.X_SELF_ID));
         try {
             return Long.parseLong(selfIdStr);
         } catch (NumberFormatException e) {

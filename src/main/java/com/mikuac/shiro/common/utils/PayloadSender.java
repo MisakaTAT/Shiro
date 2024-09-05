@@ -19,13 +19,13 @@ import java.util.concurrent.locks.ReentrantLock;
  * @version $Id: $Id
  */
 @Slf4j
-public class SendUtils {
+public class PayloadSender {
 
     private final int timeout;
 
     private final WebSocketSession session;
 
-    public SendUtils(WebSocketSession session, int timeout) {
+    public PayloadSender(WebSocketSession session, int timeout) {
         this.session = session;
         this.timeout = timeout;
     }
@@ -36,18 +36,29 @@ public class SendUtils {
 
     private final Condition condition = lock.newCondition();
 
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S899", "squid:S2274"})
     public JSONObject send(@NonNull JSONObject payload) {
         lock.lock();
         try {
             String json = payload.toJSONString();
             session.sendMessage(new TextMessage(json));
-            log.debug("[Action] {}", json);
-            condition.await(payload.getIntValue("echo") == 0 ? 1 : timeout, TimeUnit.SECONDS);
+            log.debug("[Action] Sent message: {}", json);
+            long startTime = System.currentTimeMillis();
+            long remainingTime = timeout * 1000L;
+            while (remainingTime > 0) {
+                boolean signalReceived = condition.await(remainingTime, TimeUnit.MILLISECONDS);
+                if (signalReceived) {
+                    // If we received the signal, return the response immediately
+                    return resp;
+                }
+                // Recalculate remaining time
+                remainingTime = (timeout * 1000L) - (System.currentTimeMillis() - startTime);
+            }
+            log.warn("Timeout waiting for response");
         } catch (IOException e) {
-            log.error("Send action payload exception: {}", e.getMessage(), e);
+            log.error("Failed to send message: {}", e.getMessage(), e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+            log.error("Thread interrupted while waiting for response: {}", e.getMessage(), e);
         } finally {
             lock.unlock();
         }

@@ -2,7 +2,7 @@ package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.annotation.common.Shiro;
-import com.mikuac.shiro.common.utils.ScanUtils;
+import com.mikuac.shiro.common.utils.AnnotationScanner;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.HandlerMethod;
 import com.mikuac.shiro.properties.ShiroProperties;
@@ -55,7 +55,7 @@ public class BotFactory {
         if (!annotations.isEmpty()) {
             return annotations;
         }
-        annotations = new ScanUtils().scanAnnotation("com.mikuac.shiro.annotation");
+        annotations = new AnnotationScanner().scan("com.mikuac.shiro.annotation");
         return annotations;
     }
 

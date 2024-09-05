@@ -23,6 +23,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created on 2021/7/16.
@@ -72,7 +73,7 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
             Bot bot = botFactory.createBot(xSelfId, session);
             botContainer.robots.put(xSelfId, bot);
             log.info("Account {} connected", xSelfId);
-            coreEvent.online(bot);
+            CompletableFuture.runAsync(() -> coreEvent.online(bot));
         } catch (IOException e) {
             log.error("Failed close websocket session: {}", e.getMessage(), e);
         }
@@ -95,8 +96,8 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
         if (xSelfId == 0L) {
             boolean valid = JSON.isValid(message.getPayload());
             if (valid) {
-                String selfId = JSONObject.parseObject(message.getPayload()).getOrDefault("self_id", "").toString();
-                session.getAttributes().put("x-self-id", selfId);
+                String selfId = JSONObject.parseObject(message.getPayload()).getOrDefault(Connection.SELF_ID, "").toString();
+                session.getAttributes().put(Connection.X_SELF_ID, selfId);
                 xSelfId = ConnectionUtils.parseSelfId(session);
             }
             if (!botContainer.robots.containsKey(xSelfId)) {

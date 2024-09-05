@@ -22,7 +22,7 @@ import java.util.Set;
  * @version $Id: $Id
  */
 @Slf4j
-public class ScanUtils implements ResourceLoaderAware {
+public class AnnotationScanner implements ResourceLoaderAware {
 
     private ResourceLoader resourceLoader;
 
@@ -40,7 +40,7 @@ public class ScanUtils implements ResourceLoaderAware {
      * @param packageName 包名
      * @return 注解集合
      */
-    public Set<Class<?>> scanAnnotation(String packageName) {
+    public Set<Class<?>> scan(String packageName) {
         Set<Class<?>> classes = new HashSet<>();
         try {
             String packageSearchPath = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
