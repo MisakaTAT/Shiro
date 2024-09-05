@@ -13,6 +13,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -57,12 +58,12 @@ public class ConnectionUtils {
     }
 
     @SneakyThrows
-    public static Bot handleFirstConnect(long xSelfId, WebSocketSession session, BotFactory botFactory, CoreEvent coreEvent) {
+    public static Bot handleFirstConnect(long xSelfId, WebSocketSession session, BotFactory botFactory, CoreEvent coreEvent, Executor shiroTaskExecutor) {
         // if the session has never connected
         // or has been handled
         log.info("Account {} connected", xSelfId);
         var bot = botFactory.createBot(xSelfId, session);
-        CompletableFuture.runAsync(() -> coreEvent.online(bot));
+        CompletableFuture.runAsync(() -> coreEvent.online(bot), shiroTaskExecutor);
         return bot;
     }
 

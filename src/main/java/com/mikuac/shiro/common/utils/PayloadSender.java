@@ -41,7 +41,7 @@ public class PayloadSender {
         try {
             String json = payload.toJSONString();
             session.sendMessage(new TextMessage(json));
-            log.debug("[Action] Sent message: {}", json);
+            log.debug("[Action] {}", json);
             long startTime = System.currentTimeMillis();
             long remainingTime = timeout * 1000L;
             while (remainingTime > 0) {

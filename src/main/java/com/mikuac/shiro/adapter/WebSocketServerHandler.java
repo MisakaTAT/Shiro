@@ -19,6 +19,7 @@ import com.mikuac.shiro.task.ScheduledTask;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -27,6 +28,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 import java.io.IOException;
 import java.util.ConcurrentModificationException;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -48,12 +50,14 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
     private final WebSocketProperties wsProp;
     private final ScheduledTask scheduledTask;
     private final ShiroProperties shiroProps;
+    private final ThreadPoolTaskExecutor shiroTaskExecutor;
 
     @SuppressWarnings("java:S107")
     public WebSocketServerHandler(
             EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler,
             ShiroAsyncTask shiroAsyncTask, BotContainer botContainer, CoreEvent coreEvent,
-            WebSocketProperties wsProp, ScheduledTask scheduledTask, ShiroProperties shiroProps
+            WebSocketProperties wsProp, ScheduledTask scheduledTask, ShiroProperties shiroProps,
+            ThreadPoolTaskExecutor shiroTaskExecutor
     ) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
@@ -64,6 +68,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
         this.wsProp = wsProp;
         this.shiroProps = shiroProps;
         this.scheduledTask = scheduledTask;
+        this.shiroTaskExecutor = shiroTaskExecutor;
     }
 
     @Override
@@ -94,14 +99,14 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
                     sessionContext.clear();
                     session.close();
                 } else {
-                    Bot bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent);
+                    Bot bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent, shiroTaskExecutor);
                     botContainer.robots.put(xSelfId, bot);
                 }
                 return;
             }
             botContainer.robots.compute(xSelfId, (id, bot) -> {
                 if (Objects.isNull(bot)) {
-                    bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent);
+                    bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent, shiroTaskExecutor);
                 } else {
                     ConnectionUtils.handleReConnect(bot, xSelfId, session);
                 }
@@ -124,7 +129,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
             sessionContext.clear();
             botContainer.robots.remove(xSelfId);
             log.warn("Account {} disconnected", xSelfId);
-            coreEvent.offline(xSelfId);
+            CompletableFuture.runAsync(() -> coreEvent.offline(xSelfId), shiroTaskExecutor);
             return;
         }
         // after the session is disconnected, postpone deletion instead of immediate removal
@@ -133,7 +138,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
             if (botContainer.robots.containsKey(xSelfId)) {
                 botContainer.robots.remove(xSelfId);
                 log.warn("Account {} disconnected", xSelfId);
-                coreEvent.offline(xSelfId);
+                CompletableFuture.runAsync(() -> coreEvent.offline(xSelfId), shiroTaskExecutor);
             }
         }, shiroProps.getWaitBotConnect(), TimeUnit.SECONDS);
         sessionContext.put(Connection.SESSION_STATUS_KEY, SessionStatusEnum.OFFLINE);

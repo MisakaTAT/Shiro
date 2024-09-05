@@ -16,6 +16,7 @@ import com.mikuac.shiro.properties.WebSocketProperties;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
@@ -41,11 +42,13 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
     private final ShiroAsyncTask shiroAsyncTask;
     private final BotContainer botContainer;
     private final WebSocketProperties wsProp;
+    private final ThreadPoolTaskExecutor shiroTaskExecutor;
 
+    @SuppressWarnings("squid:S107")
     public WebSocketClientHandler(
             EventHandler eventHandler, BotFactory botFactory, ActionHandler actionHandler,
             ShiroAsyncTask shiroAsyncTask, BotContainer botContainer, CoreEvent coreEvent,
-            WebSocketProperties wsProp
+            WebSocketProperties wsProp, ThreadPoolTaskExecutor shiroTaskExecutor
     ) {
         this.eventHandler = eventHandler;
         this.botFactory = botFactory;
@@ -54,6 +57,7 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
         this.botContainer = botContainer;
         this.coreEvent = coreEvent;
         this.wsProp = wsProp;
+        this.shiroTaskExecutor = shiroTaskExecutor;
     }
 
     @Override
@@ -73,7 +77,7 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
             Bot bot = botFactory.createBot(xSelfId, session);
             botContainer.robots.put(xSelfId, bot);
             log.info("Account {} connected", xSelfId);
-            CompletableFuture.runAsync(() -> coreEvent.online(bot));
+            CompletableFuture.runAsync(() -> coreEvent.online(bot), shiroTaskExecutor);
         } catch (IOException e) {
             log.error("Failed close websocket session: {}", e.getMessage(), e);
         }
@@ -84,7 +88,7 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
         Map.Entry<Long, Bot> bot = botContainer.robots.entrySet().stream().findFirst().orElse(null);
         if (bot != null) {
             log.warn("Account {} disconnected", bot.getKey());
-            coreEvent.offline(bot.getKey());
+            CompletableFuture.runAsync(() -> coreEvent.offline(bot.getKey()), shiroTaskExecutor);
             botContainer.robots.clear();
         }
     }

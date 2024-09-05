@@ -13,10 +13,12 @@ import com.mikuac.shiro.properties.WebSocketServerProperties;
 import com.mikuac.shiro.task.ScheduledTask;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 /**
@@ -38,12 +40,14 @@ public class Shiro {
     private final CoreEvent coreEvent;
     private final ScheduledTask scheduledTask;
     private final ShiroProperties shiroProps;
+    private final ThreadPoolTaskExecutor shiroTaskExecutor;
 
     @Autowired
     public Shiro(
             WebSocketServerProperties wsServerProp, WebSocketProperties wsProp, BotFactory botFactory,
             EventHandler eventHandler, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask,
-            BotContainer botContainer, CoreEvent coreEvent, ScheduledTask scheduledTask, ShiroProperties shiroProps
+            BotContainer botContainer, CoreEvent coreEvent, ScheduledTask scheduledTask, ShiroProperties shiroProps,
+            @Qualifier("shiroTaskExecutor") ThreadPoolTaskExecutor shiroTaskExecutor
     ) {
         this.wsServerProp = wsServerProp;
         this.wsProp = wsProp;
@@ -55,6 +59,7 @@ public class Shiro {
         this.coreEvent = coreEvent;
         this.scheduledTask = scheduledTask;
         this.shiroProps = shiroProps;
+        this.shiroTaskExecutor = shiroTaskExecutor;
     }
 
     @Bean
@@ -63,7 +68,8 @@ public class Shiro {
     public WebSocketServerHandler webSocketServerHandler() {
         return new WebSocketServerHandler(
                 eventHandler, botFactory, actionHandler, shiroAsyncTask,
-                botContainer, coreEvent, wsProp, scheduledTask, shiroProps
+                botContainer, coreEvent, wsProp, scheduledTask, shiroProps,
+                shiroTaskExecutor
         );
     }
 
@@ -73,7 +79,7 @@ public class Shiro {
     public WebSocketClientHandler webSocketClientHandler() {
         return new WebSocketClientHandler(
                 eventHandler, botFactory, actionHandler, shiroAsyncTask,
-                botContainer, coreEvent, wsProp
+                botContainer, coreEvent, wsProp, shiroTaskExecutor
         );
     }
 
