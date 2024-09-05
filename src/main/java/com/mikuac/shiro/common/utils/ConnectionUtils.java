@@ -9,11 +9,11 @@ import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.exception.ShiroException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
@@ -58,7 +58,11 @@ public class ConnectionUtils {
     }
 
     @SneakyThrows
-    public static Bot handleFirstConnect(long xSelfId, WebSocketSession session, BotFactory botFactory, CoreEvent coreEvent, Executor shiroTaskExecutor) {
+    public static Bot handleFirstConnect(
+            long xSelfId, WebSocketSession session,
+            BotFactory botFactory, CoreEvent coreEvent,
+            ThreadPoolTaskExecutor shiroTaskExecutor
+    ) {
         // if the session has never connected
         // or has been handled
         log.info("Account {} connected", xSelfId);
