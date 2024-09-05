@@ -31,11 +31,11 @@ public class ArrayMsg {
         return this;
     }
 
-    public String getRowType() {
+    public String getRawType() {
         return type;
     }
 
-    public ArrayMsg setRowType(String type) {
+    public ArrayMsg setRawType(String type) {
         this.type = type;
         return this;
     }
@@ -45,7 +45,7 @@ public class ArrayMsg {
             return data.getOrDefault("text", "");
         }
         StringBuilder stringBuilder = new StringBuilder("[CQ:");
-        stringBuilder.append(getRowType());
+        stringBuilder.append(getRawType());
         data.forEach((key, val) -> {
             stringBuilder.append(',');
             stringBuilder.append(key);
