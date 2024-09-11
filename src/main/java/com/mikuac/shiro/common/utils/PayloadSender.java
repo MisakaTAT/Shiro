@@ -1,6 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
@@ -39,7 +40,7 @@ public class PayloadSender {
     public JSONObject send(@NonNull JSONObject payload) {
         lock.lock();
         try {
-            String json = payload.toJSONString();
+            String json = payload.toJSONString(JSONWriter.Feature.LargeObject);
             session.sendMessage(new TextMessage(json));
             log.debug("[Action] {}", json);
             long startTime = System.currentTimeMillis();
