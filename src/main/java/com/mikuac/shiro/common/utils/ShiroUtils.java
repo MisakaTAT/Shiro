@@ -111,7 +111,7 @@ public class ShiroUtils {
     @SuppressWarnings("squid:S1133")
     public static String getNickname(long userId) {
         String url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
-        String result = NetUtils.asyncGet(url, 10);
+        String result = ReqUtils.asyncGet(url, 10);
         if (result != null && !result.isEmpty()) {
             String nickname = result.split(",")[6];
             return nickname.substring(1, nickname.length() - 1);
