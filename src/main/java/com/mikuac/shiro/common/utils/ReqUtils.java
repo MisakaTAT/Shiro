@@ -10,12 +10,6 @@ import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 
-/**
- * <p>NetUtils class.</p>
- *
- * @author zero
- * @version $Id: $Id
- */
 @Slf4j
 public class ReqUtils {
 
