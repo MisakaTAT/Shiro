@@ -87,6 +87,10 @@ public class ConnectionUtils {
         }
     }
 
+    public static String getAuthorization(WebSocketSession session) {
+        return session.getHandshakeHeaders().getFirst("authorization");
+    }
+
     /**
      * 访问密钥检查
      *
@@ -97,7 +101,7 @@ public class ConnectionUtils {
         if (token.isEmpty()) {
             return true;
         }
-        String clientToken = session.getHandshakeHeaders().getFirst("authorization");
+        String clientToken = getAuthorization(session);
         log.debug("Access Token: {}", clientToken);
         if (clientToken == null || clientToken.isEmpty()) {
             return false;

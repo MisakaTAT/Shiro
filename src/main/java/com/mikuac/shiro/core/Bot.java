@@ -3,6 +3,7 @@ package com.mikuac.shiro.core;
 import com.alibaba.fastjson2.JSONObject;
 import com.alibaba.fastjson2.TypeReference;
 import com.mikuac.shiro.action.*;
+import com.mikuac.shiro.common.utils.ConnectionUtils;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
@@ -12,6 +13,7 @@ import com.mikuac.shiro.enums.ActionPathEnum;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.ArrayMsg;
 import com.mikuac.shiro.model.HandlerMethod;
+import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.MultiValueMap;
@@ -34,6 +36,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     private long selfId;
 
+    private static String token = null;
+
     private ActionHandler actionHandler;
 
     private WebSocketSession session;
@@ -51,6 +55,17 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         this.pluginList = pluginList;
         this.annotationHandler = annotationHandler;
         this.botMessageEventInterceptor = botMessageEventInterceptor;
+        token = ConnectionUtils.getAuthorization(session);
+    }
+
+    /**
+     * 获取客户端连接的 token
+     *
+     * @return token, 如果未提供, 则为 null
+     */
+    @Nullable
+    public String getToken() {
+        return token;
     }
 
     /**
@@ -757,7 +772,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
-     * https://docs.go-cqhttp.org/api/#%E8%8E%B7%E5%8F%96%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF
+     * @see <a href="https://docs.go-cqhttp.org/api/#%E8%8E%B7%E5%8F%96%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF">获取版本信息</a>
      * 获取版本信息
      *
      * @return result {@link ActionData} of {@link VersionInfoResp}
