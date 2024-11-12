@@ -42,7 +42,7 @@ public class PayloadSender {
         try {
             String json = payload.toJSONString(JSONWriter.Feature.LargeObject);
             session.sendMessage(new TextMessage(json));
-            log.debug("[Action] {}", json);
+            log.debug("[Action] {}", CommonUtils.debugMsgDeleteBase64Content(json));
             long startTime = System.currentTimeMillis();
             long remainingTime = timeout * 1000L;
             while (remainingTime > 0) {
