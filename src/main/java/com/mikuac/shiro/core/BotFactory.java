@@ -17,6 +17,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
+import java.time.Duration;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
@@ -39,7 +40,7 @@ public class BotFactory {
     private final ActionHandler      actionHandler;
     private final ShiroProperties    shiroProps;
     private final ApplicationContext applicationContext;
-    private boolean isActionHandlerLoaded = false;
+    private       boolean            isActionHandlerLoaded = false;
 
     @Autowired
     public BotFactory(
@@ -114,6 +115,28 @@ public class BotFactory {
             });
         });
         this.sort(annotationHandler);
+        if (annotationHandler.isEmpty()) {
+            log.error("加载失败");
+            log.error("********************************************");
+            beans.forEach((k, v) -> {
+                log.error("{} -> {}", k, v.getClass().getCanonicalName());
+                Class<?> t = AopProxyUtils.ultimateTargetClass(v);
+                log.error("/{}", t.getCanonicalName());
+
+                Arrays.stream(v.getClass().getMethods()).forEach(m -> {
+                    log.error("\taop-{}", m.getName());
+                });
+                Arrays.stream(t.getMethods()).forEach(m -> {
+                    log.error("\ttarget-{}", m.getName());
+                });
+            });
+            try {
+                Thread.sleep(Duration.ofSeconds(300));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.exit(10000);
+        }
         isActionHandlerLoaded = true;
 
         // 当 ioc 加载完毕后仅解锁一个线程, 这个加载完毕后再解锁其他所有的线程, 避免重复加载
