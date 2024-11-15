@@ -6,6 +6,7 @@ import com.mikuac.shiro.common.utils.AnnotationScanner;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.HandlerMethod;
 import com.mikuac.shiro.properties.ShiroProperties;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.lang.annotation.Annotation;
+import java.time.Duration;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created on 2021/7/7.
@@ -28,11 +33,14 @@ import java.util.*;
 @Component
 public class BotFactory {
 
-    private static Set<Class<?>> annotations = new LinkedHashSet<>();
+    private static       Set<Class<?>> annotations = new LinkedHashSet<>();
+    private static final ReentrantLock lock        = new ReentrantLock();
 
-    private final ActionHandler actionHandler;
-    private final ShiroProperties shiroProps;
+    private final Condition          condition;
+    private final ActionHandler      actionHandler;
+    private final ShiroProperties    shiroProps;
     private final ApplicationContext applicationContext;
+    private       boolean            isActionHandlerLoaded = false;
 
     @Autowired
     public BotFactory(
@@ -41,6 +49,17 @@ public class BotFactory {
         this.actionHandler = actionHandler;
         this.shiroProps = shiroProps;
         this.applicationContext = applicationContext;
+        lock.lock();
+        condition = lock.newCondition();
+        lock.unlock();
+    }
+
+    @PostConstruct
+    public void init() {
+        // 等待 Spring 容器初始化完成解锁
+        lock.lock();
+        condition.signal();
+        lock.unlock();
     }
 
     // 以注解为键，存放包含此注解的处理方法
@@ -60,9 +79,23 @@ public class BotFactory {
     }
 
     private MultiValueMap<Class<? extends Annotation>, HandlerMethod> getAnnotationHandler() {
-        if (!annotationHandler.isEmpty()) {
+        if (isActionHandlerLoaded) {
             return annotationHandler;
         }
+        lock.lock();
+        try {
+            //noinspection ResultOfMethodCallIgnored
+            condition.await(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        lock.unlock();
+
+        // 解锁后再次判断是否已经初始化
+        if (isActionHandlerLoaded) {
+            return annotationHandler;
+        }
+
         // 获取 Spring 容器中所有指定类型的对象
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
         beans.values().forEach(obj -> {
@@ -82,6 +115,35 @@ public class BotFactory {
             });
         });
         this.sort(annotationHandler);
+        if (annotationHandler.isEmpty()) {
+            log.error("加载失败");
+            log.error("********************************************");
+            beans.forEach((k, v) -> {
+                log.error("{} -> {}", k, v.getClass().getCanonicalName());
+                Class<?> t = AopProxyUtils.ultimateTargetClass(v);
+                log.error("/{}", t.getCanonicalName());
+
+                Arrays.stream(v.getClass().getMethods()).forEach(m -> {
+                    log.error("\taop-{}", m.getName());
+                });
+                Arrays.stream(t.getMethods()).forEach(m -> {
+                    log.error("\ttarget-{}", m.getName());
+                });
+            });
+            try {
+                Thread.sleep(Duration.ofSeconds(300));
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            System.exit(10000);
+        }
+        isActionHandlerLoaded = true;
+
+        // 当 ioc 加载完毕后仅解锁一个线程, 这个加载完毕后再解锁其他所有的线程, 避免重复加载
+        lock.lock();
+        condition.signal();
+        lock.unlock();
+
         return annotationHandler;
     }
 
