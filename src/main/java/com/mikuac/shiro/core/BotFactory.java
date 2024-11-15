@@ -39,6 +39,7 @@ public class BotFactory {
     private final ActionHandler      actionHandler;
     private final ShiroProperties    shiroProps;
     private final ApplicationContext applicationContext;
+    private boolean isActionHandlerLoaded = false;
 
     @Autowired
     public BotFactory(
@@ -56,7 +57,7 @@ public class BotFactory {
     public void init() {
         // 等待 Spring 容器初始化完成解锁
         lock.lock();
-        condition.signalAll();
+        condition.signal();
         lock.unlock();
     }
 
@@ -77,17 +78,22 @@ public class BotFactory {
     }
 
     private MultiValueMap<Class<? extends Annotation>, HandlerMethod> getAnnotationHandler() {
-        if (!annotationHandler.isEmpty()) {
+        if (isActionHandlerLoaded) {
             return annotationHandler;
         }
         lock.lock();
         try {
             //noinspection ResultOfMethodCallIgnored
-            condition.await(5, TimeUnit.SECONDS);
+            condition.await(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         lock.unlock();
+
+        // 解锁后再次判断是否已经初始化
+        if (isActionHandlerLoaded) {
+            return annotationHandler;
+        }
 
         // 获取 Spring 容器中所有指定类型的对象
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
@@ -108,6 +114,13 @@ public class BotFactory {
             });
         });
         this.sort(annotationHandler);
+        isActionHandlerLoaded = true;
+
+        // 当 ioc 加载完毕后仅解锁一个线程, 这个加载完毕后再解锁其他所有的线程, 避免重复加载
+        lock.lock();
+        condition.signal();
+        lock.unlock();
+
         return annotationHandler;
     }
 
