@@ -93,9 +93,9 @@ publishing {
 }
 
 signing {
+    // task 为 publishToMavenLocal 时直接忽略
     val isLocal = gradle.startParameter.taskNames.size > 0
             && gradle.startParameter.taskNames[0] == ("publishToMavenLocal")
-    logger.info("name: ${isLocal}")
     if (isLocal) return@signing
     val signingKey = System.getenv("GPG_PRIVATE_KEY")
     val signingPassword = System.getenv("GPG_PASSPHRASE")
