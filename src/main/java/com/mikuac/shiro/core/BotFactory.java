@@ -41,6 +41,7 @@ public class BotFactory {
     private final ShiroProperties    shiroProps;
     private final ApplicationContext applicationContext;
     private       boolean            isActionHandlerLoaded = false;
+    private       boolean            loading = true;
 
     @Autowired
     public BotFactory(
@@ -60,6 +61,7 @@ public class BotFactory {
         lock.lock();
         condition.signal();
         lock.unlock();
+        loading = false;
     }
 
     // 以注解为键，存放包含此注解的处理方法
@@ -82,14 +84,15 @@ public class BotFactory {
         if (isActionHandlerLoaded) {
             return annotationHandler;
         }
-        lock.lock();
-        try {
+        if (loading) try {
+            lock.lock();
             //noinspection ResultOfMethodCallIgnored
             condition.await(10, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        } finally {
+            lock.unlock();
         }
-        lock.unlock();
 
         // 解锁后再次判断是否已经初始化
         if (isActionHandlerLoaded) {
@@ -114,7 +117,6 @@ public class BotFactory {
                 });
             });
         });
-        this.sort(annotationHandler);
         if (annotationHandler.isEmpty()) {
             log.error("加载失败");
             log.error("********************************************");
@@ -123,12 +125,8 @@ public class BotFactory {
                 Class<?> t = AopProxyUtils.ultimateTargetClass(v);
                 log.error("/{}", t.getCanonicalName());
 
-                Arrays.stream(v.getClass().getMethods()).forEach(m -> {
-                    log.error("\taop-{}", m.getName());
-                });
-                Arrays.stream(t.getMethods()).forEach(m -> {
-                    log.error("\ttarget-{}", m.getName());
-                });
+                Arrays.stream(v.getClass().getMethods()).forEach(m -> log.error("\taop-{}", m.getName()));
+                Arrays.stream(t.getMethods()).forEach(m -> log.error("\ttarget-{}", m.getName()));
             });
             try {
                 Thread.sleep(Duration.ofSeconds(300));
@@ -137,6 +135,7 @@ public class BotFactory {
             }
             System.exit(10000);
         }
+        this.sort(annotationHandler);
         isActionHandlerLoaded = true;
 
         // 当 ioc 加载完毕后仅解锁一个线程, 这个加载完毕后再解锁其他所有的线程, 避免重复加载
@@ -171,7 +170,7 @@ public class BotFactory {
         // 排序
         annotationHandler.keySet().forEach(annotation -> {
             List<HandlerMethod> handlers = annotationHandler.get(annotation);
-            handlers = handlers.stream().sorted(
+            handlers = handlers.stream().distinct().sorted(
                     Comparator.comparing(
                             handlerMethod -> {
                                 Order order = handlerMethod.getMethod().getAnnotation(Order.class);
