@@ -75,14 +75,18 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
      */
     private static Set<Class<?>> getAnnotations() {
         if (!annotations.isEmpty()) {
+            log.debug("Using cached annotations, size: {}", annotations.size());
             return annotations;
         }
+        log.debug("Scanning for annotations in package: com.mikuac.shiro.annotation");
         annotations = new AnnotationScanner().scan("com.mikuac.shiro.annotation");
+        log.debug("Found {} annotations", annotations.size());
         return annotations;
     }
 
     private MultiValueMap<Class<? extends Annotation>, HandlerMethod> getAnnotationHandler() {
         if (isActionHandlerLoaded) {
+            log.debug("Using cached annotation handlers, size: {}", annotationHandler.size());
             return annotationHandler;
         }
         if (loading) try {
@@ -94,30 +98,36 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
         } finally {
             lock.unlock();
         }
-
         // 解锁后再次判断是否已经初始化
         if (isActionHandlerLoaded) {
             return annotationHandler;
         }
+        log.debug("Starting to collect beans with @Shiro annotation");
 
         // 获取 Spring 容器中所有指定类型的对象
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
+        log.debug("Found {} beans with @Shiro annotation", beans.size());
+
         beans.values().forEach(obj -> {
             Class<?> targetClass = AopProxyUtils.ultimateTargetClass(obj);
+            log.debug("Processing class: {}", targetClass.getName());
             Arrays.stream(targetClass.getMethods()).forEach(method -> {
                 HandlerMethod handlerMethod = new HandlerMethod();
                 handlerMethod.setMethod(method);
                 handlerMethod.setType(targetClass);
                 handlerMethod.setObject(obj);
+                log.debug("Processing method: {}.{}", targetClass.getSimpleName(), method.getName());
                 Arrays.stream(method.getDeclaredAnnotations()).forEach(annotation -> {
                     Set<Class<?>> as = getAnnotations();
                     Class<? extends Annotation> annotationType = annotation.annotationType();
                     if (as.contains(annotationType)) {
+                        log.debug("Adding handler for annotation: {} on method: {}.{}", annotationType.getSimpleName(), targetClass.getSimpleName(), method.getName());
                         annotationHandler.add(annotation.annotationType(), handlerMethod);
                     }
                 });
             });
         });
+        log.debug("Starting handler method sorting");
         this.sort(annotationHandler);
         isActionHandlerLoaded = true;
 
@@ -126,6 +136,7 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
         condition.signal();
         lock.unlock();
 
+        log.debug("Handler methods sorted, total size: {}", annotationHandler.size());
         return annotationHandler;
     }
 
@@ -138,7 +149,11 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
      */
     public Bot createBot(long selfId, WebSocketSession session) {
         log.debug("Bot instance creation started: {}", selfId);
-        return new Bot(selfId, session, actionHandler, shiroProps.getPluginList(), getAnnotationHandler(), shiroProps.getInterceptor());
+        log.debug("Using WebSocket session: {}", session.getId());
+        log.debug("Plugin list size: {}", shiroProps.getPluginList().size());
+        Bot bot = new Bot(selfId, session, actionHandler, shiroProps.getPluginList(), getAnnotationHandler(), shiroProps.getInterceptor());
+        log.debug("Bot instance created successfully for ID: {}", selfId);
+        return bot;
     }
 
     /**
@@ -148,20 +163,27 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
      */
     private void sort(MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler) {
         if (annotationHandler.isEmpty()) {
+            log.debug("No handlers to sort");
             return;
         }
         // 排序
+        log.debug("Starting to sort handlers by @Order annotation");
         annotationHandler.keySet().forEach(annotation -> {
+            log.debug("Sorting handlers for annotation: {}", annotation.getSimpleName());
             List<HandlerMethod> handlers = annotationHandler.get(annotation);
             handlers = handlers.stream().distinct().sorted(
                     Comparator.comparing(
                             handlerMethod -> {
                                 Order order = handlerMethod.getMethod().getAnnotation(Order.class);
-                                return Optional.ofNullable(order == null ? null : order.value()).orElse(Integer.MAX_VALUE);
+                                int orderValue = Optional.ofNullable(order == null ? null : order.value()).orElse(Integer.MAX_VALUE);
+                                log.debug("Method: {}.{} has order value: {}", handlerMethod.getType().getSimpleName(), handlerMethod.getMethod().getName(), orderValue);
+                                return orderValue;
                             }
                     )
             ).toList();
+            log.debug("Sorted {} handlers for annotation: {}", handlers.size(), annotation.getSimpleName());
             annotationHandler.put(annotation, handlers);
+            log.debug("Handler sorting completed");
         });
     }
 }
