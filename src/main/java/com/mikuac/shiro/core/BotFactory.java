@@ -3,6 +3,7 @@ package com.mikuac.shiro.core;
 import com.mikuac.shiro.annotation.common.Order;
 import com.mikuac.shiro.annotation.common.Shiro;
 import com.mikuac.shiro.common.utils.AnnotationScanner;
+import com.mikuac.shiro.exception.ShiroException;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.HandlerMethod;
 import com.mikuac.shiro.properties.ShiroProperties;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -33,15 +35,15 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
 
-    private static       Set<Class<?>> annotations = new LinkedHashSet<>();
-    private static final ReentrantLock lock        = new ReentrantLock();
+    private static Set<Class<?>> annotations = new LinkedHashSet<>();
+    private static final ReentrantLock lock = new ReentrantLock();
 
-    private final Condition          condition;
-    private final ActionHandler      actionHandler;
-    private final ShiroProperties    shiroProps;
+    private final Condition condition;
+    private final ActionHandler actionHandler;
+    private final ShiroProperties shiroProps;
     private final ApplicationContext applicationContext;
-    private       boolean            isActionHandlerLoaded = false;
-    private       boolean            loading = true;
+    private boolean loading = true;
+    private boolean isActionHandlerLoaded = false;
 
     @Autowired
     public BotFactory(
@@ -50,14 +52,11 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
         this.actionHandler = actionHandler;
         this.shiroProps = shiroProps;
         this.applicationContext = applicationContext;
-        lock.lock();
-        condition = lock.newCondition();
-        lock.unlock();
+        this.condition = lock.newCondition();
     }
 
-
     @Override
-    public void onApplicationEvent(ContextRefreshedEvent event) {
+    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         // 等待 Spring 容器初始化完成解锁
         lock.lock();
         condition.signal();
@@ -85,26 +84,32 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private MultiValueMap<Class<? extends Annotation>, HandlerMethod> getAnnotationHandler() {
+        // 双重检查锁机制避免重复加载
         if (isActionHandlerLoaded) {
             log.debug("Using cached annotation handlers, size: {}", annotationHandler.size());
             return annotationHandler;
         }
-        if (loading) try {
-            lock.lock();
-            //noinspection ResultOfMethodCallIgnored
-            condition.await(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        } finally {
-            lock.unlock();
+
+        while (loading) {
+            try {
+                log.debug("Waiting for annotation handlers to be loaded");
+                boolean signaled = condition.await(10, TimeUnit.SECONDS);
+                if (!signaled) {
+                    log.warn("Condition await timed out while waiting for annotation handlers to load");
+                    throw new IllegalStateException("Failed to load annotation handlers within timeout");
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new ShiroException(e);
+            }
         }
-        // 解锁后再次判断是否已经初始化
+
+        // 解锁后再次检查是否已经加载
         if (isActionHandlerLoaded) {
             return annotationHandler;
         }
-        log.debug("Starting to collect beans with @Shiro annotation");
 
-        // 获取 Spring 容器中所有指定类型的对象
+        log.debug("Starting to collect beans with @Shiro annotation");
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
         log.debug("Found {} beans with @Shiro annotation", beans.size());
 
@@ -127,11 +132,14 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
                 });
             });
         });
+
         log.debug("Starting handler method sorting");
         this.sort(annotationHandler);
+
+        // 标记加载完成
         isActionHandlerLoaded = true;
 
-        // 当 ioc 加载完毕后仅解锁一个线程, 这个加载完毕后再解锁其他所有的线程, 避免重复加载
+        // 当 ioc 加载完毕后仅解锁一个线程，这个加载完毕后再解锁其他所有的线程，避免重复加载。
         lock.lock();
         condition.signal();
         lock.unlock();
