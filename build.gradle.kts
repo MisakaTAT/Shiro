@@ -92,6 +92,12 @@ publishing {
     }
 }
 
+gradle.taskGraph.whenReady {
+    tasks.withType<Sign>().configureEach {
+        enabled = !gradle.taskGraph.hasTask(":publishToMavenLocal")
+    }
+}
+
 signing {
     val signingKey = System.getenv("GPG_PRIVATE_KEY")
     val signingPassword = System.getenv("GPG_PASSPHRASE")
