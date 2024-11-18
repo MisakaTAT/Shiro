@@ -6,11 +6,12 @@ import com.mikuac.shiro.common.utils.AnnotationScanner;
 import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.model.HandlerMethod;
 import com.mikuac.shiro.properties.ShiroProperties;
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.aop.framework.AopProxyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -30,7 +31,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 @Slf4j
 @Component
-public class BotFactory {
+public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
 
     private static       Set<Class<?>> annotations = new LinkedHashSet<>();
     private static final ReentrantLock lock        = new ReentrantLock();
@@ -54,8 +55,9 @@ public class BotFactory {
         lock.unlock();
     }
 
-    @PostConstruct
-    public void init() {
+
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         // 等待 Spring 容器初始化完成解锁
         lock.lock();
         condition.signal();
@@ -162,5 +164,4 @@ public class BotFactory {
             annotationHandler.put(annotation, handlers);
         });
     }
-
 }
