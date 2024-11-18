@@ -92,11 +92,13 @@ publishing {
     }
 }
 
+gradle.taskGraph.whenReady {
+    tasks.withType<Sign>().configureEach {
+        enabled = !gradle.taskGraph.hasTask(":publishToMavenLocal")
+    }
+}
+
 signing {
-    // task 为 publishToMavenLocal 时直接忽略
-    val isLocal = gradle.startParameter.taskNames.size > 0
-            && gradle.startParameter.taskNames[0] == ("publishToMavenLocal")
-    if (isLocal) return@signing
     val signingKey = System.getenv("GPG_PRIVATE_KEY")
     val signingPassword = System.getenv("GPG_PASSPHRASE")
     useInMemoryPgpKeys(signingKey, signingPassword)
