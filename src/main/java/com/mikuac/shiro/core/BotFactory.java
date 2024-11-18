@@ -92,6 +92,7 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
 
         while (loading) {
             try {
+                lock.lock();
                 log.debug("Waiting for annotation handlers to be loaded");
                 boolean signaled = condition.await(10, TimeUnit.SECONDS);
                 if (!signaled) {
@@ -101,6 +102,8 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 throw new ShiroException(e);
+            } finally {
+                lock.unlock();
             }
         }
 
