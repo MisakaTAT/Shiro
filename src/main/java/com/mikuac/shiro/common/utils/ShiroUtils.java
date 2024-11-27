@@ -236,7 +236,7 @@ public class ShiroUtils {
         } else {
             builder.append("[CQ:").append(arrayMsg.getType());
         }
-        arrayMsg.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
+        arrayMsg.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(ShiroUtils.escape(v)));
         builder.append("]");
         return builder.toString();
     }

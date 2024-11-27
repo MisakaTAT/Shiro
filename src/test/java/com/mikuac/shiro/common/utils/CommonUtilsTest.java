@@ -48,7 +48,7 @@ class CommonUtilsTest {
     @Test
     void extractMsgTest() {
         // 定义包含特殊格式字符串消息的变量
-        val msg = "[CQ:at,qq=1122334455]测试消息1";
+        val msg = "[CQ:at,qq=1122334455,name=@机器人 &#91;可以&#93;]测试消息1";
 
         // 将 msg 字符串转换成 ArrayMsg 数组
         val arrayMsg = ShiroUtils.rawToArrayMsg(msg);
