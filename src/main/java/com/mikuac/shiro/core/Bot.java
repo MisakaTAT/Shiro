@@ -1410,6 +1410,26 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
+     * 设置群消息表情回应
+     *
+     * @param groupId 群号
+     * @param msgId   消息 ID
+     * @param code    表情 ID
+     * @param isAdd   添加/取消 回应
+     * @return result {@link ActionRaw}
+     */
+    @Override
+    public ActionRaw setGroupReaction(long groupId, int msgId, String code, boolean isAdd) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.MESSAGE_ID, msgId);
+        params.put(ActionParams.CODE, code);
+        params.put(ActionParams.IS_ADD, isAdd);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_REACTION, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
      * 自定义请求
      *
      * @param action 请求路径

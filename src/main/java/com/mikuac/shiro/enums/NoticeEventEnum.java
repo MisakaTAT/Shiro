@@ -61,5 +61,9 @@ public enum NoticeEventEnum {
     /**
      * 频道消息表情贴更新
      */
-    MESSAGE_REACTIONS_UPDATED
+    MESSAGE_REACTIONS_UPDATED,
+    /**
+     * 群消息表情贴
+     */
+    GROUP_MESSAGE_REACTION
 }

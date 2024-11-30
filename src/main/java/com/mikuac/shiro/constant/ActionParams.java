@@ -95,4 +95,8 @@ public class ActionParams {
 
     public static final String GROUP = "group";
 
+    public static final String CODE = "code";
+
+    public static final String IS_ADD = "is_add";
+
 }

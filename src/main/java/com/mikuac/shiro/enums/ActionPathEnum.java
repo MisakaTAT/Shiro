@@ -277,7 +277,11 @@ public enum ActionPathEnum implements ActionPath {
     /**
      * 获取版本信息
      */
-    GET_VERSION_INFO("get_version_info");
+    GET_VERSION_INFO("get_version_info"),
+    /**
+     * 设置群消息表情回应
+     */
+    SET_GROUP_REACTION("set_group_reaction");
 
     /**
      * 请求路径
