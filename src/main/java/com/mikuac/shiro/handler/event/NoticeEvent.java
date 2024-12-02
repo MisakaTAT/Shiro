@@ -114,6 +114,12 @@ public class NoticeEvent {
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupCardChangeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
         }
 
+        if (type == NoticeEventEnum.GROUP_MESSAGE_REACTION) {
+            GroupMessageReactionNoticeEvent event = resp.to(GroupMessageReactionNoticeEvent.class);
+            injection.invokeGroupReactionNotice(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupReactionNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
+
         if (type == NoticeEventEnum.OFFLINE_FILE) {
             ReceiveOfflineFilesNoticeEvent event = resp.to(ReceiveOfflineFilesNoticeEvent.class);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onReceiveOfflineFilesNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
@@ -286,6 +292,16 @@ public class NoticeEvent {
      */
     public void notify(Bot bot, JSONObject resp) {
         notify.handler(bot, resp);
+    }
+
+    /**
+     * 群消息表情贴
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JSONObject}
+     */
+    public void groupReactionMessage(Bot bot, JSONObject resp) {
+        process(bot, resp, NoticeEventEnum.GROUP_MESSAGE_REACTION);
     }
 
 }

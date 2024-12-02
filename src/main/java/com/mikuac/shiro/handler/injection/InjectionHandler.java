@@ -193,6 +193,16 @@ public class InjectionHandler {
     }
 
     /**
+     * 群消息表情贴事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupMessageReactionNoticeEvent}
+     */
+    public void invokeGroupReactionNotice(Bot bot, GroupMessageReactionNoticeEvent event) {
+        invoke(bot, event, GroupReactionNoticeHandler.class);
+    }
+
+    /**
      * 监听全部消息
      *
      * @param bot   {@link Bot}

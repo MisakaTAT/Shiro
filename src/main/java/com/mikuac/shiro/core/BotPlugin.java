@@ -293,4 +293,15 @@ public class BotPlugin {
         return MESSAGE_IGNORE;
     }
 
+    /**
+     * 群消息表情贴
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link GroupMessageReactionNoticeEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onGroupReactionNotice(Bot bot, GroupMessageReactionNoticeEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
 }
