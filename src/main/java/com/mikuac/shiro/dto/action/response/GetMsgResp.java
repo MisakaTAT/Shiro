@@ -49,6 +49,12 @@ public class GetMsgResp {
     private String rawMessage;
 
     /**
+     * 消息类型
+     */
+    @JSONField(name = "message_type")
+    private String messageType;
+
+    /**
      * sender信息
      */
     @Data
