@@ -41,4 +41,11 @@ public class MessageEvent extends Event {
 
     private List<ArrayMsg> arrayMsg;
 
+    @JSONField(name = "raw")
+    private Raw raw;
+
+    @Data
+    public static class Raw{
+        private Integer msgSeq;
+    }
 }
