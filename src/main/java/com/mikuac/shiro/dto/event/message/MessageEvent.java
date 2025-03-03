@@ -44,16 +44,15 @@ public class MessageEvent extends Event {
     @JSONField(name = "raw")
     private Raw raw;
 
-
     /**
      * Raw字段在napcat开启debug模式时会出现，其中有msgSeq字段。
      * 在单个群聊内，不同bot，收到同一条消息时，msgSeq是相同的，
      * 基于此可以实现群聊内多bot的均衡负载。
-     *
+     * <p>
      * raw内还有更多数据...
      */
     @Data
-    public static class Raw{
+    public static class Raw {
         private Long msgId;
         private Long msgRandom;
         private Integer msgSeq;
