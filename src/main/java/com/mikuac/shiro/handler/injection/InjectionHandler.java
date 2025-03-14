@@ -33,20 +33,22 @@ import java.util.regex.Matcher;
 @Component
 public class InjectionHandler {
 
+    /**
+     * Invokes the handler method with dependency injection using consumerWithIndex
+     *
+     * @param method The handler method to invoke
+     * @param params Map of available parameters for injection
+     */
     private void invokeMethod(HandlerMethod method, Map<Class<?>, Object> params) {
-        Class<?>[] types = method.getMethod().getParameterTypes();
-        Object[] objects = new Object[types.length];
-        Arrays.stream(types).forEach(InternalUtils.consumerWithIndex((item, index) -> {
-            if (params.containsKey(item)) {
-                objects[index] = params.remove(item);
-                return;
-            }
-            objects[index] = null;
-        }));
+        Class<?>[] paramTypes = method.getMethod().getParameterTypes();
+        Object[] args = new Object[paramTypes.length];
+        Arrays.stream(paramTypes).forEach(InternalUtils.consumerWithIndex((paramType, index) -> args[index] = params.get(paramType)));
         try {
-            method.getMethod().invoke(method.getObject(), objects);
+            method.getMethod().invoke(method.getObject(), args);
         } catch (Exception e) {
-            log.error("Invoke method exception: {}", e.getMessage(), e);
+            String methodName = method.getMethod().getDeclaringClass().getSimpleName()
+                    + "#" + method.getMethod().getName();
+            log.error("Invoke method exception on [{}]: {}", methodName, e.getMessage(), e);
         }
     }
 
