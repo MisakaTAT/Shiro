@@ -1,14 +1,18 @@
 package com.mikuac.shiro.common.limit;
 
 import com.mikuac.shiro.properties.RateLimiterProperties;
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,8 +27,33 @@ public class RateLimiter implements ApplicationRunner {
 
     private final RateLimiterProperties props;
 
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor(
+            new ThreadFactory() {
+                private final AtomicInteger threadNumber = new AtomicInteger(1);
+
+                @Override
+                public Thread newThread(@NonNull Runnable r) {
+                    Thread thread = new Thread(r, "rate-limiter-token-generator-" + threadNumber.getAndIncrement());
+                    thread.setDaemon(true);
+                    return thread;
+                }
+            }
+    );
+
     @Autowired
     public RateLimiter(RateLimiterProperties props) {
+        if (props == null) {
+            throw new IllegalArgumentException("RateLimiterProperties cannot be null");
+        }
+        if (props.getCapacity() <= 0) {
+            throw new IllegalArgumentException("Capacity must be positive");
+        }
+        if (props.getRate() <= 0) {
+            throw new IllegalArgumentException("Rate must be positive");
+        }
+        if (props.getTimeout() < 0) {
+            throw new IllegalArgumentException("Timeout cannot be negative");
+        }
         this.props = props;
     }
 
@@ -41,7 +70,7 @@ public class RateLimiter implements ApplicationRunner {
     /**
      * 桶内剩余令牌数量
      */
-    private long currentTokenQuantities;
+    private double currentTokenQuantities;
 
     /**
      * 令牌定时补充器
@@ -49,12 +78,14 @@ public class RateLimiter implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) {
         currentTokenQuantities = props.getCapacity();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                supplementToken();
-            }
-        }, 0, 1000);
+        long intervalMs = 100; // 100毫秒补充一次
+        double tokensPerInterval = props.getRate() / (1000.0 / intervalMs);
+        scheduler.scheduleAtFixedRate(
+                () -> supplementToken(tokensPerInterval),
+                0,
+                intervalMs,
+                TimeUnit.MILLISECONDS
+        );
     }
 
     /**
@@ -100,15 +131,17 @@ public class RateLimiter implements ApplicationRunner {
         lock.lock();
         try {
             while (!getToken(permits)) {
-                boolean await = condition.await(props.getTimeout(), TimeUnit.SECONDS);
-                if (await) {
+                try {
+                    boolean await = condition.await(props.getTimeout(), TimeUnit.SECONDS);
+                    if (!await) {
+                        return false;
+                    }
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
                     return false;
                 }
             }
             return true;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            return false;
         } finally {
             lock.unlock();
         }
@@ -129,15 +162,33 @@ public class RateLimiter implements ApplicationRunner {
     }
 
     /**
-     * 向桶内补充令牌
+     * 向桶内补充指定数量的令牌
+     *
+     * @param tokenAmount 要补充的令牌数量
      */
-    private void supplementToken() {
+    private void supplementToken(double tokenAmount) {
         lock.lock();
         try {
-            currentTokenQuantities = Math.min(currentTokenQuantities + props.getRate(), props.getCapacity());
+            currentTokenQuantities = Math.min(currentTokenQuantities + tokenAmount, props.getCapacity());
             condition.signalAll();
         } finally {
             lock.unlock();
+        }
+    }
+
+    /**
+     * 释放资源
+     */
+    @PreDestroy
+    public void destroy() {
+        scheduler.shutdown();
+        try {
+            if (!scheduler.awaitTermination(5, TimeUnit.SECONDS)) {
+                scheduler.shutdownNow();
+            }
+        } catch (InterruptedException e) {
+            scheduler.shutdownNow();
+            Thread.currentThread().interrupt();
         }
     }
 
