@@ -43,9 +43,10 @@ public class EventUtils {
      */
     public BotPlugin getPlugin(Class<? extends BotPlugin> pluginClass) {
         try {
+            // 直接获取已注册的单例Bean
             return ctx.getBean(pluginClass);
         } catch (Exception e) {
-            log.warn("Plugin {} is skipped. Please check the @Component annotation.", pluginClass.getSimpleName());
+            log.error("Plugin {} load failed: {}", pluginClass.getSimpleName(), e.getMessage());
             return defaultPlugin;
         }
     }
