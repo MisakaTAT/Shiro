@@ -135,7 +135,6 @@ shiro:
 ```
 
 ```java
-
 @Component
 public class ExamplePlugin extends BotPlugin {
 
@@ -172,6 +171,80 @@ public class ExamplePlugin extends BotPlugin {
 
 }
 ```
+
+### 加载外部插件
+
+#### 目录结构
+Shiro 支持自动加载 .jar 格式的插件，并通过 ServiceLoader 进行管理。默认情况下，Shiro 会扫描当前运行路径下的 plugins 目录，并尝试加载所有符合 BotPlugin 接口的插件。
+
+以下只是一个示例结构（可根据实际情况调整，比如替换 Gradle 为 Maven）
+```
+ForeignPluginExample/
+├── src/                                                                  # 源代码目录
+│   ├── main/java/com/mikuac/demo/DemoPlugin.java                         # 插件实现
+│   ├── main/resources/META-INF/services/com.mikuac.shiro.core.BotPlugin  # SPI 注册文件
+├── build.gradle.kts            # Gradle 构建脚本
+├── settings.gradle.kts         # Gradle 设置文件
+├── gradlew                     # Gradle 可执行文件（Linux/macOS）
+├── gradlew.bat                 # Gradle 可执行文件（Windows）
+└── gradle/wrapper/             # Gradle Wrapper 相关文件
+```
+
+#### 开发指南
+
+##### 插件类定义
+
+插件必须实现 BotPlugin 接口，并使用 @Component 注解，以便 Shiro 能够正确识别。
+
+```java
+package com.mikuac.demo;
+
+import com.mikuac.shiro.core.Bot;
+import com.mikuac.shiro.core.BotPlugin;
+import com.mikuac.shiro.dto.event.message.GroupMessageEvent;
+import org.springframework.stereotype.Component;
+
+@Component
+public class DemoPlugin extends BotPlugin {
+    @Override
+    public int onGroupMessage(Bot bot, GroupMessageEvent event) {
+        String msg = event.getMessage();
+        if (msg.equals("ping")) {
+            bot.sendGroupMsg(event.getGroupId(), "pong", false);
+            return MESSAGE_BLOCK;
+        }
+        return MESSAGE_IGNORE;
+    }
+}
+```
+##### 配置 META-INF/services
+
+为了让 ServiceLoader 能够发现插件，需要在 src/main/resources/META-INF/services/ 目录下创建 com.mikuac.shiro.core.BotPlugin 文件，并填写插件的完整类名。
+
+```
+com.mikuac.demo.DemoPlugin
+```
+
+##### 编译插件
+
+```
+./gradlew build
+```
+
+生成的插件 JAR 文件位于 build/libs/DemoPlugin-1.0-SNAPSHOT.jar，需要将其移动到 Shiro 的 `plugins` 目录中。
+
+##### 重新启动 Shiro 以加载插件
+
+Shiro 在启动时会自动扫描 `plugins` 目录，并加载符合条件的插件。
+
+##### 相关配置
+Shiro 的 `application.yml` 中可以自定义插件目录:
+
+```yml
+shiro:
+  pluginScanPath: "/home/user/mybot"
+```
+这样，Shiro 将从 `/home/user/mybot` 目录加载插件，而不是默认的 `plugins`。
 
 # Client
 
