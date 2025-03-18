@@ -3,18 +3,11 @@ package com.mikuac.shiro.properties;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.core.DefaultBotMessageEventInterceptor;
-import jakarta.annotation.PostConstruct;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
-import java.io.File;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.util.*;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -28,17 +21,15 @@ import java.util.concurrent.CopyOnWriteArrayList;
 @ConfigurationProperties(prefix = "shiro")
 public class ShiroProperties {
 
-    // 修改插件列表为线程安全
+    /**
+     * 插件列表
+     */
     private List<Class<? extends BotPlugin>> pluginList = new CopyOnWriteArrayList<>();
-    //插件扫描路径（默认：项目根目录下的plugins目录）
+
+    /**
+     * 插件扫描路径（默认：项目根目录下的plugins目录）
+     */
     private String pluginScanPath = "plugins";
-
-
-    // 新增类加载器
-    private URLClassLoader pluginClassLoader;
-
-    @Autowired
-    private ApplicationContext applicationContext;
 
     /**
      * 拦截器
@@ -76,49 +67,4 @@ public class ShiroProperties {
      * 日志等级设置为 debug
      */
     private Boolean debug = false;
-
-    // 新增初始化方法
-    @PostConstruct
-    public void initPlugins() throws Exception {
-        File pluginDir = new File(pluginScanPath);
-        if (!pluginDir.exists() || !pluginDir.isDirectory()) {
-            return;
-        }
-
-        // 使用应用类加载器作为父加载器
-        ClassLoader parentLoader = applicationContext.getClassLoader();
-        List<URL> urls = new ArrayList<>();
-
-        for (File jar : Optional.ofNullable(pluginDir.listFiles((dir, name) -> name.endsWith(".jar")))
-                .orElse(new File[0])) {
-            urls.add(jar.toURI().toURL());
-        }
-
-        // 创建自定义类加载器
-        pluginClassLoader = new URLClassLoader(urls.toArray(new URL[0]), parentLoader) {
-            @Override
-            public Class<?> loadClass(String name) throws ClassNotFoundException {
-                try {
-                    return parentLoader.loadClass(name);
-                } catch (ClassNotFoundException e) {
-                    return super.loadClass(name);
-                }
-            }
-        };
-
-        ServiceLoader<BotPlugin> loader = ServiceLoader.load(BotPlugin.class, pluginClassLoader);
-        loader.forEach(plugin -> {
-            if (plugin.getClass().isAnnotationPresent(Component.class)) {
-
-                String beanName = plugin.getClass().getSimpleName().substring(0, 1).toLowerCase()
-                        + plugin.getClass().getSimpleName().substring(1);
-
-                ((DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory())
-                        .registerSingleton(beanName, plugin);
-
-                // 保持插件列表兼容性
-                pluginList.add(plugin.getClass());
-            }
-        });
-    }
 }
