@@ -36,12 +36,24 @@ tasks.named<Jar>("jar") {
 }
 
 repositories {
+    maven { url =uri("https://maven.aliyun.com/repository/public/") }
     mavenCentral()
 }
 
 dependencies {
     api("com.alibaba.fastjson2:fastjson2:2.0.56")
     api("org.springframework.boot:spring-boot-starter-websocket")
+
+
+    api("org.apache.maven:maven-resolver-provider:3.9.6")
+    api("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.18")
+    api("org.apache.maven.resolver:maven-resolver-transport-file:1.9.18")
+    api("org.apache.maven.resolver:maven-resolver-transport-http:1.9.18")
+    api("org.apache.maven.resolver:maven-resolver-impl:1.9.18")
+    api("org.apache.maven.resolver:maven-resolver-api:1.9.18")
+    api("org.apache.maven.resolver:maven-resolver-util:1.9.18")
+    api("org.apache.maven.resolver:maven-resolver-spi:1.9.18")
+
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

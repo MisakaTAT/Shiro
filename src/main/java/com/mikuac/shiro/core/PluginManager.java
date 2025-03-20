@@ -1,11 +1,15 @@
 package com.mikuac.shiro.core;
 
+import com.mikuac.shiro.core.plugin_loader.DependencyResolver;
 import com.mikuac.shiro.properties.ShiroProperties;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.eclipse.aether.resolution.ArtifactResolutionException;
+import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -16,9 +20,9 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ServiceLoader;
+import java.util.*;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
 
 /**
  * 插件管理器
@@ -77,13 +81,82 @@ public class PluginManager {
             return;
         }
 
-        List<URL> pluginUrls = scanPluginJars(pluginDir);
+        List<URL> pluginUrls = new ArrayList<>();
+        for (File jar : Objects.requireNonNull(pluginDir.listFiles((dir, name) -> name.endsWith(".jar")))) {
+            // 新增：解析插件依赖
+            Set<String> dependencies = parseDependencies(jar);
+            log.info("parsing: {}", jar.getAbsolutePath());
+            resolveDependencies(dependencies);
+
+            pluginUrls.add(jar.toURI().toURL());
+        }
+
         if (pluginUrls.isEmpty()) {
             return;
         }
 
+        // 新增：添加依赖库路径
+        pluginUrls.addAll(scanDependencyJars());
         this.pluginClassLoader = createPluginClassLoader(pluginUrls);
         registerPlugins(this.pluginClassLoader);
+    }
+
+    // 新增方法：解析清单文件中的依赖
+    private Set<String> parseDependencies(File jarFile) throws IOException {
+        Set<String> dependencies = new HashSet<>();
+        try (JarFile jar = new JarFile(jarFile)) {
+            Manifest manifest = jar.getManifest();
+            if (manifest != null) {
+                String deps = manifest.getMainAttributes().getValue("Dependencies");
+                if (deps != null) {
+                    Arrays.stream(deps.split(",\\s*"))
+                            // .map(s -> s.split(":")[0] + ":" + s.split(":")[1]) // 提取 groupId:artifactId
+                            .forEach(dependencies::add);
+                }
+            }
+        }
+        return dependencies;
+    }
+
+    DependencyResolver resolver = new DependencyResolver();
+
+    // 新增方法：解析依赖
+    private void resolveDependencies(Set<String> dependencies) {
+        dependencies.stream()
+                .filter(this::isDependencyMissing)
+                .forEach(dep -> {
+                    try {
+                        log.info("resolving: {}", dep);
+                        resolver.resolveDependency(dep);
+                    } catch (ArtifactResolutionException e) {
+                        log.error("resolve dependency failed: {}", dep, e);
+                    }
+                });
+    }
+
+    // 新增方法：检查依赖是否已存在
+    private boolean isDependencyMissing(String groupArtifact) {
+        String[] parts = groupArtifact.split(":");
+        try {
+            // 尝试加载依赖中的典型类
+            Class.forName(parts[0].replace('.', '/') + "/" + parts[1] + "/Application");
+            return false;
+        } catch (ClassNotFoundException e) {
+            return true;
+        }
+    }
+
+    // 新增方法：扫描依赖库目录
+    private List<URL> scanDependencyJars() throws MalformedURLException {
+        File depDir = DependencyResolver.dependenciesDir;
+        List<URL> urls = new ArrayList<>();
+        if (depDir.exists()) {
+            for (File jar : Objects.requireNonNull(depDir.listFiles((dir, name) -> name.endsWith(".jar")))) {
+                urls.add(jar.toURI().toURL());
+                log.debug("已添加依赖库: {}", jar.getName());
+            }
+        }
+        return urls;
     }
 
     /**
@@ -168,8 +241,8 @@ public class PluginManager {
         Class<? extends BotPlugin> pluginClass = plugin.getClass().asSubclass(BotPlugin.class);
         String beanName = generateBeanName(pluginClass);
 
-        DefaultListableBeanFactory beanFactory =
-                (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
+                .getAutowireCapableBeanFactory();
         beanFactory.registerSingleton(beanName, plugin);
 
         // 保持插件列表兼容性
@@ -184,4 +257,4 @@ public class PluginManager {
         String simpleName = clazz.getSimpleName();
         return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
     }
-} 
+}
