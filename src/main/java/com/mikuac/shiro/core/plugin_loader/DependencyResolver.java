@@ -53,7 +53,7 @@ public class DependencyResolver {
         this.mavenCentral = new RemoteRepository.Builder(
                 "central",
                 "default",
-                "https://repo1.maven.org/maven2/").build();
+                "https://maven.aliyun.com/repository/public").build();
     }
 
     private static RepositorySystem newRepositorySystem() {
@@ -75,12 +75,12 @@ public class DependencyResolver {
         request.setArtifact(artifact);
         request.setRepositories(Collections.singletonList(mavenCentral));
 
-        log.info("parsing artifact {} 从 {}", artifact, mavenCentral);
+        //log.info("parsing artifact {} from {}", artifact, mavenCentral);
 
         try {
             ArtifactResult result = repositorySystem.resolveArtifact(session, request);
-            log.info("successfully parsed artifact {} to file {} from repository {}",
-                    artifact, result.getArtifact().getFile(), result.getRepository());
+            /*log.info("successfully parsed artifact {} to file {} from repository {}",
+                    artifact, result.getArtifact().getFile(), result.getRepository());*/
             return result;
         } catch (ArtifactResolutionException e) {
             log.error("parsing artifact failed: {}", e.getMessage());
@@ -95,7 +95,7 @@ public class DependencyResolver {
 
         @Override
         public void transferInitiated(TransferEvent event) {
-            log.info("开始下载: {}", event.getResource().getResourceName());
+            log.info("Downloading: {}", event.getResource().getResourceName());
         }
 
         @Override
@@ -112,24 +112,24 @@ public class DependencyResolver {
                 int filledLength = (int) (progress * PROGRESS_BAR_WIDTH);
                 String progressBar = "[" + "=".repeat(filledLength) + " "
                         + " ".repeat(PROGRESS_BAR_WIDTH - filledLength) + "]";
-                System.out.printf("\r下载进度: %s %.2f%%", progressBar, progress * 100);
+                System.out.printf("\rDownloading: %s %.2f%%", progressBar, progress * 100);
             }
         }
 
         @Override
         public void transferCorrupted(TransferEvent event) {
-            log.error("传输损坏: {}", event.getException().getMessage());
+            log.error("Transferring broken: {}", event.getException().getMessage());
         }
 
         @Override
         public void transferSucceeded(TransferEvent event) {
             System.out.println(); // 换行
-            log.info("下载完成: {}", event.getResource().getResourceName());
+            log.info("Download finished: {}", event.getResource().getResourceName());
         }
 
         @Override
         public void transferFailed(TransferEvent event) {
-            log.error("下载失败: {}", event.getException().getMessage());
+            log.error("Download error: {}", event.getException().getMessage());
         }
     }
 }

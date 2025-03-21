@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.DependencyResolutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -20,6 +19,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
@@ -85,7 +85,7 @@ public class PluginManager {
         for (File jar : Objects.requireNonNull(pluginDir.listFiles((dir, name) -> name.endsWith(".jar")))) {
             // 新增：解析插件依赖
             Set<String> dependencies = parseDependencies(jar);
-            log.info("parsing: {}", jar.getAbsolutePath());
+            log.info("parsing plugin: {}", jar.getAbsolutePath());
             resolveDependencies(dependencies);
 
             pluginUrls.add(jar.toURI().toURL());
@@ -126,7 +126,7 @@ public class PluginManager {
                 .filter(this::isDependencyMissing)
                 .forEach(dep -> {
                     try {
-                        log.info("resolving: {}", dep);
+                        //log.info("resolving: {}", dep);
                         resolver.resolveDependency(dep);
                     } catch (ArtifactResolutionException e) {
                         log.error("resolve dependency failed: {}", dep, e);
@@ -147,14 +147,21 @@ public class PluginManager {
     }
 
     // 新增方法：扫描依赖库目录
-    private List<URL> scanDependencyJars() throws MalformedURLException {
+    private List<URL> scanDependencyJars() throws IOException {
         File depDir = DependencyResolver.dependenciesDir;
         List<URL> urls = new ArrayList<>();
         if (depDir.exists()) {
-            for (File jar : Objects.requireNonNull(depDir.listFiles((dir, name) -> name.endsWith(".jar")))) {
-                urls.add(jar.toURI().toURL());
-                log.debug("已添加依赖库: {}", jar.getName());
-            }
+            // 递归扫描所有子目录
+            Files.walk(depDir.toPath())
+                    .filter(path -> path.toString().endsWith(".jar"))
+                    .forEach(path -> {
+                        try {
+                            urls.add(path.toUri().toURL());
+                            log.debug("successfully add dependency: {}", path.getFileName());
+                        } catch (MalformedURLException e) {
+                            log.error("invalid dependency: {}", path, e);
+                        }
+                    });
         }
         return urls;
     }
@@ -177,6 +184,7 @@ public class PluginManager {
     /**
      * 扫描插件JAR文件
      */
+    @Deprecated
     private List<URL> scanPluginJars(File pluginDir) throws MalformedURLException {
         List<URL> urls = new ArrayList<>();
 
@@ -197,22 +205,43 @@ public class PluginManager {
     /**
      * 创建插件类加载器
      */
-    private URLClassLoader createPluginClassLoader(List<URL> urls) {
-        final ClassLoader parentLoader = applicationContext.getClassLoader();
 
-        if (parentLoader == null) {
-            log.warn("Parent ClassLoader is null, using system ClassLoader instead");
-            return new URLClassLoader(urls.toArray(new URL[0]), ClassLoader.getSystemClassLoader());
-        }
+    private URLClassLoader createPluginClassLoader(List<URL> urls) {
+        final ClassLoader parentLoader = Thread.currentThread().getContextClassLoader();
+
+        // 定义禁止插件加载的包前缀
+        final Set<String> forbiddenPackages = Set.of(
+                "ch.qos.logback.",
+                "org.slf4j.",
+                "org.apache.logging."
+        );
 
         return new URLClassLoader(urls.toArray(new URL[0]), parentLoader) {
             @Override
             public Class<?> loadClass(String name) throws ClassNotFoundException {
+                // 禁止加载核心日志库
+                for (String pkg : forbiddenPackages) {
+                    if (name.startsWith(pkg)) {
+                        return parentLoader.loadClass(name);
+                    }
+                }
+
+                // 优先加载插件类
                 try {
-                    return parentLoader.loadClass(name);
+                    return findClass(name);
                 } catch (ClassNotFoundException e) {
                     return super.loadClass(name);
                 }
+            }
+
+            @Override
+            public URL getResource(String name) {
+
+                URL url;
+                url=parentLoader.getResource(name);//优先从父级加载
+                if(url==null) url=findResource(name);//父级没有从插件自身查找
+                if(url==null) url=super.getResource(name);
+                return url;
             }
         };
     }
