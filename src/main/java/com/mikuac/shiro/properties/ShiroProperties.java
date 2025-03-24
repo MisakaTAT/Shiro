@@ -67,4 +67,9 @@ public class ShiroProperties {
      * 日志等级设置为 debug
      */
     private Boolean debug = false;
+
+    /**
+     * Maven仓库URL，用于插件依赖解析和下载
+     */
+    private String pluginMavenRepositoryUrl = "https://maven.aliyun.com/repository/public";
 }

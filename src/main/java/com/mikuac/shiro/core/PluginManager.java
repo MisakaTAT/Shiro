@@ -1,13 +1,11 @@
 package com.mikuac.shiro.core;
 
-import com.mikuac.shiro.core.plugin_loader.DependencyResolver;
 import com.mikuac.shiro.properties.ShiroProperties;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -20,15 +18,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Stream;
 
-/**
- * 插件管理器
- *
- * @author Zero
- */
 @Slf4j
 @Component
 @RequiredArgsConstructor(onConstructor_ = @Autowired)
@@ -36,16 +31,11 @@ public class PluginManager {
 
     private final ShiroProperties shiroProperties;
     private final ApplicationContext applicationContext;
+    private final DependencyResolver dependencyResolver;
 
-    /**
-     * 插件类加载器
-     */
     @Getter
     private URLClassLoader pluginClassLoader;
 
-    /**
-     * 初始化插件
-     */
     @PostConstruct
     public void initPlugins() {
         try {
@@ -57,9 +47,6 @@ public class PluginManager {
         }
     }
 
-    /**
-     * 应用关闭时清理资源
-     */
     @PreDestroy
     public void cleanup() {
         if (pluginClassLoader != null) {
@@ -72,9 +59,6 @@ public class PluginManager {
         }
     }
 
-    /**
-     * 加载插件
-     */
     private void loadPlugins() throws IOException {
         File pluginDir = getPluginDirectory();
         if (pluginDir == null) {
@@ -83,11 +67,10 @@ public class PluginManager {
 
         List<URL> pluginUrls = new ArrayList<>();
         for (File jar : Objects.requireNonNull(pluginDir.listFiles((dir, name) -> name.endsWith(".jar")))) {
-            // 新增：解析插件依赖
+            // 解析插件依赖
             Set<String> dependencies = parseDependencies(jar);
-            log.info("parsing plugin: {}", jar.getAbsolutePath());
+            log.info("Parsing plugin: {}", jar.getAbsolutePath());
             resolveDependencies(dependencies);
-
             pluginUrls.add(jar.toURI().toURL());
         }
 
@@ -95,13 +78,13 @@ public class PluginManager {
             return;
         }
 
-        // 新增：添加依赖库路径
+        // 添加依赖库路径
         pluginUrls.addAll(scanDependencyJars());
         this.pluginClassLoader = createPluginClassLoader(pluginUrls);
         registerPlugins(this.pluginClassLoader);
     }
 
-    // 新增方法：解析清单文件中的依赖
+    // 解析清单文件中的依赖
     private Set<String> parseDependencies(File jarFile) throws IOException {
         Set<String> dependencies = new HashSet<>();
         try (JarFile jar = new JarFile(jarFile)) {
@@ -109,32 +92,27 @@ public class PluginManager {
             if (manifest != null) {
                 String deps = manifest.getMainAttributes().getValue("Dependencies");
                 if (deps != null) {
-                    Arrays.stream(deps.split(",\\s*"))
-                            // .map(s -> s.split(":")[0] + ":" + s.split(":")[1]) // 提取 groupId:artifactId
-                            .forEach(dependencies::add);
+                    dependencies.addAll(Arrays.asList(deps.split(",\\s*")));
                 }
             }
         }
         return dependencies;
     }
 
-    DependencyResolver resolver = new DependencyResolver();
-
-    // 新增方法：解析依赖
+    // 解析依赖
     private void resolveDependencies(Set<String> dependencies) {
         dependencies.stream()
                 .filter(this::isDependencyMissing)
                 .forEach(dep -> {
                     try {
-                        //log.info("resolving: {}", dep);
-                        resolver.resolveDependency(dep);
+                        dependencyResolver.resolveDependency(dep);
                     } catch (ArtifactResolutionException e) {
-                        log.error("resolve dependency failed: {}", dep, e);
+                        log.error("Failed to resolve dependency: {}", dep, e);
                     }
                 });
     }
 
-    // 新增方法：检查依赖是否已存在
+    // 检查依赖是否已存在
     private boolean isDependencyMissing(String groupArtifact) {
         String[] parts = groupArtifact.split(":");
         try {
@@ -146,29 +124,27 @@ public class PluginManager {
         }
     }
 
-    // 新增方法：扫描依赖库目录
+    // 扫描依赖库目录
     private List<URL> scanDependencyJars() throws IOException {
-        File depDir = DependencyResolver.dependenciesDir;
+        File depDir = DependencyResolver.DEPENDENCIES_DIR;
         List<URL> urls = new ArrayList<>();
         if (depDir.exists()) {
-            // 递归扫描所有子目录
-            Files.walk(depDir.toPath())
-                    .filter(path -> path.toString().endsWith(".jar"))
-                    .forEach(path -> {
-                        try {
-                            urls.add(path.toUri().toURL());
-                            log.debug("successfully add dependency: {}", path.getFileName());
-                        } catch (MalformedURLException e) {
-                            log.error("invalid dependency: {}", path, e);
-                        }
-                    });
+            try (Stream<Path> pathStream = Files.walk(depDir.toPath())) {
+                pathStream
+                        .filter(path -> path.toString().endsWith(".jar"))
+                        .forEach(path -> {
+                            try {
+                                urls.add(path.toUri().toURL());
+                                log.debug("Added dependency: {}", path.getFileName());
+                            } catch (MalformedURLException e) {
+                                log.error("Invalid dependency path: {}", path, e);
+                            }
+                        });
+            }
         }
         return urls;
     }
 
-    /**
-     * 获取插件目录
-     */
     private File getPluginDirectory() {
         String pluginScanPath = shiroProperties.getPluginScanPath();
         File pluginDir = new File(pluginScanPath);
@@ -180,31 +156,6 @@ public class PluginManager {
 
         return pluginDir;
     }
-
-    /**
-     * 扫描插件JAR文件
-     */
-    @Deprecated
-    private List<URL> scanPluginJars(File pluginDir) throws MalformedURLException {
-        List<URL> urls = new ArrayList<>();
-
-        File[] jarFiles = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
-        if (jarFiles == null || jarFiles.length == 0) {
-            log.info("No plugin jar files found");
-            return urls;
-        }
-
-        for (File jar : jarFiles) {
-            urls.add(jar.toURI().toURL());
-            log.debug("Added plugin jar: {}", jar.getName());
-        }
-
-        return urls;
-    }
-
-    /**
-     * 创建插件类加载器
-     */
 
     private URLClassLoader createPluginClassLoader(List<URL> urls) {
         final ClassLoader parentLoader = Thread.currentThread().getContextClassLoader();
@@ -238,17 +189,14 @@ public class PluginManager {
             public URL getResource(String name) {
 
                 URL url;
-                url=parentLoader.getResource(name);//优先从父级加载
-                if(url==null) url=findResource(name);//父级没有从插件自身查找
-                if(url==null) url=super.getResource(name);
+                url = parentLoader.getResource(name);// 优先从父级加载
+                if (url == null) url = findResource(name);// 父级没有从插件自身查找
+                if (url == null) url = super.getResource(name);
                 return url;
             }
         };
     }
 
-    /**
-     * 从类加载器注册插件
-     */
     private void registerPlugins(URLClassLoader classLoader) {
         ServiceLoader<BotPlugin> loader = ServiceLoader.load(BotPlugin.class, classLoader);
         int count = 0;
@@ -263,9 +211,6 @@ public class PluginManager {
         log.info("Successfully loaded {} plugins", count);
     }
 
-    /**
-     * 将插件注册到Spring容器
-     */
     private void registerPlugin(BotPlugin plugin) {
         Class<? extends BotPlugin> pluginClass = plugin.getClass().asSubclass(BotPlugin.class);
         String beanName = generateBeanName(pluginClass);
@@ -279,11 +224,9 @@ public class PluginManager {
         log.debug("Registered plugin: {}", pluginClass.getName());
     }
 
-    /**
-     * 从类生成Bean名称
-     */
     private String generateBeanName(Class<?> clazz) {
         String simpleName = clazz.getSimpleName();
         return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
     }
+
 }
