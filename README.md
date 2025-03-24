@@ -184,14 +184,29 @@ graph TD
     A[Shiro 启动] --> B[扫描 plugins/ 目录]
     B --> C{是否存在 JAR 文件?}
     C -- 否 --> D[跳过插件加载]
-    C -- 是 --> E[加载并注册插件]
+    C -- 是 --> E1[解析 JAR 的 manifest]
+    
+    subgraph 依赖处理
+        E1 --> E2[提取 Dependencies 属性]
+        E2 --> E3{是否有依赖需要解析?}
+        E3 -- 是 --> E4[通过 DependencyResolver 解析依赖]
+        E4 --> E5[下载缺失的依赖到 dependencies 目录]
+        E3 -- 否 --> E6[跳过依赖解析]
+        E5 --> E6
+    end
+    
+    E6 --> E7[创建包含插件和依赖的 URLClassLoader]
+    E7 --> E[加载并注册插件]
     
     subgraph 加载并注册插件
         E --> F[使用 URLClassLoader 加载 JAR]
         F --> G[使用 ServiceLoader 加载 BotPlugin]
         G --> H{插件是否实现 BotPlugin?}
         H -- 否 --> I[跳过插件]
-        H -- 是 --> J[检查主项目 BotPlugin]
+        H -- 是 --> H1{是否有 @Component 注解?}
+        H1 -- 否 --> I
+        H1 -- 是 --> H2[注册到 Spring 容器]
+        H2 --> J[检查主项目 BotPlugin]
         J --> K{主项目是否实现相同事件?}
         K -- 否 --> L[注册插件到事件列表]
         K -- 是 --> M[插件 onGroupMessage 低优先级执行]
@@ -256,6 +271,63 @@ public class DemoPlugin extends BotPlugin {
 com.mikuac.demo.DemoPlugin
 ```
 
+##### 配置构建脚本
+
+在 `build.gradle.kts` 中添加以下配置，用于正确处理插件打包和依赖管理：
+
+```kotlin
+tasks.withType<Jar> {
+    // 处理JAR中的重复文件，INCLUDE策略表示保留所有重复项
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+
+    // 将主源集的所有编译输出加入JAR包
+    from(sourceSets.main.get().output)
+
+    manifest {
+        // 添加基本信息到 MANIFEST.MF
+        attributes(
+            mapOf(
+                "Implementation-Title" to project.name,       // 使用项目名称
+                "Implementation-Version" to project.version,  // 添加版本信息
+                "Built-By" to System.getProperty("user.name"),
+                "Created-By" to "Gradle ${gradle.gradleVersion}"
+            )
+        )
+        
+        // 生成并添加依赖清单
+        val dependenciesString = configurations
+            .getByName("runtimeClasspath")  // 获取运行时实际解析的依赖
+            .resolvedConfiguration
+            .resolvedArtifacts
+            .map {
+                // 将依赖格式化为 "groupId:artifactId:version" 格式
+                "${it.moduleVersion.id.group}:${it.moduleVersion.id.name}:${it.moduleVersion.id.version}"
+            }
+            .distinct()  // 移除重复项
+            .filterNot { coordinates ->
+                // 过滤掉不应由插件加载的依赖
+                // 这些依赖应当由 Shiro 主程序提供，避免类加载冲突
+                coordinates.startsWith("org.springframework") ||  // Spring框架
+                coordinates.startsWith("com.mikuac:shiro") ||     // Shiro
+                coordinates.startsWith("org.slf4j") ||            // 日志门面
+                coordinates.startsWith("ch.qos.logback")          // 日志实现
+            }
+            .joinToString(", ")  // 使用逗号分隔依赖列表
+
+        // 添加依赖列表到 manifest 中，Shiro 将解析此属性来下载所需依赖
+        attributes(mapOf("Dependencies" to dependenciesString))
+    }
+}
+
+// 可选：配置依赖项
+dependencies {
+    // Shiro 本身仅在编译时需要，运行时由主程序提供
+    compileOnly("com.mikuac:shiro:latest")
+    
+    // 添加其他依赖，这些将被包含在Dependencies清单中
+    implementation("com.example:some-library:1.0.0")
+}
+```
 ##### 编译插件
 
 ```
