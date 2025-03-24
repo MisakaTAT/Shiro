@@ -3,6 +3,11 @@
 group = "com.mikuac"
 version = "2.3.7"
 
+val mavenArtifactResolver = "1.9.18"
+val mavenResolverProvider = "3.9.6"
+val fastjson = "2.0.56"
+val junit = "5.12.1"
+
 plugins {
     signing
     `java-library`
@@ -15,48 +20,51 @@ plugins {
 java {
     withSourcesJar()
     withJavadocJar()
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
-tasks.withType<Test> {
-    useJUnitPlatform()
-}
+tasks {
+    withType<Test> {
+        useJUnitPlatform()
+    }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
+    withType<JavaCompile> {
+        options.encoding = "UTF-8"
+    }
 
-tasks.withType<Javadoc> {
-    val opts = options as StandardJavadocDocletOptions
-    opts.encoding = "UTF-8"
-    opts.addBooleanOption("Xdoclint:none", true)
-}
+    withType<Javadoc> {
+        val opts = options as StandardJavadocDocletOptions
+        opts.encoding = "UTF-8"
+        opts.addBooleanOption("Xdoclint:none", true)
+    }
 
-tasks.named<Jar>("jar") {
-    archiveClassifier.set("")
+    named<Jar>("jar") {
+        archiveClassifier.set("")
+    }
 }
 
 repositories {
-    maven { url =uri("https://maven.aliyun.com/repository/public/") }
     mavenCentral()
 }
 
 dependencies {
-    api("com.alibaba.fastjson2:fastjson2:2.0.56")
+    api("com.alibaba.fastjson2:fastjson2:$fastjson")
     api("org.springframework.boot:spring-boot-starter-websocket")
 
+    implementation("org.apache.maven:maven-resolver-provider:$mavenResolverProvider")
 
-    api("org.apache.maven:maven-resolver-provider:3.9.6")
-    api("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.18")
-    api("org.apache.maven.resolver:maven-resolver-transport-file:1.9.18")
-    api("org.apache.maven.resolver:maven-resolver-transport-http:1.9.18")
-    api("org.apache.maven.resolver:maven-resolver-impl:1.9.18")
-    api("org.apache.maven.resolver:maven-resolver-api:1.9.18")
-    api("org.apache.maven.resolver:maven-resolver-util:1.9.18")
-    api("org.apache.maven.resolver:maven-resolver-spi:1.9.18")
+    implementation("org.apache.maven.resolver:maven-resolver-connector-basic:$mavenArtifactResolver")
+    implementation("org.apache.maven.resolver:maven-resolver-transport-file:$mavenArtifactResolver")
+    implementation("org.apache.maven.resolver:maven-resolver-transport-http:$mavenArtifactResolver")
+    implementation("org.apache.maven.resolver:maven-resolver-impl:$mavenArtifactResolver")
+    implementation("org.apache.maven.resolver:maven-resolver-api:$mavenArtifactResolver")
+    implementation("org.apache.maven.resolver:maven-resolver-util:$mavenArtifactResolver")
+    implementation("org.apache.maven.resolver:maven-resolver-spi:$mavenArtifactResolver")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-    testImplementation("org.junit.jupiter:junit-jupiter:5.12.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.junit.jupiter:junit-jupiter:$junit")
 }
 
 publishing {
@@ -97,8 +105,8 @@ publishing {
             val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
             url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
             credentials {
-                username = System.getenv("NEXUS_USERNAME")
-                password = System.getenv("NEXUS_PASSWORD")
+                username = System.getenv("NEXUS_USERNAME") ?: ""
+                password = System.getenv("NEXUS_PASSWORD") ?: ""
             }
         }
     }
@@ -111,8 +119,8 @@ gradle.taskGraph.whenReady {
 }
 
 signing {
-    val signingKey = System.getenv("GPG_PRIVATE_KEY")
-    val signingPassword = System.getenv("GPG_PASSPHRASE")
+    val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: ""
+    val signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
     useInMemoryPgpKeys(signingKey, signingPassword)
     sign(publishing.publications["maven"])
 }
