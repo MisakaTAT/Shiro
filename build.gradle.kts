@@ -4,7 +4,7 @@ group = "com.mikuac"
 version = "2.3.7"
 
 val mavenArtifactResolver = "1.9.18"
-val mavenResolverProvider = "3.9.6"
+val mavenResolverProvider = "3.9.9"
 val fastjson = "2.0.56"
 val junit = "5.12.1"
 
