@@ -1,6 +1,5 @@
 package com.mikuac.shiro.core;
 
-import com.mikuac.shiro.boot.Shiro;
 import com.mikuac.shiro.properties.ShiroProperties;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;
