@@ -1,7 +1,7 @@
 @file:Suppress("SpellCheckingInspection")
 
 group = "com.mikuac"
-version = "2.3.7"
+version = "2.3.8"
 
 val mavenArtifactResolver = "1.9.22"
 val mavenResolverProvider = "3.9.9"
