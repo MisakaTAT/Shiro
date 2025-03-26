@@ -99,4 +99,11 @@ public class ActionParams {
 
     public static final String IS_ADD = "is_add";
 
+    public static final String NEWS = "news";
+
+    public static final String PROMPT = "prompt";
+
+    public static final String SUMMARY = "summary";
+
+    public static final String SOURCE = "source";
 }
