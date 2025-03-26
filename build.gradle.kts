@@ -53,15 +53,15 @@ dependencies {
     api("com.alibaba.fastjson2:fastjson2:$fastjson")
     api("org.springframework.boot:spring-boot-starter-websocket")
 
-    implementation("org.apache.maven:maven-resolver-provider:$mavenResolverProvider")
+    api("org.apache.maven:maven-resolver-provider:$mavenResolverProvider")
 
-    implementation("org.apache.maven.resolver:maven-resolver-connector-basic:$mavenArtifactResolver")
-    implementation("org.apache.maven.resolver:maven-resolver-transport-file:$mavenArtifactResolver")
-    implementation("org.apache.maven.resolver:maven-resolver-transport-http:$mavenArtifactResolver")
-    implementation("org.apache.maven.resolver:maven-resolver-impl:$mavenArtifactResolver")
-    implementation("org.apache.maven.resolver:maven-resolver-api:$mavenArtifactResolver")
-    implementation("org.apache.maven.resolver:maven-resolver-util:$mavenArtifactResolver")
-    implementation("org.apache.maven.resolver:maven-resolver-spi:$mavenArtifactResolver")
+    api("org.apache.maven.resolver:maven-resolver-connector-basic:$mavenArtifactResolver")
+    api("org.apache.maven.resolver:maven-resolver-transport-file:$mavenArtifactResolver")
+    api("org.apache.maven.resolver:maven-resolver-transport-http:$mavenArtifactResolver")
+    api("org.apache.maven.resolver:maven-resolver-impl:$mavenArtifactResolver")
+    api("org.apache.maven.resolver:maven-resolver-api:$mavenArtifactResolver")
+    api("org.apache.maven.resolver:maven-resolver-util:$mavenArtifactResolver")
+    api("org.apache.maven.resolver:maven-resolver-spi:$mavenArtifactResolver")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
