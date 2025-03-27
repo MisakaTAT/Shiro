@@ -333,9 +333,10 @@ public class ShiroUtils {
 
     /**
      * 生成自定义合并转发消息的单条内容
-     * @param uin 指定QQ号，用于头像的显示
+     *
+     * @param uin  指定QQ号，用于头像的显示
      * @param name 指定的显示的QQ昵称
-     * @param msg   消息内容
+     * @param msg  消息内容
      * @return 消息结构
      * <p>使用 {@link com.mikuac.shiro.core.Bot#sendGroupForwardMsg(long, List, String, String, String, List)}和{@link com.mikuac.shiro.core.Bot#sendPrivateForwardMsg(long, List, String, String, String, List)}来发送生成后的聊天记录</p>
      */

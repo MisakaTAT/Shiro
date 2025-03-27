@@ -1,5 +1,6 @@
 package com.mikuac.shiro.core;
 
+import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,6 @@ import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
-import com.mikuac.shiro.properties.ShiroProperties;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -51,7 +50,7 @@ public class DependencyResolver {
         session.setLocalRepositoryManager(
                 repositorySystem.newLocalRepositoryManager(session, localRepo));
         session.setTransferListener(new ImprovedTransferListener());
-        
+
         String repoUrl = properties.getPluginMavenRepositoryUrl();
         if (repoUrl == null || repoUrl.isEmpty()) {
             repoUrl = "https://repo.maven.apache.org/maven2/";
@@ -123,28 +122,27 @@ public class DependencyResolver {
             long transferred = event.getTransferredBytes();
 
             if (contentLength <= 0) return;
-            
+
             double progress = (double) transferred / contentLength;
             status.setProgress(progress);
-            
+
             // Check if current progress is a key milestone
             boolean isKeyMilestone = checkMilestone(status, progress);
-            
+
             if (isKeyMilestone) {
                 String fileName = extractFileName(resourceName);
                 String progressBar = createProgressBar(progress);
                 String transferredStr = formatSize(transferred);
                 String totalStr = formatSize(contentLength);
-                
+
                 status.setLastLoggedProgress(progress);
                 logProgress(fileName, progressBar, progress, transferredStr, totalStr);
             }
         }
-        
 
         private boolean checkMilestone(DownloadStatus status, double progress) {
-            int currentPercentage = (int)(progress * 100);
-            int previousPercentage = (int)(status.getLastLoggedProgress() * 100);
+            int currentPercentage = (int) (progress * 100);
+            int previousPercentage = (int) (status.getLastLoggedProgress() * 100);
             if (previousPercentage < 100 && progress >= 0.999) {
                 status.setProgress(1.0); // Force to exactly 100%
                 return true;
@@ -156,7 +154,7 @@ public class DependencyResolver {
             }
             return false;
         }
-        
+
         private String extractFileName(String resourceName) {
             int lastSlash = resourceName.lastIndexOf('/');
             if (lastSlash >= 0 && lastSlash < resourceName.length() - 1) {
@@ -164,7 +162,7 @@ public class DependencyResolver {
             }
             return resourceName;
         }
-        
+
         private String createProgressBar(double progress) {
             int filledLength = (int) (progress * PROGRESS_BAR_WIDTH);
             String bar = "[" + "=".repeat(filledLength);
@@ -173,9 +171,9 @@ public class DependencyResolver {
             }
             return bar + "]";
         }
-        
+
         private void logProgress(String fileName, String progressBar, double progress,
-                               String transferredStr, String totalStr) {
+                                 String transferredStr, String totalStr) {
             log.info("Downloading: {} {} {}% ({}/{})",
                     truncateFileName(fileName),
                     progressBar,
@@ -215,7 +213,7 @@ public class DependencyResolver {
             if (status != null) {
                 long contentLength = event.getResource().getContentLength();
                 String totalStr = formatSize(contentLength);
-                
+
                 log.info("Download completed: {} ({})", resourceName, totalStr);
             }
         }
