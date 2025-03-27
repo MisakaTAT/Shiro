@@ -1162,6 +1162,54 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
+     * 发送群聊嵌套聊天记录
+     *
+     * @param groupId 为要发送的群聊
+     * @param msg     为消息记录
+     * @param prompt  为在外部消息列表显示的文字
+     * @param source  为顶部文本
+     * @param summary 为底部文本
+     * @param news    为外显的摘要消息，最多三条；内容的构建参考消息节点。一般来说key为text,value为文本内容
+     * <p>参考 {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}</p>来生成单条聊天记录
+     */
+    public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg, String prompt, String source, String summary, List<Map<String, String>> news) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.GROUP_ID, groupId);
+        params.put(ActionParams.MESSAGES, msg);
+        params.put(ActionParams.NEWS, news);
+        params.put(ActionParams.PROMPT, prompt);
+        params.put(ActionParams.SOURCE, source);
+        params.put(ActionParams.SUMMARY, summary);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
+
+    /**发送私聊嵌套聊天记录
+     *
+     * @param userId 为要发送的用户
+     * @param msg     为消息记录
+     * @param prompt  为在外部消息列表显示的文字
+     * @param source  为顶部文本
+     * @param summary 为底部文本
+     * @param news    为外显的摘要消息，最多三条；内容的构建参考消息节点。一般来说key为text,value为文本内容
+     * <p>参考 {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}</p>来生成单条聊天记录
+     */
+    public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg, String prompt, String source, String summary, List<Map<String, String>> news) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.MESSAGES, msg);
+        params.put(ActionParams.NEWS, news);
+        params.put(ActionParams.PROMPT, prompt);
+        params.put(ActionParams.SOURCE, source);
+        params.put(ActionParams.SUMMARY, summary);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
+        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
+        }.getType()) : null;
+    }
+
+
+    /**
      * 获取中文分词
      *
      * @param content 内容
