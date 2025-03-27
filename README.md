@@ -351,7 +351,7 @@ shiro:
 
 # Community
 
-[社区项目/插件](http://localhost:5173/shiro-docs/communtiy.html)
+[社区项目/插件](https://misakatat.github.io/shiro-docs/community.html)
 
 ## 如何添加项目？
 
@@ -359,7 +359,7 @@ shiro:
 
 您可以通过以下两种方式添加项目：
 
-1. 直接编辑文件：[点击这里编辑](https://github.com/MisakaTAT/shiro-docs/edit/main/communtiy.md)
+1. 直接编辑文件：[点击这里编辑](https://github.com/MisakaTAT/shiro-docs/edit/main/community.md)
 2. 提交 Issue：在 [Issues](https://github.com/MisakaTAT/shiro-docs/issues) 页面提交新的 Issue
 
 请按照以下格式添加您的项目：
