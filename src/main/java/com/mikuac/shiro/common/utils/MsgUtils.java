@@ -1,5 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
+import java.util.Base64;
+
 /**
  * Created on 2021/7/8.
  *
@@ -51,6 +53,19 @@ public class MsgUtils {
      */
     public MsgUtils img(OneBotMedia media) {
         builder.append("[CQ:image,").append(media.escape()).append("]");
+        return this;
+    }
+
+    /**
+     * 图片
+     *
+     * @param image 图片字节数组
+     * @return {@link MsgUtils}
+     */
+    public MsgUtils img(byte[] image) {
+        String img = String.format("base64://%s", Base64.getEncoder().encodeToString(image));
+        String code = String.format("[CQ:image,file=%s]", ShiroUtils.escape(img));
+        builder.append(code);
         return this;
     }
 
