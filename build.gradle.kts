@@ -5,8 +5,8 @@ version = "2.3.9"
 
 val mavenArtifactResolver = "1.9.22"
 val mavenResolverProvider = "3.9.9"
-val fastjson = "2.0.56"
-val junit = "5.12.1"
+val fastjson = "2.0.57"
+val junit = "5.12.2"
 
 plugins {
     signing

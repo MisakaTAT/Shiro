@@ -3,10 +3,7 @@ package com.mikuac.shiro.common.utils;
 import com.alibaba.fastjson2.JSON;
 import com.mikuac.shiro.model.ArrayMsg;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -25,6 +22,13 @@ public class ArrayMsgUtils {
     }
 
     public ArrayMsgUtils img(String img) {
+        builder.add(getJsonData("image", m -> m.put("file", ShiroUtils.escape(img))));
+        return this;
+    }
+
+    public ArrayMsgUtils img(byte[] image) {
+        String img = String.format("base64://%s", Base64.getEncoder().encodeToString(image));
+        String code = String.format("[CQ:image,file=%s]", ShiroUtils.escape(img));
         builder.add(getJsonData("image", m -> m.put("file", ShiroUtils.escape(img))));
         return this;
     }

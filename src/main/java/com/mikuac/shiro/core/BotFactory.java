@@ -24,6 +24,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * Created on 2021/7/7.
@@ -191,7 +192,7 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
                                 return orderValue;
                             }
                     )
-            ).toList();
+            ).collect(Collectors.toCollection(ArrayList::new));
             log.debug("Sorted {} handlers for annotation: {}", handlers.size(), annotation.getSimpleName());
             annotationHandler.put(annotation, handlers);
             log.debug("Handler sorting completed");
