@@ -136,7 +136,8 @@ public class ActionHandler {
             result.clear();
             result.put("status", "failed");
             result.put("retcode", -1);
-            log.error("Action failed: {}", e.getMessage());
+            long xSelfId = ConnectionUtils.parseSelfId(session);
+            log.error("API call failed [{}]: {}", xSelfId, result.get("wording"));
         }
         return result;
     }
