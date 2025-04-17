@@ -32,7 +32,7 @@ import java.util.Map;
 @Getter
 @Setter
 @SuppressWarnings({"unused", "Duplicates"})
-public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend, LLOneBotExtend {
+public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend, LLOneBotExtend, NapCatExtend {
 
     private long selfId;
 
