@@ -62,6 +62,16 @@ public enum ActionPathEnum implements ActionPath {
      * 设置群组专属头衔
      */
     SET_GROUP_SPECIAL_TITLE("set_group_special_title"),
+
+    /**
+     * 获取群聊历史消息
+     */
+    GET_GROUP_MSG_HISTORY("get_group_msg_history"),
+
+    /**
+     * 获取群聊历史消息
+     */
+    GET_FRIEND_MSG_HISTORY("get_friend_msg_history"),
     /**
      * 处理加好友请求
      */
