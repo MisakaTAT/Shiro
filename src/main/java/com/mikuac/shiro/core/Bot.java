@@ -36,7 +36,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     private long selfId;
 
-    private static String token = null;
+    private String token;
 
     private ActionHandler actionHandler;
 
@@ -1458,40 +1458,43 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     /**
      * 获取群聊历史消息记录
-     * @param groupId 指定的群聊
-     * @param messageSeq 指定的消息id
-     * @param count 获取的消息条数
+     *
+     * @param groupId      指定的群聊
+     * @param messageSeq   指定的消息id
+     * @param count        获取的消息条数
      * @param reverseOrder 是否反转获取到的消息,false：返回的消息为正序；true:返回的消息为倒序
      * @return 返回的消息列表
      */
 
     @Override
-    public ActionData<GetMsgListResp> getGroupMsgHistory(long groupId,Long messageSeq,int count,boolean reverseOrder){
+    public ActionData<GetMsgListResp> getGroupMsgHistory(long groupId, Long messageSeq, int count, boolean reverseOrder) {
         JSONObject params = new JSONObject();
-        params.put(ActionParams.GROUP_ID,groupId);
-        if(messageSeq!=null) params.put(ActionParams.MESSAGE_SEQ,messageSeq);
-        params.put(ActionParams.COUNT,count);
-        params.put(ActionParams.REVERSE_ORDER,reverseOrder);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MSG_HISTORY,params);
+        params.put(ActionParams.GROUP_ID, groupId);
+        if (messageSeq != null) params.put(ActionParams.MESSAGE_SEQ, messageSeq);
+        params.put(ActionParams.COUNT, count);
+        params.put(ActionParams.REVERSE_ORDER, reverseOrder);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MSG_HISTORY, params);
         return result != null ? result.to(new TypeReference<ActionData<GetMsgListResp>>() {
         }.getType()) : null;
     }
+
     /**
      * 获取好友历史消息记录
-     * @param userId 指定的好友
-     * @param messageSeq 指定的消息id
-     * @param count 获取的消息条数
+     *
+     * @param userId       指定的好友
+     * @param messageSeq   指定的消息id
+     * @param count        获取的消息条数
      * @param reverseOrder 是否反转获取到的消息,false：返回的消息为正序；true:返回的消息为倒序
      * @return 返回的消息列表
      */
     @Override
-    public ActionData<GetMsgListResp> getFriendMsgHistory(long userId,Long messageSeq,int count,boolean reverseOrder){
+    public ActionData<GetMsgListResp> getFriendMsgHistory(long userId, Long messageSeq, int count, boolean reverseOrder) {
         JSONObject params = new JSONObject();
-        params.put(ActionParams.USER_ID,userId);
-        if(messageSeq!=null) params.put(ActionParams.MESSAGE_SEQ,messageSeq);
-        params.put(ActionParams.COUNT,count);
-        params.put(ActionParams.REVERSE_ORDER,reverseOrder);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_MSG_HISTORY,params);
+        params.put(ActionParams.USER_ID, userId);
+        if (messageSeq != null) params.put(ActionParams.MESSAGE_SEQ, messageSeq);
+        params.put(ActionParams.COUNT, count);
+        params.put(ActionParams.REVERSE_ORDER, reverseOrder);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_MSG_HISTORY, params);
         return result != null ? result.to(new TypeReference<ActionData<GetMsgListResp>>() {
         }.getType()) : null;
     }
