@@ -37,6 +37,12 @@ public class ActionParams {
 
     public static final String MESSAGE_ID = "message_id";
 
+    public static final String MESSAGE_SEQ = "message_seq";
+
+    public static final String COUNT = "count";
+
+    public static final String REVERSE_ORDER = "reverseOrder";
+
     public static final String GUILD_ID = "guild_id";
 
     public static final String NEXT_TOKEN = "next_token";
