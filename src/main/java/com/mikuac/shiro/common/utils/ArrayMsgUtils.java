@@ -151,7 +151,6 @@ public class ArrayMsgUtils {
         return this;
     }
 
-    @SuppressWarnings({"java:S1192"})
     public ArrayMsgUtils music(String type, long id) {
         builder.add(getJsonData("music", m -> {
             m.put("type", String.valueOf(type));
@@ -160,26 +159,12 @@ public class ArrayMsgUtils {
         return this;
     }
 
-    @SuppressWarnings({"java:S1192"})
-    public ArrayMsgUtils customMusic(String url, String audio, String title, String content, String image) {
+    public ArrayMsgUtils music(String type, Map<String, String> params) {
         builder.add(getJsonData("music", m -> {
-            m.put("type", "custom");
-            m.put("url", ShiroUtils.escape(url));
-            m.put("audio", ShiroUtils.escape(audio));
-            m.put("title", ShiroUtils.escape(title));
-            m.put("content", ShiroUtils.escape(content));
-            m.put("image", ShiroUtils.escape(image));
-        }));
-        return this;
-    }
-
-    @SuppressWarnings({"java:S1192"})
-    public ArrayMsgUtils customMusic(String url, String audio, String title) {
-        builder.add(getJsonData("music", m -> {
-            m.put("type", "custom");
-            m.put("url", ShiroUtils.escape(url));
-            m.put("audio", ShiroUtils.escape(audio));
-            m.put("title", ShiroUtils.escape(title));
+            m.put("type", String.valueOf(type));
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                m.put(entry.getKey(), String.valueOf(entry.getValue()));
+            }
         }));
         return this;
     }

@@ -1,6 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
 import java.util.Base64;
+import java.util.Map;
 
 /**
  * Created on 2021/7/8.
@@ -314,39 +315,21 @@ public class MsgUtils {
     }
 
     /**
-     * 音乐自定义分享
+     * 音乐分享
      *
-     * @param url     点击后跳转目标 URL
-     * @param audio   音乐 URL
-     * @param title   标题
-     * @param content 发送时可选，内容描述
-     * @param image   发送时可选，图片 URL
+     * @param type   音乐类型
+     * @param params 包含音乐信息的键值对(如title, url, image, singer, audio等)
      * @return {@link MsgUtils}
      */
-    public MsgUtils customMusic(String url, String audio, String title, String content, String image) {
-        String code = String.format(
-                "[CQ:music,type=custom,url=%s,audio=%s,title=%s,content=%s,image=%s]",
-                ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title), ShiroUtils.escape(content),
-                ShiroUtils.escape(image)
-        );
-        builder.append(code);
-        return this;
-    }
-
-    /**
-     * 音乐自定义分享
-     *
-     * @param url   点击后跳转目标 URL
-     * @param audio 音乐 URL
-     * @param title 标题
-     * @return {@link MsgUtils}
-     */
-    public MsgUtils customMusic(String url, String audio, String title) {
-        String code = String.format(
-                "[CQ:music,type=custom,url=%s,audio=%s,title=%s]",
-                ShiroUtils.escape(url), ShiroUtils.escape(audio), ShiroUtils.escape(title)
-        );
-        builder.append(code);
+    public MsgUtils music(String type, Map<String, String> params) {
+        StringBuilder codeBuilder = new StringBuilder();
+        codeBuilder.append("[CQ:music,type=").append(ShiroUtils.escape(type));
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            codeBuilder.append(",").append(entry.getKey()).append("=")
+                    .append(ShiroUtils.escape(entry.getValue()));
+        }
+        codeBuilder.append("]");
+        builder.append(codeBuilder);
         return this;
     }
 
