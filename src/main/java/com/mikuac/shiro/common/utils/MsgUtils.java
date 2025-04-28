@@ -309,7 +309,7 @@ public class MsgUtils {
      * @return {@link MsgUtils}
      */
     public MsgUtils music(String type, long id) {
-        String code = String.format("[CQ:music,type=%s,id=%s]", ShiroUtils.escape(type), id);
+        String code = String.format("[CQ:music,type=%s,id=%s]", type, id);
         builder.append(code);
         return this;
     }
@@ -323,7 +323,7 @@ public class MsgUtils {
      */
     public MsgUtils music(String type, Map<String, String> params) {
         StringBuilder codeBuilder = new StringBuilder();
-        codeBuilder.append("[CQ:music,type=").append(ShiroUtils.escape(type));
+        codeBuilder.append("[CQ:music,type=").append(type);
         for (Map.Entry<String, String> entry : params.entrySet()) {
             codeBuilder.append(",").append(entry.getKey()).append("=")
                     .append(ShiroUtils.escape(entry.getValue()));

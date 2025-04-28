@@ -28,7 +28,6 @@ public class ArrayMsgUtils {
 
     public ArrayMsgUtils img(byte[] image) {
         String img = String.format("base64://%s", Base64.getEncoder().encodeToString(image));
-        String code = String.format("[CQ:image,file=%s]", ShiroUtils.escape(img));
         builder.add(getJsonData("image", m -> m.put("file", ShiroUtils.escape(img))));
         return this;
     }
@@ -163,7 +162,7 @@ public class ArrayMsgUtils {
         builder.add(getJsonData("music", m -> {
             m.put("type", String.valueOf(type));
             for (Map.Entry<String, String> entry : params.entrySet()) {
-                m.put(entry.getKey(), String.valueOf(entry.getValue()));
+                m.put(entry.getKey(), ShiroUtils.escape(entry.getValue()));
             }
         }));
         return this;
