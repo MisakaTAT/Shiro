@@ -44,18 +44,22 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     private List<Class<? extends BotPlugin>> pluginList;
 
-    private MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler;
+    private BotFactory.AnnotationMethodContainer annotationMethodContainer;
 
     private Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor;
 
-    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList, MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
+    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList, BotFactory.AnnotationMethodContainer annotationMethodContainer, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
         this.selfId = selfId;
         this.session = session;
         this.actionHandler = actionHandler;
         this.pluginList = pluginList;
-        this.annotationHandler = annotationHandler;
+        this.annotationMethodContainer = annotationMethodContainer;
         this.botMessageEventInterceptor = botMessageEventInterceptor;
         token = ConnectionUtils.getAuthorization(session);
+    }
+
+    public MultiValueMap<Class<? extends Annotation>, HandlerMethod> getAnnotationHandler() {
+        return annotationMethodContainer.getAnnotationHandler();
     }
 
     /**
