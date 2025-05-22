@@ -63,9 +63,10 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
 
     @Getter
     @Setter
+    @SuppressWarnings("java:S3077")
     public static class AnnotationMethodContainer {
         // 以注解为键，存放包含此注解的处理方法
-        private MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
+        private volatile MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
     }
 
     /**
