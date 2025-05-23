@@ -1,6 +1,8 @@
 @file:Suppress("SpellCheckingInspection")
 
-group = "com.mikuac"
+import org.jreleaser.model.Active
+
+group = "com.mikuac.shiro"
 version = "2.4.2"
 
 val mavenArtifactResolver = "1.9.23"
@@ -12,6 +14,7 @@ plugins {
     signing
     `java-library`
     `maven-publish`
+    id("org.jreleaser") version "1.18.0"
     id("io.freefair.lombok") version "8.13.1"
     id("org.springframework.boot") version "3.4.6"
     id("io.spring.dependency-management") version "1.1.7"
@@ -40,12 +43,13 @@ tasks {
     }
 
     named<Jar>("jar") {
-        archiveClassifier.set("")
+        // Remove `plain` postfix from jar file name
+        archiveClassifier = ""
     }
 }
 
 repositories {
-    maven { url =uri("https://maven.aliyun.com/repository/public/") }
+    maven { url = uri("https://maven.aliyun.com/repository/public/") }
     mavenCentral()
 }
 
@@ -76,52 +80,59 @@ publishing {
             version = project.version.toString()
             from(components["java"])
             pom {
-                name.set("Shiro")
-                url.set("https://github.com/MisakaTAT/Shiro")
-                description.set("基于OneBot协议的QQ机器人快速开发框架")
+                name = "Shiro"
+                url = "https://github.com/MisakaTAT/Shiro"
+                description = "基于OneBot协议的QQ机器人快速开发框架"
                 licenses {
                     license {
-                        name.set("GNU Affero General Public License v3.0")
-                        url.set("https://github.com/MisakaTAT/Shiro/blob/main/LICENSE")
+                        name = "GNU Affero General Public License v3.0"
+                        url = "https://github.com/MisakaTAT/Shiro/blob/main/LICENSE"
                     }
                 }
                 developers {
                     developer {
-                        id.set("MisakaTAT")
-                        name.set("MisakaTAT")
-                        email.set("i@mikuac.com")
+                        id = "MisakaTAT"
+                        name = "MisakaTAT"
+                        email = "i@mikuac.com"
                     }
                 }
                 scm {
-                    url.set("https://github.com/MisakaTAT/Shiro")
-                    connection.set("scm:git:git://github.com/MisakaTAT/Shiro.git")
-                    developerConnection.set("scm:git:ssh://github.com/MisakaTAT/Shiro.git")
+                    url = "https://github.com/MisakaTAT/Shiro"
+                    connection = "scm:git:git://github.com/MisakaTAT/Shiro.git"
+                    developerConnection = "scm:git:ssh://github.com/MisakaTAT/Shiro.git"
+                }
+            }
+            versionMapping {
+                usage("java-api") {
+                    fromResolutionOf("runtimeClasspath")
+                }
+                usage("java-runtime") {
+                    fromResolutionResult()
                 }
             }
         }
     }
     repositories {
         maven {
-            val snapshotsRepoUrl = uri("https://s01.oss.sonatype.org/content/repositories/snapshots")
-            val releasesRepoUrl = uri("https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/")
-            url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
-            credentials {
-                username = System.getenv("NEXUS_USERNAME") ?: ""
-                password = System.getenv("NEXUS_PASSWORD") ?: ""
-            }
+            url = layout.buildDirectory.dir("staging-deploy").get().asFile.toURI()
         }
     }
 }
 
-gradle.taskGraph.whenReady {
-    tasks.withType<Sign>().configureEach {
-        enabled = !gradle.taskGraph.hasTask(":publishToMavenLocal")
+jreleaser {
+    signing {
+        active = Active.ALWAYS
+        armored = true
     }
-}
-
-signing {
-    val signingKey = System.getenv("GPG_PRIVATE_KEY") ?: ""
-    val signingPassword = System.getenv("GPG_PASSPHRASE") ?: ""
-    useInMemoryPgpKeys(signingKey, signingPassword)
-    sign(publishing.publications["maven"])
+    deploy {
+        maven {
+            mavenCentral {
+                register("sonatype") {
+                    active = Active.ALWAYS
+                    url = "https://central.sonatype.com/api/v1/publisher"
+                    stagingRepositories.add("build/staging-deploy")
+                }
+            }
+        }
+    }
 }
