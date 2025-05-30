@@ -3,7 +3,7 @@
 import org.jreleaser.model.Active
 
 group = "com.mikuac"
-version = "2.4.2"
+version = "2.4.3"
 
 val mavenArtifactResolver = "1.9.23"
 val mavenResolverProvider = "3.9.9"
