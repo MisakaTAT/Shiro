@@ -2,7 +2,7 @@
 
 import org.jreleaser.model.Active
 
-group = "com.mikuac.shiro"
+group = "com.mikuac"
 version = "2.4.2"
 
 val mavenArtifactResolver = "1.9.23"
