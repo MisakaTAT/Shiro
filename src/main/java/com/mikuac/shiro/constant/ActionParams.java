@@ -37,7 +37,7 @@ public class ActionParams {
 
     public static final String MESSAGE_ID = "message_id";
 
-    public static final String MESSAGE_SEQ = "message_seq";
+    public static final String MESSAGE_SEQ = "messageSeq";
 
     public static final String COUNT = "count";
 
