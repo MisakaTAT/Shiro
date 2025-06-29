@@ -17,8 +17,11 @@ import jakarta.annotation.Nullable;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
@@ -32,7 +35,7 @@ import java.util.Map;
 @Getter
 @Setter
 @SuppressWarnings({"unused", "Duplicates"})
-public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend, LLOneBotExtend, NapCatExtend {
+public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend, LLOneBotExtend, NapCatExtend, Closeable {
 
     private long selfId;
 
@@ -60,6 +63,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     public MultiValueMap<Class<? extends Annotation>, HandlerMethod> getAnnotationHandler() {
         return annotationMethodContainer.getAnnotationHandler();
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (session.isOpen()) {
+            session.close(CloseStatus.NORMAL);
+        }
     }
 
     /**
