@@ -1513,6 +1513,33 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         }.getType()) : null;
     }
 
+
+    @Override
+    public ActionRaw sendFriendPoke(long userId) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.USER_ID, userId);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.FRIEND_POKE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    @Override
+    public ActionRaw sendFriendPoke(long userId,long targetId) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.TARGET_ID,targetId);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.FRIEND_POKE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    @Override
+    public ActionRaw sendGroupPoke(long groupId, long userId) {
+        JSONObject params = new JSONObject();
+        params.put(ActionParams.USER_ID, userId);
+        params.put(ActionParams.GROUP_ID, groupId);
+        JSONObject result = actionHandler.action(session, ActionPathEnum.GROUP_POKE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
     /**
      * 设置群消息表情回应
      *

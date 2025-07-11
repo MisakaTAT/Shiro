@@ -72,6 +72,16 @@ public enum ActionPathEnum implements ActionPath {
      * 获取群聊历史消息
      */
     GET_FRIEND_MSG_HISTORY("get_friend_msg_history"),
+
+    /**
+     * 发送好友戳一戳
+     */
+    FRIEND_POKE("friend_poke"),
+
+    /**
+     * 发送群聊戳一戳
+     */
+    GROUP_POKE("group_poke"),
     /**
      * 处理加好友请求
      */
