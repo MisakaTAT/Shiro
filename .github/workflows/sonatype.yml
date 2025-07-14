@@ -34,4 +34,4 @@ jobs:
         run: ./gradlew clean publish
 
       - name: Publish package to Maven Central
-        run: ./gradlew jreleaserFullRelease
+        run: timeout 30m ./gradlew jreleaserFullRelease || echo "::warning::可能因发布超时失败，检查 Nexus 状态"
