@@ -28,9 +28,9 @@ public interface NapCatExtend {
      */
     ActionData<GetMsgListResp> getFriendMsgHistory(long userId, Long messageSeq, int count, boolean reverseOrder);
 
-    ActionRaw sendGroupPoke(long groupId,long userId);
+    ActionRaw sendGroupPoke(long groupId, long userId);
 
     ActionRaw sendFriendPoke(long userId);
 
-    ActionRaw sendFriendPoke(long userId,long targetId);
+    ActionRaw sendFriendPoke(long userId, long targetId);
 }

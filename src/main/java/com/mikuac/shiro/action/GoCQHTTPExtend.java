@@ -370,5 +370,5 @@ public interface GoCQHTTPExtend {
      *
      * @return result {@link ActionList} of {@link VersionInfoResp}
      */
-    public ActionData<VersionInfoResp> getVersionInfo();
+    ActionData<VersionInfoResp> getVersionInfo();
 }
