@@ -1,6 +1,7 @@
 package com.mikuac.shiro.action;
 
 import com.mikuac.shiro.dto.action.common.ActionData;
+import com.mikuac.shiro.dto.action.common.ActionRaw;
 import com.mikuac.shiro.dto.action.response.GetMsgListResp;
 
 public interface NapCatExtend {
@@ -27,4 +28,9 @@ public interface NapCatExtend {
      */
     ActionData<GetMsgListResp> getFriendMsgHistory(long userId, Long messageSeq, int count, boolean reverseOrder);
 
+    ActionRaw sendGroupPoke(long groupId,long userId);
+
+    ActionRaw sendFriendPoke(long userId);
+
+    ActionRaw sendFriendPoke(long userId,long targetId);
 }

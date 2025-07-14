@@ -7,6 +7,8 @@ public class ActionParams {
 
     public static final String USER_ID = "user_id";
 
+    public static final String TARGET_ID = "target_id";
+
     public static final String MESSAGE = "message";
 
     public static final String AUTO_ESCAPE = "auto_escape";
