@@ -253,7 +253,8 @@ public class ShiroUtils {
         for (ArrayMsg item : arrayMsgs) {
             if (!MsgTypeEnum.text.equals(item.getType())) {
                 builder.append("[CQ:").append(item.getType());
-                item.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(ShiroUtils.escape(v)));
+                // message 字段转回 CQ 码的时候不要转义，raw_message 会保留原始内容。
+                item.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
                 builder.append("]");
             } else {
                 builder.append(ShiroUtils.escape(item.getData().get(MsgTypeEnum.text.toString())));
