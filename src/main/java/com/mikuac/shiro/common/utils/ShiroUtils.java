@@ -1,15 +1,13 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.JSON;
 import com.mikuac.shiro.core.Bot;
-import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
-import lombok.NonNull;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
-import java.util.regex.Matcher;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 2021/8/10.
@@ -17,16 +15,11 @@ import java.util.regex.Matcher;
  * @author Zero
  * @version $Id: $Id
  */
-@Slf4j
-@SuppressWarnings({"unused", "squid:S1192"})
+@SuppressWarnings({"unused", "squid:S1192", "Duplicates"})
 public class ShiroUtils {
 
     private ShiroUtils() {
     }
-
-    private static final String CQ_CODE_SPLIT = "(?<=\\[CQ:[^]]{1,99999}])|(?=\\[CQ:[^]]{1,99999}])";
-
-    private static final String CQ_CODE_REGEX = "\\[CQ:([^,\\[\\]]+)((?:,[^,=\\[\\]]+=[^,\\[\\]]*)*)]";
 
     /**
      * 判断是否为全体at
@@ -100,26 +93,6 @@ public class ShiroUtils {
     }
 
     /**
-     * 获取用户昵称
-     * 该接口已经无法使用
-     *
-     * @param userId QQ号
-     * @return 用户昵称
-     * @deprecated
-     */
-    @Deprecated(since = "2.1.3")
-    @SuppressWarnings("squid:S1133")
-    public static String getNickname(long userId) {
-        String url = String.format("https://r.qzone.qq.com/fcg-bin/cgi_get_portrait.fcg?uins=%s", userId);
-        String result = ReqUtils.asyncGet(url, 10);
-        if (result != null && !result.isEmpty()) {
-            String nickname = result.split(",")[6];
-            return nickname.substring(1, nickname.length() - 1);
-        }
-        return null;
-    }
-
-    /**
      * 获取用户头像
      *
      * @param userId QQ号
@@ -171,99 +144,6 @@ public class ShiroUtils {
     }
 
     /**
-     * string 消息上报转消息链
-     * 建议传入 event.getMessage 而非 event.getRawMessage
-     * 例如 go-cq-http rawMessage 不包含图片 url
-     *
-     * @param msg 需要修改客户端消息上报类型为 string
-     * @return 消息链
-     */
-    public static List<ArrayMsg> rawToArrayMsg(@NonNull String msg) {
-        List<ArrayMsg> chain = new ArrayList<>();
-        try {
-            Arrays.stream(msg.split(CQ_CODE_SPLIT)).filter(s -> !s.isEmpty()).forEach(s -> {
-                Optional<Matcher> matcher = RegexUtils.matcher(CQ_CODE_REGEX, s);
-                ArrayMsg item = new ArrayMsg();
-                Map<String, String> data = new HashMap<>();
-                if (matcher.isEmpty()) {
-                    item.setType(MsgTypeEnum.text);
-                    data.put("text", ShiroUtils.unescape(s));
-                    item.setData(data);
-                }
-                if (matcher.isPresent()) {
-                    MsgTypeEnum type = MsgTypeEnum.typeOf(matcher.get().group(1));
-                    String[] params = matcher.get().group(2).split(",");
-                    item.setType(type);
-                    Arrays.stream(params).filter(args -> !args.isEmpty()).forEach(args -> {
-                        String k = args.substring(0, args.indexOf("="));
-                        String v = ShiroUtils.unescape(args.substring(args.indexOf("=") + 1));
-                        data.put(k, v);
-                    });
-                    item.setData(data);
-                }
-                chain.add(item);
-            });
-        } catch (Exception e) {
-            log.error("Conversion failed: {}", e.getMessage());
-        }
-        return chain;
-    }
-
-    @SuppressWarnings("SpellCheckingInspection")
-    public static void rawConvert(@NonNull String msg, MessageEvent event) {
-        // 支持 go-cqhttp array 格式消息上报，如果 msg 是一个有效的 json 字符串则作为 array 上报
-        if (JSON.isValidArray(msg)) {
-            List<ArrayMsg> arrayMsg = JSON.parseArray(msg, ArrayMsg.class);
-            // 将 array message 转换回 string message
-            event.setArrayMsg(arrayMsg);
-            event.setMessage(ShiroUtils.arrayMsgToCode(arrayMsg));
-            return;
-        }
-        // string 格式消息上报
-        event.setArrayMsg(rawToArrayMsg(msg));
-    }
-
-    /**
-     * 从 ArrayMsg 生成 CQ Code
-     *
-     * @param arrayMsg {@link ArrayMsg}
-     * @return CQ Code
-     */
-    public static String arrayMsgToCode(ArrayMsg arrayMsg) {
-        StringBuilder builder = new StringBuilder();
-        if (Objects.isNull(arrayMsg.getType()) || MsgTypeEnum.unknown.equals(arrayMsg.getType())) {
-            builder.append("[CQ:").append(MsgTypeEnum.unknown);
-        } else {
-            builder.append("[CQ:").append(arrayMsg.getType());
-        }
-        arrayMsg.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(ShiroUtils.escape(v)));
-        builder.append("]");
-        return builder.toString();
-    }
-
-    /**
-     * 从 List<ArrayMsg> 生成 CQ Code
-     *
-     * @param arrayMsgs {@link ArrayMsg}
-     * @return CQ Code
-     */
-    @SuppressWarnings("SpellCheckingInspection")
-    public static String arrayMsgToCode(List<ArrayMsg> arrayMsgs) {
-        StringBuilder builder = new StringBuilder();
-        for (ArrayMsg item : arrayMsgs) {
-            if (!MsgTypeEnum.text.equals(item.getType())) {
-                builder.append("[CQ:").append(item.getType());
-                // message 字段转回 CQ 码的时候不要转义，raw_message 会保留原始内容。
-                item.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
-                builder.append("]");
-            } else {
-                builder.append(ShiroUtils.escape(item.getData().get(MsgTypeEnum.text.toString())));
-            }
-        }
-        return builder.toString();
-    }
-
-    /**
      * 创建自定义消息合并转发
      *
      * @param uin      发送者QQ号
@@ -272,7 +152,6 @@ public class ShiroUtils {
      *                 <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return 消息结构
      */
-    @SuppressWarnings("Duplicates")
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
@@ -295,7 +174,6 @@ public class ShiroUtils {
      * @param contents 消息列表，每个元素视为一个消息节点
      * @return 消息结构
      */
-    @SuppressWarnings("Duplicates")
     public static List<Map<String, Object>> generateForwardMsg(List<String> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
@@ -316,7 +194,6 @@ public class ShiroUtils {
      * @param contents 消息列表，每个元素视为一个消息节点 Object 可为 List<ArrayMsg> 或 CQCode
      * @return 消息结构
      */
-    @SuppressWarnings("Duplicates")
     public static List<Map<String, Object>> generateForwardMsg(String uin, String name, List<?> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {
@@ -362,7 +239,6 @@ public class ShiroUtils {
      * @param contents 消息列表，每个元素视为一个消息节点 Object 可为 List<ArrayMsg> 或 CQCode
      * @return 消息结构
      */
-    @SuppressWarnings("Duplicates")
     public static List<Map<String, Object>> generateForwardMsg(Bot bot, List<?> contents) {
         List<Map<String, Object>> nodes = new ArrayList<>();
         contents.forEach(msg -> {

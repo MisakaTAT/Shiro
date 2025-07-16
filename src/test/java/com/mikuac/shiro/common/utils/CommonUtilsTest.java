@@ -51,7 +51,7 @@ class CommonUtilsTest {
         val msg = "[CQ:at,qq=1122334455,name=@机器人 &#91;可以&#93;]测试消息1";
 
         // 将 msg 字符串转换成 ArrayMsg 数组
-        val arrayMsg = ShiroUtils.rawToArrayMsg(msg);
+        val arrayMsg = MessageConverser.stringToArray(msg);
 
         // 定义 AtEnum 为 NEED，期望 @ 标识被解析并去除
         val expected1 = "测试消息1";
@@ -165,13 +165,16 @@ class CommonUtilsTest {
 
     @MessageHandlerFilter(startWith = {"abc", "qwe"})
     public void startWithAno() {
+        // empty
     }
 
     @MessageHandlerFilter(endWith = {"ddd", "rty"})
     public void endWithAno() {
+        // empty
     }
 
     @MessageHandlerFilter(cmd = "abc|qwe", startWith = {"ab", "qwe"})
     public void cmdWithAno() {
+        // empty
     }
 }

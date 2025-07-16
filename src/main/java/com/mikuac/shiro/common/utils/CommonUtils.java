@@ -169,7 +169,7 @@ public class CommonUtils {
         }
         ArrayMsg item = atParse(arrayMsg, selfId);
         if (item != null) {
-            String code = ShiroUtils.arrayMsgToCode(arrayMsg.get(arrayMsg.indexOf(item)));
+            String code = MessageConverser.arrayToString(arrayMsg.get(arrayMsg.indexOf(item)));
             return msg.replace(code, "").trim();
         }
         return msg;
