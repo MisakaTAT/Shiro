@@ -22,6 +22,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Created on 2021/7/7.
@@ -56,7 +57,7 @@ public class ActionHandler {
     /**
      * 用于标识请求，可以是任何类型的数据，OneBot 将会在调用结果中原样返回
      */
-    private int echo = 0;
+    private final AtomicInteger echo = new AtomicInteger();
 
     @Autowired
     public ActionHandler(WebSocketProperties wsProp, RateLimiterProperties rateLimiterProps, RateLimiter rateLimiter) {
@@ -153,7 +154,7 @@ public class ActionHandler {
     private JSONObject generatePayload(ActionPath action, Map<String, Object> params) {
         JSONObject payload = new JSONObject();
         payload.put("action", action.getPath());
-        payload.put("echo", echo++);
+        payload.put("echo", echo.getAndAdd(1));
         if (params != null && !params.isEmpty()) {
             payload.put("params", params);
         }
