@@ -22,6 +22,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -37,7 +38,7 @@ public class ActionHandler {
     /**
      * 请求回调数据
      */
-    private final Map<String, PayloadSender> callback = new HashMap<>();
+    private final Map<String, PayloadSender> callback = new ConcurrentHashMap<>();
 
     /**
      * WebSocket 配置
