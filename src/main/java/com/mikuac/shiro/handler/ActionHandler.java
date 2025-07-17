@@ -155,7 +155,7 @@ public class ActionHandler {
     private JSONObject generatePayload(ActionPath action, Map<String, Object> params) {
         JSONObject payload = new JSONObject();
         payload.put("action", action.getPath());
-        payload.put("echo", echo.getAndAdd(1));
+        payload.put("echo", echo.getAndIncrement());
         if (params != null && !params.isEmpty()) {
             payload.put("params", params);
         }
