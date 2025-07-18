@@ -4,7 +4,6 @@ import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.EventUtils;
 import com.mikuac.shiro.common.utils.GroupMessageFilterUtils;
 import com.mikuac.shiro.common.utils.MessageConverser;
-import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotPlugin;
