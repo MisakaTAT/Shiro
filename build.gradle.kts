@@ -45,6 +45,11 @@ tasks {
     named<Jar>("jar") {
         // Remove `plain` postfix from jar file name
         archiveClassifier = ""
+        enabled = true
+    }
+
+    named("bootJar") {
+        enabled = false
     }
 }
 
