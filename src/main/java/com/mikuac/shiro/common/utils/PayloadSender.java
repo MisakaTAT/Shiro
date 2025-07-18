@@ -33,7 +33,7 @@ public class PayloadSender {
 
     private JSONObject resp;
 
-    private final Lock lock = new ReentrantLock();
+    private static final Lock lock = new ReentrantLock();
 
     private final Condition condition = lock.newCondition();
 
