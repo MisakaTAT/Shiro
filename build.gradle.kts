@@ -72,65 +72,67 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:$junit")
 }
 
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            group = project.group
-            artifactId = project.name
-            version = project.version.toString()
-            from(components["java"])
-            pom {
-                name = "Shiro"
-                url = "https://github.com/MisakaTAT/Shiro"
-                description = "基于OneBot协议的QQ机器人快速开发框架"
-                licenses {
-                    license {
-                        name = "GNU Affero General Public License v3.0"
-                        url = "https://github.com/MisakaTAT/Shiro/blob/main/LICENSE"
-                    }
-                }
-                developers {
-                    developer {
-                        id = "MisakaTAT"
-                        name = "MisakaTAT"
-                        email = "i@mikuac.com"
-                    }
-                }
-                scm {
-                    url = "https://github.com/MisakaTAT/Shiro"
-                    connection = "scm:git:git://github.com/MisakaTAT/Shiro.git"
-                    developerConnection = "scm:git:ssh://github.com/MisakaTAT/Shiro.git"
-                }
-            }
-            versionMapping {
-                usage("java-api") {
-                    fromResolutionOf("runtimeClasspath")
-                }
-                usage("java-runtime") {
-                    fromResolutionResult()
-                }
-            }
+val stagingDirectory = layout.buildDirectory.dir("staging-deploy").get()
+
+fun MavenPom.populate() {
+    packaging = "jar"
+    group = project.group
+    name = project.name
+    version = project.version
+    description = "基于OneBot协议的QQ机器人快速开发框架"
+    url = "https://github.com/MisakaTAT/Shiro"
+    scm {
+        url = "https://github.com/MisakaTAT/Shiro"
+        connection = "scm:git:git://github.com/MisakaTAT/Shiro.git"
+        developerConnection = "scm:git:ssh://github.com/MisakaTAT/Shiro.git"
+    }
+    licenses {
+        license {
+            name = "GNU Affero General Public License v3.0"
+            url = "https://github.com/MisakaTAT/Shiro/blob/main/LICENSE"
+            distribution = "repo"
         }
     }
-    repositories {
-        maven {
-            url = layout.buildDirectory.dir("staging-deploy").get().asFile.toURI()
+    developers {
+        developer {
+            id = "MisakaTAT"
+            name = "MisakaTAT"
+            email = "i@mikuac.com"
         }
+    }
+}
+
+publishing {
+    publications {
+        register<MavenPublication>("Release") {
+            from(components["java"])
+            artifactId = project.name
+            groupId = project.group as String
+            version = project.version as String
+
+            artifact(tasks["sourcesJar"])
+            artifact(tasks["javadocJar"])
+            pom.populate()
+        }
+    }
+
+    repositories.maven {
+        url = stagingDirectory.asFile.toURI()
     }
 }
 
 jreleaser {
     signing {
-        active = Active.ALWAYS
+        active = Active.RELEASE
         armored = true
     }
     deploy {
         maven {
             mavenCentral {
                 register("sonatype") {
-                    active = Active.ALWAYS
+                    active = Active.RELEASE
                     url = "https://central.sonatype.com/api/v1/publisher"
-                    stagingRepositories.add("build/staging-deploy")
+                    stagingRepository(stagingDirectory.asFile.relativeTo(projectDir).path)
                 }
             }
         }
