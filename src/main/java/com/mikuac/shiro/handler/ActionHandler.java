@@ -113,7 +113,7 @@ public class ActionHandler {
                 // 阻塞当前线程直到获取令牌成功
                 return result;
             }
-            if (!rateLimiterProps.getAwaitTask() && !rateLimiter.tryAcquire()) {
+            if (Boolean.FALSE.equals(rateLimiterProps.getAwaitTask()) && !rateLimiter.tryAcquire()) {
                 return result;
             }
         }
