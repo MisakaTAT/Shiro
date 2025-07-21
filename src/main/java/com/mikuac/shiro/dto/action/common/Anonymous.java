@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.common;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,13 +12,13 @@ import lombok.Data;
 @Data
 public class Anonymous {
 
-    @JSONField(name = "id")
+    @JsonProperty("id")
     private Long id;
 
-    @JSONField(name = "name")
+    @JsonProperty("name")
     private String name;
 
-    @JSONField(name = "flag")
+    @JsonProperty("flag")
     private String flag;
 
 }

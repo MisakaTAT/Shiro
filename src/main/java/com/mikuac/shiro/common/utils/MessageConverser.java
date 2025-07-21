@@ -1,6 +1,5 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.JSON;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
@@ -161,8 +160,8 @@ public class MessageConverser {
 
     public static void convert(@NonNull String msg, MessageEvent event) {
         // 如果 msg 是一个有效的 json 数组则作为 array 上报
-        if (JSON.isValidArray(msg)) {
-            List<ArrayMsg> arrayMsg = JSON.parseArray(msg, ArrayMsg.class);
+        if (JsonUtils.isValidArray(msg)) {
+            List<ArrayMsg> arrayMsg = JsonUtils.parseArray(msg, ArrayMsg.class);
             // 将 array 转换回 string
             event.setArrayMsg(arrayMsg);
             event.setMessage(arraysToString(arrayMsg));

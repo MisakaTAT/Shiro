@@ -292,7 +292,7 @@ public interface OneBot {
      *
      * @return result {@link GetStatusResp}
      */
-    GetStatusResp getStatus();
+    ActionData<GetStatusResp> getStatus();
 
     /**
      * 群组匿名用户禁言

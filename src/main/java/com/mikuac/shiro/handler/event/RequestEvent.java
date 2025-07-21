@@ -1,7 +1,7 @@
 package com.mikuac.shiro.handler.event;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.EventUtils;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.request.FriendAddRequestEvent;
@@ -33,15 +33,15 @@ public class RequestEvent {
     /**
      * 存储请求事件处理器
      */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     /**
      * 请求事件分发
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void handler(Bot bot, JSONObject resp) {
+    public void handler(Bot bot, JsonObjectWrapper resp) {
         String type = resp.getString("request_type");
         handlers.getOrDefault(
                 type,
@@ -54,11 +54,11 @@ public class RequestEvent {
      * 事件处理
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      * @param type {@link RequestEventEnum}
      */
     @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
-    private void process(Bot bot, JSONObject resp, RequestEventEnum type) {
+    private void process(Bot bot, JsonObjectWrapper resp, RequestEventEnum type) {
         if (type == RequestEventEnum.GROUP) {
             GroupAddRequestEvent event = resp.to(GroupAddRequestEvent.class);
             injection.invokeGroupAddRequest(bot, event);
@@ -75,9 +75,9 @@ public class RequestEvent {
      * 加好友请求
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void friend(Bot bot, JSONObject resp) {
+    public void friend(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, RequestEventEnum.FRIEND);
     }
 
@@ -85,9 +85,9 @@ public class RequestEvent {
      * 加群请求
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void group(Bot bot, JSONObject resp) {
+    public void group(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, RequestEventEnum.GROUP);
     }
 

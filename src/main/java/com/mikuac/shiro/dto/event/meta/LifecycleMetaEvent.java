@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.meta;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -17,6 +17,6 @@ public class LifecycleMetaEvent extends MetaEvent {
     /***
      * just is `enable`, `disable`, `connect`
      */
-    @JSONField(name = "sub_type")
+    @JsonProperty("sub_type")
     private String subType;
 }

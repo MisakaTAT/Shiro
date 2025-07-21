@@ -1,84 +1,84 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class GroupInfoExResp {
 
-    @JSONField(name = "groupCode")
+    @JsonProperty("groupCode")
     private long groupCode;// 群号
 
-    @JSONField(name = "resultCode")
+    @JsonProperty("resultCode")
     private long resultCode;// 结果码
 
-    @JSONField(name = "extInfo")
+    @JsonProperty("extInfo")
     private ExtInfo extInfo;// 扩展信息
 
     @Data
     public static class ExtInfo {
 
-        @JSONField(name = "groupInfoExtSeq")
+        @JsonProperty("groupInfoExtSeq")
         private long groupInfoExtSeq;// 群信息序列号
 
-        @JSONField(name = "reserve")
+        @JsonProperty("reserve")
         private int reserve;//?
 
-        @JSONField(name = "luckyWordId")
+        @JsonProperty("luckyWordId")
         private int luckyWordId;// 幸运字符ID
 
-        @JSONField(name = "lightCharNum")
+        @JsonProperty("lightCharNum")
         private int lightCharNum;//?
 
-        @JSONField(name = "luckyWord")
+        @JsonProperty("luckyWord")
         private String luckyWord;// 幸运字符
 
-        @JSONField(name = "starId")
+        @JsonProperty("starId")
         private long starId;//?
 
-        @JSONField(name = "essentialMsgSwitch")
+        @JsonProperty("essentialMsgSwitch")
         private int essentialMsgSwitch;// 精华消息开关
 
-        @JSONField(name = "todoSeq")
+        @JsonProperty("todoSeq")
         private long todoSeq;//?
 
-        @JSONField(name = "blacklistExpireTime")
+        @JsonProperty("blacklistExpireTime")
         private long blacklistExpireTime;// 黑名单过期时间
 
-        @JSONField(name = "isLimitGroupRtc")
+        @JsonProperty("isLimitGroupRtc")
         private int isLimitGroupRtc;// 是否限制群视频通话
 
-        @JSONField(name = "companyId")
+        @JsonProperty("companyId")
         private long companyId;// 公司ID
 
-        @JSONField(name = "hasGroupCustomPortrait")
+        @JsonProperty("hasGroupCustomPortrait")
         private int hasGroupCustomPortrait;// 是否有群自定义头像
 
-        @JSONField(name = "bindGuildId")
+        @JsonProperty("bindGuildId")
         private long bindGuildId;// 绑定频道ID？
 
-        @JSONField(name = "groupOwnerId")
+        @JsonProperty("groupOwnerId")
         private GroupOwner groupOwnerId;// 群主信息
 
-        @JSONField(name = "essentialMsgPrivilege")
+        @JsonProperty("essentialMsgPrivilege")
         private int essentialMsgPrivilege;// 精华消息权限
 
-        @JSONField(name = "msgEventSeq")
+        @JsonProperty("msgEventSeq")
         private String msgEventSeq;// 消息事件序列号
 
-        @JSONField(name = "inviteRobotSwitch")
+        @JsonProperty("inviteRobotSwitch")
         private int inviteRobotSwitch;// 邀请机器人开关
 
-        @JSONField(name = "gangUpId")
+        @JsonProperty("gangUpId")
         private String gangUpId;//?
 
-        @JSONField(name = "qqMusicMedalSwitch")
+        @JsonProperty("qqMusicMedalSwitch")
         private int qqMusicMedalSwitch;// QQ音乐勋章开关
 
-        @JSONField(name = "showPlayTogetherSwitch")
+        @JsonProperty("showPlayTogetherSwitch")
         private int showPlayTogetherSwitch;// 显示一起玩开关
 
-        @JSONField(name = "groupFlagPro1")
+        @JsonProperty("groupFlagPro1")
         private String groupFlagPro1;// 群标识1
 
     }
@@ -86,13 +86,13 @@ public class GroupInfoExResp {
     @Data
     public static class GroupOwner {
 
-        @JSONField(name = "memberUin")// QQ号
+        @JsonProperty("memberUin")// QQ号
         private long memberUin;
 
-        @JSONField(name = "memberUid")// UID
+        @JsonProperty("memberUid")// UID
         private String memberUid;
 
-        @JSONField(name = "memberQid")// QID
+        @JsonProperty("memberQid")// QID
         private String memberQid;
     }
 

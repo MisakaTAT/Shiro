@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.notice;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -25,19 +25,19 @@ public class MessageReactionsUpdatedNoticeEvent extends NoticeEvent {
     /**
      * 频道ID
      */
-    @JSONField(name = "guild_id")
+    @JsonProperty("guild_id")
     private String guildId;
 
     /**
      * 子频道ID
      */
-    @JSONField(name = "channel_id")
+    @JsonProperty("channel_id")
     private String channelId;
 
     /**
      * 消息ID
      */
-    @JSONField(name = "message_id")
+    @JsonProperty("message_id")
     private String messageId;
 
     /**
@@ -51,37 +51,37 @@ public class MessageReactionsUpdatedNoticeEvent extends NoticeEvent {
         /**
          * 表情ID
          */
-        @JSONField(name = "emoji_id")
+        @JsonProperty("emoji_id")
         private String emojiId;
 
         /**
          * 表情对应数值ID
          */
-        @JSONField(name = "emoji_index")
+        @JsonProperty("emoji_index")
         private Integer emojiIndex;
 
         /**
          * 表情类型
          */
-        @JSONField(name = "emoji_type")
+        @JsonProperty("emoji_type")
         private Integer emojiType;
 
         /**
          * 表情名字
          */
-        @JSONField(name = "emoji_name")
+        @JsonProperty("emoji_name")
         private String emojiName;
 
         /**
          * 当前表情被贴数量
          */
-        @JSONField(name = "count")
+        @JsonProperty("count")
         private Integer count;
 
         /**
          * BOT是否点击
          */
-        @JSONField(name = "clicked")
+        @JsonProperty("clicked")
         private Boolean clicked;
 
     }

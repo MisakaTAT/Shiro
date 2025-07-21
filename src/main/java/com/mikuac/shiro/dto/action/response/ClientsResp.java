@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -14,19 +14,19 @@ import java.util.List;
 @Data
 public class ClientsResp {
 
-    @JSONField(name = "clients")
+    @JsonProperty("clients")
     private List<Clients> clients;
 
     @Data
     private static class Clients {
 
-        @JSONField(name = "app_id")
+        @JsonProperty("app_id")
         private Long appId;
 
-        @JSONField(name = "device_name")
+        @JsonProperty("device_name")
         private String deviceName;
 
-        @JSONField(name = "device_kind")
+        @JsonProperty("device_kind")
         private String deviceKind;
 
     }

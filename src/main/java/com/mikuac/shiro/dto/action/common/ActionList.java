@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.common;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -14,13 +14,13 @@ import java.util.List;
 @Data
 public class ActionList<T> {
 
-    @JSONField(name = "status")
+    @JsonProperty("status")
     private String status;
 
-    @JSONField(name = "retcode")
+    @JsonProperty("retcode")
     private Integer retCode;
 
-    @JSONField(name = "data")
+    @JsonProperty("data")
     private List<T> data;
 
 }

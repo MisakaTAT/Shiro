@@ -1,6 +1,6 @@
 package com.mikuac.shiro.task;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.handler.EventHandler;
@@ -32,7 +32,7 @@ public class ShiroAsyncTask {
      * @param resp    上报的 Json 数据
      */
     @Async("shiroTaskExecutor")
-    public void execHandlerMsg(EventHandler event, long xSelfId, JSONObject resp) {
+    public void execHandlerMsg(EventHandler event, long xSelfId, JsonObjectWrapper resp) {
         Bot bot = botContainer.robots.get(xSelfId);
         if (bot != null) {
             event.handler(bot, resp);

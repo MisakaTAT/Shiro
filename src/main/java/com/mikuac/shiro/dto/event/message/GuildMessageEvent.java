@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.message;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,28 +20,28 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class GuildMessageEvent extends MessageEvent {
 
-    @JSONField(name = "message_id")
+    @JsonProperty("message_id")
     private String messageId;
 
-    @JSONField(name = "post_type")
+    @JsonProperty("post_type")
     private String postType;
 
-    @JSONField(name = "sub_type")
+    @JsonProperty("sub_type")
     private String subType;
 
-    @JSONField(name = "guild_id")
+    @JsonProperty("guild_id")
     private String guildId;
 
-    @JSONField(name = "channel_id")
+    @JsonProperty("channel_id")
     private String channelId;
 
-    @JSONField(name = "self_tiny_id")
+    @JsonProperty("self_tiny_id")
     private String selfTinyId;
 
-    @JSONField(name = "time")
+    @JsonProperty("time")
     private Long time;
 
-    @JSONField(name = "sender")
+    @JsonProperty("sender")
     private Sender sender;
 
     /**
@@ -50,13 +50,13 @@ public class GuildMessageEvent extends MessageEvent {
     @Data
     public static class Sender {
 
-        @JSONField(name = "user_id")
+        @JsonProperty("user_id")
         private Long userId;
 
-        @JSONField(name = "tiny_id")
+        @JsonProperty("tiny_id")
         private String tinyId;
 
-        @JSONField(name = "nickname")
+        @JsonProperty("nickname")
         private String nickname;
 
     }

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -14,28 +14,28 @@ import java.util.List;
 @Data
 public class GuildMemberProfileResp {
 
-    @JSONField(name = "tiny_id")
+    @JsonProperty("tiny_id")
     private String tinyId;
 
-    @JSONField(name = "nickname")
+    @JsonProperty("nickname")
     private String nickname;
 
-    @JSONField(name = "avatar_url")
+    @JsonProperty("avatar_url")
     private String avatarUrl;
 
-    @JSONField(name = "join_time")
+    @JsonProperty("join_time")
     private Long joinTime;
 
-    @JSONField(name = "roles")
+    @JsonProperty("roles")
     private List<RoleInfo> roles;
 
     @Data
     private static class RoleInfo {
 
-        @JSONField(name = "role_id")
+        @JsonProperty("role_id")
         private String roleId;
 
-        @JSONField(name = "role_name")
+        @JsonProperty("role_name")
         private String roleName;
 
     }

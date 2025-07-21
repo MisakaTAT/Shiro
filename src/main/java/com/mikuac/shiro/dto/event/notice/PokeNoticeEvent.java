@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.notice;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,25 +20,25 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class PokeNoticeEvent extends NoticeEvent {
 
-    @JSONField(name = "sub_type")
+    @JsonProperty("sub_type")
     private String subType;
 
-    @JSONField(name = "self_id")
+    @JsonProperty("self_id")
     private Long selfId;
 
-    @JSONField(name = "sender_id")
+    @JsonProperty("sender_id")
     private Long senderId;
 
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
-    @JSONField(name = "target_id")
+    @JsonProperty("target_id")
     private Long targetId;
 
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
-    @JSONField(name = "time")
+    @JsonProperty("time")
     private Long time;
 
 }

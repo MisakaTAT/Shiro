@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,13 +12,13 @@ import lombok.Data;
 @Data
 public class GuildServiceProfileResp {
 
-    @JSONField(name = "nickname")
+    @JsonProperty("nickname")
     private String nickname;
 
-    @JSONField(name = "tiny_id")
+    @JsonProperty("tiny_id")
     private String tinyId;
 
-    @JSONField(name = "avatar_url")
+    @JsonProperty("avatar_url")
     private String avatarUrl;
 
 }

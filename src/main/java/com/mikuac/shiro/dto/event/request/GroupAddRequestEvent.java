@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.request;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,13 +20,13 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class GroupAddRequestEvent extends RequestEvent {
 
-    @JSONField(name = "sub_type")
+    @JsonProperty("sub_type")
     private String subType;
 
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
-    @JSONField(name = "invitor_id")
+    @JsonProperty("invitor_id")
     private Long invitorId;
 
 }

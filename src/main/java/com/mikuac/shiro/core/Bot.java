@@ -1,9 +1,10 @@
 package com.mikuac.shiro.core;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.TypeReference;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.mikuac.shiro.action.*;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
+import com.mikuac.shiro.common.utils.JsonUtils;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.dto.action.common.*;
 import com.mikuac.shiro.dto.action.response.*;
@@ -23,6 +24,7 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.annotation.Annotation;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -131,13 +133,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendPrivateMsg(long userId, String msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -150,13 +152,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendPrivateMsg(long userId, List<ArrayMsg> msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -170,14 +172,14 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, String msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -191,14 +193,14 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendPrivateMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -211,13 +213,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, String msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -230,13 +232,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, List<ArrayMsg> msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -250,14 +252,14 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, String msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -271,14 +273,14 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendGroupMsg(long groupId, long userId, List<ArrayMsg> msg, boolean autoEscape) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGE, msg);
         params.put(ActionParams.AUTO_ESCAPE, autoEscape);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -293,12 +295,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GuildMemberListResp> getGuildMemberList(String guildId, String nextToken) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.NEXT_TOKEN, nextToken);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMemberListResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -311,13 +313,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GuildMsgId> sendGuildMsg(String guildId, String channelId, String msg) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.CHANNEL_ID, channelId);
         params.put(ActionParams.MESSAGE, msg);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GUILD_CHANNEL_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GUILD_CHANNEL_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -329,12 +331,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GetGuildMsgResp> getGuildMsg(String guildMsgId, boolean noCache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGE_ID, guildMsgId);
         params.put(ActionParams.NO_CACHE, noCache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<GetGuildMsgResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -344,9 +346,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GuildServiceProfileResp> getGuildServiceProfile() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_SERVICE_PROFILE, null);
-        return result != null ? result.to(new TypeReference<ActionData<GuildServiceProfileResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GUILD_SERVICE_PROFILE, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -356,9 +358,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<GuildListResp> getGuildList() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, null);
-        return result != null ? result.to(new TypeReference<ActionList<GuildListResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GUILD_LIST, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -369,11 +371,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GuildMetaByGuestResp> getGuildMetaByGuest(String guildId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GUILD_ID, guildId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_META_BY_GUEST, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMetaByGuestResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GUILD_META_BY_GUEST, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -385,12 +387,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<ChannelInfoResp> getGuildChannelList(String guildId, boolean noCache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.NO_CACHE, noCache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_CHANNEL_LIST, params);
-        return result != null ? result.to(new TypeReference<ActionList<ChannelInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GUILD_CHANNEL_LIST, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -402,12 +404,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GuildMemberProfileResp> getGuildMemberProfile(String guildId, String userId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GUILD_ID, guildId);
         params.put(ActionParams.USER_ID, userId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MEMBER_PROFILE, params);
-        return result != null ? result.to(new TypeReference<ActionData<GuildMemberProfileResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GUILD_MEMBER_PROFILE, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -418,11 +420,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GetMsgResp> getMsg(int msgId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<GetMsgResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -433,9 +435,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw deleteMsg(int msgId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -449,11 +451,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw deleteMsg(long groupId, long userId, int msgId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGE_ID, msgId);
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DELETE_MSG, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -467,11 +469,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupKick(long groupId, long userId, boolean rejectAddRequest) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.REJECT_ADD_REQUEST, rejectAddRequest);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_KICK, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_KICK, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -485,11 +487,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupBan(long groupId, long userId, int duration) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.DURATION, duration);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_BAN, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_BAN, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -502,10 +504,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupWholeBan(long groupId, boolean enable) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.ENABLE, enable);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_WHOLE_BAN, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_WHOLE_BAN, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -519,11 +521,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupAdmin(long groupId, long userId, boolean enable) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.ENABLE, enable);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADMIN, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADMIN, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -536,10 +538,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupAnonymous(long groupId, boolean enable) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.ENABLE, enable);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -553,11 +555,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupCard(long groupId, long userId, String card) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.CARD, card);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_CARD, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_CARD, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -570,10 +572,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupName(long groupId, String groupName) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.GROUP_NAME, groupName);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_NAME, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_NAME, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -586,10 +588,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupLeave(long groupId, boolean isDismiss) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.IS_DISMISS, isDismiss);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_LEAVE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_LEAVE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -604,12 +606,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupSpecialTitle(long groupId, long userId, String specialTitle, int duration) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.SPECIAL_TITLE, specialTitle);
         params.put(ActionParams.DURATION, duration);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_SPECIAL_TITLE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_SPECIAL_TITLE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -623,11 +625,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setFriendAddRequest(String flag, boolean approve, String remark) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.FLAG, flag);
         params.put(ActionParams.APPROVE, approve);
         params.put(ActionParams.REMARK, remark);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_FRIEND_ADD_REQUEST, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_FRIEND_ADD_REQUEST, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -642,12 +644,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupAddRequest(String flag, String subType, boolean approve, String reason) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.FLAG, flag);
         params.put(ActionParams.SUB_TYPE, subType);
         params.put(ActionParams.APPROVE, approve);
         params.put(ActionParams.REASON, reason);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADD_REQUEST, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ADD_REQUEST, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -658,9 +660,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<LoginInfoResp> getLoginInfo() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_LOGIN_INFO, null);
-        return result != null ? result.to(new TypeReference<ActionData<LoginInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_LOGIN_INFO, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -672,12 +674,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<StrangerInfoResp> getStrangerInfo(long userId, boolean noCache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.NO_CACHE, noCache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_STRANGER_INFO, params);
-        return result != null ? result.to(new TypeReference<ActionData<StrangerInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_STRANGER_INFO, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -687,9 +689,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<FriendInfoResp> getFriendList() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_LIST, null);
-        return result != null ? result.to(new TypeReference<ActionList<FriendInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_LIST, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -700,9 +702,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw deleteFriend(long friendId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, friendId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_FRIEND, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DELETE_FRIEND, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -715,12 +717,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GroupInfoResp> getGroupInfo(long groupId, boolean noCache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.NO_CACHE, noCache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_INFO, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_INFO, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -730,9 +732,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<GroupInfoResp> getGroupList() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_LIST, null);
-        return result != null ? result.to(new TypeReference<ActionList<GroupInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_LIST, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -745,13 +747,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GroupMemberInfoResp> getGroupMemberInfo(long groupId, long userId, boolean noCache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.NO_CACHE, noCache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_INFO, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupMemberInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_INFO, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -762,11 +764,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
-        return result != null ? result.to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -778,12 +780,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<GroupMemberInfoResp> getGroupMemberList(long groupId, boolean noCache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.NO_CACHE, noCache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
-        return result != null ? result.to(new TypeReference<ActionList<GroupMemberInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MEMBER_LIST, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -794,9 +796,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     @Override
     public ActionData<VersionInfoResp> getVersionInfo() {
 
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_VERSION_INFO, null);
-        return result != null ? result.to(new TypeReference<ActionData<VersionInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_VERSION_INFO, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -808,12 +810,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GroupHonorInfoResp> getGroupHonorInfo(long groupId, String type) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.TYPE, type);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_HONOR_INFO, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupHonorInfoResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_HONOR_INFO, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -823,9 +825,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<BooleanResp> canSendImage() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.CAN_SEND_IMAGE, null);
-        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.CAN_SEND_IMAGE, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -835,9 +837,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<BooleanResp> canSendRecord() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.CAN_SEND_RECORD, null);
-        return result != null ? result.to(new TypeReference<ActionData<BooleanResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.CAN_SEND_RECORD, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -851,11 +853,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupPortrait(long groupId, String file, int cache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE, file);
         params.put(ActionParams.CACHE, cache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_PORTRAIT, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_PORTRAIT, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -868,11 +870,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<CheckUrlSafelyResp> checkUrlSafely(String url) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.URL, url);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.CHECK_URL_SAFELY, params);
-        return result != null ? result.to(new TypeReference<ActionData<CheckUrlSafelyResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.CHECK_URL_SAFELY, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -884,10 +886,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw sendGroupNotice(long groupId, String content) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.CONTENT, content);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEN_GROUP_NOTICE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEN_GROUP_NOTICE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -899,11 +901,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GroupAtAllRemainResp> getGroupAtAllRemain(long groupId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_AT_ALL_REMAIN, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupAtAllRemainResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_AT_ALL_REMAIN, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -919,12 +921,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw uploadGroupFile(long groupId, String file, String name, String folder) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE, file);
         params.put(ActionParams.NAME, name);
         params.put(ActionParams.FOLDER, folder);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -940,12 +942,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw uploadGroupFile(long groupId, String file, String name) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put("file", file);
         params.put(ActionParams.NAME, name);
-
-        JSONObject result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.UPLOAD_GROUP_FILE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -959,11 +960,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupAnonymousBan(long groupId, Anonymous anonymous, int duration) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.ANONYMOUS, anonymous);
         params.put(ActionParams.DURATION, duration);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -977,11 +978,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupAnonymousBan(long groupId, String flag, int duration) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FLAG, flag);
         params.put(ActionParams.DURATION, duration);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_ANONYMOUS_BAN, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -995,13 +996,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<DownloadFileResp> downloadFile(String url, int threadCount, String headers) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.URL, url);
         params.put(ActionParams.HEADERS, headers);
         params.put(ActionParams.THREAD_COUNT, threadCount);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
-        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1012,11 +1013,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<DownloadFileResp> downloadFile(String url) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.URL, url);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
-        return result != null ? result.to(new TypeReference<ActionData<DownloadFileResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DOWNLOAD_FILE, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
 
     }
 
@@ -1030,12 +1031,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGES, msg);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1046,11 +1047,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GroupFilesResp> getGroupRootFiles(long groupId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_ROOT_FILES, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_ROOT_FILES, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1062,12 +1063,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GroupFilesResp> getGroupFilesByFolder(long groupId, String folderId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FOLDER_ID, folderId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILES_BY_FOLDER, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILES_BY_FOLDER, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1078,11 +1079,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<EssenceMsgResp> getEssenceMsgList(long groupId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_ESSENCE_MSG_LIST, params);
-        return result != null ? result.to(new TypeReference<ActionList<EssenceMsgResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_ESSENCE_MSG_LIST, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1093,9 +1094,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setEssenceMsg(int msgId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_ESSENCE_MSG, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_ESSENCE_MSG, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1107,9 +1108,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw deleteEssenceMsg(int msgId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGE_ID, msgId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_ESSENCE_MSG, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DELETE_ESSENCE_MSG, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1125,13 +1126,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setBotProfile(String nickname, String company, String email, String college, String personalNote) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.NICKNAME, nickname);
         params.put(ActionParams.COMPANY, company);
         params.put(ActionParams.EMAIL, email);
         params.put(ActionParams.COLLEGE, college);
         params.put(ActionParams.PERSONAL_NOTE, personalNote);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_QQ_PROFILE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_QQ_PROFILE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1145,12 +1146,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGES, msg);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1163,7 +1164,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<MsgId> sendForwardMsg(AnyMessageEvent event, List<Map<String, Object>> msg) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGES, msg);
         if (ActionParams.GROUP.equals(event.getMessageType())) {
             params.put(ActionParams.GROUP_ID, event.getGroupId());
@@ -1171,9 +1172,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         if (ActionParams.PRIVATE.equals(event.getMessageType())) {
             params.put(ActionParams.USER_ID, event.getUserId());
         }
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1188,16 +1189,16 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      *                <p>参考 {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}</p>来生成单条聊天记录
      */
     public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg, String prompt, String source, String summary, List<Map<String, String>> news) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGES, msg);
         params.put(ActionParams.NEWS, news);
         params.put(ActionParams.PROMPT, prompt);
         params.put(ActionParams.SOURCE, source);
         params.put(ActionParams.SUMMARY, summary);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_FORWARD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1212,16 +1213,16 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      *                <p>参考 {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}</p>来生成单条聊天记录
      */
     public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg, String prompt, String source, String summary, List<Map<String, String>> news) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGES, msg);
         params.put(ActionParams.NEWS, news);
         params.put(ActionParams.PROMPT, prompt);
         params.put(ActionParams.SOURCE, source);
         params.put(ActionParams.SUMMARY, summary);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<MsgId>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_PRIVATE_FORWARD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1232,11 +1233,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<WordSlicesResp> getWordSlices(String content) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.CONTENT, content);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_WORD_SLICES, params);
-        return result != null ? result.to(new TypeReference<ActionData<WordSlicesResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_WORD_SLICES, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1247,11 +1248,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<ClientsResp> getOnlineClients(boolean noCache) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.NO_CACHE, noCache);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_ONLINE_CLIENTS, params);
-        return result != null ? result.to(new TypeReference<ActionData<ClientsResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_ONLINE_CLIENTS, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1261,11 +1262,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @return result {@link ActionData} of {@link OcrResp}
      */
     public ActionData<OcrResp> ocrImage(String image) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.IMAGE, image);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.OCR_IMAGE, params);
-        return result != null ? result.to(new TypeReference<ActionData<OcrResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.OCR_IMAGE, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1278,11 +1279,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw uploadPrivateFile(long userId, String file, String name) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.FILE, file);
         params.put(ActionParams.NAME, name);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.UPLOAD_PRIVATE_FILE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.UPLOAD_PRIVATE_FILE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1294,9 +1295,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw sendGroupSign(long groupId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_SIGN, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_GROUP_SIGN, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1308,9 +1309,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw deleteUnidirectionalFriend(long userId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DELETE_UNIDIRECTIONAL_FRIEND, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1321,9 +1322,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<UnidirectionalFriendListResp> getUnidirectionalFriendList() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST, null);
-        return result != null ? result.to(new TypeReference<ActionList<UnidirectionalFriendListResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_UNIDIRECTIONAL_FRIEND_LIST, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1336,13 +1337,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<UrlResp> getGroupFileUrl(long groupId, String fileId, int busId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE_ID, fileId);
         params.put(ActionParams.BUS_ID, busId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILE_URL, params);
-        return result != null ? result.to(new TypeReference<ActionData<UrlResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_FILE_URL, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1355,13 +1356,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GroupFilesResp> getFile(long groupId, String fileId, int busId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE_ID, fileId);
         params.put(ActionParams.BUS_ID, busId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FILE, params);
-        return result != null ? result.to(new TypeReference<ActionData<GroupFilesResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_FILE, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1373,12 +1374,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw createGroupFileFolder(long groupId, String folderName) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.NAME, folderName);
         // 仅能在根目录创建文件夹
         params.put(ActionParams.PARENT_ID, "/");
-        JSONObject result = actionHandler.action(session, ActionPathEnum.CREATE_GROUP_FILE_FOLDER, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.CREATE_GROUP_FILE_FOLDER, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1391,10 +1392,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw deleteGroupFileFolder(long groupId, String folderId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FOLDER_ID, folderId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FOLDER, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FOLDER, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1408,11 +1409,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw deleteGroupFile(long groupId, String fileId, int busId) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.FILE_ID, fileId);
         params.put(ActionParams.BUS_ID, busId);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FILE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.DELETE_GROUP_FILE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1425,10 +1426,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw sendLike(long userId, int times) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.TIMES, times);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_LIKE, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_LIKE, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1438,10 +1439,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @return result {@link GetStatusResp}
      */
     @Override
-    public GetStatusResp getStatus() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_STATUS, null);
-        return result != null ? result.to(new TypeReference<ActionData<GetStatusResp>>() {
-        }).getData() : null;
+    public ActionData<GetStatusResp> getStatus() {
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_STATUS, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1451,9 +1452,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionList<String> fetchCustomFace() {
-        JSONObject result = actionHandler.action(session, ActionPathEnum.FETCH_CUSTOM_FACE, null);
-        return result != null ? result.to(new TypeReference<ActionList<String>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.FETCH_CUSTOM_FACE, null);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1464,11 +1465,11 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<String> sendForwardMsg(List<Map<String, Object>> msg) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGES, msg);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
-        return result != null ? result.to(new TypeReference<ActionData<String>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SEND_FORWARD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1483,14 +1484,14 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     @Override
     public ActionData<GetMsgListResp> getGroupMsgHistory(long groupId, Long messageSeq, int count, boolean reverseOrder) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         if (messageSeq != null) params.put(ActionParams.MESSAGE_SEQ, messageSeq);
         params.put(ActionParams.COUNT, count);
         params.put(ActionParams.REVERSE_ORDER, reverseOrder);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MSG_HISTORY, params);
-        return result != null ? result.to(new TypeReference<ActionData<GetMsgListResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MSG_HISTORY, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**
@@ -1504,20 +1505,20 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionData<GetMsgListResp> getFriendMsgHistory(long userId, Long messageSeq, int count, boolean reverseOrder) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         if (messageSeq != null) params.put(ActionParams.MESSAGE_SEQ, messageSeq);
         params.put(ActionParams.COUNT, count);
         params.put(ActionParams.REVERSE_ORDER, reverseOrder);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_MSG_HISTORY, params);
-        return result != null ? result.to(new TypeReference<ActionData<GetMsgListResp>>() {
-        }.getType()) : null;
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_MSG_HISTORY, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
-    private ActionRaw doPoke(ActionPathEnum path, Consumer<JSONObject> paramFiller) {
-        JSONObject params = new JSONObject();
+    private ActionRaw doPoke(ActionPathEnum path, Consumer<Map<String, Object>> paramFiller) {
+        Map<String, Object> params = new HashMap<>();
         paramFiller.accept(params);
-        JSONObject result = actionHandler.action(session, path, params);
+        JsonObjectWrapper result = actionHandler.action(session, path, params);
         return result != null
                 ? result.to(ActionRaw.class)
                 : null;
@@ -1556,12 +1557,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @Override
     public ActionRaw setGroupReaction(long groupId, int msgId, String code, boolean isAdd) {
-        JSONObject params = new JSONObject();
+        Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGE_ID, msgId);
         params.put(ActionParams.CODE, code);
         params.put(ActionParams.IS_ADD, isAdd);
-        JSONObject result = actionHandler.action(session, ActionPathEnum.SET_GROUP_REACTION, params);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_REACTION, params);
         return result != null ? result.to(ActionRaw.class) : null;
     }
 
@@ -1574,7 +1575,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRequest(ActionPath action, Map<String, Object> params) {
-        JSONObject result = actionHandler.action(session, action, params);
+        JsonObjectWrapper result = actionHandler.action(session, action, params);
         return result != null ? result.to(ActionData.class) : null;
     }
 
@@ -1586,9 +1587,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @return result {@link ActionData}
      */
     public <T> ActionData<T> customRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
-        JSONObject result = actionHandler.action(session, action, params);
-        return result != null ? result.to(new TypeReference<>(clazz) {
-        }) : null;
+        JsonObjectWrapper result = actionHandler.action(session, action, params);
+        try {
+            return result != null ? JsonUtils.getObjectMapper().readValue(result.toJSONString(),
+                    JsonUtils.getObjectMapper().getTypeFactory().constructParametricType(ActionData.class, clazz)) : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -1600,7 +1605,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
     @SuppressWarnings("rawtypes")
     public ActionData customRawRequest(ActionPath action, Map<String, Object> params) {
-        JSONObject result = actionHandler.rawAction(session, action, params);
+        JsonObjectWrapper result = actionHandler.rawAction(session, action, params);
         return result != null ? result.to(ActionData.class) : null;
     }
 
@@ -1612,9 +1617,13 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @return result {@link ActionData}
      */
     public <T> ActionData<T> customRawRequest(ActionPath action, Map<String, Object> params, Class<T> clazz) {
-        JSONObject result = actionHandler.rawAction(session, action, params);
-        return result != null ? result.to(new TypeReference<>(clazz) {
-        }) : null;
+        JsonObjectWrapper result = actionHandler.rawAction(session, action, params);
+        try {
+            return result != null ? JsonUtils.getObjectMapper().readValue(result.toJSONString(),
+                    JsonUtils.getObjectMapper().getTypeFactory().constructParametricType(ActionData.class, clazz)) : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 }

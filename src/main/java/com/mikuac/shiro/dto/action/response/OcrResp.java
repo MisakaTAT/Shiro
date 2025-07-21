@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -14,10 +14,10 @@ import java.util.List;
 @Data
 public class OcrResp {
 
-    @JSONField(name = "texts")
+    @JsonProperty("texts")
     private List<TextDetection> texts;
 
-    @JSONField(name = "language")
+    @JsonProperty("language")
     private String language;
 
     @Data
@@ -26,19 +26,19 @@ public class OcrResp {
         /**
          * 文本
          */
-        @JSONField(name = "text")
+        @JsonProperty("text")
         private String text;
 
         /**
          * 置信度
          */
-        @JSONField(name = "confidence")
+        @JsonProperty("confidence")
         private Integer confidence;
 
         /**
          * 坐标
          */
-        @JSONField(name = "coordinates")
+        @JsonProperty("coordinates")
         private List<Coordinate> coordinates;
 
     }
@@ -46,10 +46,10 @@ public class OcrResp {
     @Data
     private static class Coordinate {
 
-        @JSONField(name = "x")
+        @JsonProperty("x")
         private Long x;
 
-        @JSONField(name = "y")
+        @JsonProperty("y")
         private Long y;
 
     }

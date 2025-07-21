@@ -1,9 +1,8 @@
 package com.mikuac.shiro.adapter;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.CommonUtils;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
@@ -104,6 +103,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
                 }
                 return;
             }
+            // noinspection resource
             botContainer.robots.compute(xSelfId, (id, bot) -> {
                 if (Objects.isNull(bot)) {
                     bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent, shiroTaskExecutor);
@@ -127,6 +127,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
 
         if (shiroProps.getWaitBotConnect() <= 0) {
             sessionContext.clear();
+            // noinspection resource
             botContainer.robots.remove(xSelfId);
             log.warn("Account {} disconnected", xSelfId);
             CompletableFuture.runAsync(() -> coreEvent.offline(xSelfId), shiroTaskExecutor);
@@ -136,6 +137,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
         // if not reconnected within a certain timeframe, execute the deletion scheduled task
         ScheduledFuture<?> removeSelfFuture = scheduledTask.executor().schedule(() -> {
             if (botContainer.robots.containsKey(xSelfId)) {
+                // noinspection resource
                 botContainer.robots.remove(xSelfId);
                 log.warn("Account {} disconnected", xSelfId);
                 CompletableFuture.runAsync(() -> coreEvent.offline(xSelfId), shiroTaskExecutor);
@@ -149,7 +151,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
     @SuppressWarnings("Duplicates")
     protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
         long xSelfId = ConnectionUtils.parseSelfId(session);
-        JSONObject result = JSON.parseObject(message.getPayload());
+        JsonObjectWrapper result = JsonObjectWrapper.parseObject(message.getPayload());
         log.debug("[Event] {}", CommonUtils.debugMsgDeleteBase64Content(result.toJSONString()));
         // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(Connection.API_RESULT_KEY)) {

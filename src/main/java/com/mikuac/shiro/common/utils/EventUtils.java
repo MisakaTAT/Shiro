@@ -1,6 +1,5 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotMessageEventInterceptor;
 import com.mikuac.shiro.core.BotPlugin;
@@ -86,10 +85,10 @@ public class EventUtils {
      * 推送消息
      *
      * @param bot      {@link Bot}
-     * @param resp     {@link JSONObject}
+     * @param resp     {@link JsonObjectWrapper}
      * @param arrayMsg {@link ArrayMsg}
      */
-    public void pushAnyMessageEvent(Bot bot, JSONObject resp, List<ArrayMsg> arrayMsg) {
+    public void pushAnyMessageEvent(Bot bot, JsonObjectWrapper resp, List<ArrayMsg> arrayMsg) {
         try {
             AnyMessageEvent event = resp.to(AnyMessageEvent.class);
             event.setArrayMsg(arrayMsg);

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.handler;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.handler.event.*;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class EventHandler implements ApplicationRunner {
     /**
      * 存储事件处理器
      */
-    private final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+    private final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     @Override
     public void run(ApplicationArguments args) {
@@ -96,9 +96,9 @@ public class EventHandler implements ApplicationRunner {
      * 事件分发
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void handler(Bot bot, JSONObject resp) {
+    public void handler(Bot bot, JsonObjectWrapper resp) {
         String postType = resp.getString("post_type");
         handlers.getOrDefault(postType, (b, e) -> {
         }).accept(bot, resp);

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.notice;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,19 +20,19 @@ public class GroupMessageReactionNoticeEvent extends NoticeEvent {
     /**
      * 群组ID
      */
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
     /**
      * 消息ID
      */
-    @JSONField(name = "message_id")
+    @JsonProperty("message_id")
     private Integer messageId;
 
     /**
      * 操作者ID
      */
-    @JSONField(name = "operator_id")
+    @JsonProperty("operator_id")
     private Long operatorId;
 
     /**
@@ -40,19 +40,19 @@ public class GroupMessageReactionNoticeEvent extends NoticeEvent {
      * remove
      * add
      */
-    @JSONField(name = "sub_type")
+    @JsonProperty("sub_type")
     private String subType;
 
     /**
      * 操作者ID
      */
-    @JSONField(name = "code")
+    @JsonProperty("code")
     private String code;
 
     /**
      * 操作者ID
      */
-    @JSONField(name = "count")
+    @JsonProperty("count")
     private Integer count;
 
 }

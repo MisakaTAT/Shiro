@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.notice;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -24,19 +24,19 @@ public class GroupAdminNoticeEvent extends NoticeEvent {
      * set、unset
      * 事件子类型, 分别表示设置和取消管理
      */
-    @JSONField(name = "sub_type")
+    @JsonProperty("sub_type")
     private String subType;
 
     /**
      * 群号
      */
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
     /**
      * 管理员 QQ 号
      */
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
 }

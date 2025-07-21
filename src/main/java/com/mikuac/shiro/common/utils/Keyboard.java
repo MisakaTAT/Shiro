@@ -1,6 +1,6 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -104,13 +104,13 @@ public class Keyboard {
         /**
          * 按钮ID：在一个keyboard消息内设置唯一
          */
-        @JSONField(name = "id")
+        @JsonProperty("id")
         private String id;
 
-        @JSONField(name = "render_data")
+        @JsonProperty("render_data")
         private RenderData renderData = new RenderData();
 
-        @JSONField(name = "action")
+        @JsonProperty("action")
         private Action action = new Action();
     }
 
@@ -121,19 +121,19 @@ public class Keyboard {
         /**
          * 按钮上的文字
          */
-        @JSONField(name = "label")
+        @JsonProperty("label")
         private String label;
 
         /**
          * 点击后按钮的上文字
          */
-        @JSONField(name = "visited_label")
+        @JsonProperty("visited_label")
         private String visitedLabel;
 
         /**
          * 按钮样式：0 灰色线框，1 蓝色线框
          */
-        @JSONField(name = "style")
+        @JsonProperty("style")
         private Integer style;
     }
 
@@ -146,31 +146,31 @@ public class Keyboard {
          * 设置 1 回调按钮：回调后台接口, data 传给后台，<br/>
          * 设置 2 指令按钮：自动在输入框插入 @bot data <br/>
          */
-        @JSONField(name = "type")
+        @JsonProperty("type")
         private int type;
 
         /**
          * 权限设置
          */
-        @JSONField(name = "permission")
+        @JsonProperty("permission")
         private Permission permission = new Permission();
 
         /**
          * 操作相关的数据
          */
-        @JSONField(name = "data")
+        @JsonProperty("data")
         private String data = "";
 
         /**
          * 指令按钮可用，指令是否带引用回复本消息，默认 false。支持版本 8983
          */
-        @JSONField(name = "reply")
+        @JsonProperty("reply")
         private Boolean reply;
 
         /**
          * 指令按钮可用，点击按钮后直接自动发送 data，默认 false。支持版本 8983
          */
-        @JSONField(name = "enter")
+        @JsonProperty("enter")
         private Boolean enter;
 
         /**
@@ -178,13 +178,13 @@ public class Keyboard {
          * 设置为 1 时 ，点击按钮自动唤起启手Q选图器，其他值暂无效果。
          * 仅支持手机端版本 8983+ 的单聊场景，桌面端不支持）
          */
-        @JSONField(name = "anchor")
+        @JsonProperty("anchor")
         private Integer anchor;
 
         /**
          * 客户端不支持本action的时候，弹出的toast文案
          */
-        @JSONField(name = "unsupport_tips")
+        @JsonProperty("unsupport_tips")
         private String unSupportTips;
     }
 
@@ -198,19 +198,19 @@ public class Keyboard {
          * 2 所有人可操作，<br/>
          * 3 指定身份组可操作（仅频道可用）<br/>
          */
-        @JSONField(name = "type")
+        @JsonProperty("type")
         private Integer type;
 
         /**
          * 有权限的用户 id 的列表
          */
-        @JSONField(name = "specify_user_ids")
+        @JsonProperty("specify_user_ids")
         private List<String> specifyUserIds;
 
         /**
          * 有权限的身份组 id 的列表（仅频道可用）
          */
-        @JSONField(name = "specify_role_ids")
+        @JsonProperty("specify_role_ids")
         private List<String> specifyRoleIds;
     }
 

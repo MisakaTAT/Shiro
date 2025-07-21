@@ -1,7 +1,5 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.JSONObject;
-import com.alibaba.fastjson2.JSONWriter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.TextMessage;
@@ -31,16 +29,16 @@ public class PayloadSender {
         this.timeout = timeout;
     }
 
-    private JSONObject resp;
+    private JsonObjectWrapper resp;
 
     private static final Lock lock = new ReentrantLock();
 
     private final Condition condition = lock.newCondition();
 
-    public JSONObject send(@NonNull JSONObject payload) {
+    public JsonObjectWrapper send(@NonNull JsonObjectWrapper payload) {
         lock.lock();
         try {
-            String json = payload.toJSONString(JSONWriter.Feature.LargeObject);
+            String json = payload.toJSONString();
             session.sendMessage(new TextMessage(json));
             log.debug("[Action] {}", CommonUtils.debugMsgDeleteBase64Content(json));
             long startTime = System.currentTimeMillis();
@@ -66,7 +64,7 @@ public class PayloadSender {
         return resp;
     }
 
-    public void onCallback(JSONObject resp) {
+    public void onCallback(JsonObjectWrapper resp) {
         lock.lock();
         try {
             this.resp = resp;

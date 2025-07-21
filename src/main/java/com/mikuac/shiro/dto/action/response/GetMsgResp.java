@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -15,43 +15,43 @@ public class GetMsgResp {
     /**
      * 消息id
      */
-    @JSONField(name = "message_id")
+    @JsonProperty("message_id")
     private Integer messageId;
 
     /**
      * 消息真实id
      */
-    @JSONField(name = "real_id")
+    @JsonProperty("real_id")
     private Integer realId;
 
     /**
      * 发送者
      */
-    @JSONField(name = "sender")
+    @JsonProperty("sender")
     private Sender sender;
 
     /**
      * 发送时间
      */
-    @JSONField(name = "time")
+    @JsonProperty("time")
     private Integer time;
 
     /**
      * 消息内容
      */
-    @JSONField(name = "message")
+    @JsonProperty("message")
     private String message;
 
     /**
      * 原始消息内容
      */
-    @JSONField(name = "raw_message")
+    @JsonProperty("raw_message")
     private String rawMessage;
 
     /**
      * 消息类型
      */
-    @JSONField(name = "message_type")
+    @JsonProperty("message_type")
     private String messageType;
 
     /**
@@ -60,31 +60,31 @@ public class GetMsgResp {
     @Data
     public static class Sender {
 
-        @JSONField(name = "user_id")
+        @JsonProperty("user_id")
         private String userId;
 
-        @JSONField(name = "nickname")
+        @JsonProperty("nickname")
         private String nickname;
 
-        @JSONField(name = "card")
+        @JsonProperty("card")
         private String card;
 
-        @JSONField(name = "sex")
+        @JsonProperty("sex")
         private String sex;
 
-        @JSONField(name = "age")
+        @JsonProperty("age")
         private Integer age;
 
-        @JSONField(name = "area")
+        @JsonProperty("area")
         private String area;
 
-        @JSONField(name = "level")
+        @JsonProperty("level")
         private String level;
 
-        @JSONField(name = "role")
+        @JsonProperty("role")
         private String role;
 
-        @JSONField(name = "title")
+        @JsonProperty("title")
         private String title;
 
     }

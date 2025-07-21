@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.message;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mikuac.shiro.dto.event.Event;
 import com.mikuac.shiro.model.ArrayMsg;
 import lombok.AllArgsConstructor;
@@ -24,24 +24,24 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 public class MessageEvent extends Event {
 
-    @JSONField(name = "message_type")
+    @JsonProperty("message_type")
     private String messageType;
 
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
-    @JSONField(name = "message")
+    @JsonProperty("message")
     private String message;
 
-    @JSONField(name = "raw_message")
+    @JsonProperty("raw_message")
     private String rawMessage;
 
-    @JSONField(name = "font")
+    @JsonProperty("font")
     private Integer font;
 
     private List<ArrayMsg> arrayMsg;
 
-    @JSONField(name = "raw")
+    @JsonProperty("raw")
     private Raw raw;
 
     /**
