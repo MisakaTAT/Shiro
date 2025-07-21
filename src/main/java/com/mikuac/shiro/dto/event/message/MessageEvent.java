@@ -1,6 +1,11 @@
 package com.mikuac.shiro.dto.event.message;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.mikuac.shiro.common.utils.JsonUtils;
 import com.mikuac.shiro.dto.event.Event;
 import com.mikuac.shiro.model.ArrayMsg;
 import lombok.AllArgsConstructor;
@@ -30,7 +35,6 @@ public class MessageEvent extends Event {
     @JsonProperty("user_id")
     private Long userId;
 
-    @JsonProperty("message")
     private String message;
 
     @JsonProperty("raw_message")
@@ -39,10 +43,27 @@ public class MessageEvent extends Event {
     @JsonProperty("font")
     private Integer font;
 
+    @JsonIgnore
     private List<ArrayMsg> arrayMsg;
 
     @JsonProperty("raw")
     private Raw raw;
+
+    @JsonSetter("message")
+    private void setMessageFromJson(JsonNode json) {
+        if (json.isTextual()) {
+            this.message = json.asText();
+        } else if (json.isArray()) {
+            this.arrayMsg = JsonUtils.parseArray(json, ArrayMsg.class);
+            message = JsonUtils.toJSONString(json);
+        } else {
+            throw new IllegalArgumentException("Invalid message format: " + json);
+        }
+    }
+    @JsonGetter("message")
+    public String getMessage() {
+        return message;
+    }
 
     /**
      * Raw字段在napcat开启debug模式时会出现，其中有msgSeq字段。

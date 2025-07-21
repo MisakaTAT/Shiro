@@ -174,7 +174,7 @@ public class ActionHandler {
 
         List<Object> modified = original.stream().map(v -> {
             if (v instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
-                String data = arrayMsg.getData().get("keyboard");
+                String data = arrayMsg.getStringData("keyboard");
                 return JsonUtils.parseObject(data);
             }
             return v;
