@@ -62,20 +62,30 @@ public class ArrayMsg {
         return this;
     }
 
-    public ArrayMsg setData(Map<String, String> map) {
+    @JsonIgnore
+    public <T> ArrayMsg setData(Map<String, T> map) {
         if (data == null) {
             data = JsonUtils.getObjectMapper().createObjectNode();
         }
         map.forEach((key, value) -> {
             JsonNode valueNode;
             try {
-                valueNode = JsonUtils.getObjectMapper().readTree(value);
+                if (value instanceof String s) {
+                    valueNode = JsonUtils.getObjectMapper().readTree(s);
+                } else {
+                    valueNode = JsonUtils.getObjectMapper().valueToTree(value);
+                }
             } catch (Exception e) {
-                valueNode = JsonUtils.getObjectMapper().getNodeFactory().textNode(value);
+                valueNode = JsonUtils.getObjectMapper().getNodeFactory().textNode(value.toString());
             }
             ((ObjectNode) data).set(key, valueNode);
         });
         return this;
+    }
+
+    @JsonSetter("data")
+    private void setData(JsonNode node) {
+        data = node;
     }
 
     public String toCQCode() {
