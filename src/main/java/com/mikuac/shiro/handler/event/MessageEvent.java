@@ -75,7 +75,7 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                MessageConverser.convert(event.getMessage(), event);
+
                 resp.put("message", event.getMessage());
                 utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
                 injection.invokePrivateMessage(bot, event);
@@ -98,7 +98,7 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                MessageConverser.convert(event.getMessage(), event);
+
                 resp.put("message", event.getMessage());
                 utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
                 injection.invokeGroupMessage(bot, event);
@@ -111,7 +111,7 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                MessageConverser.convert(event.getMessage(), event);
+
                 injection.invokeGuildMessage(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);

@@ -24,7 +24,7 @@ public class MessageConverser {
             if (!MsgTypeEnum.text.equals(item.getType())) {
                 builder.append(item.toCQCode());
             } else {
-                builder.append(ShiroUtils.escape(item.getStringData(MsgTypeEnum.text.toString())));
+                builder.append(item.getStringData(MsgTypeEnum.text.toString()));
             }
         }
         return builder.toString();
@@ -149,11 +149,4 @@ public class MessageConverser {
         item.setData(data);
         chain.add(item);
     }
-
-    public static void convert(@NonNull String msg, MessageEvent event) {
-        if (CollectionUtils.isEmpty(event.getArrayMsg())) {
-            event.setArrayMsg(stringToArray(msg));
-        }
-    }
-
 }
