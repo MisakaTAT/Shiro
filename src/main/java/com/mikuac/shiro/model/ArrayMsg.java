@@ -67,10 +67,7 @@ public class ArrayMsg {
         if (data == null) {
             data = JsonUtils.getObjectMapper().createObjectNode();
         }
-        map.forEach((key, value) -> {
-            JsonNode valueNode = JsonUtils.getObjectMapper().valueToTree(value);
-            ((ObjectNode) data).set(key, valueNode);
-        });
+        map.forEach((key, value) -> ((ObjectNode) data).set(key, JsonUtils.parseToJsonNode(value)));
         return this;
     }
 

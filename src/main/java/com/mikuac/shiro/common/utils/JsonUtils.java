@@ -1,6 +1,8 @@
 package com.mikuac.shiro.common.utils;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,6 +11,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.Nullable;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
@@ -106,4 +109,25 @@ public class JsonUtils {
         }
     }
 
-} 
+    public static JsonNode parseToJsonNode(Object value) {
+        ObjectMapper mapper = getObjectMapper();
+        if (value instanceof String s) {
+            try (JsonParser parser = mapper.createParser(s)) {
+                JsonToken first = parser.nextToken();
+                if (first == null) {
+                    return mapper.getNodeFactory().textNode(s);
+                }
+                JsonNode node = mapper.readTree(parser);
+                if (parser.nextToken() == null) {
+                    return node;
+                }
+            } catch (IOException ignored) {
+                // ignored
+            }
+            return mapper.getNodeFactory().textNode(s);
+        } else {
+            return mapper.valueToTree(value);
+        }
+    }
+
+}
