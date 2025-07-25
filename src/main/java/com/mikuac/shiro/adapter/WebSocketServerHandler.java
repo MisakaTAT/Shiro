@@ -73,6 +73,8 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(@NonNull WebSocketSession session) {
         try {
+            session.setTextMessageSizeLimit(wsProp.getMaxTextMessageBufferSize());
+            session.setBinaryMessageSizeLimit(wsProp.getMaxBinaryMessageBufferSize());
             session.getAttributes().put(Connection.ADAPTER_KEY, AdapterEnum.SERVER);
             long xSelfId = ConnectionUtils.parseSelfId(session);
             if (xSelfId == 0L) {
@@ -91,7 +93,6 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
             }
             var sessionContext = session.getAttributes();
             sessionContext.put(Connection.SESSION_STATUS_KEY, SessionStatusEnum.ONLINE);
-
             if (shiroProps.getWaitBotConnect() <= 0) {
                 if (botContainer.robots.containsKey(xSelfId)) {
                     log.info("Bot {} already connected with another instance", xSelfId);

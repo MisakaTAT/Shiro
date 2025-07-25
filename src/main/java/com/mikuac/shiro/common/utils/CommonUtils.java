@@ -37,11 +37,11 @@ public class CommonUtils {
         Optional<ArrayMsg> opt = Optional.ofNullable(atParse(arrayMsg, selfId));
         return switch (at) {
             case NEED -> opt.map(item -> {
-                long target = Long.parseLong(item.getData().get("qq"));
+                long target = item.getLongData("qq");
                 return target == 0L || target != selfId;
             }).orElse(true);
             case NOT_NEED -> opt.map(item -> {
-                long target = Long.parseLong(item.getData().get("qq"));
+                long target = item.getLongData("qq");
                 return target == selfId;
             }).orElse(false);
             default -> false;
@@ -88,8 +88,8 @@ public class CommonUtils {
                 case OFF -> throw new ShiroException("exception that cannot be thrown");
                 case NONE -> reply.isEmpty();
                 case REPLY_ALL -> reply.isPresent();
-                case REPLY_ME -> reply.map(e -> e.getData().get("qq").equals(String.valueOf(selfId))).orElse(false);
-                case REPLY_OTHER -> reply.map(e -> !e.getData().get("qq").equals(String.valueOf(selfId))).orElse(false);
+                case REPLY_ME -> reply.map(e -> e.getLongData("qq") == selfId).orElse(false);
+                case REPLY_OTHER -> reply.map(e -> e.getLongData("qq") != selfId).orElse(false);
             };
             if (!flag) return new CheckResult();
         }
@@ -186,8 +186,7 @@ public class CommonUtils {
         }
         int index = 0;
         ArrayMsg item = arrayMsg.get(index);
-        String rawTarget = item.getData().getOrDefault("qq", "0");
-        long target = Long.parseLong(CommonEnum.AT_ALL.value().equals(rawTarget) ? "0" : rawTarget);
+        long target = item.getLongData("qq");
         index = arrayMsg.size() - 1;
         if ((target == 0L || target != selfId) && index >= 0) {
             item = arrayMsg.get(index);
@@ -196,8 +195,7 @@ public class CommonUtils {
             if (MsgTypeEnum.text == item.getType() && index >= 0) {
                 item = arrayMsg.get(index);
             }
-            rawTarget = item.getData().getOrDefault("qq", "0");
-            target = Long.parseLong(CommonEnum.AT_ALL.value().equals(rawTarget) ? "0" : rawTarget);
+            target = item.getLongData("qq");
             if (target == 0L || target != selfId) {
                 return null;
             }

@@ -38,7 +38,7 @@ public class ShiroUtils {
      * @return 是否为全体at
      */
     public static boolean isAtAll(List<ArrayMsg> arrayMsg) {
-        return arrayMsg.stream().anyMatch(it -> "all".equals(it.getData().get("qq")));
+        return arrayMsg.stream().anyMatch(it -> it.getType().equals(MsgTypeEnum.at) && it.getLongData("qq") == 0L);
     }
 
     /**
@@ -50,8 +50,8 @@ public class ShiroUtils {
     public static List<Long> getAtList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.at == it.getType() && !"all".equals(it.getData().get("qq")))
-                .map(it -> Long.parseLong(it.getData().get("qq")))
+                .filter(it -> MsgTypeEnum.at == it.getType() && it.getLongData("qq") != 0L)
+                .map(it -> it.getLongData("qq"))
                 .toList();
     }
 
@@ -64,7 +64,8 @@ public class ShiroUtils {
     public static List<String> getMsgImgUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.image == it.getType()).map(it -> it.getData().get("url"))
+                .filter(it -> MsgTypeEnum.image == it.getType())
+                .map(it -> it.getStringData("url"))
                 .toList();
     }
 
@@ -77,7 +78,8 @@ public class ShiroUtils {
     public static List<String> getMsgVideoUrlList(List<ArrayMsg> arrayMsg) {
         return arrayMsg
                 .stream()
-                .filter(it -> MsgTypeEnum.video == it.getType()).map(it -> it.getData().get("url"))
+                .filter(it -> MsgTypeEnum.video == it.getType())
+                .map(it -> it.getStringData("url"))
                 .toList();
     }
 

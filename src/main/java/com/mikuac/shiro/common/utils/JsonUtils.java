@@ -63,6 +63,17 @@ public class JsonUtils {
         }
     }
 
+    public static <T> List<T> parseArray(JsonNode json, Class<T> clazz) {
+        try {
+            ObjectMapper mapper = getObjectMapper();
+            return mapper.convertValue(json,
+                    mapper.getTypeFactory().constructCollectionType(List.class, clazz));
+        } catch (IllegalArgumentException e) {
+            log.error("Failed to parse JSON array: {}", e.getMessage());
+            return Collections.emptyList();
+        }
+    }
+
     @Nullable
     public static String toJSONString(Object object) {
         try {
@@ -101,4 +112,17 @@ public class JsonUtils {
         }
     }
 
+    public static String nodeToString(JsonNode node) {
+        if (node == null) {
+            return "";
+        }
+        if (node.isTextual()) {
+            return node.textValue();
+        }
+        try {
+            return getObjectMapper().writeValueAsString(node);
+        } catch (JsonProcessingException e) {
+            return node.toString();
+        }
+    }
 } 
