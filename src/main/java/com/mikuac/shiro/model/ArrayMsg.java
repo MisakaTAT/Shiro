@@ -68,16 +68,7 @@ public class ArrayMsg {
             data = JsonUtils.getObjectMapper().createObjectNode();
         }
         map.forEach((key, value) -> {
-            JsonNode valueNode;
-            try {
-                if (value instanceof String s) {
-                    valueNode = JsonUtils.getObjectMapper().readTree(s);
-                } else {
-                    valueNode = JsonUtils.getObjectMapper().valueToTree(value);
-                }
-            } catch (Exception e) {
-                valueNode = JsonUtils.getObjectMapper().getNodeFactory().textNode(value.toString());
-            }
+            JsonNode valueNode = JsonUtils.getObjectMapper().valueToTree(value);
             ((ObjectNode) data).set(key, valueNode);
         });
         return this;
@@ -105,18 +96,11 @@ public class ArrayMsg {
     }
 
     public long getLongData(String key) {
-        var value = data.get(key);
-        if (value == null || !value.isLong()) {
-            return 0;
-        }
-        return value.asLong();
+        return data.has(key) ? data.get(key).asLong() : 0;
     }
 
     public String getStringData(String key) {
-        var value = data.get(key);
-        if (value == null) {
-            return "";
-        }
-        return JsonUtils.nodeToString(value);
+        return data.has(key) ? JsonUtils.nodeToString(data.get(key)) : "";
     }
+
 }
