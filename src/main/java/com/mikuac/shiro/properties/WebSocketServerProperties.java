@@ -26,9 +26,4 @@ public class WebSocketServerProperties {
      */
     private String url = "/ws/shiro";
 
-    /**
-     * 最大空闲时间，超过这个时间将关闭会话 15Min
-     */
-    private Long maxSessionIdleTimeout = 15 * 60 * 1000L;
-
 }
