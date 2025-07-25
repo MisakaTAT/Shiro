@@ -94,12 +94,11 @@ public class ArrayMsg {
         }
         StringBuilder stringBuilder = new StringBuilder("[CQ:");
         stringBuilder.append(getRawType());
-        data.properties().forEach((e) -> {
-
+        data.properties().forEach(v -> {
             stringBuilder.append(',');
-            stringBuilder.append(e.getKey());
+            stringBuilder.append(v.getKey());
             stringBuilder.append('=');
-            stringBuilder.append(ShiroUtils.escape(JsonUtils.nodeToString(e.getValue())));
+            stringBuilder.append(ShiroUtils.escape(JsonUtils.nodeToString(v.getValue())));
         });
         stringBuilder.append(']');
         return stringBuilder.toString();

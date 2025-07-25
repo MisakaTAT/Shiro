@@ -89,8 +89,8 @@ public class MessageEvent extends Event {
      */
     @Data
     public static class Raw {
-        private Long    msgId;
-        private Long    msgRandom;
+        private Long msgId;
+        private Long msgRandom;
         private Integer msgSeq;
         private Integer chatType;
         private Integer msgType;

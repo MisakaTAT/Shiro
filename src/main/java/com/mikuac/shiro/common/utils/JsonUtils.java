@@ -52,17 +52,6 @@ public class JsonUtils {
         }
     }
 
-    public static <T> List<T> parseArray(String jsonString, Class<T> clazz) {
-        try {
-            ObjectMapper mapper = getObjectMapper();
-            return mapper.readValue(jsonString,
-                    mapper.getTypeFactory().constructCollectionType(List.class, clazz));
-        } catch (JsonProcessingException e) {
-            log.error("Failed to parse JSON array: {}", e.getMessage());
-            return Collections.emptyList();
-        }
-    }
-
     public static <T> List<T> parseArray(JsonNode json, Class<T> clazz) {
         try {
             ObjectMapper mapper = getObjectMapper();
@@ -93,15 +82,6 @@ public class JsonUtils {
         }
     }
 
-    public static boolean isValidArray(String jsonString) {
-        try {
-            JsonNode node = getObjectMapper().readTree(jsonString);
-            return node != null && node.isArray();
-        } catch (JsonProcessingException e) {
-            return false;
-        }
-    }
-
     @Nullable
     public static <T> T readValue(String jsonString, TypeReference<T> typeReference) {
         try {
@@ -125,4 +105,5 @@ public class JsonUtils {
             return node.toString();
         }
     }
+
 } 

@@ -3,7 +3,6 @@ package com.mikuac.shiro.handler.event;
 import com.mikuac.shiro.common.utils.EventUtils;
 import com.mikuac.shiro.common.utils.GroupMessageFilterUtils;
 import com.mikuac.shiro.common.utils.JsonObjectWrapper;
-import com.mikuac.shiro.common.utils.MessageConverser;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
 import com.mikuac.shiro.core.BotPlugin;
@@ -75,7 +74,6 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-
                 resp.put("message", event.getMessage());
                 utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
                 injection.invokePrivateMessage(bot, event);
@@ -98,7 +96,6 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-
                 resp.put("message", event.getMessage());
                 utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
                 injection.invokeGroupMessage(bot, event);
@@ -111,7 +108,6 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-
                 injection.invokeGuildMessage(bot, event);
                 bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);

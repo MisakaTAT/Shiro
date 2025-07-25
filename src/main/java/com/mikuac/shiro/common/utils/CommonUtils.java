@@ -169,7 +169,7 @@ public class CommonUtils {
         }
         ArrayMsg item = atParse(arrayMsg, selfId);
         if (item != null) {
-            String code = MessageConverser.arrayToString(arrayMsg.get(arrayMsg.indexOf(item)));
+            String code = arrayMsg.get(arrayMsg.indexOf(item)).toCQCode();
             return msg.replace(code, "").trim();
         }
         return msg;

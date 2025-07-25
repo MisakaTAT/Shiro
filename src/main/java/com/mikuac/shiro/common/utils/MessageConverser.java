@@ -1,21 +1,18 @@
 package com.mikuac.shiro.common.utils;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.mikuac.shiro.dto.event.message.MessageEvent;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
 import lombok.NonNull;
-import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MessageConverser {
 
     private MessageConverser() {
-    }
-
-    public static String arrayToString(ArrayMsg arrayMsg) {
-        return arrayMsg.toCQCode();
     }
 
     public static String arraysToString(List<ArrayMsg> array) {
@@ -149,4 +146,5 @@ public class MessageConverser {
         item.setData(data);
         chain.add(item);
     }
+
 }
