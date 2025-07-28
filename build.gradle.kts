@@ -7,7 +7,7 @@ version = "2.4.5"
 
 val mavenArtifactResolver = "1.9.24"
 val mavenResolverProvider = "3.9.11"
-val junit = "5.13.3"
+val junit = "5.13.4"
 
 plugins {
     signing
@@ -15,7 +15,7 @@ plugins {
     `maven-publish`
     id("org.jreleaser") version "1.19.0"
     id("io.freefair.lombok") version "8.13.1"
-    id("org.springframework.boot") version "3.5.3"
+    id("org.springframework.boot") version "3.5.4"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
