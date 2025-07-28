@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,10 +12,10 @@ import lombok.Data;
 @Data
 public class LoginInfoResp {
 
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
-    @JSONField(name = "nickname")
+    @JsonProperty("nickname")
     private String nickname;
 
 }

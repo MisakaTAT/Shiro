@@ -1,6 +1,5 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.JSON;
 import com.mikuac.shiro.model.ArrayMsg;
 
 import java.util.*;
@@ -187,7 +186,7 @@ public class ArrayMsgUtils {
         builder.add(getJsonData("markdown", m -> {
             HashMap<String, String> map = new HashMap<>();
             map.put("content", content);
-            m.put("content", JSON.toJSONString(map));
+            m.put("content", JsonUtils.toJSONString(map));
         }));
         return this;
     }
@@ -205,7 +204,7 @@ public class ArrayMsgUtils {
      * }</pre>
      */
     public ArrayMsgUtils keyboard(Keyboard keyboard) {
-        builder.add(getJsonData("keyboard", m -> m.put("keyboard", JSON.toJSONString(keyboard))));
+        builder.add(getJsonData("keyboard", m -> m.put("keyboard", JsonUtils.toJSONString(keyboard))));
         return this;
     }
 

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.handler.event;
 
-import com.alibaba.fastjson2.JSONObject;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.meta.HeartbeatMetaEvent;
 import com.mikuac.shiro.dto.event.meta.LifecycleMetaEvent;
@@ -31,25 +31,25 @@ public class MetaEvent {
     /**
      * 存储元事件处理器
      */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     /**
      * 元事件分发
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void handler(Bot bot, JSONObject resp) {
+    public void handler(Bot bot, JsonObjectWrapper resp) {
         String type = resp.getString("meta_event_type");
         handlers.getOrDefault(type, (b, e) -> {
         }).accept(bot, resp);
     }
 
-    public void heartbeat(Bot bot, JSONObject resp) {
+    public void heartbeat(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, MetaEventEnum.HEARTBEAT);
     }
 
-    public void lifecycle(Bot bot, JSONObject resp) {
+    public void lifecycle(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, MetaEventEnum.LIFECYCLE);
     }
 
@@ -57,11 +57,11 @@ public class MetaEvent {
      * 事件处理
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      * @param type {@link NotifyEventEnum}
      */
     @SuppressWarnings("unsed")
-    private void process(Bot bot, JSONObject resp, MetaEventEnum type) {
+    private void process(Bot bot, JsonObjectWrapper resp, MetaEventEnum type) {
         switch (type) {
             case HEARTBEAT -> {
                 HeartbeatMetaEvent event = resp.to(HeartbeatMetaEvent.class);

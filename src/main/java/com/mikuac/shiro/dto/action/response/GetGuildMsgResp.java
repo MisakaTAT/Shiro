@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mikuac.shiro.dto.event.message.GuildMessageEvent;
 import lombok.Data;
 
@@ -13,28 +13,28 @@ import lombok.Data;
 @Data
 public class GetGuildMsgResp {
 
-    @JSONField(name = "guild_id")
+    @JsonProperty("guild_id")
     private String guildId;
 
-    @JSONField(name = "channel_id")
+    @JsonProperty("channel_id")
     private String channelId;
 
-    @JSONField(name = "message")
+    @JsonProperty("message")
     private String message;
 
-    @JSONField(name = "message_id")
+    @JsonProperty("message_id")
     private String messageId;
 
-    @JSONField(name = "message_seq")
+    @JsonProperty("message_seq")
     private Integer messageSeq;
 
-    @JSONField(name = "message_source")
+    @JsonProperty("message_source")
     private String messageSource;
 
-    @JSONField(name = "sender")
+    @JsonProperty("sender")
     private GuildMessageEvent.Sender sender;
 
-    @JSONField(name = "time")
+    @JsonProperty("time")
     private Long time;
 
 }

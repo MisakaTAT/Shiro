@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -21,16 +21,16 @@ public class GroupFilesResp {
     /**
      * 仅适用于LLOneBot
      */
-    @JSONField(name = "base64")
+    @JsonProperty("base64")
     private String base64;
 
-    @JSONField(name = "file")
+    @JsonProperty("file")
     private String file;
 
-    @JSONField(name = "file_name")
+    @JsonProperty("file_name")
     private String fileName;
 
-    @JSONField(name = "file_size")
+    @JsonProperty("file_size")
     private Long fileSize;
 
     /**
@@ -39,34 +39,34 @@ public class GroupFilesResp {
     @Data
     public static class Files {
 
-        @JSONField(name = "file_id")
+        @JsonProperty("file_id")
         private String fileId;
 
-        @JSONField(name = "file_name")
+        @JsonProperty("file_name")
         private String fileName;
 
-        @JSONField(name = "busid")
+        @JsonProperty("busid")
         private Integer busId;
 
-        @JSONField(name = "file_size")
+        @JsonProperty("file_size")
         private Long fileSize;
 
-        @JSONField(name = "upload_time")
+        @JsonProperty("upload_time")
         private Long uploadTime;
 
-        @JSONField(name = "dead_time")
+        @JsonProperty("dead_time")
         private Long deadTime;
 
-        @JSONField(name = "modify_time")
+        @JsonProperty("modify_time")
         private Long modifyTime;
 
-        @JSONField(name = "download_times")
+        @JsonProperty("download_times")
         private Integer downloadTimes;
 
-        @JSONField(name = "uploader")
+        @JsonProperty("uploader")
         private Long uploader;
 
-        @JSONField(name = "uploader_name")
+        @JsonProperty("uploader_name")
         private String uploaderName;
 
     }
@@ -77,22 +77,22 @@ public class GroupFilesResp {
     @Data
     public static class Folders {
 
-        @JSONField(name = "folder_id")
+        @JsonProperty("folder_id")
         private String folderId;
 
-        @JSONField(name = "folder_name")
+        @JsonProperty("folder_name")
         private String folderName;
 
-        @JSONField(name = "create_time")
+        @JsonProperty("create_time")
         private Long createTime;
 
-        @JSONField(name = "creator")
+        @JsonProperty("creator")
         private Long creator;
 
-        @JSONField(name = "creator_name")
+        @JsonProperty("creator_name")
         private String creatorName;
 
-        @JSONField(name = "total_file_count")
+        @JsonProperty("total_file_count")
         private Integer totalFileCount;
 
     }

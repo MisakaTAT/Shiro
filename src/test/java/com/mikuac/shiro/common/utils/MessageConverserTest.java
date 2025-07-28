@@ -69,8 +69,8 @@ class MessageConverserTest {
         val raw = "[CQ:at,qq=1122334455]";
         val originalResult = rawToArrayMsgOriginal(raw);
         val optimizedResult = MessageConverser.stringToArray(raw);
-        val originalCode = MessageConverser.arrayToString(originalResult.get(0));
-        val optimizedCode = MessageConverser.arrayToString(optimizedResult.get(0));
+        val originalCode = originalResult.get(0).toCQCode();
+        val optimizedCode = optimizedResult.get(0).toCQCode();
         assertEquals(raw, originalCode);
         assertEquals(raw, optimizedCode);
         assertEquals(originalResult, optimizedResult);

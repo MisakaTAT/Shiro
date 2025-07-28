@@ -1,7 +1,7 @@
 package com.mikuac.shiro.handler.event;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.EventUtils;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.notice.*;
@@ -34,15 +34,15 @@ public class NoticeEvent {
     /**
      * 存储通知事件处理器
      */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     /**
      * 通知事件分发
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void handler(Bot bot, JSONObject resp) {
+    public void handler(Bot bot, JsonObjectWrapper resp) {
         String type = resp.getString("notice_type");
         handlers.getOrDefault(
                 type,
@@ -55,11 +55,11 @@ public class NoticeEvent {
      * 事件处理
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      * @param type {@link NoticeEventEnum}
      */
     @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
-    private void process(Bot bot, JSONObject resp, NoticeEventEnum type) {
+    private void process(Bot bot, JsonObjectWrapper resp, NoticeEventEnum type) {
         if (type == NoticeEventEnum.GROUP_UPLOAD) {
             GroupUploadNoticeEvent event = resp.to(GroupUploadNoticeEvent.class);
             injection.invokeGroupUploadNotice(bot, event);
@@ -150,9 +150,9 @@ public class NoticeEvent {
      * 群文件上传
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupUpload(Bot bot, JSONObject resp) {
+    public void groupUpload(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_UPLOAD);
     }
 
@@ -160,9 +160,9 @@ public class NoticeEvent {
      * 群管理员变动
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupAdmin(Bot bot, JSONObject resp) {
+    public void groupAdmin(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_ADMIN);
     }
 
@@ -170,9 +170,9 @@ public class NoticeEvent {
      * 群成员减少
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupDecrease(Bot bot, JSONObject resp) {
+    public void groupDecrease(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_DECREASE);
     }
 
@@ -180,9 +180,9 @@ public class NoticeEvent {
      * 群成员增加
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupIncrease(Bot bot, JSONObject resp) {
+    public void groupIncrease(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_INCREASE);
     }
 
@@ -190,9 +190,9 @@ public class NoticeEvent {
      * 群禁言
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupBan(Bot bot, JSONObject resp) {
+    public void groupBan(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_BAN);
     }
 
@@ -200,9 +200,9 @@ public class NoticeEvent {
      * 好友添加
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void friendAdd(Bot bot, JSONObject resp) {
+    public void friendAdd(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.FRIEND_ADD);
     }
 
@@ -210,17 +210,17 @@ public class NoticeEvent {
      * 群消息撤回
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupMsgDelete(Bot bot, JSONObject resp) {
+    public void groupMsgDelete(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_MSG_DELETE);
     }
 
     /**
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void privateMsgDelete(Bot bot, JSONObject resp) {
+    public void privateMsgDelete(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.PRIVATE_MSG_DELETE);
     }
 
@@ -228,9 +228,9 @@ public class NoticeEvent {
      * 群成员名片更新
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupCardChange(Bot bot, JSONObject resp) {
+    public void groupCardChange(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_CARD_CHANGE);
     }
 
@@ -238,9 +238,9 @@ public class NoticeEvent {
      * 接收到离线文件
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void offlineFile(Bot bot, JSONObject resp) {
+    public void offlineFile(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.OFFLINE_FILE);
     }
 
@@ -248,9 +248,9 @@ public class NoticeEvent {
      * 子频道创建
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void channelCreated(Bot bot, JSONObject resp) {
+    public void channelCreated(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.CHANNEL_CREATED);
     }
 
@@ -258,9 +258,9 @@ public class NoticeEvent {
      * 子频道删除
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void channelDestroyed(Bot bot, JSONObject resp) {
+    public void channelDestroyed(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.CHANNEL_DESTROYED);
     }
 
@@ -268,9 +268,9 @@ public class NoticeEvent {
      * 子频道信息更新
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void channelUpdated(Bot bot, JSONObject resp) {
+    public void channelUpdated(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.CHANNEL_UPDATED);
     }
 
@@ -278,9 +278,9 @@ public class NoticeEvent {
      * 频道消息表情贴更新
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void messageReactionsUpdated(Bot bot, JSONObject resp) {
+    public void messageReactionsUpdated(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.MESSAGE_REACTIONS_UPDATED);
     }
 
@@ -288,9 +288,9 @@ public class NoticeEvent {
      * 子通知事件
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void notify(Bot bot, JSONObject resp) {
+    public void notify(Bot bot, JsonObjectWrapper resp) {
         notify.handler(bot, resp);
     }
 
@@ -298,9 +298,9 @@ public class NoticeEvent {
      * 群消息表情贴
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void groupReactionMessage(Bot bot, JSONObject resp) {
+    public void groupReactionMessage(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_MESSAGE_REACTION);
     }
 

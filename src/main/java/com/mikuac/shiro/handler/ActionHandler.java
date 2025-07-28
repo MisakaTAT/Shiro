@@ -1,9 +1,9 @@
 package com.mikuac.shiro.handler;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.limit.RateLimiter;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
+import com.mikuac.shiro.common.utils.JsonUtils;
 import com.mikuac.shiro.common.utils.PayloadSender;
 import com.mikuac.shiro.constant.ActionParams;
 import com.mikuac.shiro.enums.ActionPath;
@@ -72,7 +72,7 @@ public class ActionHandler {
      *
      * @param resp 回调结果
      */
-    public void onReceiveActionResp(JSONObject resp) {
+    public void onReceiveActionResp(JsonObjectWrapper resp) {
         String e = resp.get("echo").toString();
         PayloadSender sender = callback.get(e);
         if (sender != null) {
@@ -90,7 +90,7 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public JSONObject action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+    public JsonObjectWrapper action(WebSocketSession session, ActionPath action, Map<String, Object> params) {
         return act(session, action, keyboardSerialize(params));
     }
 
@@ -102,12 +102,12 @@ public class ActionHandler {
      * @param params  请求参数
      * @return 请求结果
      */
-    public JSONObject rawAction(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+    public JsonObjectWrapper rawAction(WebSocketSession session, ActionPath action, Map<String, Object> params) {
         return act(session, action, params);
     }
 
-    private JSONObject act(WebSocketSession session, ActionPath action, Map<String, Object> params) {
-        JSONObject result = new JSONObject();
+    private JsonObjectWrapper act(WebSocketSession session, ActionPath action, Map<String, Object> params) {
+        JsonObjectWrapper result = new JsonObjectWrapper();
         if (Boolean.TRUE.equals(rateLimiterProps.getEnable())) {
             if (Boolean.TRUE.equals(rateLimiterProps.getAwaitTask()) && !rateLimiter.acquire()) {
                 // 阻塞当前线程直到获取令牌成功
@@ -129,7 +129,7 @@ public class ActionHandler {
             }
         }
 
-        JSONObject payload = generatePayload(action, params);
+        JsonObjectWrapper payload = generatePayload(action, params);
         PayloadSender sender = new PayloadSender(session, wsProp.getTimeout());
         callback.put(payload.get("echo").toString(), sender);
         try {
@@ -152,8 +152,8 @@ public class ActionHandler {
      * @param params 请求参数
      * @return 请求数据结构
      */
-    private JSONObject generatePayload(ActionPath action, Map<String, Object> params) {
-        JSONObject payload = new JSONObject();
+    private JsonObjectWrapper generatePayload(ActionPath action, Map<String, Object> params) {
+        JsonObjectWrapper payload = new JsonObjectWrapper();
         payload.put("action", action.getPath());
         payload.put("echo", echo.getAndIncrement());
         if (params != null && !params.isEmpty()) {
@@ -174,8 +174,8 @@ public class ActionHandler {
 
         List<Object> modified = original.stream().map(v -> {
             if (v instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
-                String data = arrayMsg.getData().get("keyboard");
-                return JSON.parseObject(data);
+                String data = arrayMsg.getStringData("keyboard");
+                return JsonUtils.parseObject(data);
             }
             return v;
         }).toList();

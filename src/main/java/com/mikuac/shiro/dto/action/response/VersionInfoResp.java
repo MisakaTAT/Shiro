@@ -1,20 +1,20 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
 public class VersionInfoResp {
 
-    @JSONField(name = "app_name")
+    @JsonProperty("app_name")
     private String appName;
 
-    @JSONField(name = "app_version")
+    @JsonProperty("app_version")
     private String appVersion;
 
-    @JSONField(name = "protocol_version")
+    @JsonProperty("protocol_version")
     private String protocolVersion;
 
-    @JSONField(name = "version")
+    @JsonProperty("version")
     private String version;
 }

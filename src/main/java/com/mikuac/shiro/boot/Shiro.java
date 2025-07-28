@@ -9,7 +9,6 @@ import com.mikuac.shiro.handler.ActionHandler;
 import com.mikuac.shiro.handler.EventHandler;
 import com.mikuac.shiro.properties.ShiroProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
-import com.mikuac.shiro.properties.WebSocketServerProperties;
 import com.mikuac.shiro.task.ScheduledTask;
 import com.mikuac.shiro.task.ShiroAsyncTask;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +18,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.web.socket.server.standard.ServletServerContainerFactoryBean;
 
 /**
  * Created on 2021/7/16.
@@ -30,7 +28,6 @@ import org.springframework.web.socket.server.standard.ServletServerContainerFact
 @Configuration
 public class Shiro {
 
-    private final WebSocketServerProperties wsServerProp;
     private final WebSocketProperties wsProp;
     private final BotFactory botFactory;
     private final EventHandler eventHandler;
@@ -44,12 +41,11 @@ public class Shiro {
 
     @Autowired
     public Shiro(
-            WebSocketServerProperties wsServerProp, WebSocketProperties wsProp, BotFactory botFactory,
+            WebSocketProperties wsProp, BotFactory botFactory,
             EventHandler eventHandler, ActionHandler actionHandler, ShiroAsyncTask shiroAsyncTask,
             BotContainer botContainer, CoreEvent coreEvent, ScheduledTask scheduledTask, ShiroProperties shiroProps,
             @Qualifier("shiroTaskExecutor") ThreadPoolTaskExecutor shiroTaskExecutor
     ) {
-        this.wsServerProp = wsServerProp;
         this.wsProp = wsProp;
         this.botFactory = botFactory;
         this.eventHandler = eventHandler;
@@ -81,16 +77,6 @@ public class Shiro {
                 eventHandler, botFactory, actionHandler, shiroAsyncTask,
                 botContainer, coreEvent, wsProp, shiroTaskExecutor
         );
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public ServletServerContainerFactoryBean createWebSocketServerContainer() {
-        ServletServerContainerFactoryBean container = new ServletServerContainerFactoryBean();
-        container.setMaxTextMessageBufferSize(wsProp.getMaxTextMessageBufferSize());
-        container.setMaxBinaryMessageBufferSize(wsProp.getMaxBinaryMessageBufferSize());
-        container.setMaxSessionIdleTimeout(wsServerProp.getMaxSessionIdleTimeout());
-        return container;
     }
 
 }

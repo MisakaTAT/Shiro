@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -14,7 +14,7 @@ import java.util.List;
 @Data
 public class WordSlicesResp {
 
-    @JSONField(name = "slices")
+    @JsonProperty("slices")
     private List<String> slices;
 
 }

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,13 +18,13 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder(toBuilder = true)
 public class Event {
 
-    @JSONField(name = "post_type")
+    @JsonProperty("post_type")
     private String postType;
 
-    @JSONField(name = "time")
+    @JsonProperty("time")
     private Long time;
 
-    @JSONField(name = "self_id")
+    @JsonProperty("self_id")
     private Long selfId;
 
 }

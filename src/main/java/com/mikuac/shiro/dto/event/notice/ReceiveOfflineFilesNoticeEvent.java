@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.notice;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,10 +20,10 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class ReceiveOfflineFilesNoticeEvent extends NoticeEvent {
 
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
-    @JSONField(name = "file")
+    @JsonProperty("file")
     private File file;
 
     /**
@@ -32,13 +32,13 @@ public class ReceiveOfflineFilesNoticeEvent extends NoticeEvent {
     @Data
     public static class File {
 
-        @JSONField(name = "name")
+        @JsonProperty("name")
         private String name;
 
-        @JSONField(name = "size")
+        @JsonProperty("size")
         private Long size;
 
-        @JSONField(name = "url")
+        @JsonProperty("url")
         private String url;
 
     }

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.List;
@@ -14,25 +14,25 @@ import java.util.List;
 @Data
 public class GroupHonorInfoResp {
 
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
-    @JSONField(name = "current_talkative")
+    @JsonProperty("current_talkative")
     private CurrentTalkative currentTalkative;
 
-    @JSONField(name = "talkative_list")
+    @JsonProperty("talkative_list")
     private List<OtherHonor> talkativeList;
 
-    @JSONField(name = "performer_list")
+    @JsonProperty("performer_list")
     private List<OtherHonor> performerList;
 
-    @JSONField(name = "legend_list")
+    @JsonProperty("legend_list")
     private List<OtherHonor> legendList;
 
-    @JSONField(name = "strong_newbie_list")
+    @JsonProperty("strong_newbie_list")
     private List<OtherHonor> strongNewbieList;
 
-    @JSONField(name = "emotion_list")
+    @JsonProperty("emotion_list")
     private List<OtherHonor> emotionList;
 
     /**
@@ -41,16 +41,16 @@ public class GroupHonorInfoResp {
     @Data
     public static class CurrentTalkative {
 
-        @JSONField(name = "user_id")
+        @JsonProperty("user_id")
         private Long userId;
 
-        @JSONField(name = "nickname")
+        @JsonProperty("nickname")
         private String nickname;
 
-        @JSONField(name = "avatar")
+        @JsonProperty("avatar")
         private String avatar;
 
-        @JSONField(name = "day_count")
+        @JsonProperty("day_count")
         private Integer dayCount;
 
     }
@@ -61,16 +61,16 @@ public class GroupHonorInfoResp {
     @Data
     public static class OtherHonor {
 
-        @JSONField(name = "user_id")
+        @JsonProperty("user_id")
         private Long userId;
 
-        @JSONField(name = "nickname")
+        @JsonProperty("nickname")
         private String nickname;
 
-        @JSONField(name = "avatar")
+        @JsonProperty("avatar")
         private String avatar;
 
-        @JSONField(name = "description")
+        @JsonProperty("description")
         private String description;
 
     }

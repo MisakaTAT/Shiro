@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.common;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,13 +12,13 @@ import lombok.Data;
 @Data
 public class ActionRaw {
 
-    @JSONField(name = "status")
+    @JsonProperty("status")
     private String status;
 
-    @JSONField(name = "retcode")
+    @JsonProperty("retcode")
     private Integer retCode;
 
-    @JSONField(name = "echo")
+    @JsonProperty("echo")
     private Long echo;
 
 }

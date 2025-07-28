@@ -7,7 +7,6 @@ version = "2.4.5"
 
 val mavenArtifactResolver = "1.9.24"
 val mavenResolverProvider = "3.9.11"
-val fastjson = "2.0.57"
 val junit = "5.13.4"
 
 plugins {
@@ -59,11 +58,9 @@ repositories {
 }
 
 dependencies {
-    api("com.alibaba.fastjson2:fastjson2:$fastjson")
     api("org.springframework.boot:spring-boot-starter-websocket")
 
     api("org.apache.maven:maven-resolver-provider:$mavenResolverProvider")
-
     api("org.apache.maven.resolver:maven-resolver-connector-basic:$mavenArtifactResolver")
     api("org.apache.maven.resolver:maven-resolver-transport-file:$mavenArtifactResolver")
     api("org.apache.maven.resolver:maven-resolver-transport-http:$mavenArtifactResolver")
@@ -73,6 +70,7 @@ dependencies {
     api("org.apache.maven.resolver:maven-resolver-spi:$mavenArtifactResolver")
 
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
+
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.junit.jupiter:junit-jupiter:$junit")
 }

@@ -1,40 +1,27 @@
 package com.mikuac.shiro.common.utils;
 
-import com.alibaba.fastjson2.JSON;
-import com.mikuac.shiro.dto.event.message.MessageEvent;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
 import lombok.NonNull;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class MessageConverser {
 
     private MessageConverser() {
     }
 
-    public static String arrayToString(ArrayMsg arrayMsg) {
-        StringBuilder builder = new StringBuilder();
-        if (Objects.isNull(arrayMsg.getType()) || MsgTypeEnum.unknown.equals(arrayMsg.getType())) {
-            builder.append("[CQ:").append(MsgTypeEnum.unknown);
-        } else {
-            builder.append("[CQ:").append(arrayMsg.getType());
-        }
-        arrayMsg.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(ShiroUtils.escape(v)));
-        builder.append("]");
-        return builder.toString();
-    }
-
     public static String arraysToString(List<ArrayMsg> array) {
         StringBuilder builder = new StringBuilder();
         for (ArrayMsg item : array) {
             if (!MsgTypeEnum.text.equals(item.getType())) {
-                builder.append("[CQ:").append(item.getType());
-                // message 字段转回 CQ 码的时候不要转义，raw_message 会保留原始内容。
-                item.getData().forEach((k, v) -> builder.append(",").append(k).append("=").append(v));
-                builder.append("]");
+                builder.append(item.toCQCode());
             } else {
-                builder.append(ShiroUtils.escape(item.getData().get(MsgTypeEnum.text.toString())));
+                builder.append(item.getStringData(MsgTypeEnum.text.toString()));
             }
         }
         return builder.toString();
@@ -145,8 +132,9 @@ public class MessageConverser {
         // 检查最后一个消息是否为文本类型，如果是则合并
         if (!chain.isEmpty()) {
             ArrayMsg lastMsg = chain.get(chain.size() - 1);
-            if (lastMsg.getType() == MsgTypeEnum.text) {
-                lastMsg.getData().compute("text", (k, existingText) -> existingText + ShiroUtils.unescape(text));
+            if (lastMsg.getType() == MsgTypeEnum.text && lastMsg.getData().isObject()) {
+                ObjectNode obj = (ObjectNode) lastMsg.getData();
+                obj.put("text", obj.get("text").asText("") + ShiroUtils.unescape(text));
                 return;
             }
         }
@@ -157,19 +145,6 @@ public class MessageConverser {
         data.put("text", ShiroUtils.unescape(text));
         item.setData(data);
         chain.add(item);
-    }
-
-    public static void convert(@NonNull String msg, MessageEvent event) {
-        // 如果 msg 是一个有效的 json 数组则作为 array 上报
-        if (JSON.isValidArray(msg)) {
-            List<ArrayMsg> arrayMsg = JSON.parseArray(msg, ArrayMsg.class);
-            // 将 array 转换回 string
-            event.setArrayMsg(arrayMsg);
-            event.setMessage(arraysToString(arrayMsg));
-            return;
-        }
-        // string 上报
-        event.setArrayMsg(stringToArray(msg));
     }
 
 }

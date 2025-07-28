@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.notice;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,19 +20,19 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class GroupBanNoticeEvent extends NoticeEvent {
 
-    @JSONField(name = "sub_type")
+    @JsonProperty("sub_type")
     private String subType;
 
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
-    @JSONField(name = "operator_id")
+    @JsonProperty("operator_id")
     private Long operatorId;
 
-    @JSONField(name = "duration")
+    @JsonProperty("duration")
     private Long duration;
 
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
 }

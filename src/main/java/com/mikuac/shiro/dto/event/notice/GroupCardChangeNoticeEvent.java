@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.notice;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -20,16 +20,16 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class GroupCardChangeNoticeEvent extends NoticeEvent {
 
-    @JSONField(name = "card_new")
+    @JsonProperty("card_new")
     private String cardNew;
 
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
-    @JSONField(name = "card_old")
+    @JsonProperty("card_old")
     private String cardOld;
 
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
 }

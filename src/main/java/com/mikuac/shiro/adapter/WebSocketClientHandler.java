@@ -1,9 +1,9 @@
 package com.mikuac.shiro.adapter;
 
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.CommonUtils;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
+import com.mikuac.shiro.common.utils.JsonUtils;
 import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
@@ -98,9 +98,9 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
     protected void handleTextMessage(@NonNull WebSocketSession session, @NonNull TextMessage message) {
         long xSelfId = ConnectionUtils.parseSelfId(session);
         if (xSelfId == 0L) {
-            boolean valid = JSON.isValid(message.getPayload());
+            boolean valid = JsonUtils.isValid(message.getPayload());
             if (valid) {
-                String selfId = JSONObject.parseObject(message.getPayload()).getOrDefault(Connection.SELF_ID, "").toString();
+                String selfId = JsonObjectWrapper.parseObject(message.getPayload()).getOrDefault(Connection.SELF_ID, "").toString();
                 session.getAttributes().put(Connection.X_SELF_ID, selfId);
                 xSelfId = ConnectionUtils.parseSelfId(session);
             }
@@ -108,7 +108,7 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
                 afterConnectionEstablished(session);
             }
         }
-        JSONObject result = JSON.parseObject(message.getPayload());
+        JsonObjectWrapper result = JsonObjectWrapper.parseObject(message.getPayload());
         log.debug("[Event] {}", CommonUtils.debugMsgDeleteBase64Content(result.toJSONString()));
         // if resp contains echo field, this resp is action resp, else event resp.
         if (result.containsKey(Connection.API_RESULT_KEY)) {

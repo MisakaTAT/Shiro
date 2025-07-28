@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.request;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mikuac.shiro.dto.event.Event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,16 +21,16 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class RequestEvent extends Event {
 
-    @JSONField(name = "request_type")
+    @JsonProperty("request_type")
     private String requestType;
 
-    @JSONField(name = "user_id")
+    @JsonProperty("user_id")
     private Long userId;
 
-    @JSONField(name = "comment")
+    @JsonProperty("comment")
     private String comment;
 
-    @JSONField(name = "flag")
+    @JsonProperty("flag")
     private String flag;
 
 }

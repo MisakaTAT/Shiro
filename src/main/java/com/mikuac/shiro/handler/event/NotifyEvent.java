@@ -1,7 +1,7 @@
 package com.mikuac.shiro.handler.event;
 
-import com.alibaba.fastjson2.JSONObject;
 import com.mikuac.shiro.common.utils.EventUtils;
+import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.dto.event.notice.GroupHonorChangeNoticeEvent;
@@ -34,15 +34,15 @@ public class NotifyEvent {
     /**
      * 存储通知事件处理器
      */
-    public final Map<String, BiConsumer<Bot, JSONObject>> handlers = new HashMap<>();
+    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     /**
      * 通知事件分发
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void handler(Bot bot, JSONObject resp) {
+    public void handler(Bot bot, JsonObjectWrapper resp) {
         String type = resp.getString("sub_type");
         handlers.getOrDefault(type, (b, e) -> {
         }).accept(bot, resp);
@@ -52,11 +52,11 @@ public class NotifyEvent {
      * 事件处理
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      * @param type {@link NotifyEventEnum}
      */
     @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
-    private void process(Bot bot, JSONObject resp, NotifyEventEnum type) {
+    private void process(Bot bot, JsonObjectWrapper resp, NotifyEventEnum type) {
         if (type == NotifyEventEnum.POKE) {
             PokeNoticeEvent event = resp.to(PokeNoticeEvent.class);
             // 如果群号不为空则作为群内戳一戳处理
@@ -84,9 +84,9 @@ public class NotifyEvent {
      * 戳一戳事件
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void poke(Bot bot, JSONObject resp) {
+    public void poke(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NotifyEventEnum.POKE);
     }
 
@@ -94,9 +94,9 @@ public class NotifyEvent {
      * 抢红包运气王事件
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void luckyKing(Bot bot, JSONObject resp) {
+    public void luckyKing(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NotifyEventEnum.LUCKY_KING);
     }
 
@@ -104,9 +104,9 @@ public class NotifyEvent {
      * 群荣誉变更事件
      *
      * @param bot  {@link Bot}
-     * @param resp {@link JSONObject}
+     * @param resp {@link JsonObjectWrapper}
      */
-    public void honor(Bot bot, JSONObject resp) {
+    public void honor(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NotifyEventEnum.HONOR);
     }
 

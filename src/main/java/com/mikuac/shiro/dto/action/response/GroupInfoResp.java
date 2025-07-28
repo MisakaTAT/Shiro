@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,25 +12,25 @@ import lombok.Data;
 @Data
 public class GroupInfoResp {
 
-    @JSONField(name = "group_id")
+    @JsonProperty("group_id")
     private Long groupId;
 
-    @JSONField(name = "group_name")
+    @JsonProperty("group_name")
     private String groupName;
 
-    @JSONField(name = "group_memo")
+    @JsonProperty("group_memo")
     private String groupMemo;
 
-    @JSONField(name = "group_create_time")
+    @JsonProperty("group_create_time")
     private Integer groupCreateTime;
 
-    @JSONField(name = "group_level")
+    @JsonProperty("group_level")
     private Integer groupLevel;
 
-    @JSONField(name = "member_count")
+    @JsonProperty("member_count")
     private Integer memberCount;
 
-    @JSONField(name = "max_member_count")
+    @JsonProperty("max_member_count")
     private Integer maxMemberCount;
 
 }

@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.meta;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mikuac.shiro.dto.event.Event;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -15,10 +15,10 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class MetaEvent extends Event {
 
-    @JSONField(name = "time")
+    @JsonProperty("time")
     private Long time;
 
-    @JSONField(name = "self_id")
+    @JsonProperty("self_id")
     private Long selfId;
 
 }

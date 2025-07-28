@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.response;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,25 +12,25 @@ import lombok.Data;
 @Data
 public class EssenceMsgResp {
 
-    @JSONField(name = "sender_id")
+    @JsonProperty("sender_id")
     private Long senderId;
 
-    @JSONField(name = "sender_nick")
+    @JsonProperty("sender_nick")
     private String senderNick;
 
-    @JSONField(name = "sender_time")
+    @JsonProperty("sender_time")
     private Long senderTime;
 
-    @JSONField(name = "operator_id")
+    @JsonProperty("operator_id")
     private Long operatorId;
 
-    @JSONField(name = "operator_nick")
+    @JsonProperty("operator_nick")
     private String operatorNick;
 
-    @JSONField(name = "operator_time")
+    @JsonProperty("operator_time")
     private String operatorTime;
 
-    @JSONField(name = "message_id")
+    @JsonProperty("message_id")
     private Integer messageId;
 
 }

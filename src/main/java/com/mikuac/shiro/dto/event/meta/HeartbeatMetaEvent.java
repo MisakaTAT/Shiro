@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.event.meta;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -14,30 +14,30 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class HeartbeatMetaEvent extends MetaEvent {
 
-    @JSONField(name = "time")
+    @JsonProperty("time")
     private Long interval;
 
-    @JSONField(name = "status")
+    @JsonProperty("status")
     private Status status;
 
     @Data
     public static class Status {
-        @JSONField(name = "app_initialized")
+        @JsonProperty("app_initialized")
         Boolean appInitialized;
 
-        @JSONField(name = "app_enabled")
+        @JsonProperty("app_enabled")
         Boolean appEnabled;
 
-        @JSONField(name = "app_good")
+        @JsonProperty("app_good")
         Boolean appIsGood;
 
-        @JSONField(name = "plugins_good")
+        @JsonProperty("plugins_good")
         Boolean pluginsIsGood;
 
-        @JSONField(name = "online")
+        @JsonProperty("online")
         Boolean online;
 
-        @JSONField(name = "stat")
+        @JsonProperty("stat")
         StatusStatistics stat;
 
     }
@@ -45,28 +45,28 @@ public class HeartbeatMetaEvent extends MetaEvent {
     @Data
     public static class StatusStatistics {
 
-        @JSONField(name = "packet_received")
+        @JsonProperty("packet_received")
         Long packetReceived;
 
-        @JSONField(name = "packet_sent")
+        @JsonProperty("packet_sent")
         Long packetSent;
 
-        @JSONField(name = "packet_lost")
+        @JsonProperty("packet_lost")
         Long packetLost;
 
-        @JSONField(name = "message_received")
+        @JsonProperty("message_received")
         Long messageReceived;
 
-        @JSONField(name = "message_sent")
+        @JsonProperty("message_sent")
         Long messageSent;
 
-        @JSONField(name = "disconnect_times")
+        @JsonProperty("disconnect_times")
         Long disconnectTimes;
 
-        @JSONField(name = "lost_times")
+        @JsonProperty("lost_times")
         Long lostTimes;
 
-        @JSONField(name = "last_message_time")
+        @JsonProperty("last_message_time")
         Long lastMessageTime;
 
     }

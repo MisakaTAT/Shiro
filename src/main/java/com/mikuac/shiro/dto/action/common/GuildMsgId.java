@@ -1,6 +1,6 @@
 package com.mikuac.shiro.dto.action.common;
 
-import com.alibaba.fastjson2.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class GuildMsgId {
 
-    @JSONField(name = "message_id")
+    @JsonProperty("message_id")
     private String messageId;
 
 }
