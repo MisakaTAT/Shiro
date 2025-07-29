@@ -16,6 +16,10 @@ public class ShiroException extends RuntimeException {
         super(cause);
     }
 
+    public ShiroException(String s, Throwable cause) {
+        super(s, cause);
+    }
+
     /**
      * session 断联状态, 但是会尝试恢复.
      */

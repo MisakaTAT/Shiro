@@ -14,6 +14,7 @@ import org.springframework.lang.Nullable;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
@@ -45,13 +46,12 @@ public class JsonUtils {
         return mapper != null ? mapper : DEFAULT_OBJECT_MAPPER;
     }
 
-    @Nullable
-    public static JsonNode parseObject(String jsonString) {
+    public static Optional<JsonNode> parseObject(String jsonString) {
         try {
-            return getObjectMapper().readTree(jsonString);
+            return Optional.ofNullable(getObjectMapper().readTree(jsonString));
         } catch (JsonProcessingException e) {
-            log.error("Failed to parse JSON string: {}", e.getMessage());
-            return null;
+            log.error("Failed to parse JSON string", e);
+            return Optional.empty();
         }
     }
 
@@ -61,7 +61,7 @@ public class JsonUtils {
             return mapper.convertValue(json,
                     mapper.getTypeFactory().constructCollectionType(List.class, clazz));
         } catch (IllegalArgumentException e) {
-            log.error("Failed to parse JSON array: {}", e.getMessage());
+            log.error("Failed to parse JSON array", e);
             return Collections.emptyList();
         }
     }
@@ -71,12 +71,13 @@ public class JsonUtils {
         try {
             return getObjectMapper().writeValueAsString(object);
         } catch (JsonProcessingException e) {
-            log.error("Failed to convert object to JSON string: {}", e.getMessage());
+            log.error("Failed to convert object to JSON string", e);
             return null;
         }
     }
 
     public static boolean isValid(String jsonString) {
+        if (jsonString == null) return false;
         try {
             getObjectMapper().readTree(jsonString);
             return true;
@@ -90,7 +91,7 @@ public class JsonUtils {
         try {
             return getObjectMapper().readValue(jsonString, typeReference);
         } catch (Exception e) {
-            log.error("Failed to read value with TypeReference: {}", e.getMessage());
+            log.error("Failed to read value with TypeReference", e);
             return null;
         }
     }
@@ -112,22 +113,24 @@ public class JsonUtils {
     public static JsonNode parseToJsonNode(Object value) {
         ObjectMapper mapper = getObjectMapper();
         if (value instanceof String s) {
-            try (JsonParser parser = mapper.createParser(s)) {
-                JsonToken first = parser.nextToken();
-                if (first == null) {
-                    return mapper.getNodeFactory().textNode(s);
-                }
-                JsonNode node = mapper.readTree(parser);
-                if (parser.nextToken() == null) {
-                    return node;
-                }
-            } catch (IOException ignored) {
-                // ignored
-            }
-            return mapper.getNodeFactory().textNode(s);
-        } else {
-            return mapper.valueToTree(value);
+            JsonNode node = tryParseJsonString(mapper, s);
+            return node != null ? node : mapper.getNodeFactory().textNode(s);
         }
+        return mapper.valueToTree(value);
+    }
+
+    private static JsonNode tryParseJsonString(ObjectMapper mapper, String s) {
+        try (JsonParser parser = mapper.createParser(s)) {
+            JsonToken first = parser.nextToken();
+            if (first == null) return null;
+            JsonNode node = mapper.readTree(parser);
+            if (parser.nextToken() == null) {
+                return node;
+            }
+        } catch (IOException ignored) {
+            // ignored
+        }
+        return null;
     }
 
 }

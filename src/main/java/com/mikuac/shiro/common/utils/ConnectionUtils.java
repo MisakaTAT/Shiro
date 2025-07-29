@@ -30,7 +30,7 @@ public class ConnectionUtils {
             return status;
         }
         // this type of exception will not occur unless there are external modifications to session.getAttributes()
-        throw new ShiroException("session status type wrong");
+        throw new ShiroException("Session status type wrong");
     }
 
     @SneakyThrows
@@ -115,7 +115,7 @@ public class ConnectionUtils {
         if (adapterObj instanceof AdapterEnum adapter) {
             return adapter;
         }
-        throw new ShiroException("adapter type wrong");
+        throw new ShiroException("Adapter type wrong");
     }
 
 }

@@ -85,7 +85,7 @@ public class CommonUtils {
         if (!filter.reply().equals(ReplyEnum.OFF)) {
             Optional<ArrayMsg> reply = event.getArrayMsg().stream().filter(e -> e.getType() == MsgTypeEnum.reply).findFirst();
             boolean flag = switch (filter.reply()) {
-                case OFF -> throw new ShiroException("exception that cannot be thrown");
+                case OFF -> throw new ShiroException("Exception that cannot be thrown");
                 case NONE -> reply.isEmpty();
                 case REPLY_ALL -> reply.isPresent();
                 case REPLY_ME -> reply.map(e -> e.getLongData("qq") == selfId).orElse(false);
