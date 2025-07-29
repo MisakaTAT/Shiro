@@ -112,9 +112,6 @@ publishing {
             artifactId = project.name
             groupId = project.group as String
             version = project.version as String
-
-            artifact(tasks["sourcesJar"])
-            artifact(tasks["javadocJar"])
             pom.populate()
         }
     }
