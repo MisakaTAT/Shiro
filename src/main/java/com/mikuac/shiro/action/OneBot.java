@@ -105,9 +105,9 @@ public interface OneBot {
      * 获取消息
      *
      * @param msgId 消息 ID
-     * @return result {@link ActionData} of {@link GetMsgResp}
+     * @return result {@link ActionData} of {@link MsgResp}
      */
-    ActionData<GetMsgResp> getMsg(int msgId);
+    ActionData<MsgResp> getMsg(int msgId);
 
     /**
      * 撤回消息

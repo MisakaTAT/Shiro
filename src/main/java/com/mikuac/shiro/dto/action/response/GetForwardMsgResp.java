@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class GetMsgListResp {
+public class GetForwardMsgResp {
 
     @JsonProperty("messages")
     private List<MsgResp> messages;

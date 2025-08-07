@@ -1,0 +1,35 @@
+package com.mikuac.shiro.dto.action.response;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mikuac.shiro.dto.event.message.MessageEvent;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * Created on 2021/9/6.
+ *
+ * @author Zero
+ * @version $Id: $Id
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class MsgResp extends MessageEvent {
+
+    @JsonProperty("sender")
+    private Sender sender;
+
+    @Data
+    public static class Sender {
+
+        @JsonProperty("user_id")
+        private String userId;
+
+        @JsonProperty("nickname")
+        private String nickname;
+
+        @JsonProperty("card")
+        private String card;
+
+    }
+
+}

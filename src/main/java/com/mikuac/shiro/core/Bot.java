@@ -416,10 +416,10 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * 获取消息
      *
      * @param msgId 消息 ID
-     * @return result {@link ActionData} of {@link GetMsgResp}
+     * @return result {@link ActionData} of {@link MsgResp}
      */
     @Override
-    public ActionData<GetMsgResp> getMsg(int msgId) {
+    public ActionData<MsgResp> getMsg(int msgId) {
         Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.MESSAGE_ID, msgId);
         JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_MSG, params);
@@ -1564,6 +1564,20 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         params.put(ActionParams.IS_ADD, isAdd);
         JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_GROUP_REACTION, params);
         return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
+     * 获取合并转发消息
+     *
+     * @param msgId 消息ID
+     * @return result {@link ActionData} of {@link GetForwardMsgResp}
+     */
+    public ActionData<GetForwardMsgResp> getForwardMsg(int msgId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ActionParams.MESSAGE_ID, msgId);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_FORWARD_MSG, params);
+        return result != null ? JsonUtils.readValue(result.toJSONString(), new TypeReference<>() {
+        }) : null;
     }
 
     /**

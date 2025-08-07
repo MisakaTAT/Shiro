@@ -50,9 +50,6 @@ public class MessageEvent extends Event {
     @JsonIgnore
     private List<ArrayMsg> arrayMsg;
 
-    @JsonProperty("raw")
-    private Raw raw;
-
     @JsonSetter("message")
     private void setMessageFromJson(JsonNode json) {
         if (json.isTextual()) {
@@ -80,21 +77,4 @@ public class MessageEvent extends Event {
         return message;
     }
 
-    /**
-     * Raw字段在napcat开启debug模式时会出现，其中有msgSeq字段。
-     * 在单个群聊内，不同bot，收到同一条消息时，msgSeq是相同的，
-     * 基于此可以实现群聊内多bot的均衡负载。
-     * <p>
-     * raw内还有更多数据...
-     */
-    @Data
-    public static class Raw {
-        private Long msgId;
-        private Long msgRandom;
-        private Integer msgSeq;
-        private Integer chatType;
-        private Integer msgType;
-        private Integer subMsgType;
-        private Integer sendType;
-    }
 }
