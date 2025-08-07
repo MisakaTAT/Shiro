@@ -44,15 +44,15 @@ public class InjectionHandler {
         Class<?>[] paramTypes = method.getMethod().getParameterTypes();
         Object[] args = new Object[paramTypes.length];
         Arrays.stream(paramTypes).forEach(InternalUtils.consumerWithIndex((paramType, index) -> args[index] = params.get(paramType)));
-        Object result = null;
+        Object invokeResult = null;
         try {
-            result = method.getMethod().invoke(method.getObject(), args);
+            invokeResult = method.getMethod().invoke(method.getObject(), args);
         } catch (Exception e) {
             String methodName = method.getMethod().getDeclaringClass().getSimpleName()
                     + "#" + method.getMethod().getName();
             log.error("Invoke method exception on [{}]: {}", methodName, e.getMessage(), e);
         }
-        return result;
+        return invokeResult;
     }
 
     private <T> void invoke(Bot bot, T event, Class<? extends Annotation> type) {
@@ -268,13 +268,13 @@ public class InjectionHandler {
         for (HandlerMethod method : handlerMethods.get()) {
             MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
             CheckResult result;
-            Object invoke = null;
+            Object invokeResult = null;
             if (Objects.isNull(filter)) {
-                invoke = invoke(bot, event, method, null);
+                invokeResult = invoke(bot, event, method, null);
             } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
-                invoke = invoke(bot, event, method, result.getMatcher());
+                invokeResult = invoke(bot, event, method, result.getMatcher());
             }
-            if (isBlockingResult(invoke)) break;
+            if (isBlockingResult(invokeResult)) break;
         }
     }
 
