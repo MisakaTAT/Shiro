@@ -114,4 +114,8 @@ public class ActionParams {
     public static final String SUMMARY = "summary";
 
     public static final String SOURCE = "source";
+
+    public static final String EMOJI_ID = "emoji_id";
+
+    public static final String SET = "set";
 }
