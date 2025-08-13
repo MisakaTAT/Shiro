@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mikuac.shiro.dto.event.message.MessageEvent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 /**
  * Created on 2021/9/6.
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
  * @version $Id: $Id
  */
 @Data
+@ToString(callSuper = true)
 @EqualsAndHashCode(callSuper = true)
 public class MsgResp extends MessageEvent {
 
