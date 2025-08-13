@@ -1567,6 +1567,24 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
     }
 
     /**
+     * 设置消息表情回应(贴表情)
+     *
+     * @param msgId 消息 ID
+     * @param code  表情 ID
+     * @param isSet 添加/取消 回应
+     * @return result {@link ActionRaw}
+     */
+    @Override
+    public ActionRaw setMsgEmojiLike(int msgId, String code, boolean isSet) {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ActionParams.MESSAGE_ID, msgId);
+        params.put(ActionParams.EMOJI_ID, code);
+        params.put(ActionParams.SET, isSet);
+        JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.SET_MSG_EMOJI_LIKE, params);
+        return result != null ? result.to(ActionRaw.class) : null;
+    }
+
+    /**
      * 获取合并转发消息
      *
      * @param msgId 消息ID

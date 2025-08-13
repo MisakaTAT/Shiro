@@ -210,6 +210,16 @@ public class InjectionHandler {
     }
 
     /**
+     * 消息表情回应事件
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link MessageEmojiLikeNoticeEvent}
+     */
+    public void invokeMessageEmojiLikeNotice(Bot bot, MessageEmojiLikeNoticeEvent event) {
+        invoke(bot, event, MessageEmojiLikeNoticeHandler.class);
+    }
+
+    /**
      * 监听全部消息
      *
      * @param bot   {@link Bot}

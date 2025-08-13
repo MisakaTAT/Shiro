@@ -33,4 +33,14 @@ public interface NapCatExtend {
     ActionRaw sendFriendPoke(long userId);
 
     ActionRaw sendFriendPoke(long userId, long targetId);
+
+    /**
+     * 设置消息表情回应(贴表情)
+     *
+     * @param msgId 消息 ID
+     * @param code  表情 ID
+     * @param isSet 添加/取消 回应
+     * @return result {@link ActionRaw}
+     */
+    ActionRaw setMsgEmojiLike(int msgId, String code, boolean isSet);
 }
