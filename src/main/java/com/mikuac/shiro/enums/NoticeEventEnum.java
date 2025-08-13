@@ -65,5 +65,9 @@ public enum NoticeEventEnum {
     /**
      * 群消息表情贴
      */
-    GROUP_MESSAGE_REACTION
+    GROUP_MESSAGE_REACTION,
+    /**
+     * 消息表情回应
+     */
+    MESSAGE_EMOJI_LIKE
 }

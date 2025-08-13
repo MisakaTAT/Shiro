@@ -81,6 +81,7 @@ public class EventHandler implements ApplicationRunner {
         notice.handlers.put("channel_updated", notice::channelUpdated);
         notice.handlers.put("message_reactions_updated", notice::messageReactionsUpdated);
         notice.handlers.put("reaction", notice::groupReactionMessage);
+        notice.handlers.put("group_msg_emoji_like", notice::messageEmojiLikeMessage);
 
         // Register Notify Handler
         notify.handlers.put("poke", notify::poke);

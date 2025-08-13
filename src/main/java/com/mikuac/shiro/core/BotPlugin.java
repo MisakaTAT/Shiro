@@ -304,4 +304,15 @@ public class BotPlugin {
         return MESSAGE_IGNORE;
     }
 
+    /**
+     * 消息表情回应
+     *
+     * @param bot   {@link Bot}
+     * @param event {@link MessageEmojiLikeNoticeEvent}
+     * @return 是否执行下一个插件，MESSAGE_IGNORE 向下执行，MESSAGE_BLOCK 不向下执行
+     */
+    public int onMessageEmojiLikeNotice(Bot bot, MessageEmojiLikeNoticeEvent event) {
+        return MESSAGE_IGNORE;
+    }
+
 }

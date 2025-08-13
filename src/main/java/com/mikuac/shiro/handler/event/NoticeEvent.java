@@ -120,6 +120,12 @@ public class NoticeEvent {
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupReactionNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
         }
 
+        if (type == NoticeEventEnum.MESSAGE_EMOJI_LIKE) {
+            MessageEmojiLikeNoticeEvent event = resp.to(MessageEmojiLikeNoticeEvent.class);
+            injection.invokeMessageEmojiLikeNotice(bot, event);
+            bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onMessageEmojiLikeNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
+        }
+
         if (type == NoticeEventEnum.OFFLINE_FILE) {
             ReceiveOfflineFilesNoticeEvent event = resp.to(ReceiveOfflineFilesNoticeEvent.class);
             bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onReceiveOfflineFilesNotice(bot, event) == BotPlugin.MESSAGE_BLOCK);
@@ -302,6 +308,16 @@ public class NoticeEvent {
      */
     public void groupReactionMessage(Bot bot, JsonObjectWrapper resp) {
         process(bot, resp, NoticeEventEnum.GROUP_MESSAGE_REACTION);
+    }
+
+    /**
+     * 消息表情回应
+     *
+     * @param bot  {@link Bot}
+     * @param resp {@link JsonObjectWrapper}
+     */
+    public void messageEmojiLikeMessage(Bot bot, JsonObjectWrapper resp) {
+        process(bot, resp, NoticeEventEnum.MESSAGE_EMOJI_LIKE);
     }
 
 }
