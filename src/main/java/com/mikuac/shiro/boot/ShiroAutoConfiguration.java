@@ -104,7 +104,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         manager.setHeaders(headers);
         manager.setAutoStartup(true);
 
-        scheduledTask.executor().scheduleAtFixedRate(() -> {
+        scheduledTask.executor().scheduleWithFixedDelay(() -> {
             if (!manager.isConnected()) {
                 manager.startInternal();
             }
