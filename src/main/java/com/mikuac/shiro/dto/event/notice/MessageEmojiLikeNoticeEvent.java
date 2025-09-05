@@ -7,6 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -37,11 +39,11 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
      * 表情详情
      */
     @JsonProperty("likes")
-    private Likes likes;
+    private List<Like> likes;
 
 
     @Data
-    public static class Likes {
+    public static class Like {
 
         /**
          * 表情ID
