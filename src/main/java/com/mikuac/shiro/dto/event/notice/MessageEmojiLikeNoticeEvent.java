@@ -34,15 +34,27 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
     private Long operatorId;
 
     /**
-     * 表情ID
+     * 表情详情
      */
-    @JsonProperty("code")
-    private String code;
+    @JsonProperty("likes")
+    private Likes likes;
 
-    /**
-     * 表情数量
-     */
-    @JsonProperty("count")
-    private Integer count;
+
+    @Data
+    public static class Likes {
+
+        /**
+         * 表情ID
+         */
+        @JsonProperty("emoji_id")
+        private String emojiId;
+
+        /**
+         * 表情数量
+         */
+        @JsonProperty("count")
+        private Integer count;
+
+    }
 
 }

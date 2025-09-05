@@ -224,10 +224,11 @@ public class InjectionHandler {
      *
      * @param bot   {@link Bot}
      * @param event {@link AnyMessageEvent}
+     * @return 是否中断向下执行
      */
-    public void invokeAnyMessage(Bot bot, AnyMessageEvent event) {
+    public boolean invokeAnyMessage(Bot bot, AnyMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(AnyMessageHandler.class));
-        invokeMessage(bot, event, methods);
+        return invokeMessage(bot, event, methods);
     }
 
     /**
@@ -235,10 +236,11 @@ public class InjectionHandler {
      *
      * @param bot   {@link Bot}
      * @param event {@link GuildMessageEvent}
+     * @return 是否中断向下执行
      */
-    public void invokeGuildMessage(Bot bot, GuildMessageEvent event) {
+    public boolean invokeGuildMessage(Bot bot, GuildMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(GuildMessageHandler.class));
-        invokeMessage(bot, event, methods);
+        return invokeMessage(bot, event, methods);
     }
 
     /**
@@ -246,10 +248,11 @@ public class InjectionHandler {
      *
      * @param bot   {@link Bot}
      * @param event {@link GroupMessageEvent}
+     * @return 是否中断向下执行
      */
-    public void invokeGroupMessage(Bot bot, GroupMessageEvent event) {
+    public boolean invokeGroupMessage(Bot bot, GroupMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(GroupMessageHandler.class));
-        invokeMessage(bot, event, methods);
+        return invokeMessage(bot, event, methods);
     }
 
     /**
@@ -257,10 +260,11 @@ public class InjectionHandler {
      *
      * @param bot   {@link Bot}
      * @param event {@link PrivateMessageEvent}
+     * @return 是否中断向下执行
      */
-    public void invokePrivateMessage(Bot bot, PrivateMessageEvent event) {
+    public boolean invokePrivateMessage(Bot bot, PrivateMessageEvent event) {
         Optional<List<HandlerMethod>> methods = Optional.ofNullable(bot.getAnnotationHandler().get(PrivateMessageHandler.class));
-        invokeMessage(bot, event, methods);
+        return invokeMessage(bot, event, methods);
     }
 
     /**
@@ -269,11 +273,12 @@ public class InjectionHandler {
      * @param bot            {@link Bot}
      * @param event          {@link MessageEvent}
      * @param handlerMethods 消息处理方法
+     * @return 是否中断向下执行
      */
     @SuppressWarnings("squid:S1121")
-    public void invokeMessage(Bot bot, MessageEvent event, Optional<List<HandlerMethod>> handlerMethods) {
+    public boolean invokeMessage(Bot bot, MessageEvent event, Optional<List<HandlerMethod>> handlerMethods) {
         if (handlerMethods.isEmpty()) {
-            return;
+            return false;
         }
         for (HandlerMethod method : handlerMethods.get()) {
             MessageHandlerFilter filter = method.getMethod().getAnnotation(MessageHandlerFilter.class);
@@ -284,8 +289,9 @@ public class InjectionHandler {
             } else if ((result = CommonUtils.allFilterCheck(event, bot.getSelfId(), filter)).isResult()) {
                 invokeResult = invoke(bot, event, method, result.getMatcher());
             }
-            if (isBlockingResult(invokeResult)) break;
+            if (isBlockingResult(invokeResult)) return true;
         }
+        return false;
     }
 
     /**

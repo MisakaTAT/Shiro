@@ -75,9 +75,13 @@ public class MessageEvent {
                     return;
                 }
                 resp.put("message", event.getMessage());
-                utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
-                injection.invokePrivateMessage(bot, event);
-                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                boolean messageBlocked = utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
+                if (!messageBlocked) {
+                    messageBlocked = injection.invokePrivateMessage(bot, event);
+                }
+                if (!messageBlocked) {
+                    bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onPrivateMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                }
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
             }
 
@@ -97,9 +101,13 @@ public class MessageEvent {
                     return;
                 }
                 resp.put("message", event.getMessage());
-                utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
-                injection.invokeGroupMessage(bot, event);
-                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                boolean messageBlocked = utils.pushAnyMessageEvent(bot, resp, event.getArrayMsg());
+                if (!messageBlocked) {
+                    messageBlocked = injection.invokeGroupMessage(bot, event);
+                }
+                if (!messageBlocked) {
+                    bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGroupMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                }
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
             }
 
@@ -108,8 +116,10 @@ public class MessageEvent {
                 if (utils.setInterceptor(bot, event)) {
                     return;
                 }
-                injection.invokeGuildMessage(bot, event);
-                bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                boolean messageBlocked = injection.invokeGuildMessage(bot, event);
+                if (!messageBlocked) {
+                    bot.getPluginList().stream().anyMatch(o -> utils.getPlugin(o).onGuildMessage(bot, event) == BotPlugin.MESSAGE_BLOCK);
+                }
                 utils.getInterceptor(bot.getBotMessageEventInterceptor()).afterCompletion(bot, event);
             }
         } catch (Exception e) {

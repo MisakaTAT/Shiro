@@ -44,13 +44,13 @@ public class GroupMessageReactionNoticeEvent extends NoticeEvent {
     private String subType;
 
     /**
-     * 操作者ID
+     * 表情ID
      */
     @JsonProperty("code")
     private String code;
 
     /**
-     * 操作者ID
+     * 表情数量
      */
     @JsonProperty("count")
     private Integer count;
