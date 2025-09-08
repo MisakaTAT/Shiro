@@ -15,7 +15,7 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
     <a href="https://github.com/MisakaTAT/Shiro/issues"><img src="https://img.shields.io/github/issues/MisakaTAT/Shiro?style=flat-square" alt="issues" /></a>
     <a href="https://github.com/MisakaTAT/Shiro/blob/main/LICENSE"><img src="https://img.shields.io/github/license/MisakaTAT/Shiro?style=flat-square" alt="license"></a>
     <img src="https://img.shields.io/badge/JDK-17+-brightgreen.svg?style=flat-square" alt="jdk-version">
-    <a href=""><img src="https://img.shields.io/badge/QQ群-174706945-brightgreen.svg?style=flat-square" alt="qq-group"></a>
+    <a href=""><img src="https://img.shields.io/badge/QQ群-787828189-brightgreen.svg?style=flat-square" alt="qq-group"></a>
     <a href="https://github.com/howmanybots/onebot"><img src="https://img.shields.io/badge/OneBot-v11-blue?style=flat-square&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABABAMAAABYR2ztAAAAIVBMVEUAAAAAAAADAwMHBwceHh4UFBQNDQ0ZGRkoKCgvLy8iIiLWSdWYAAAAAXRSTlMAQObYZgAAAQVJREFUSMftlM0RgjAQhV+0ATYK6i1Xb+iMd0qgBEqgBEuwBOxU2QDKsjvojQPvkJ/ZL5sXkgWrFirK4MibYUdE3OR2nEpuKz1/q8CdNxNQgthZCXYVLjyoDQftaKuniHHWRnPh2GCUetR2/9HsMAXyUT4/3UHwtQT2AggSCGKeSAsFnxBIOuAggdh3AKTL7pDuCyABcMb0aQP7aM4AnAbc/wHwA5D2wDHTTe56gIIOUA/4YYV2e1sg713PXdZJAuncdZMAGkAukU9OAn40O849+0ornPwT93rphWF0mgAbauUrEOthlX8Zu7P5A6kZyKCJy75hhw1Mgr9RAUvX7A3csGqZegEdniCx30c3agAAAABJRU5ErkJggg=="></a>
 </p>
 
@@ -380,17 +380,7 @@ shiro:
 
 # Client
 
-Shiro 以 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs)
-标准协议进行开发，兼容所有支持反向WebSocket的OneBot协议客户端
-
-| 项目                                                        | 描述                                              | 备注     |
-| ----------------------------------------------------------- | ------------------------------------------------- | -------- |
-| [LLOneBot](https://github.com/LLOneBot/LLOneBot)            | 使你的 NTQQ 支持 OneBot11 协议进行 QQ 机器人开发  |          |
-| [Lagrange.Core](https://github.com/KonataDev/Lagrange.Core) | NTQQ 的协议实现                                   |          |
-| [go-cqhttp](https://github.com/Mrs4s/go-cqhttp)             | 基于 Mirai 以及 MiraiGo 的 OneBot Golang 原生实现 | 停止维护 |
-| [OpenShamrock](https://github.com/whitechi73/OpenShamrock)  | 基于 Xposed 实现 OneBot 标准的机器人框架          |          |
-
-
+Shiro 兼容所有支持正反向 WebSocket 连接的 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs) 客户端
 
 # Contributors
 See [Contributing](https://github.com/MisakaTAT/Shiro/graphs/contributors) for details. Thanks to all the people who already contributed!
@@ -412,12 +402,6 @@ The license is as published by the Free Software Foundation published at https:/
 
 Feel free to contact us if you have any questions about licensing or want to use the library in a commercial closed
 source product.
-
-# Thanks
-
-[JetBrains](https://www.jetbrains.com/?from=Shiro) offers free licenses to support open source projects.
-
-[<img src="https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.png" width="280"/>](https://www.jetbrains.com/?from=shiro)
 
 # Stargazers over time
 

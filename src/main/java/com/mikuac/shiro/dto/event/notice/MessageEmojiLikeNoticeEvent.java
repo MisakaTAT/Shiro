@@ -9,7 +9,6 @@ import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,7 +39,6 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
      */
     @JsonProperty("likes")
     private List<Like> likes;
-
 
     @Data
     public static class Like {
