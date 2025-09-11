@@ -181,26 +181,18 @@ public class CommonUtils {
      * @return {@link ArrayMsg}
      */
     public static ArrayMsg atParse(List<ArrayMsg> arrayMsg, long selfId) {
-        if (arrayMsg.isEmpty()) {
+        if (arrayMsg == null || arrayMsg.isEmpty()) {
             return null;
         }
-        int index = 0;
-        ArrayMsg item = arrayMsg.get(index);
-        long target = item.getLongData("qq");
-        index = arrayMsg.size() - 1;
-        if ((target == 0L || target != selfId) && index >= 0) {
-            item = arrayMsg.get(index);
-            // @ 右侧可能会有空格
-            index = arrayMsg.size() - 2;
-            if (MsgTypeEnum.text == item.getType() && index >= 0) {
-                item = arrayMsg.get(index);
-            }
-            target = item.getLongData("qq");
-            if (target == 0L || target != selfId) {
-                return null;
+        for (ArrayMsg item : arrayMsg) {
+            if (item.getType() == MsgTypeEnum.at) {
+                long target = item.getLongData("qq");
+                if (target == selfId) {
+                    return item;
+                }
             }
         }
-        return item;
+        return null;
     }
 
     /**

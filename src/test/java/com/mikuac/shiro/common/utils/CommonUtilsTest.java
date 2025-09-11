@@ -9,10 +9,8 @@ import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,38 +75,41 @@ class CommonUtilsTest {
     }
 
     @Test
-    void atParseTest() {
-        // 定义包含 @ 标识的 ArrayMsg 数组
-        val arrayMsg1 = Arrays.asList(
+    void atParseTest_LastNotText() {
+        long selfId = 1122334455L;
+
+        BiConsumer<List<ArrayMsg>, ArrayMsg> assertAtParse = (messages, expected) -> {
+            ArrayMsg actual = CommonUtils.atParse(messages, selfId);
+            if (expected == null) {
+                assertNull(actual);
+            } else {
+                assertEquals(expected, actual);
+            }
+        };
+
+        List<ArrayMsg> arrayMsg1 = Arrays.asList(
+                new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "开头文本")),
                 new ArrayMsg().setType(MsgTypeEnum.at).setData(Map.of("qq", "1122334455")),
-                new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
+                new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "中间文本")),
+                new ArrayMsg().setType(MsgTypeEnum.face).setData(Map.of("id", 1234))
         );
-        // 定义期望解析出的 @ 标识对应的 ArrayMsg
-        val expected1 = arrayMsg1.get(0);
-        // 调用 atParse 函数进行测试
-        val actual1 = CommonUtils.atParse(arrayMsg1, 1122334455L);
-        // 使用 assertEquals 函数比较期望值和实际值是否相等
-        assertEquals(expected1, actual1);
+        assertAtParse.accept(arrayMsg1, arrayMsg1.get(1));
 
-        // 定义不包含 @ 标识的 ArrayMsg 数组
-        val arrayMsg2 = Collections.singletonList(
-                new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
+        List<ArrayMsg> arrayMsg2 = Arrays.asList(
+                new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "开头文本")),
+                new ArrayMsg().setType(MsgTypeEnum.at).setData(Map.of("qq", "999999999")), // 错误 QQ
+                new ArrayMsg().setType(MsgTypeEnum.face).setData(Map.of("id", 1234))
         );
-        // 调用 atParse 函数进行测试，期望返回 null
-        val actual2 = CommonUtils.atParse(arrayMsg2, 1122334455L);
-        // 使用 assertNull 函数比较期望值和实际值是否相等
-        assertNull(actual2);
+        assertAtParse.accept(arrayMsg2, null);
 
-        // 定义包含 @ 标识但不是机器人账号的 ArrayMsg 数组
-        val arrayMsg3 = Arrays.asList(
-                new ArrayMsg().setType(MsgTypeEnum.at).setData(Map.of("qq", "123456789")),
-                new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "测试消息"))
+        List<ArrayMsg> arrayMsg3 = Arrays.asList(
+                new ArrayMsg().setType(MsgTypeEnum.text).setData(Map.of("text", "开头文本")),
+                new ArrayMsg().setType(MsgTypeEnum.at).setData(Map.of("qq", "1122334455")),
+                new ArrayMsg().setType(MsgTypeEnum.music).setData(Map.of("url", "voice.mp3"))
         );
-        // 调用 atParse 函数进行测试，期望返回 null
-        val actual3 = CommonUtils.atParse(arrayMsg3, 1122334455L);
-        // 使用 assertNull 函数比较期望值和实际值是否相等
-        assertNull(actual3);
+        assertAtParse.accept(arrayMsg3, arrayMsg3.get(1));
     }
+
 
     @Test
     void debugMsgDeleteBase64ContentTest() {
