@@ -6,7 +6,6 @@ import jakarta.annotation.PreDestroy;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -117,10 +116,10 @@ public class PluginManager {
     private boolean isDependencyMissing(String groupArtifact) {
         try {
             String[] parts = groupArtifact.split(":", 3);
-            val group = parts[0];
-            val artifact = parts[1];
-            val version = parts[2];
-            val jarPath = DependencyResolver.DEPENDENCIES_DIR.toPath()
+            String group = parts[0];
+            String artifact = parts[1];
+            String version = parts[2];
+            Path jarPath = DependencyResolver.DEPENDENCIES_DIR.toPath()
                     .resolve(group.replace('.', '/'))
                     .resolve(artifact)
                     .resolve(version)
