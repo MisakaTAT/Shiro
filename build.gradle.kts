@@ -15,7 +15,7 @@ plugins {
     `maven-publish`
     id("org.jreleaser") version "1.20.0"
     id("io.freefair.lombok") version "8.14.2"
-    id("org.springframework.boot") version "3.5.5"
+    id("org.springframework.boot") version "3.5.6"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
