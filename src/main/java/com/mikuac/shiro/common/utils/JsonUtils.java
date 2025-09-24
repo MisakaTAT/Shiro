@@ -123,6 +123,9 @@ public class JsonUtils {
         try (JsonParser parser = mapper.createParser(s)) {
             JsonToken first = parser.nextToken();
             if (first == null) return null;
+            if (first != JsonToken.START_OBJECT && first != JsonToken.START_ARRAY) {
+                return null;
+            }
             JsonNode node = mapper.readTree(parser);
             if (parser.nextToken() == null) {
                 return node;
