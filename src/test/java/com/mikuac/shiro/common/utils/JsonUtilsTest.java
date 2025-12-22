@@ -1,8 +1,8 @@
 package com.mikuac.shiro.common.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.TextNode;
+import tools.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.node.StringNode;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +13,7 @@ class JsonUtilsTest {
         String json = "{\"name\":\"Alice\",\"age\":30}";
         JsonNode node = JsonUtils.parseToJsonNode(json);
         assertTrue(node.isObject());
-        assertEquals("Alice", node.get("name").asText());
+        assertEquals("Alice", node.get("name").asString());
         assertEquals(30, node.get("age").asInt());
     }
 
@@ -21,16 +21,16 @@ class JsonUtilsTest {
     void testParseToJsonNode_withInvalidJsonString() {
         String notJson = "Just a plain string";
         JsonNode node = JsonUtils.parseToJsonNode(notJson);
-        assertInstanceOf(TextNode.class, node);
-        assertEquals(notJson, node.asText());
+        assertInstanceOf(StringNode.class, node);
+        assertEquals(notJson, node.asString());
     }
 
     @Test
     void testParseToJsonNode_withEmptyString() {
         String empty = "";
         JsonNode node = JsonUtils.parseToJsonNode(empty);
-        assertInstanceOf(TextNode.class, node);
-        assertEquals(empty, node.asText());
+        assertInstanceOf(StringNode.class, node);
+        assertEquals(empty, node.asString());
     }
 
     @Test
@@ -38,7 +38,7 @@ class JsonUtilsTest {
         Person person = new Person("Bob", 25);
         JsonNode node = JsonUtils.parseToJsonNode(person);
         assertTrue(node.isObject());
-        assertEquals("Bob", node.get("name").asText());
+        assertEquals("Bob", node.get("name").asString());
         assertEquals(25, node.get("age").asInt());
     }
 

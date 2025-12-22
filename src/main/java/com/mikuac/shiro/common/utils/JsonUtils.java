@@ -1,17 +1,13 @@
 package com.mikuac.shiro.common.utils;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.lang.Nullable;
+import tools.jackson.core.JacksonException;
+import tools.jackson.core.JsonParser;
+import tools.jackson.core.JsonToken;
+import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -29,15 +25,10 @@ public class JsonUtils {
     private static final AtomicReference<ObjectMapper> customObjectMapper = new AtomicReference<>();
 
     private static ObjectMapper createConfiguredObjectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        // 忽略 JSON 中存在但 Java 对象不存在的字段，避免因字段变动导致反序列化失败
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        // 序列化时不因空 Bean 报错
-        mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-        return mapper;
+        return new ObjectMapper();
     }
 
-    public static void setCustomObjectMapper(@Nullable ObjectMapper mapper) {
+    public static void setCustomObjectMapper(ObjectMapper mapper) {
         customObjectMapper.set(mapper);
     }
 
@@ -49,7 +40,7 @@ public class JsonUtils {
     public static Optional<JsonNode> parseObject(String jsonString) {
         try {
             return Optional.ofNullable(getObjectMapper().readTree(jsonString));
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Failed to parse JSON string", e);
             return Optional.empty();
         }
@@ -66,11 +57,10 @@ public class JsonUtils {
         }
     }
 
-    @Nullable
     public static String toJSONString(Object object) {
         try {
             return getObjectMapper().writeValueAsString(object);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             log.error("Failed to convert object to JSON string", e);
             return null;
         }
@@ -81,12 +71,11 @@ public class JsonUtils {
         try {
             getObjectMapper().readTree(jsonString);
             return true;
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return false;
         }
     }
 
-    @Nullable
     public static <T> T readValue(String jsonString, TypeReference<T> typeReference) {
         try {
             return getObjectMapper().readValue(jsonString, typeReference);
@@ -100,21 +89,37 @@ public class JsonUtils {
         if (node == null) {
             return "";
         }
-        if (node.isTextual()) {
-            return node.textValue();
+        if (node.isString()) {
+            return node.asString();
         }
         try {
             return getObjectMapper().writeValueAsString(node);
-        } catch (JsonProcessingException e) {
+        } catch (JacksonException e) {
             return node.toString();
         }
+    }
+
+    public static long nodeToLong(JsonNode node) {
+        if (node == null) {
+            return 0;
+        }
+        if (node.isNumber()) {
+            return node.asLong();
+        }
+        if (node.isString()) {
+            try {
+                return Long.parseLong(node.asString());
+            } catch (NumberFormatException e) {
+                return 0;
+            }
+        }
+        return 0;
     }
 
     public static JsonNode parseToJsonNode(Object value) {
         ObjectMapper mapper = getObjectMapper();
         if (value instanceof String s) {
-            JsonNode node = tryParseJsonString(mapper, s);
-            return node != null ? node : mapper.getNodeFactory().textNode(s);
+            return tryParseJsonString(mapper, s);
         }
         return mapper.valueToTree(value);
     }
@@ -122,18 +127,16 @@ public class JsonUtils {
     private static JsonNode tryParseJsonString(ObjectMapper mapper, String s) {
         try (JsonParser parser = mapper.createParser(s)) {
             JsonToken first = parser.nextToken();
-            if (first == null) return null;
-            if (first != JsonToken.START_OBJECT && first != JsonToken.START_ARRAY) {
-                return null;
+            // 仅当首个 token 是对象或数组时解析
+            if (first == JsonToken.START_OBJECT || first == JsonToken.START_ARRAY) {
+                return mapper.readTree(parser);
             }
-            JsonNode node = mapper.readTree(parser);
-            if (parser.nextToken() == null) {
-                return node;
-            }
-        } catch (IOException ignored) {
-            // ignored
+            // 其他情况全部当作普通文本
+            return mapper.getNodeFactory().stringNode(s);
+        } catch (Exception e) {
+            // 解析失败也当作文本
+            return mapper.getNodeFactory().stringNode(s);
         }
-        return null;
     }
 
 }

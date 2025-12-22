@@ -1,15 +1,12 @@
 package com.mikuac.shiro.common.utils;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mikuac.shiro.exception.ShiroException;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
 
 @SuppressWarnings("unused")
 public class JsonObjectWrapper {
@@ -68,7 +65,7 @@ public class JsonObjectWrapper {
         JsonNode node = objectNode.get(key);
         if (node == null || node.isNull()) return null;
         return switch (node.getNodeType()) {
-            case STRING -> node.asText();
+            case STRING -> node.asString();
             case NUMBER -> {
                 if (node.isInt()) {
                     yield node.asInt();
@@ -84,7 +81,7 @@ public class JsonObjectWrapper {
 
     public String getString(String key) {
         JsonNode node = objectNode.get(key);
-        return (node != null && node.isTextual()) ? node.asText() : null;
+        return (node != null && node.isString()) ? node.asString() : null;
     }
 
     public Integer getInt(String key) {
@@ -122,12 +119,6 @@ public class JsonObjectWrapper {
 
     public int size() {
         return objectNode.size();
-    }
-
-    public Set<String> keySet() {
-        Iterable<String> iterable = objectNode::fieldNames;
-        return StreamSupport.stream(iterable.spliterator(), false)
-                .collect(Collectors.toSet());
     }
 
     public <T> T to(Class<T> clazz) {

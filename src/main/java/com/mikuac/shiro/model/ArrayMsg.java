@@ -4,13 +4,13 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mikuac.shiro.common.utils.JsonUtils;
 import com.mikuac.shiro.common.utils.ShiroUtils;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import tools.jackson.databind.JsonNode;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.util.Map;
 
@@ -93,7 +93,7 @@ public class ArrayMsg {
     }
 
     public long getLongData(String key) {
-        return data.has(key) ? data.get(key).asLong() : 0;
+        return data.has(key) ? JsonUtils.nodeToLong(data.get(key)) : 0;
     }
 
     public String getStringData(String key) {

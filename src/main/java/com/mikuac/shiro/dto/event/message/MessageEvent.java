@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSetter;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.mikuac.shiro.common.utils.JsonUtils;
 import com.mikuac.shiro.common.utils.MessageConverser;
 import com.mikuac.shiro.dto.event.Event;
@@ -16,6 +15,7 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+import tools.jackson.databind.JsonNode;
 
 import java.util.List;
 
@@ -52,8 +52,8 @@ public class MessageEvent extends Event {
 
     @JsonSetter("message")
     private void setMessageFromJson(JsonNode json) {
-        if (json.isTextual()) {
-            this.message = json.asText();
+        if (json.isString()) {
+            this.message = json.asString();
             this.arrayMsg = MessageConverser.stringToArray(message);
         } else if (json.isArray()) {
             this.arrayMsg = JsonUtils.parseArray(json, ArrayMsg.class);

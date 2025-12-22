@@ -1,6 +1,5 @@
 package com.mikuac.shiro.core;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.mikuac.shiro.action.*;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
 import com.mikuac.shiro.common.utils.JsonObjectWrapper;
@@ -20,6 +19,7 @@ import lombok.Setter;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
+import tools.jackson.core.type.TypeReference;
 
 import java.io.Closeable;
 import java.io.IOException;

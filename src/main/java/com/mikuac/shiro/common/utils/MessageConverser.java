@@ -1,9 +1,9 @@
 package com.mikuac.shiro.common.utils;
 
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.mikuac.shiro.enums.MsgTypeEnum;
 import com.mikuac.shiro.model.ArrayMsg;
 import lombok.NonNull;
+import tools.jackson.databind.node.ObjectNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -134,7 +134,7 @@ public class MessageConverser {
             ArrayMsg lastMsg = chain.get(chain.size() - 1);
             if (lastMsg.getType() == MsgTypeEnum.text && lastMsg.getData().isObject()) {
                 ObjectNode obj = (ObjectNode) lastMsg.getData();
-                obj.put("text", obj.get("text").asText("") + ShiroUtils.unescape(text));
+                obj.put("text", obj.get("text").asString("") + ShiroUtils.unescape(text));
                 return;
             }
         }
