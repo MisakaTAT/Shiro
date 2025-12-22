@@ -5,8 +5,11 @@ import tools.jackson.core.JacksonException;
 import tools.jackson.core.JsonParser;
 import tools.jackson.core.JsonToken;
 import tools.jackson.core.type.TypeReference;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.SerializationFeature;
+import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +28,12 @@ public class JsonUtils {
     private static final AtomicReference<ObjectMapper> customObjectMapper = new AtomicReference<>();
 
     private static ObjectMapper createConfiguredObjectMapper() {
-        return new ObjectMapper();
+        return JsonMapper.builder()
+                // 忽略 JSON 中存在但 Java 对象不存在的字段
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+                // 序列化时不因空 Bean 报错
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS)
+                .build();
     }
 
     public static void setCustomObjectMapper(ObjectMapper mapper) {
