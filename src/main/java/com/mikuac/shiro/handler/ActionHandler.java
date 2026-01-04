@@ -74,11 +74,10 @@ public class ActionHandler {
      */
     public void onReceiveActionResp(JsonObjectWrapper resp) {
         String e = resp.get("echo").toString();
-        PayloadSender sender = callback.get(e);
+        PayloadSender sender = callback.remove(e);
         if (sender != null) {
             // 唤醒挂起的线程
             sender.onCallback(resp);
-            callback.remove(e);
         }
     }
 
