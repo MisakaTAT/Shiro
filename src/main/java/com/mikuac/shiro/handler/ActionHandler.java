@@ -129,8 +129,9 @@ public class ActionHandler {
         }
 
         JsonObjectWrapper payload = generatePayload(action, params);
+        String echo = payload.get("echo").toString();
         PayloadSender sender = new PayloadSender(session, wsProp.getTimeout());
-        callback.put(payload.get("echo").toString(), sender);
+        callback.put(echo, sender);
         try {
             result = sender.send(payload);
         } catch (Exception e) {
@@ -139,6 +140,10 @@ public class ActionHandler {
             result.put("retcode", -1);
             long xSelfId = ConnectionUtils.parseSelfId(session);
             log.error("API call failed [{}]: {}", xSelfId, result.get("wording"));
+        } finally {
+            // 清理 callback，防止内存泄漏（发送失败、超时等情况）
+            // 如果响应已正常到达，onReceiveActionResp 会先移除，这里移除的是 null，安全
+            callback.remove(echo);
         }
         return result;
     }
