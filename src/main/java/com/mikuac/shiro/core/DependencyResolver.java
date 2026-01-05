@@ -95,8 +95,8 @@ public class DependencyResolver {
 
     private static class ImprovedTransferListener implements TransferListener {
         private static final int PROGRESS_BAR_WIDTH = 50;
-        private final ConcurrentHashMap<String, DownloadStatus> downloads = new ConcurrentHashMap<>();
         private static final int[] MILESTONE_PERCENTAGES = {5, 25, 50, 75, 90, 100};
+        private final ConcurrentHashMap<String, DownloadStatus> downloads = new ConcurrentHashMap<>();
 
         @Override
         public void transferInitiated(TransferEvent event) {

@@ -49,26 +49,6 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
         this.applicationContext = applicationContext;
     }
 
-    @Override
-    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
-        log.debug("Starting to collect beans with @Shiro annotation");
-        Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
-        log.debug("Found {} beans with @Shiro annotation", beans.size());
-        MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = extractMethods(beans);
-        log.debug("Starting handler method sorting");
-        this.sort(annotationHandler);
-        log.debug("Handler methods sorted, total size: {}", annotationHandler.size());
-        this.annotationMethodContainer.setAnnotationHandler(annotationHandler);
-    }
-
-    @Getter
-    @Setter
-    @SuppressWarnings("java:S3077")
-    public static class AnnotationMethodContainer {
-        // 以注解为键，存放包含此注解的处理方法
-        private volatile MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
-    }
-
     /**
      * 获取所有注解
      *
@@ -83,6 +63,18 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
         annotations = new AnnotationScanner().scan("com.mikuac.shiro.annotation");
         log.debug("Found {} annotations", annotations.size());
         return annotations;
+    }
+
+    @Override
+    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+        log.debug("Starting to collect beans with @Shiro annotation");
+        Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
+        log.debug("Found {} beans with @Shiro annotation", beans.size());
+        MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = extractMethods(beans);
+        log.debug("Starting handler method sorting");
+        this.sort(annotationHandler);
+        log.debug("Handler methods sorted, total size: {}", annotationHandler.size());
+        this.annotationMethodContainer.setAnnotationHandler(annotationHandler);
     }
 
     private MultiValueMap<Class<? extends Annotation>, HandlerMethod> extractMethods(Map<String, Object> beans) {
@@ -154,5 +146,13 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
             annotationHandler.put(annotation, handlers);
             log.debug("Handler sorting completed");
         });
+    }
+
+    @Getter
+    @Setter
+    @SuppressWarnings("java:S3077")
+    public static class AnnotationMethodContainer {
+        // 以注解为键，存放包含此注解的处理方法
+        private volatile MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = new LinkedMultiValueMap<>();
     }
 }

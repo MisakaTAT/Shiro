@@ -39,6 +39,18 @@ public class RateLimiter implements ApplicationRunner {
                 }
             }
     );
+    /**
+     * 重入锁
+     */
+    private final Lock lock = new ReentrantLock();
+    /**
+     * 状态管理
+     */
+    private final Condition condition = lock.newCondition();
+    /**
+     * 桶内剩余令牌数量
+     */
+    private double currentTokenQuantities;
 
     @Autowired
     public RateLimiter(RateLimiterProperties props) {
@@ -56,21 +68,6 @@ public class RateLimiter implements ApplicationRunner {
         }
         this.props = props;
     }
-
-    /**
-     * 重入锁
-     */
-    private final Lock lock = new ReentrantLock();
-
-    /**
-     * 状态管理
-     */
-    private final Condition condition = lock.newCondition();
-
-    /**
-     * 桶内剩余令牌数量
-     */
-    private double currentTokenQuantities;
 
     /**
      * 令牌定时补充器

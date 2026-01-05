@@ -20,6 +20,10 @@ import java.util.function.BiConsumer;
 @Component
 public class NoticeEvent {
 
+    /**
+     * 存储通知事件处理器
+     */
+    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
     private final EventUtils utils;
     private final NotifyEvent notify;
     private final InjectionHandler injection;
@@ -30,11 +34,6 @@ public class NoticeEvent {
         this.notify = notifyEvent;
         this.injection = injectionHandler;
     }
-
-    /**
-     * 存储通知事件处理器
-     */
-    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     /**
      * 通知事件分发

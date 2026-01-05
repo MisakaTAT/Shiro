@@ -6,10 +6,10 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class GroupMessageFilterUtils {
 
+    private static final ConcurrentHashMap<String, Long> CACHE = new ConcurrentHashMap<>();
+
     private GroupMessageFilterUtils() {
     }
-
-    private static final ConcurrentHashMap<String, Long> CACHE = new ConcurrentHashMap<>();
 
     // 插入消息并指定缓存时间
     public static boolean insertMessage(GroupMessageEvent messageEvent, int cacheTime) {

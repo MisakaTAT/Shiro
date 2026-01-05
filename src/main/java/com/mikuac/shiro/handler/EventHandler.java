@@ -28,6 +28,10 @@ public class EventHandler implements ApplicationRunner {
     private final NotifyEvent notify;
     private final MessageEvent message;
     private final RequestEvent request;
+    /**
+     * 存储事件处理器
+     */
+    private final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     @Autowired
     public EventHandler(
@@ -39,11 +43,6 @@ public class EventHandler implements ApplicationRunner {
         this.message = message;
         this.request = request;
     }
-
-    /**
-     * 存储事件处理器
-     */
-    private final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     @Override
     public void run(ApplicationArguments args) {

@@ -5,9 +5,6 @@ import java.util.Map;
 
 public class FaceUtils {
 
-    private FaceUtils() {
-    }
-
     protected static final Map<Integer, Integer> EMOJI = new HashMap<>();
 
     static {
@@ -95,6 +92,9 @@ public class FaceUtils {
         EMOJI.put(272, 128579); // 🙃 upside-down face
         EMOJI.put(320, 129395); // 🥳 partying face
         EMOJI.put(325, 128561); // 😱 face screaming in fear
+    }
+
+    private FaceUtils() {
     }
 
     public static int get(int key) {

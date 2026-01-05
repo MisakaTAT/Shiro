@@ -27,6 +27,10 @@ import java.util.function.BiConsumer;
 @Component
 public class MessageEvent {
 
+    /**
+     * 存储消息事件处理器
+     */
+    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
     private final EventUtils utils;
     private final ShiroProperties shiroProperties;
     private final BotContainer botContainer;
@@ -41,11 +45,6 @@ public class MessageEvent {
         this.botContainer = botContainer;
         this.injection = injection;
     }
-
-    /**
-     * 存储消息事件处理器
-     */
-    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     /**
      * 消息事件分发

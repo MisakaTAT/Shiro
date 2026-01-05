@@ -10,13 +10,12 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 public class ScheduledTask {
 
     private final ThreadPoolTaskExecutor shiroTaskExecutor;
+    private ScheduledThreadPoolExecutor executor;
 
     @Autowired
     public ScheduledTask(ThreadPoolTaskExecutor shiroTaskExecutor) {
         this.shiroTaskExecutor = shiroTaskExecutor;
     }
-
-    private ScheduledThreadPoolExecutor executor;
 
     public ScheduledThreadPoolExecutor executor() {
         if (executor != null) {

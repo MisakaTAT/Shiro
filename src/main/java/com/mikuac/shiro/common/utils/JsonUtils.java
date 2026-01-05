@@ -20,12 +20,11 @@ import java.util.concurrent.atomic.AtomicReference;
 @SuppressWarnings("unused")
 public class JsonUtils {
 
+    private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createConfiguredObjectMapper();
+    private static final AtomicReference<ObjectMapper> customObjectMapper = new AtomicReference<>();
+
     private JsonUtils() {
     }
-
-    private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createConfiguredObjectMapper();
-
-    private static final AtomicReference<ObjectMapper> customObjectMapper = new AtomicReference<>();
 
     private static ObjectMapper createConfiguredObjectMapper() {
         return JsonMapper.builder()

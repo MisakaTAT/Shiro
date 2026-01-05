@@ -25,14 +25,13 @@ public class EventUtils {
 
     private final ApplicationContext ctx;
     private final InjectionHandler injection;
+    private final BotPlugin defaultPlugin = new BotPlugin();
 
     @Autowired
     public EventUtils(ApplicationContext ctx, InjectionHandler injection) {
         this.ctx = ctx;
         this.injection = injection;
     }
-
-    private final BotPlugin defaultPlugin = new BotPlugin();
 
     /**
      * 获取插件

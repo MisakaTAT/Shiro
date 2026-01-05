@@ -63,18 +63,18 @@ public class MessageEvent extends Event {
         }
     }
 
-    @JsonIgnore
-    public void setMessage(String message) {
-        this.message = message;
-        this.arrayMsg = MessageConverser.stringToArray(message);
-    }
-
     @JsonGetter("message")
     public String getMessage() {
         if (!StringUtils.hasText(message) && !CollectionUtils.isEmpty(arrayMsg)) {
             message = MessageConverser.arraysToString(arrayMsg);
         }
         return message;
+    }
+
+    @JsonIgnore
+    public void setMessage(String message) {
+        this.message = message;
+        this.arrayMsg = MessageConverser.stringToArray(message);
     }
 
 }

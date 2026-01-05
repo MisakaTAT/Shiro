@@ -67,6 +67,33 @@ public class ActionHandler {
         this.rateLimiter = rateLimiter;
     }
 
+    private static Map<String, Object> keyboardSerialize(Map<String, Object> params) {
+        if (params == null || params.isEmpty()) {
+            return params;
+        }
+
+        Object msg = params.get(ActionParams.MESSAGE);
+        if (!(msg instanceof List<?> original)) {
+            return params;
+        }
+
+        List<Object> modified = original.stream().map(v -> {
+            if (v instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
+                String data = arrayMsg.getStringData("keyboard");
+                return JsonUtils.parseObject(data);
+            }
+            return v;
+        }).toList();
+
+        // 检查是否有过修改
+        if (!modified.equals(original)) {
+            Map<String, Object> copy = new HashMap<>(params);
+            copy.put(ActionParams.MESSAGE, modified);
+            return copy;
+        }
+        return params;
+    }
+
     /**
      * 处理响应结果
      *
@@ -134,12 +161,6 @@ public class ActionHandler {
         callback.put(echo, sender);
         try {
             result = sender.send(payload);
-        } catch (Exception e) {
-            result.clear();
-            result.put("status", "failed");
-            result.put("retcode", -1);
-            long xSelfId = ConnectionUtils.parseSelfId(session);
-            log.error("API call failed [{}]: {}", xSelfId, result.get("wording"));
         } finally {
             // 清理 callback，防止内存泄漏（发送失败、超时等情况）
             // 如果响应已正常到达，onReceiveActionResp 会先移除，这里移除的是 null，安全
@@ -164,33 +185,6 @@ public class ActionHandler {
             payload.put("params", params);
         }
         return payload;
-    }
-
-    private static Map<String, Object> keyboardSerialize(Map<String, Object> params) {
-        if (params == null || params.isEmpty()) {
-            return params;
-        }
-
-        Object msg = params.get(ActionParams.MESSAGE);
-        if (!(msg instanceof List<?> original)) {
-            return params;
-        }
-
-        List<Object> modified = original.stream().map(v -> {
-            if (v instanceof ArrayMsg arrayMsg && arrayMsg.getType() == MsgTypeEnum.keyboard) {
-                String data = arrayMsg.getStringData("keyboard");
-                return JsonUtils.parseObject(data);
-            }
-            return v;
-        }).toList();
-
-        // 检查是否有过修改
-        if (!modified.equals(original)) {
-            Map<String, Object> copy = new HashMap<>(params);
-            copy.put(ActionParams.MESSAGE, modified);
-            return copy;
-        }
-        return params;
     }
 
 }

@@ -11,9 +11,7 @@ import java.util.Map;
 @SuppressWarnings("unused")
 public class JsonObjectWrapper {
 
-    private final ObjectNode objectNode;
     private static final ObjectMapper OBJECT_MAPPER = JsonUtils.getObjectMapper();
-
     private static final Map<Class<?>, ValueSetter> VALUE_SETTERS = new HashMap<>();
 
     static {
@@ -25,10 +23,7 @@ public class JsonObjectWrapper {
         VALUE_SETTERS.put(Float.class, (node, key, value) -> node.put(key, (Float) value));
     }
 
-    @FunctionalInterface
-    interface ValueSetter {
-        void set(ObjectNode node, String key, Object value);
-    }
+    private final ObjectNode objectNode;
 
     public JsonObjectWrapper() {
         this.objectNode = OBJECT_MAPPER.createObjectNode();
@@ -43,6 +38,10 @@ public class JsonObjectWrapper {
                 .filter(ObjectNode.class::isInstance)
                 .map(ObjectNode.class::cast)
                 .orElseGet(OBJECT_MAPPER::createObjectNode);
+    }
+
+    public static JsonObjectWrapper parseObject(String jsonString) {
+        return new JsonObjectWrapper(jsonString);
     }
 
     public JsonObjectWrapper put(String key, Object value) {
@@ -142,12 +141,13 @@ public class JsonObjectWrapper {
         return toJSONString();
     }
 
-    public static JsonObjectWrapper parseObject(String jsonString) {
-        return new JsonObjectWrapper(jsonString);
-    }
-
     public ObjectNode raw() {
         return objectNode;
+    }
+
+    @FunctionalInterface
+    interface ValueSetter {
+        void set(ObjectNode node, String key, Object value);
     }
 
 }

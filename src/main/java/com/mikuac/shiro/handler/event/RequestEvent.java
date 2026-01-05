@@ -21,6 +21,10 @@ import java.util.function.BiConsumer;
 @Component
 public class RequestEvent {
 
+    /**
+     * 存储请求事件处理器
+     */
+    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
     private final EventUtils utils;
     private final InjectionHandler injection;
 
@@ -29,11 +33,6 @@ public class RequestEvent {
         this.utils = eventUtils;
         this.injection = injectionHandler;
     }
-
-    /**
-     * 存储请求事件处理器
-     */
-    public final Map<String, BiConsumer<Bot, JsonObjectWrapper>> handlers = new HashMap<>();
 
     /**
      * 请求事件分发
