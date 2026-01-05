@@ -156,15 +156,15 @@ public class ActionHandler {
         }
 
         JsonObjectWrapper payload = generatePayload(action, params);
-        String echo = payload.get("echo").toString();
+        String e = payload.get("echo").toString();
         PayloadSender sender = new PayloadSender(session, wsProp.getTimeout());
-        callback.put(echo, sender);
+        callback.put(e, sender);
         try {
             result = sender.send(payload);
         } finally {
             // 清理 callback，防止内存泄漏（发送失败、超时等情况）
             // 如果响应已正常到达，onReceiveActionResp 会先移除，这里移除的是 null，安全
-            callback.remove(echo);
+            callback.remove(e);
         }
         return result;
     }
