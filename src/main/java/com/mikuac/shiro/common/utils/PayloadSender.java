@@ -93,4 +93,9 @@ public class PayloadSender {
             lock.unlock();
         }
     }
+
+    public static void cleanupSessionLock(String sessionId) {
+        SESSION_LOCKS.remove(sessionId);
+    }
+
 }

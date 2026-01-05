@@ -1,7 +1,7 @@
 package com.mikuac.shiro.common.utils;
 
-import tools.jackson.databind.JsonNode;
 import org.junit.jupiter.api.Test;
+import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.node.StringNode;
 
 import static org.junit.jupiter.api.Assertions.*;

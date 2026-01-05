@@ -3,6 +3,7 @@ package com.mikuac.shiro.adapter;
 import com.mikuac.shiro.common.utils.CommonUtils;
 import com.mikuac.shiro.common.utils.ConnectionUtils;
 import com.mikuac.shiro.common.utils.JsonObjectWrapper;
+import com.mikuac.shiro.common.utils.PayloadSender;
 import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
@@ -120,6 +121,8 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
+        PayloadSender.cleanupSessionLock(session.getId());
+
         long xSelfId = ConnectionUtils.parseSelfId(session);
         if (xSelfId == 0L || !botContainer.robots.containsKey(xSelfId)) {
             return;

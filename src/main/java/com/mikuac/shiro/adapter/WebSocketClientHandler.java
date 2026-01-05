@@ -1,9 +1,6 @@
 package com.mikuac.shiro.adapter;
 
-import com.mikuac.shiro.common.utils.CommonUtils;
-import com.mikuac.shiro.common.utils.ConnectionUtils;
-import com.mikuac.shiro.common.utils.JsonObjectWrapper;
-import com.mikuac.shiro.common.utils.JsonUtils;
+import com.mikuac.shiro.common.utils.*;
 import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotContainer;
@@ -85,6 +82,8 @@ public class WebSocketClientHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(@NonNull WebSocketSession session, @NonNull CloseStatus status) {
+        PayloadSender.cleanupSessionLock(session.getId());
+
         Map.Entry<Long, Bot> bot = botContainer.robots.entrySet().stream().findFirst().orElse(null);
         if (bot != null) {
             log.warn("Account {} disconnected", bot.getKey());

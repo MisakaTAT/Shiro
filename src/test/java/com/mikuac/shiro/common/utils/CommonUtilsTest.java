@@ -9,7 +9,10 @@ import lombok.val;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.regex.Matcher;
 
@@ -109,7 +112,6 @@ class CommonUtilsTest {
         );
         assertAtParse.accept(arrayMsg3, arrayMsg3.get(1));
     }
-
 
     @Test
     void debugMsgDeleteBase64ContentTest() {
