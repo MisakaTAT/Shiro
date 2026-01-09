@@ -63,9 +63,10 @@ public @interface MessageHandlerFilter {
 
     /**
      * 仅注解指明的 qq 发送会触发, 如果为空则任意消息都可以触发
-     * 如果开启了"上报自身消息"的配置, 则该过滤器也会作用于机器人自身发送的消息，默认情况下机器人发送的消息不会触发消息处理器
+     * 当 OneBot 实现会上报 {@code message_sent} 事件时，本过滤器同样适用于机器人自身发送的消息；
+     * 默认情况下机器人自身发送的消息会被过滤，除非在 {@code senders} 数组中显式包含了机器人的 QQ 号
      *
-     * @return 群组 ID
+     * @return 发送者 QQ 号
      */
     long[] senders() default {};
 
