@@ -115,6 +115,16 @@ public class CommonUtils {
             long[] senders = filter.senders();
             Arrays.sort(senders);
             boolean flag = Arrays.binarySearch(cache.getSortedSenders(filter.senders()), event.getUserId()) >= 0;
+
+            if (!flag) return new CheckResult();
+        }
+
+        // 检查是否为BOT自身发送的消息(BOT 自己发的消息默认不处理，防止死循环，除非显式指定)
+        if (event.getUserId() == selfId) {
+            boolean flag = false;
+            if (filter.senders().length != 0) {
+                flag = Arrays.stream(filter.senders()).anyMatch(senderId -> senderId == selfId);
+            }
             if (!flag) return new CheckResult();
         }
 

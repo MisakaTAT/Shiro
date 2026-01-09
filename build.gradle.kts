@@ -3,7 +3,7 @@
 import org.jreleaser.model.Active
 
 group = "com.mikuac"
-version = "2.5.1"
+version = "2.5.2"
 
 val mavenArtifactResolver = "1.9.24"
 val mavenResolverProvider = "3.9.12"
@@ -136,5 +136,14 @@ jreleaser {
                 }
             }
         }
+    }
+}
+
+tasks.jar {
+    manifest {
+        attributes(
+            "Implementation-Title" to project.name,
+            "Implementation-Version" to project.version
+        )
     }
 }

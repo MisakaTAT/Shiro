@@ -49,6 +49,8 @@ public class EventHandler implements ApplicationRunner {
         // Register Event Handler
         handlers.put("meta_event", meta::handler);
         handlers.put("message", message::handler);
+        // 监听消息发送事件
+        handlers.put("message_sent", message::handler);
         handlers.put("notice", notice::handler);
         handlers.put("request", request::handler);
 
