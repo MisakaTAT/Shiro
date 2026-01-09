@@ -75,7 +75,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter:$junit")
 }
 
-val stagingDirectory = layout.buildDirectory.dir("staging-deploy").get()
+val stagingDirectory: Directory = layout.buildDirectory.dir("staging-deploy").get()
 
 fun MavenPom.populate() {
     packaging = "jar"
