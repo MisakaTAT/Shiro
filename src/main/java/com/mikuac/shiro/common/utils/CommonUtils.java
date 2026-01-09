@@ -123,7 +123,7 @@ public class CommonUtils {
         if (event.getUserId() == selfId) {
             boolean flag = false;
             if (filter.senders().length != 0) {
-                 flag =  Arrays.stream(filter.senders()).anyMatch(senderId -> senderId == selfId);
+                flag = Arrays.stream(filter.senders()).anyMatch(senderId -> senderId == selfId);
             }
             if (!flag) return new CheckResult();
         }
