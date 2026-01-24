@@ -69,10 +69,11 @@ public class CommonUtils {
     @SuppressWarnings({"squid:S3776", "squid:S1121", "java:S6541"})
     private static CheckResult filterCheck(MessageEvent event, long selfId, MessageHandlerFilter filter) {
         Optional<Matcher> matcherOptional = Optional.empty();
-        String rawMessage = msgExtract(event.getMessage(), event.getArrayMsg(), filter.at(), event.getSelfId());
+        String rawMessage = msgExtract(event.getRawMessage(), event.getArrayMsg(), filter.at(), event.getSelfId());
+        String message = event.getMessage();
 
         // 检查 正则
-        if (!filter.cmd().isBlank() && (matcherOptional = RegexUtils.matcher(filter.cmd(), rawMessage)).isEmpty()) {
+        if (!filter.cmd().isBlank() && (matcherOptional = RegexUtils.matcher(filter.cmd(), message)).isEmpty()) {
             return new CheckResult();
         }
 
