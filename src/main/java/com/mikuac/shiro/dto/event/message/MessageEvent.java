@@ -50,14 +50,19 @@ public class MessageEvent extends Event {
     @JsonIgnore
     private List<ArrayMsg> arrayMsg;
 
+    @JsonIgnore
+    private String plainText;
+
     @JsonSetter("message")
     private void setMessageFromJson(JsonNode json) {
         if (json.isString()) {
             this.message = json.asString();
             this.arrayMsg = MessageConverser.stringToArray(message);
+            this.plainText = MessageConverser.arrayToPlainText(arrayMsg);
         } else if (json.isArray()) {
             this.arrayMsg = JsonUtils.parseArray(json, ArrayMsg.class);
-            message = MessageConverser.arraysToString(this.arrayMsg);
+            this.message = MessageConverser.arraysToString(arrayMsg);
+            this.plainText = MessageConverser.arrayToPlainText(arrayMsg);
         } else {
             throw new IllegalArgumentException("Invalid message format: " + json);
         }

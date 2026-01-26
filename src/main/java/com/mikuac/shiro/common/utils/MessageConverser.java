@@ -18,7 +18,7 @@ public class MessageConverser {
     public static String arraysToString(List<ArrayMsg> array) {
         StringBuilder builder = new StringBuilder();
         for (ArrayMsg item : array) {
-            if (MsgTypeEnum.text.equals(item.getType())) {
+            if (!MsgTypeEnum.text.equals(item.getType())) {
                 builder.append(item.toCQCode());
             } else {
                 builder.append(item.getStringData(MsgTypeEnum.text.toString()));
@@ -26,6 +26,7 @@ public class MessageConverser {
         }
         return builder.toString();
     }
+
 
     @SuppressWarnings({"java:S6541", "java:S3776"})
     public static List<ArrayMsg> stringToArray(@NonNull String msg) {
@@ -145,6 +146,34 @@ public class MessageConverser {
         data.put("text", ShiroUtils.unescape(text));
         item.setData(data);
         chain.add(item);
+    }
+
+    /**
+     * 将消息数组转换为纯文本
+     * @param array 消息数组
+     * @return 纯文本消息
+     */
+    public static String arrayToPlainText(List<ArrayMsg> array) {
+        StringBuilder builder = new StringBuilder();
+        for (ArrayMsg item : array) {
+            // 仅处理文本类型消息
+            if (MsgTypeEnum.text.equals(item.getType())) {
+                builder.append(item.getStringData("text"));
+            }
+        }
+        return builder.toString();
+    }
+
+    /**
+     * 将消息字符串转换为纯文本
+     *
+     * @param msg 消息字符串
+     * @return 纯文本消息
+     */
+    public static String stringToPlainText(String msg) {
+        List<ArrayMsg> array = stringToArray(msg);
+        // 复用 arrayToPlainText 方法
+        return arrayToPlainText(array);
     }
 
 }
