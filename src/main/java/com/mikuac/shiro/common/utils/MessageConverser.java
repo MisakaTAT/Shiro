@@ -18,7 +18,7 @@ public class MessageConverser {
     public static String arraysToString(List<ArrayMsg> array) {
         StringBuilder builder = new StringBuilder();
         for (ArrayMsg item : array) {
-            if (!MsgTypeEnum.text.equals(item.getType())) {
+            if (MsgTypeEnum.text.equals(item.getType())) {
                 builder.append(item.toCQCode());
             } else {
                 builder.append(item.getStringData(MsgTypeEnum.text.toString()));
