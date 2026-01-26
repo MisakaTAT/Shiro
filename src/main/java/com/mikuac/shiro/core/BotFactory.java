@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -66,7 +65,7 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     @Override
-    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+    public void onApplicationEvent(ContextRefreshedEvent event) {
         log.debug("Starting to collect beans with @Shiro annotation");
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
         log.debug("Found {} beans with @Shiro annotation", beans.size());

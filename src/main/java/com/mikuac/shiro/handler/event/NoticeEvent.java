@@ -57,7 +57,7 @@ public class NoticeEvent {
      * @param resp {@link JsonObjectWrapper}
      * @param type {@link NoticeEventEnum}
      */
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201"})
+    @SuppressWarnings({"ResultOfMethodCallIgnored", "squid:S2201", "squid:S3776"})
     private void process(Bot bot, JsonObjectWrapper resp, NoticeEventEnum type) {
         if (type == NoticeEventEnum.GROUP_UPLOAD) {
             GroupUploadNoticeEvent event = resp.to(GroupUploadNoticeEvent.class);

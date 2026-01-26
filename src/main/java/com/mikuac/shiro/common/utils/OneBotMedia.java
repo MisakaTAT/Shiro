@@ -49,6 +49,7 @@ public class OneBotMedia {
      *
      * @return media code params
      */
+    @SuppressWarnings({"squid:S5411"})
     public String escape() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("file=").append(ShiroUtils.escape(this.file));
@@ -67,6 +68,7 @@ public class OneBotMedia {
         return stringBuilder.toString();
     }
 
+    @SuppressWarnings({"squid:S5411"})
     public void escape(Map<String, String> map) {
         map.put("file", this.file);
         if (this.cache != null) {

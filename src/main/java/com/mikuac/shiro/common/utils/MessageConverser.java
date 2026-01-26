@@ -131,7 +131,7 @@ public class MessageConverser {
         }
         // 检查最后一个消息是否为文本类型，如果是则合并
         if (!chain.isEmpty()) {
-            ArrayMsg lastMsg = chain.get(chain.size() - 1);
+            ArrayMsg lastMsg = chain.getLast();
             if (lastMsg.getType() == MsgTypeEnum.text && lastMsg.getData().isObject()) {
                 ObjectNode obj = (ObjectNode) lastMsg.getData();
                 obj.put("text", obj.get("text").asString("") + ShiroUtils.unescape(text));

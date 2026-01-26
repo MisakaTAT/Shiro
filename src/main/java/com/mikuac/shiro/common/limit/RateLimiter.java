@@ -1,11 +1,11 @@
 package com.mikuac.shiro.common.limit;
 
 import com.mikuac.shiro.properties.RateLimiterProperties;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Component;
 
 import java.util.concurrent.Executors;
@@ -32,7 +32,7 @@ public class RateLimiter implements ApplicationRunner {
                 private final AtomicInteger threadNumber = new AtomicInteger(1);
 
                 @Override
-                public Thread newThread(@NonNull Runnable r) {
+                public Thread newThread(@Nonnull Runnable r) {
                     Thread thread = new Thread(r, "rate-limiter-token-generator-" + threadNumber.getAndIncrement());
                     thread.setDaemon(true);
                     return thread;
