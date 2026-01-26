@@ -185,32 +185,29 @@ class MessageConverserTest {
         val msg = "[CQ:at,qq=1122334455]测试消息1[CQ:face,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
         List<ArrayMsg> originalArrayMsgList = rawToArrayMsgOriginal(msg);
         List<ArrayMsg> optimizedArrayMsgList = MessageConverser.stringToArray(msg);
-
         assertEquals(originalArrayMsgList, optimizedArrayMsgList);
 
-        val originalCode = MessageConverser.arraysToString(originalArrayMsgList);
-        val optimizedCode = MessageConverser.arraysToString(optimizedArrayMsgList);
-
-        assertEquals(msg, originalCode);
-        assertEquals(msg, optimizedCode);
-        assertEquals(originalCode, optimizedCode);
+        val originalText = MessageConverser.arraysToString(originalArrayMsgList);
+        val optimizedText = MessageConverser.arraysToString(optimizedArrayMsgList);
+        val expectText = "测试消息1测试消息2\n";
+        assertEquals(expectText, originalText);
+        assertEquals(expectText, optimizedText);
+        assertEquals(originalText, optimizedText);
     }
 
     @Test
     void rawToArrayMsg3Test() {
         val msg = "[CQ:at,qq=1122334455]测试消息1[CQ:1111,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
-        val expected = "[CQ:at,qq=1122334455]测试消息1[CQ:unknown,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
         List<ArrayMsg> originalArrayMsgList = rawToArrayMsgOriginal(msg);
         List<ArrayMsg> optimizedArrayMsgList = MessageConverser.stringToArray(msg);
-
         assertEquals(originalArrayMsgList, optimizedArrayMsgList);
 
-        val originalCode = MessageConverser.arraysToString(originalArrayMsgList);
-        val optimizedCode = MessageConverser.arraysToString(optimizedArrayMsgList);
-
-        assertEquals(expected, originalCode);
-        assertEquals(expected, optimizedCode);
-        assertEquals(originalCode, optimizedCode);
+        val originalText = MessageConverser.arraysToString(originalArrayMsgList);
+        val optimizedText = MessageConverser.arraysToString(optimizedArrayMsgList);
+        val expectText = "测试消息1测试消息2\n";
+        assertEquals(expectText, originalText);
+        assertEquals(expectText, optimizedText);
+        assertEquals(originalText, optimizedText);
     }
 
     @Test
