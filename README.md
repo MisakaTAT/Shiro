@@ -37,9 +37,11 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 
 # Migration Guide
 
-> 从 `v2` 版本开始仅支持 `JDK 17+` 与 `SpringBoot 3.0.0+`
+> `v2` 版本开始仅支持 `JDK 17+` 与 `SpringBoot 3.0.0+`
 >
 >详见项目文档 [v2迁移指南](https://misakatat.github.io/shiro-docs/migration.html)
+> 
+> `v2.5.1` 版本起已迁移至 `SpringBoot 4.0.0+`
 
 # QuickStart
 
