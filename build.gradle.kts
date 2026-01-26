@@ -3,7 +3,7 @@
 import org.jreleaser.model.Active
 
 group = "com.mikuac"
-version = "2.5.4"
+version = "2.5.3"
 
 val mavenArtifactResolver = "1.9.24"
 val mavenResolverProvider = "3.9.12"
@@ -14,16 +14,16 @@ plugins {
     `java-library`
     `maven-publish`
     id("org.jreleaser") version "1.21.0"
-    id("io.freefair.lombok") version "9.1.0"
-    id("org.springframework.boot") version "4.0.1"
+    id("io.freefair.lombok") version "9.2.0"
+    id("org.springframework.boot") version "4.0.2"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
 java {
     withSourcesJar()
     withJavadocJar()
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
 tasks {

@@ -37,9 +37,9 @@ _✨ 基于 [OneBot](https://github.com/howmanybots/onebot/blob/master/README.md
 
 # Migration Guide
 
-> 从 `v2` 版本开始仅支持 `JDK 17+` 与 `SpringBoot 3.0.0+`
+> `v2` 版本开始仅支持 `JDK 17+` 与 `SpringBoot 3.0.0+` [v2迁移指南](https://misakatat.github.io/shiro-docs/migration.html)
 >
->详见项目文档 [v2迁移指南](https://misakatat.github.io/shiro-docs/migration.html)
+> `v2.5.1` 版本开始仅支持 `JDK 21+` 与 `SpringBoot 4.0.0+`
 
 # QuickStart
 
@@ -135,6 +135,7 @@ shiro:
 ```
 
 ```java
+
 @Component
 public class ExamplePlugin extends BotPlugin {
 
@@ -221,9 +222,12 @@ graph TD
 </details>
 
 #### 目录结构
-`Shiro` 支持自动加载 `.jar` 格式的插件，并通过 `ServiceLoader` 进行管理。默认情况下，`Shiro` 会扫描当前运行路径下的 `plugins` 目录，并尝试加载所有符合 `BotPlugin` 接口的插件。
+
+`Shiro` 支持自动加载 `.jar` 格式的插件，并通过 `ServiceLoader` 进行管理。默认情况下，`Shiro` 会扫描当前运行路径下的
+`plugins` 目录，并尝试加载所有符合 `BotPlugin` 接口的插件。
 
 以下只是一个示例结构（可根据实际情况调整，比如替换 Gradle 为 Maven）
+
 ```
 ForeignPluginExample/
 ├── src/                                                                  # 源代码目录
@@ -263,9 +267,11 @@ public class DemoPlugin extends BotPlugin {
     }
 }
 ```
+
 ##### 配置 META-INF/services
 
-为了让 `ServiceLoader` 能够发现插件，需要在 `src/main/resources/META-INF/services/` 目录下创建 `com.mikuac.shiro.core.BotPlugin` 文件，并填写插件的完整类名。
+为了让 `ServiceLoader` 能够发现插件，需要在 `src/main/resources/META-INF/services/` 目录下创建
+`com.mikuac.shiro.core.BotPlugin` 文件，并填写插件的完整类名。
 
 ```
 com.mikuac.demo.DemoPlugin
@@ -293,7 +299,7 @@ tasks.withType<Jar> {
                 "Created-By" to "Gradle ${gradle.gradleVersion}"
             )
         )
-        
+
         // 生成并添加依赖清单
         val dependenciesString = configurations
             .getByName("runtimeClasspath")  // 获取运行时实际解析的依赖
@@ -308,9 +314,9 @@ tasks.withType<Jar> {
                 // 过滤掉不应由插件加载的依赖
                 // 这些依赖应当由 Shiro 主程序提供，避免类加载冲突
                 coordinates.startsWith("org.springframework") ||  // Spring框架
-                coordinates.startsWith("com.mikuac:shiro") ||     // Shiro
-                coordinates.startsWith("org.slf4j") ||            // 日志门面
-                coordinates.startsWith("ch.qos.logback")          // 日志实现
+                        coordinates.startsWith("com.mikuac:shiro") ||     // Shiro
+                        coordinates.startsWith("org.slf4j") ||            // 日志门面
+                        coordinates.startsWith("ch.qos.logback")          // 日志实现
             }
             .joinToString(", ")  // 使用逗号分隔依赖列表
 
@@ -323,11 +329,12 @@ tasks.withType<Jar> {
 dependencies {
     // Shiro 本身仅在编译时需要，运行时由主程序提供
     compileOnly("com.mikuac:shiro:latest")
-    
+
     // 添加其他依赖，这些将被包含在Dependencies清单中
     implementation("com.example:some-library:1.0.0")
 }
 ```
+
 ##### 编译插件
 
 ```
@@ -341,12 +348,14 @@ dependencies {
 `Shiro` 在启动时会自动扫描 `plugins` 目录，并加载符合条件的插件。
 
 ##### 相关配置
+
 `Shiro` 的 `application.yml` 中可以自定义插件目录:
 
 ```yml
 shiro:
   pluginScanPath: "/home/user/mybot"
 ```
+
 这样，`Shiro` 将从 `/home/user/mybot` 目录加载插件，而不是默认的 `plugins`。
 
 # Community
@@ -372,7 +381,7 @@ shiro:
 - 描述：简短的项目描述（不超过 100 字）
 ```
 
->注意事项
+> 注意事项
 >1. 请确保您的项目是开源的
 >2. 描述应该简洁明了，突出项目的主要功能
 >3. 项目应该与 Shiro 框架相关
@@ -383,7 +392,9 @@ shiro:
 Shiro 兼容所有支持正反向 WebSocket 连接的 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs) 客户端
 
 # Contributors
-See [Contributing](https://github.com/MisakaTAT/Shiro/graphs/contributors) for details. Thanks to all the people who already contributed!
+
+See [Contributing](https://github.com/MisakaTAT/Shiro/graphs/contributors) for details. Thanks to all the people who
+already contributed!
 
 [![contributors](https://stg.contrib.rocks/image?repo=MisakaTAT/Shiro)](https://github.com/MisakaTAT/Shiro/graphs/contributors)
 
