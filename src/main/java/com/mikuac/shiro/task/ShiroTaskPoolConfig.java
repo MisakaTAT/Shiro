@@ -36,6 +36,7 @@ public class ShiroTaskPoolConfig {
     @ConditionalOnProperty(value = "shiro.task-pool.enable-task-pool", havingValue = "true", matchIfMissing = true)
     public ThreadPoolTaskExecutor shiroTaskPlatformExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setThreadFactory(Thread.ofPlatform().factory());
         executor.setCorePoolSize(taskPoolProperties.getCorePoolSize());
         executor.setMaxPoolSize(taskPoolProperties.getMaxPoolSize());
         executor.setQueueCapacity(taskPoolProperties.getQueueCapacity());
