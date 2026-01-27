@@ -92,4 +92,10 @@ public @interface MessageHandlerFilter {
      */
     boolean invert() default false;
 
+    /**
+     * 仅匹配纯文本消息, 即不包含任何 CQ 码的消息，默认关闭
+     * @return true 仅匹配纯文本消息
+     */
+    boolean matchPlainText() default false;
+
 }

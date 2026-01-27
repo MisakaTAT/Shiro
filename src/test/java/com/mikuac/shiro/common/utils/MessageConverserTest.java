@@ -181,6 +181,14 @@ class MessageConverserTest {
     }
 
     @Test
+    void testPlainMsgTest() {
+        val msg = "[CQ:at,qq=1122334455]测试消息1[CQ:face,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
+        val expected = "测试消息1测试消息2\n";
+        val plainText = MessageConverser.stringToPlainText(msg);
+        assertEquals(expected, plainText);
+    }
+
+    @Test
     void rawToArrayMsg2Test() {
         val msg = "[CQ:at,qq=1122334455]测试消息1[CQ:face,id=1]测试消息2[CQ:video,file=https://test.com/1.mp4][CQ:image,file=test1.image,url=https://test.com/1.jpg]\n[CQ:image,file=test2.image,url=https://test.com/2.jpg]";
         List<ArrayMsg> originalArrayMsgList = rawToArrayMsgOriginal(msg);

@@ -72,7 +72,7 @@ public class CommonUtils {
         String rawMessage = msgExtract(event.getMessage(), event.getArrayMsg(), filter.at(), event.getSelfId());
 
         // 检查 正则
-        if (!filter.cmd().isBlank() && (matcherOptional = RegexUtils.matcher(filter.cmd(), rawMessage)).isEmpty()) {
+        if (!filter.cmd().isBlank() && (matcherOptional = RegexUtils.matcher(filter.cmd(), filter.matchPlainText() ? event.getPlainText() : rawMessage)).isEmpty()) {
             return new CheckResult();
         }
 
