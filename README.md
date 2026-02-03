@@ -391,6 +391,22 @@ shiro:
 
 Shiro 兼容所有支持正反向 WebSocket 连接的 [OneBot-v11](https://github.com/howmanybots/onebot/tree/master/v11/specs) 客户端
 
+# Stats & Active Contributors
+
+<a href="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats?repo_id=400080035" target="_blank" style="display: block" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=400080035&image_size=auto&color_scheme=dark" width="655" height="auto">
+    <img alt="Performance Stats of MisakaTAT/Shiro - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-last-28-days-stats/thumbnail.png?repo_id=400080035&image_size=auto&color_scheme=light" width="655" height="auto">
+  </picture>
+</a>
+
+<a href="https://next.ossinsight.io/widgets/official/compose-recent-active-contributors?repo_id=400080035&limit=30" target="_blank" style="display: block" align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://next.ossinsight.io/widgets/official/compose-recent-active-contributors/thumbnail.png?repo_id=400080035&limit=30&image_size=auto&color_scheme=dark" width="655" height="auto">
+    <img alt="Active Contributors of MisakaTAT/Shiro - Last 28 days" src="https://next.ossinsight.io/widgets/official/compose-recent-active-contributors/thumbnail.png?repo_id=400080035&limit=30&image_size=auto&color_scheme=light" width="655" height="auto">
+  </picture>
+</a>
+
 # Contributors
 
 See [Contributing](https://github.com/MisakaTAT/Shiro/graphs/contributors) for details. Thanks to all the people who
