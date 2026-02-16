@@ -5,7 +5,7 @@ import org.jreleaser.model.Active
 group = "com.mikuac"
 version = "2.5.2"
 
-val mavenArtifactResolver = "1.9.24"
+val mavenArtifactResolver = "1.9.26"
 val mavenResolverProvider = "3.9.12"
 val junit = "6.0.2"
 
