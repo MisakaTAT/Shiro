@@ -76,13 +76,16 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
         try {
             session.setTextMessageSizeLimit(wsProp.getMaxTextMessageBufferSize());
             session.setBinaryMessageSizeLimit(wsProp.getMaxBinaryMessageBufferSize());
-            session.getAttributes().put(Connection.ADAPTER_KEY, AdapterEnum.SERVER);
-            long xSelfId = ConnectionUtils.parseSelfId(session);
+            var attributes = session.getAttributes();
+            attributes.put(Connection.ADAPTER_KEY, AdapterEnum.SERVER);
+            long xSelfId = ConnectionUtils.parseSelfIdFromHeader(session);
             if (xSelfId == 0L) {
                 log.error("Failed parse x-self-id for websocket session");
                 session.close();
                 return;
             }
+            attributes.put(Connection.X_SELF_ID, xSelfId);
+
             if (!ConnectionUtils.checkToken(session, wsProp.getAccessToken())) {
                 log.error("Invalid access token");
                 session.close();
