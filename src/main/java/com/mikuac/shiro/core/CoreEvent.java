@@ -34,9 +34,10 @@ public class CoreEvent {
     }
 
     /**
-     * 可以通过 session.getHandshakeHeaders().getFirst("x-self-id") 获取上线的机器人账号
+     * 可以通过 ConnectionUtils.parseSelfId(session) 获取上线的机器人账号
      * 例如当服务端为开放服务时，并且只有白名单内的账号才允许连接，此时可以检查账号是否存在于白名内
      * 不存在的话返回 false 即可禁止连接
+     * spring 4 更新后禁止通过 session 访问 getHandshakeHeaders!
      *
      * @param session {@link WebSocketSession}
      * @return 返回值为 false 时会中断 ws 会话

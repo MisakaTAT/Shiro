@@ -71,16 +71,6 @@ public class ConnectionUtils {
         return bot;
     }
 
-    public static long parseSelfIdFromHeader(WebSocketSession session) {
-        String selfIdStr = Optional.ofNullable(session.getHandshakeHeaders().getFirst(Connection.X_SELF_ID))
-                .orElse((String) session.getAttributes().get(Connection.X_SELF_ID));
-        try {
-            return Long.parseLong(selfIdStr);
-        } catch (NumberFormatException e) {
-            return 0L;
-        }
-    }
-
     /**
      * 获取连接的 QQ 号
      *
@@ -105,7 +95,7 @@ public class ConnectionUtils {
     }
 
     public static String getAuthorization(WebSocketSession session) {
-        return session.getHandshakeHeaders().getFirst("authorization");
+        return session.getAttributes().getOrDefault("authorization", "").toString();
     }
 
     /**

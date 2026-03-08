@@ -4,6 +4,7 @@ import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.mikuac.shiro.adapter.WebSocketClientHandler;
 import com.mikuac.shiro.adapter.WebSocketServerHandler;
+import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.properties.ShiroProperties;
 import com.mikuac.shiro.properties.WebSocketClientProperties;
 import com.mikuac.shiro.properties.WebSocketProperties;
@@ -15,15 +16,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.server.ServerHttpRequest;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
+import org.springframework.web.socket.WebSocketHandler;
 import org.springframework.web.socket.WebSocketHttpHeaders;
 import org.springframework.web.socket.client.WebSocketConnectionManager;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
 import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry;
+import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -40,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 @EnableWebSocket
 @Import(Shiro.class)
 @ComponentScan("com.mikuac.shiro")
-public class ShiroAutoConfiguration implements WebSocketConfigurer {
+public class ShiroAutoConfiguration implements WebSocketConfigurer , HandshakeInterceptor {
 
     private final WebSocketServerProperties wsServerProp;
     private final WebSocketClientProperties wsClientProp;
@@ -79,7 +87,10 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
             return;
         }
         if (Boolean.TRUE.equals(wsServerProp.getEnable())) {
-            registry.addHandler(webSocketServerHandler, wsServerProp.getUrl()).setAllowedOrigins("*");
+            registry
+                    .addHandler(webSocketServerHandler, wsServerProp.getUrl())
+                    .addInterceptors(this)
+                    .setAllowedOrigins("*");
         }
         if (Boolean.TRUE.equals(wsClientProp.getEnable())) {
             createWebsocketClient();
@@ -111,4 +122,36 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer {
         }, 0, wsClientProp.getReconnectInterval(), TimeUnit.SECONDS);
     }
 
+    @Override
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+        var headers = request.getHeaders();
+        String selfIdStr = getAttributes(headers, attributes, Connection.X_SELF_ID, "no number");
+        long selfId;
+        try {
+            selfId = Long.parseLong(selfIdStr);
+            attributes.put(Connection.X_SELF_ID, selfId);
+        } catch (NumberFormatException e) {
+            return false;
+        }
+
+        String authorization = getAttributes(headers, attributes, "authorization", "");
+        attributes.put("authorization", authorization);
+        return true;
+    }
+
+    @Override
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, @Nullable Exception exception) {
+        // ignore
+    }
+
+    private String getAttributes(HttpHeaders headers, Map<String, Object> attributes, String key, String defaultValue) {
+        Object result  = headers.getFirst(key);
+        if (result == null) {
+            result = attributes.get(key);
+        }
+        if (result == null) {
+            return defaultValue;
+        }
+        return result.toString();
+    }
 }
