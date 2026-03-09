@@ -48,7 +48,7 @@ import java.util.concurrent.TimeUnit;
 @EnableWebSocket
 @Import(Shiro.class)
 @ComponentScan("com.mikuac.shiro")
-public class ShiroAutoConfiguration implements WebSocketConfigurer , HandshakeInterceptor {
+public class ShiroAutoConfiguration implements WebSocketConfigurer, HandshakeInterceptor {
 
     private final WebSocketServerProperties wsServerProp;
     private final WebSocketClientProperties wsClientProp;
@@ -145,7 +145,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer , HandshakeIn
     }
 
     private String getAttributes(HttpHeaders headers, Map<String, Object> attributes, String key, String defaultValue) {
-        Object result  = headers.getFirst(key);
+        Object result = headers.getFirst(key);
         if (result == null) {
             result = attributes.get(key);
         }

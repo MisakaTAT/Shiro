@@ -126,6 +126,7 @@ class CommonUtilsTest {
         // 测试startsWith能否正常运行
         MessageEvent event1 = new MessageEvent();
         event1.setSelfId(1L);
+        event1.setUserId(123L);
         event1.setMessage("qweAA");
         CheckResult checkResult = CommonUtils.allFilterCheck(
                 event1,
@@ -142,6 +143,7 @@ class CommonUtilsTest {
         MessageEvent event1 = new MessageEvent();
         event1.setSelfId(1L);
         event1.setMessage("DQddd");
+        event1.setUserId(123L);
         CheckResult checkResult = CommonUtils.allFilterCheck(
                 event1,
                 1L,
@@ -156,6 +158,7 @@ class CommonUtilsTest {
         // 测试是否会干扰上面的cmd
         MessageEvent event1 = new MessageEvent();
         event1.setSelfId(1L);
+        event1.setUserId(123L);
         event1.setMessage("abc");
         CheckResult checkResult = CommonUtils.allFilterCheck(
                 event1,

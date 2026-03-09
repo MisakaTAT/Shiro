@@ -28,9 +28,9 @@ public class ShiroTaskPoolConfig {
         this.taskPoolProperties = taskPoolProperties;
     }
 
-
     /**
      * 平台线程池
+     *
      * @return {@link ThreadPoolTaskExecutor}
      */
     @Bean("shiroTaskExecutor")
@@ -42,6 +42,7 @@ public class ShiroTaskPoolConfig {
 
     /**
      * 虚拟线程池
+     *
      * @return {@link ThreadPoolTaskExecutor}
      */
     @Bean("shiroTaskExecutor")
@@ -51,9 +52,9 @@ public class ShiroTaskPoolConfig {
         return getThreadPoolTaskExecutor(Thread.ofVirtual().factory());
     }
 
-
     /**
      * 初始化并获取线程池
+     *
      * @param factory 线程工厂 {@link ThreadFactory}
      * @return {@link ThreadPoolTaskExecutor}
      */

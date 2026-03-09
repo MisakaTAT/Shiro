@@ -27,7 +27,6 @@ public class MessageConverser {
         return builder.toString();
     }
 
-
     @SuppressWarnings({"java:S6541", "java:S3776"})
     public static List<ArrayMsg> stringToArray(@NonNull String msg) {
         if (msg.isEmpty()) {
@@ -150,6 +149,7 @@ public class MessageConverser {
 
     /**
      * 将消息数组转换为纯文本
+     *
      * @param array 消息数组
      * @return 纯文本消息
      */
