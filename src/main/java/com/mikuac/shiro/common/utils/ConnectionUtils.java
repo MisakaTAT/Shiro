@@ -78,17 +78,24 @@ public class ConnectionUtils {
      * @return QQ 号
      */
     public static long parseSelfId(WebSocketSession session) {
-        String selfIdStr = Optional.ofNullable(session.getHandshakeHeaders().getFirst(Connection.X_SELF_ID))
-                .orElse((String) session.getAttributes().get(Connection.X_SELF_ID));
+        Object selfIdObj = session.getAttributes().get(Connection.X_SELF_ID);
+        if (selfIdObj == null) {
+            return 0L;
+        }
+
+        if (selfIdObj instanceof Long i) {
+            return i;
+        }
+
         try {
-            return Long.parseLong(selfIdStr);
+            return Long.parseLong(selfIdObj.toString());
         } catch (NumberFormatException e) {
             return 0L;
         }
     }
 
     public static String getAuthorization(WebSocketSession session) {
-        return session.getHandshakeHeaders().getFirst("authorization");
+        return session.getAttributes().getOrDefault("authorization", "").toString();
     }
 
     /**
