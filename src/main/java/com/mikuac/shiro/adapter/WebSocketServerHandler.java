@@ -107,7 +107,7 @@ public class WebSocketServerHandler extends TextWebSocketHandler {
                 if (Objects.isNull(bot)) {
                     bot = ConnectionUtils.handleFirstConnect(xSelfId, session, botFactory, coreEvent, shiroTaskExecutor);
                 } else {
-                    ConnectionUtils.handleReConnect(bot, xSelfId, session);
+                    ConnectionUtils.handleReConnect(bot, xSelfId, session, shiroProps.getHeartbeatStaleMissCount());
                 }
                 return bot;
             });

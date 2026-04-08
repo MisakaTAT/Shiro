@@ -4,14 +4,17 @@ import com.mikuac.shiro.constant.Connection;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.core.BotFactory;
 import com.mikuac.shiro.core.CoreEvent;
+import com.mikuac.shiro.dto.event.meta.HeartbeatMetaEvent;
 import com.mikuac.shiro.enums.AdapterEnum;
 import com.mikuac.shiro.enums.SessionStatusEnum;
 import com.mikuac.shiro.exception.ShiroException;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -33,27 +36,70 @@ public class ConnectionUtils {
     }
 
     @SneakyThrows
-    public static void handleReConnect(Bot bot, long xSelfId, WebSocketSession session) {
-        // this bot has connected before but was interrupted, updating its session
-        // or handling simultaneous connections from different instances of the same account.
+    public static void handleReConnect(Bot bot, long xSelfId, WebSocketSession session, int heartbeatStaleMissCount) {
         log.info("Account {} reconnected", xSelfId);
-        var oldSessionContext = bot.getSession().getAttributes();
-        if (oldSessionContext.get(Connection.SESSION_STATUS_KEY) instanceof SessionStatusEnum status &&
-                SessionStatusEnum.ONLINE.equals(status)) {
-            // when multiple sessions with the same ID are connected
+        var oldSession = bot.getSession();
+        var oldSessionContext = oldSession.getAttributes();
+        if (oldSession.isOpen()
+                && oldSessionContext.get(Connection.SESSION_STATUS_KEY) instanceof SessionStatusEnum status
+                && SessionStatusEnum.ONLINE.equals(status)
+                && isLiveDuplicateByHeartbeat(oldSession, heartbeatStaleMissCount)) {
             session.close();
             return;
         }
-        oldSessionContext.computeIfPresent(Connection.FUTURE_KEY, (e, obj) -> {
-            // cancel the scheduled task of the bot
+        cancelScheduledRemove(oldSessionContext);
+        if (oldSession.isOpen() && !oldSession.getId().equals(session.getId())) {
+            oldSession.close(CloseStatus.NORMAL);
+            cancelScheduledRemove(oldSessionContext);
+        }
+        oldSessionContext.clear();
+        bot.setSession(session);
+    }
+
+    public static void recordMetaHeartbeat(WebSocketSession session, HeartbeatMetaEvent event) {
+        if (session == null || !session.isOpen()) {
+            return;
+        }
+        var attrs = session.getAttributes();
+        attrs.put(Connection.LAST_HEARTBEAT_AT_MS_KEY, System.currentTimeMillis());
+        Long interval = event.getInterval();
+        if (interval != null && interval > 0) {
+            attrs.put(Connection.HEARTBEAT_INTERVAL_MS_KEY, interval);
+        }
+        if (event.getStatus() != null && event.getStatus().getOnline() != null) {
+            attrs.put(Connection.LAST_HEARTBEAT_ONLINE_KEY, event.getStatus().getOnline());
+        }
+    }
+
+    public static boolean isLiveDuplicateByHeartbeat(WebSocketSession session, int missCount) {
+        var attrs = session.getAttributes();
+        Object onlineFlag = attrs.get(Connection.LAST_HEARTBEAT_ONLINE_KEY);
+        if (onlineFlag instanceof Boolean b && !b) {
+            return false;
+        }
+        if (missCount <= 0) {
+            return true;
+        }
+        Object last = attrs.get(Connection.LAST_HEARTBEAT_AT_MS_KEY);
+        if (!(last instanceof Long lastAt)) {
+            return true;
+        }
+        long interval = Connection.ONE_BOT_DEFAULT_HEARTBEAT_INTERVAL_MS;
+        Object intervalObj = attrs.get(Connection.HEARTBEAT_INTERVAL_MS_KEY);
+        if (intervalObj instanceof Long l && l > 0) {
+            interval = l;
+        }
+        long threshold = interval * missCount + 2000L;
+        return System.currentTimeMillis() - lastAt <= threshold;
+    }
+
+    private static void cancelScheduledRemove(Map<String, Object> sessionContext) {
+        sessionContext.computeIfPresent(Connection.FUTURE_KEY, (e, obj) -> {
             if (obj instanceof ScheduledFuture<?> future && future.getDelay(TimeUnit.MILLISECONDS) > 0) {
                 future.cancel(false);
             }
             return null;
         });
-        // preventing memory leaks
-        oldSessionContext.clear();
-        bot.setSession(session);
     }
 
     @SneakyThrows

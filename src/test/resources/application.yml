@@ -4,9 +4,10 @@ server:
 shiro:
   ws:
     client:
-      enable: true
-      url: "ws://192.168.100.77:3000"
+      enable: false
+      url: "ws://192.168.100.1:3001"
     server:
       enable: false
       url: "/ws/shiro"
+    # access-token: "ShiroToken"
   debug: true

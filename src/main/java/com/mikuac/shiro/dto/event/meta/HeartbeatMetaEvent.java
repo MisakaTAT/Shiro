@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @EqualsAndHashCode(callSuper = true)
 public class HeartbeatMetaEvent extends MetaEvent {
 
-    @JsonProperty("time")
+    @JsonProperty("interval")
     private Long interval;
 
     @JsonProperty("status")
@@ -30,6 +30,9 @@ public class HeartbeatMetaEvent extends MetaEvent {
 
         @JsonProperty("app_good")
         Boolean appIsGood;
+
+        @JsonProperty("good")
+        Boolean good;
 
         @JsonProperty("plugins_good")
         Boolean pluginsIsGood;

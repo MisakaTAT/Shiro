@@ -64,6 +64,14 @@ public class ShiroProperties {
     private Integer waitBotConnect = 0;
 
     /**
+     * OneBot 11 元事件「心跳」：按上报间隔判定旧连接是否已僵死。
+     * 若在「连续多少个 interval」的时间内未收到 meta heartbeat，则重连时可接管仍 {@code isOpen()} 的旧会话。
+     * 为 0 时不按心跳时间判定（仍可根据心跳里的 {@code status.online == false} 判定僵死）。
+     * 需在 OneBot 实现端开启 heartbeat（如 heartbeat.enable）。
+     */
+    private int heartbeatStaleMissCount = 3;
+
+    /**
      * 日志等级设置为 debug
      */
     private Boolean debug = false;

@@ -1,5 +1,6 @@
 package com.mikuac.shiro.handler.event;
 
+import com.mikuac.shiro.common.utils.ConnectionUtils;
 import com.mikuac.shiro.common.utils.JsonObjectWrapper;
 import com.mikuac.shiro.core.Bot;
 import com.mikuac.shiro.dto.event.meta.HeartbeatMetaEvent;
@@ -64,6 +65,7 @@ public class MetaEvent {
         switch (type) {
             case HEARTBEAT -> {
                 HeartbeatMetaEvent event = resp.to(HeartbeatMetaEvent.class);
+                ConnectionUtils.recordMetaHeartbeat(bot.getSession(), event);
                 injection.invokeHeartbeat(bot, event);
             }
             case LIFECYCLE -> {
