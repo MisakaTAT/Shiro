@@ -68,7 +68,7 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
     public void onApplicationEvent(ContextRefreshedEvent event) {
         log.debug("Starting to collect beans with @Shiro annotation");
         Map<String, Object> beans = new HashMap<>(applicationContext.getBeansWithAnnotation(Shiro.class));
-        log.debug("Found {} beans with @Shiro annotation", beans.size());
+        log.debug("Found {} beans with @Shiro annotation: {}", beans.size(), beans.keySet());
         MultiValueMap<Class<? extends Annotation>, HandlerMethod> annotationHandler = extractMethods(beans);
         log.debug("Starting handler method sorting");
         this.sort(annotationHandler);
@@ -110,6 +110,7 @@ public class BotFactory implements ApplicationListener<ContextRefreshedEvent> {
     public Bot createBot(long selfId, WebSocketSession session) {
         log.debug("Bot instance creation started: {}", selfId);
         log.debug("Using WebSocket session: {}", session.getId());
+        log.debug("Annotation void list size: {}",annotationMethodContainer.getAnnotationHandler().size());
         log.debug("Plugin list size: {}", shiroProps.getPluginList().size());
         Bot bot = new Bot(selfId, session, actionHandler, shiroProps.getPluginList(), annotationMethodContainer, shiroProps.getInterceptor());
         log.debug("Bot instance created successfully for ID: {}", selfId);

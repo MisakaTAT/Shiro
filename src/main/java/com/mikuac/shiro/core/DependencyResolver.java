@@ -29,9 +29,11 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
+/**
+ * <h2>依赖解析器</h2>
+ */
 @Slf4j
-@Component
+//@Component
 public class DependencyResolver {
 
     public static final File DEPENDENCIES_DIR = Paths.get("dependencies").toFile();

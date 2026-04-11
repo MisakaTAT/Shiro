@@ -1,92 +1,206 @@
 package com.mikuac.shiro.core;
 
 import com.mikuac.shiro.properties.ShiroProperties;
-import jakarta.annotation.PostConstruct;
-import jakarta.annotation.PreDestroy;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.jspecify.annotations.NonNull;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.support.*;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.stream.Stream;
 
 @Slf4j
 @Component
-@RequiredArgsConstructor(onConstructor_ = @Autowired)
-public class PluginManager {
+public class PluginManager implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
 
-    private final ShiroProperties shiroProperties;
-    private final ApplicationContext applicationContext;
-    private final DependencyResolver dependencyResolver;
+    private ShiroProperties shiroProperties;
+    private DependencyResolver dependencyResolver;
 
-    @Getter
     private URLClassLoader pluginClassLoader;
 
-    @PostConstruct
-    public void initPlugins() {
+    // ====================== 获取 Spring Bean ======================
+    @Override
+    public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
+        this.shiroProperties = applicationContext.getBean(ShiroProperties.class);
+        this.dependencyResolver = new DependencyResolver(shiroProperties);
+    }
+
+    // ====================== 核心入口 ======================
+    @Override
+    public void postProcessBeanDefinitionRegistry(@NonNull BeanDefinitionRegistry registry) throws BeansException {
         try {
-            loadPlugins();
-        } catch (IOException e) {
-            log.error("Plugin loading failed due to I/O error", e);
+            List<URL> urls = collectAllPluginUrls();
+
+            if (urls.isEmpty()) {
+                log.warn("没有检测到插件");
+                return;
+            }
+
+            // ✅ 1. 创建统一 ClassLoader（只此一个）
+            this.pluginClassLoader = new URLClassLoader(
+                    urls.toArray(new URL[0]),
+                    Thread.currentThread().getContextClassLoader()
+            );
+
+            // ✅ 2. 注入 Spring（核心！）
+            if (registry instanceof DefaultListableBeanFactory beanFactory) {
+                beanFactory.setBeanClassLoader(pluginClassLoader);
+            }
+
+            log.info("插件 ClassLoader 初始化完成: {}", pluginClassLoader);
+
+            // ✅ 3. 扫描并注册
+            scanAndRegister(registry);
+
         } catch (Exception e) {
-            log.error("Plugin loading failed", e);
+            log.error("插件加载失败", e);
         }
     }
 
-    @PreDestroy
-    public void cleanup() {
-        if (pluginClassLoader != null) {
-            try {
-                pluginClassLoader.close();
-                log.debug("Plugin class loader closed successfully");
-            } catch (IOException e) {
-                log.warn("Failed to close plugin class loader", e);
+    // ====================== 收集所有 jar ======================
+    private List<URL> collectAllPluginUrls() throws IOException {
+        List<URL> urls = new ArrayList<>();
+
+        File pluginDir = new File(shiroProperties.getPluginScanPath());
+        if (!pluginDir.exists() || !pluginDir.isDirectory()) {
+            log.warn("插件目录不存在: {}", pluginDir);
+            return urls;
+        }
+
+        File[] jars = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
+        if (jars == null || jars.length == 0) {
+            return urls;
+        }
+
+        for (File jar : jars) {
+            log.info("加载插件: {}", jar.getName());
+
+            // 解析依赖
+            Set<String> deps = parseDependencies(jar);
+            resolveDependencies(deps);
+
+            urls.add(jar.toURI().toURL());
+        }
+
+        // 加入依赖目录
+        urls.addAll(scanDependencyJars());
+
+        return urls;
+    }
+
+    /**
+     * <h2>扫描并注册插件</h2>
+     * @param registry bean注册表
+     * @throws Exception
+     */
+    private void scanAndRegister(BeanDefinitionRegistry registry) throws Exception {
+        File pluginDir = new File(shiroProperties.getPluginScanPath());
+        File[] jars = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
+
+        if (jars == null) return;
+
+        int count = 0;
+
+        for (File jar : jars) {
+            try (JarFile jarFile = new JarFile(jar)) {
+                for (JarEntry entry : jarFile.stream().toList()) {
+
+                    if (!entry.getName().endsWith(".class") || entry.isDirectory()) continue;
+
+                    String className = entry.getName()
+                            .replace("/", ".")
+                            .replace(".class", "");
+
+                    try {
+
+                        Class<?> clazz = Class.forName(className, false, pluginClassLoader);
+
+                        if (isBean(clazz)) {
+                            registerBeanDefinition(clazz, registry);
+                            count++;
+
+                            // 记录插件（兼容旧逻辑）
+                            if (BotPlugin.class.isAssignableFrom(clazz)) {
+                                shiroProperties.getPluginList().add((Class<? extends BotPlugin>) clazz);
+                            }
+                        }
+
+                    } catch (Throwable e) {
+                        log.debug("跳过类: {}", className);
+                    }
+                }
             }
         }
+
+        log.info("插件加载完成，共注册 {} 个 Bean", count);
     }
 
-    private void loadPlugins() throws IOException {
-        File pluginDir = getPluginDirectory();
-        if (pluginDir == null) {
+    /**
+     * <h2>判断是否是Spring bean</h2>
+     */
+    private static boolean isBean(Class<?> clazz) {
+        if (clazz.isInterface() || clazz.isEnum() || clazz.isAnnotation()
+                || java.lang.reflect.Modifier.isAbstract(clazz.getModifiers())) {
+            return false;
+        }
+
+        return clazz.isAnnotationPresent(Component.class)
+                || clazz.isAnnotationPresent(Service.class)
+                || clazz.isAnnotationPresent(Repository.class)
+                || clazz.isAnnotationPresent(Controller.class)
+                || clazz.isAnnotationPresent(RestController.class);
+    }
+
+    /**
+     * <h2>注册bean</h2>
+     * @param clazz 要注册的class
+     * @param registry bean注册表
+     */
+    private static void registerBeanDefinition(Class<?> clazz, BeanDefinitionRegistry registry) {
+        String beanName = generateBeanName(clazz);
+
+        if (registry.containsBeanDefinition(beanName)) {
+            log.warn("Bean 已存在: {}", beanName);
             return;
         }
 
-        List<URL> pluginUrls = new ArrayList<>();
-        for (File jar : Objects.requireNonNull(pluginDir.listFiles((dir, name) -> name.endsWith(".jar")))) {
-            // 解析插件依赖
-            Set<String> dependencies = parseDependencies(jar);
-            log.info("Parsing plugin: {}", jar.getAbsolutePath());
-            resolveDependencies(dependencies);
-            pluginUrls.add(jar.toURI().toURL());
-        }
+        GenericBeanDefinition bd = new GenericBeanDefinition();
+        bd.setBeanClassName(clazz.getName());
+        bd.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+        bd.setLazyInit(false);
 
-        if (pluginUrls.isEmpty()) {
-            return;
-        }
+        registry.registerBeanDefinition(beanName, bd);
 
-        // 添加依赖库路径
-        pluginUrls.addAll(scanDependencyJars());
-        this.pluginClassLoader = createPluginClassLoader(pluginUrls);
-        registerPlugins(this.pluginClassLoader);
+        log.debug("注册插件 Bean: {} -> {}", beanName, clazz.getName());
     }
 
-    // 解析清单文件中的依赖
+    /**
+     * <h2>解析依赖</h2>
+     * <p>读取jar包内的manifest来解析依赖</p>
+     * @param jarFile 插件jar
+     * @return 依赖列表
+     * @throws IOException
+     */
     private Set<String> parseDependencies(File jarFile) throws IOException {
         Set<String> dependencies = new HashSet<>();
+
         try (JarFile jar = new JarFile(jarFile)) {
             Manifest manifest = jar.getManifest();
             if (manifest != null) {
@@ -96,108 +210,58 @@ public class PluginManager {
                 }
             }
         }
+
         return dependencies;
     }
 
-    // 解析依赖
     private void resolveDependencies(Set<String> dependencies) {
         dependencies.stream()
                 .filter(this::isDependencyMissing)
                 .forEach(dep -> {
                     try {
                         dependencyResolver.resolveDependency(dep);
+                        log.info("依赖解析成功: {}", dep);
                     } catch (ArtifactResolutionException e) {
-                        log.error("Failed to resolve dependency: {}", dep, e);
+                        log.error("依赖解析失败: {}", dep, e);
                     }
                 });
     }
 
-    // 检查依赖是否已存在
     private boolean isDependencyMissing(String groupArtifact) {
         try {
             String[] parts = groupArtifact.split(":", 3);
-            String group = parts[0];
-            String artifact = parts[1];
-            String version = parts[2];
             Path jarPath = DependencyResolver.DEPENDENCIES_DIR.toPath()
-                    .resolve(group.replace('.', '/'))
-                    .resolve(artifact)
-                    .resolve(version)
-                    .resolve("%s-%s.jar".formatted(artifact, version));
+                    .resolve(parts[0].replace('.', '/'))
+                    .resolve(parts[1])
+                    .resolve(parts[2])
+                    .resolve(parts[1] + "-" + parts[2] + ".jar");
+
             return !jarPath.toFile().exists();
         } catch (Exception e) {
             return true;
         }
     }
 
-    // 扫描依赖库目录
     private List<URL> scanDependencyJars() throws IOException {
-        File depDir = DependencyResolver.DEPENDENCIES_DIR;
         List<URL> urls = new ArrayList<>();
-        if (depDir.exists()) {
-            try (Stream<Path> pathStream = Files.walk(depDir.toPath())) {
-                pathStream
-                        .filter(path -> path.toString().endsWith(".jar"))
-                        .forEach(path -> {
-                            try {
-                                urls.add(path.toUri().toURL());
-                                log.debug("Added dependency: {}", path.getFileName());
-                            } catch (MalformedURLException e) {
-                                log.error("Invalid dependency path: {}", path, e);
-                            }
-                        });
-            }
+        File depDir = DependencyResolver.DEPENDENCIES_DIR;
+
+        if (!depDir.exists()) return urls;
+
+        try (Stream<Path> stream = Files.walk(depDir.toPath())) {
+            stream.filter(p -> p.toString().endsWith(".jar"))
+                    .forEach(p -> {
+                        try {
+                            urls.add(p.toUri().toURL());
+                        } catch (Exception ignored) {}
+                    });
         }
+
         return urls;
     }
 
-    private File getPluginDirectory() {
-        String pluginScanPath = shiroProperties.getPluginScanPath();
-        File pluginDir = new File(pluginScanPath);
-
-        if (!pluginDir.exists() || !pluginDir.isDirectory()) {
-            log.info("Plugin directory does not exist or is not a directory: {}", pluginScanPath);
-            return null;
-        }
-
-        return pluginDir;
+    public static String generateBeanName(Class<?> clazz) {
+        String name = clazz.getSimpleName();
+        return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
-
-    private URLClassLoader createPluginClassLoader(List<URL> urls) {
-        final ClassLoader parentLoader = Thread.currentThread().getContextClassLoader();
-        return new URLClassLoader(urls.toArray(new URL[0]), parentLoader);
-    }
-
-    private void registerPlugins(URLClassLoader classLoader) {
-        ServiceLoader<BotPlugin> loader = ServiceLoader.load(BotPlugin.class, classLoader);
-        int count = 0;
-
-        for (BotPlugin plugin : loader) {
-            if (plugin.getClass().isAnnotationPresent(Component.class)) {
-                registerPlugin(plugin);
-                count++;
-            }
-        }
-
-        log.info("Successfully loaded {} plugins", count);
-    }
-
-    private void registerPlugin(BotPlugin plugin) {
-        Class<? extends BotPlugin> pluginClass = plugin.getClass().asSubclass(BotPlugin.class);
-        String beanName = generateBeanName(pluginClass);
-
-        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
-                .getAutowireCapableBeanFactory();
-        beanFactory.registerSingleton(beanName, plugin);
-
-        // 保持插件列表兼容性
-        shiroProperties.getPluginList().add(pluginClass);
-        log.debug("Registered plugin: {}", pluginClass.getName());
-    }
-
-    private String generateBeanName(Class<?> clazz) {
-        String simpleName = clazz.getSimpleName();
-        return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
-    }
-
 }
