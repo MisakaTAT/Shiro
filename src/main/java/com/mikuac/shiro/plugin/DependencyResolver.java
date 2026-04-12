@@ -1,4 +1,4 @@
-package com.mikuac.shiro.core;
+package com.mikuac.shiro.plugin;
 
 import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.Getter;
@@ -9,26 +9,29 @@ import org.eclipse.aether.DefaultRepositorySystemSession;
 import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
+import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
+import org.eclipse.aether.graph.Dependency;
+import org.eclipse.aether.graph.DependencyNode;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
-import org.eclipse.aether.resolution.ArtifactRequest;
-import org.eclipse.aether.resolution.ArtifactResolutionException;
-import org.eclipse.aether.resolution.ArtifactResult;
+import org.eclipse.aether.resolution.*;
 import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
 import org.eclipse.aether.spi.connector.transport.TransporterFactory;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
 import org.eclipse.aether.transport.file.FileTransporterFactory;
 import org.eclipse.aether.transport.http.HttpTransporterFactory;
-import org.springframework.stereotype.Component;
+import org.eclipse.aether.util.filter.DependencyFilterUtils;
 
 import java.io.File;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * <h2>依赖解析器</h2>
  */
@@ -73,28 +76,54 @@ public class DependencyResolver {
         return locator.getService(RepositorySystem.class);
     }
 
-    public void resolveDependency(String coordinates) throws ArtifactResolutionException {
-        if (downloadingArtifacts.putIfAbsent(coordinates, Boolean.TRUE) != null) {
-            log.debug("Dependency {} already in download queue, skipping", coordinates);
-            return;
-        }
+    public List<File> resolveDependency(String coordinates) {
+
         try {
             Artifact artifact = new DefaultArtifact(coordinates);
-            ArtifactRequest request = new ArtifactRequest();
-            request.setArtifact(artifact);
-            request.setRepositories(repositories);
-            log.debug("Starting to resolve artifact: {}", artifact);
-            ArtifactResult result = repositorySystem.resolveArtifact(session, request);
-            log.debug("Successfully resolved artifact: {} stored at: {}",
-                    artifact, result.getArtifact().getFile().getName());
-        } catch (ArtifactResolutionException e) {
-            log.error("Dependency resolution failed: {}", e.getMessage());
-            throw e;
-        } finally {
-            downloadingArtifacts.remove(coordinates);
+
+            CollectRequest collectRequest = new CollectRequest();
+            collectRequest.setRoot(new Dependency(artifact, "runtime"));
+            collectRequest.setRepositories(repositories);
+
+            DependencyRequest request = new DependencyRequest(
+                    collectRequest,
+                    DependencyFilterUtils.classpathFilter("runtime")
+            );
+
+            DependencyResult result =
+                    repositorySystem.resolveDependencies(session, request);
+
+            DependencyConflictResolver resolver = new DependencyConflictResolver();
+
+            traverse(result.getRoot(), 0, resolver);
+
+            return new ArrayList<>(resolver.result());
+
+        } catch (Exception e) {
+            log.error("resolve failed: {}", coordinates, e);
+            return List.of();
         }
     }
 
+    private void traverse(DependencyNode node,
+                          int depth,
+                          DependencyConflictResolver resolver) {
+
+        Artifact artifact = node.getArtifact();
+
+        if (artifact != null) {
+            resolver.add(
+                    artifact.getGroupId(),
+                    artifact.getArtifactId(),
+                    artifact.getFile(),
+                    depth
+            );
+        }
+
+        for (DependencyNode child : node.getChildren()) {
+            traverse(child, depth + 1, resolver);
+        }
+    }
     private static class ImprovedTransferListener implements TransferListener {
         private static final int PROGRESS_BAR_WIDTH = 50;
         private static final int[] MILESTONE_PERCENTAGES = {5, 25, 50, 75, 90, 100};
@@ -104,7 +133,7 @@ public class DependencyResolver {
         public void transferInitiated(TransferEvent event) {
             String resourceName = event.getResource().getResourceName();
             if (resourceName.endsWith(".jar") || resourceName.endsWith(".pom")) {
-                log.info("Started downloading: {}", resourceName);
+                log.info("开始下载: {}", resourceName);
                 downloads.put(resourceName, new DownloadStatus());
             }
         }
@@ -204,7 +233,7 @@ public class DependencyResolver {
         @Override
         public void transferCorrupted(TransferEvent event) {
             String resourceName = event.getResource().getResourceName();
-            log.error("Download corrupted: {}", resourceName);
+            log.error("下载损坏: {}", resourceName);
             downloads.remove(resourceName);
         }
 
@@ -216,14 +245,14 @@ public class DependencyResolver {
                 long contentLength = event.getResource().getContentLength();
                 String totalStr = formatSize(contentLength);
 
-                log.info("Download completed: {} ({})", resourceName, totalStr);
+                log.info("下载完成: {} ({})", resourceName, totalStr);
             }
         }
 
         @Override
         public void transferFailed(TransferEvent event) {
             String resourceName = event.getResource().getResourceName();
-            log.error("Download failed: {} - {}", resourceName, event.getException().getMessage());
+            log.error("下载失败: {} - {}", resourceName, event.getException().getMessage());
             downloads.remove(resourceName);
         }
 
