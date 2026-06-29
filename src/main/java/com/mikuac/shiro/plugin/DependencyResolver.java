@@ -12,7 +12,7 @@ import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
 import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
-import org.eclipse.aether.graph.DependencyNode;
+import org.eclipse.aether.graph.DependencyFilter;
 import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * <h2>依赖解析器</h2>
  */
@@ -77,7 +76,11 @@ public class DependencyResolver {
     }
 
     public List<File> resolveDependency(String coordinates) {
-
+        if (downloadingArtifacts.putIfAbsent(coordinates, Boolean.TRUE) != null) {
+            log.debug("Dependency {} already in download queue, skipping", coordinates);
+            return List.of();
+        }
+        List<File> resultFiles = new ArrayList<>();
         try {
             Artifact artifact = new DefaultArtifact(coordinates);
 
@@ -85,45 +88,29 @@ public class DependencyResolver {
             collectRequest.setRoot(new Dependency(artifact, "runtime"));
             collectRequest.setRepositories(repositories);
 
-            DependencyRequest request = new DependencyRequest(
-                    collectRequest,
-                    DependencyFilterUtils.classpathFilter("runtime")
-            );
+            DependencyFilter filter = DependencyFilterUtils.classpathFilter("runtime");
+            DependencyRequest dependencyRequest = new DependencyRequest(collectRequest,filter);
 
-            DependencyResult result =
-                    repositorySystem.resolveDependencies(session, request);
+            DependencyResult dependencyResult = repositorySystem.resolveDependencies(session, dependencyRequest);
 
-            DependencyConflictResolver resolver = new DependencyConflictResolver();
+            dependencyResult.getArtifactResults().forEach(r -> {
+                Artifact a = r.getArtifact();
+                if (a != null && a.getFile() != null) {
+                    resultFiles.add(a.getFile());
+                    log.debug("成功解析依赖: {}", a);
+                }
+            });
 
-            traverse(result.getRoot(), 0, resolver);
-
-            return new ArrayList<>(resolver.result());
-
-        } catch (Exception e) {
-            log.error("resolve failed: {}", coordinates, e);
-            return List.of();
+            log.info("依赖解析完成: {} -> {} 个 jar", coordinates, resultFiles.size());
+            return resultFiles;
+        } catch (DependencyResolutionException e) {
+            log.error("Dependency resolution failed: {}", e.getMessage());
+            return null;
+        } finally {
+            downloadingArtifacts.remove(coordinates);
         }
     }
 
-    private void traverse(DependencyNode node,
-                          int depth,
-                          DependencyConflictResolver resolver) {
-
-        Artifact artifact = node.getArtifact();
-
-        if (artifact != null) {
-            resolver.add(
-                    artifact.getGroupId(),
-                    artifact.getArtifactId(),
-                    artifact.getFile(),
-                    depth
-            );
-        }
-
-        for (DependencyNode child : node.getChildren()) {
-            traverse(child, depth + 1, resolver);
-        }
-    }
     private static class ImprovedTransferListener implements TransferListener {
         private static final int PROGRESS_BAR_WIDTH = 50;
         private static final int[] MILESTONE_PERCENTAGES = {5, 25, 50, 75, 90, 100};
