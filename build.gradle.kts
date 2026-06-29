@@ -3,19 +3,19 @@
 import org.jreleaser.model.Active
 
 group = "com.mikuac"
-version = "2.5.3"
+version = "2.5.4"
 
 val mavenArtifactResolver = "1.9.27"
-val mavenResolverProvider = "3.9.14"
-val junit = "6.0.3"
+val mavenResolverProvider = "3.9.15"
+val junit = "6.1.0"
 
 plugins {
     signing
     `java-library`
     `maven-publish`
-    id("org.jreleaser") version "1.23.0"
-    id("io.freefair.lombok") version "9.2.0"
-    id("org.springframework.boot") version "4.0.5"
+    id("org.jreleaser") version "1.24.0"
+    id("io.freefair.lombok") version "9.5.0"
+    id("org.springframework.boot") version "4.0.6"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
