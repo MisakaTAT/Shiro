@@ -32,13 +32,12 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
      * 操作者ID
      */
     @Deprecated
-    @JsonProperty("user_id")
+    @JsonProperty("operator_id")
     private Long operatorId;
 
     /**
      * 操作者ID
      */
-    @Deprecated
     @JsonProperty("user_id")
     private Long userId;
 
@@ -53,6 +52,15 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
      */
     @JsonProperty("is_add")
     private boolean add;
+
+    @Deprecated
+    public Long getOperatorId() {
+        return operatorId != null ? operatorId : userId;
+    }
+
+    public Long getUserId() {
+        return userId != null ? userId : operatorId;
+    }
 
     @Data
     public static class Like {
