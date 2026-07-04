@@ -36,6 +36,13 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
     private Long operatorId;
 
     /**
+     * 操作者ID
+     */
+    @Deprecated
+    @JsonProperty("user_id")
+    private Long userId;
+
+    /**
      * 表情详情
      */
     @JsonProperty("likes")
