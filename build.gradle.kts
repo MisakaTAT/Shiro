@@ -7,15 +7,15 @@ version = "2.5.4"
 
 val mavenArtifactResolver = "1.9.27"
 val mavenResolverProvider = "3.9.15"
-val junit = "6.1.0"
+val junit = "6.1.1"
 
 plugins {
     signing
     `java-library`
     `maven-publish`
-    id("org.jreleaser") version "1.24.0"
+    id("org.jreleaser") version "1.25.0"
     id("io.freefair.lombok") version "9.5.0"
-    id("org.springframework.boot") version "4.0.6"
+    id("org.springframework.boot") version "4.1.0"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
