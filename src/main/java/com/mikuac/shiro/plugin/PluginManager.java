@@ -242,9 +242,8 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
             urlMap.putIfAbsent(jar.getName(), jar.toURI().toURL());
         }
 
-        log.info("插件 ClassLoader 最终包含 {} 个 jar: {}",
-                urlMap.size(),
-                urlMap.keySet().stream().sorted().collect(Collectors.joining(", ")));
+        log.info("插件 ClassLoader 最终包含 {} 个 jar",
+                urlMap.size());
         return new ArrayList<>(urlMap.values());
     }
 
