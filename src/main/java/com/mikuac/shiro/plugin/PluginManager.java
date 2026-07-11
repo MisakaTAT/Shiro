@@ -1,7 +1,5 @@
-
 package com.mikuac.shiro.plugin;
 
-import com.mikuac.shiro.annotation.common.ShiroPlugin;
 import com.mikuac.shiro.core.BotPlugin;
 import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
@@ -12,52 +10,72 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.*;
+import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class PluginManager implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware {
+public class PluginManager implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware,
+        ApplicationListener<ContextRefreshedEvent> {
 
-    private ShiroProperties shiroProperties;
+    /**
+     * 从 Environment 直接读取（非从 ShiroProperties），避免 getBean 触发
+     * ShiroProperties 在 ConfigurationPropertiesBindingPostProcessor 注册前被提前创建，
+     * 导致 YAML 绑定永不到来。
+     */
+    private String pluginScanPath;
     private DependencyResolver dependencyResolver;
+    private ApplicationContext applicationContext;
 
-    private ClassLoader pluginClassLoader;
+    private URLClassLoader pluginClassLoader;
+    private ClassLoader originalClassLoader;
 
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
-        this.shiroProperties = applicationContext.getBean(ShiroProperties.class);
-        this.dependencyResolver = new DependencyResolver(shiroProperties);
+        this.applicationContext = applicationContext;
+        Environment env = applicationContext.getEnvironment();
+        this.pluginScanPath = env.getProperty("shiro.plugin-scan-path", "plugins");
+        String mavenRepoUrl = env.getProperty("shiro.plugin-maven-repository-url",
+                "https://maven.aliyun.com/repository/public");
+        this.dependencyResolver = new DependencyResolver(mavenRepoUrl);
     }
+
+    // ==================== BeanDefinitionRegistryPostProcessor ====================
 
     @Override
     public void postProcessBeanDefinitionRegistry(@NonNull BeanDefinitionRegistry registry) throws BeansException {
+        originalClassLoader = Thread.currentThread().getContextClassLoader();
+
         try {
             List<URL> urls = collectAllPluginUrls();
 
             if (urls.isEmpty()) {
-                log.warn("没有检测到插件");
+                log.warn("没有检测到外部插件 JAR");
                 return;
             }
 
-            // ✅ 1. 创建 ClassLoader
             pluginClassLoader = new URLClassLoader(
                     urls.toArray(new URL[0]),
-                    Thread.currentThread().getContextClassLoader()
+                    originalClassLoader
             );
 
-            // ✅ 2. 注入 Spring
             if (registry instanceof DefaultListableBeanFactory beanFactory) {
                 beanFactory.setBeanClassLoader(pluginClassLoader);
             }
@@ -66,93 +84,172 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
 
             log.info("插件 ClassLoader 初始化完成");
 
-            scanPlugins(registry);
+            // 扫描 jar 内所有 Spring 注解类，注册为 BeanDefinition
+            scanAndRegister(registry);
+
+            // registerBotPlugins 延后到 onApplicationEvent(ContextRefreshedEvent)
+            // 因为此时 ShiroProperties 的 @ConfigurationProperties 绑定还未发生
 
         } catch (Exception e) {
-            log.error("插件加载失败", e);
+            log.error("插件 BeanDefinition 注册失败", e);
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+            if (registry instanceof DefaultListableBeanFactory beanFactory) {
+                beanFactory.setBeanClassLoader(originalClassLoader);
+            }
         }
     }
 
-    private void scanPlugins(BeanDefinitionRegistry registry) throws Exception {
+    @Override
+    public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory beanFactory) {
+    }
 
-        ClassPathScanningCandidateComponentProvider scanner =
-                new ClassPathScanningCandidateComponentProvider(false);
+    // ==================== ApplicationListener<ContextRefreshedEvent> ====================
+    @Override
+    public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
+        // 没有外部插件 JAR 时跳过，但依然打印汇总（显示 YAML 插件）
+        if (pluginClassLoader == null) {
+            printPluginSummary();
+            return;
+        }
 
-        scanner.addIncludeFilter(new AnnotationTypeFilter(ShiroPlugin.class));
+        try {
+            Thread.currentThread().setContextClassLoader(pluginClassLoader);
 
-        scanner.setResourceLoader(new PathMatchingResourcePatternResolver(pluginClassLoader));
+            // 此时 ShiroProperties 已由 Spring 正常初始化完成，@ConfigurationProperties 已绑定
+            ShiroProperties shiroProperties = applicationContext.getBean(ShiroProperties.class);
+            registerBotPlugins(shiroProperties);
+            printPluginSummary();
 
-        // 👉 扫描所有 class（不限包！）
-        Set<BeanDefinition> candidates = scanner.findCandidateComponents("");
+        } finally {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+        }
+    }
 
-        for (BeanDefinition bd : candidates) {
+    // ==================== 插件扫描与注册 ====================
 
-            String className = bd.getBeanClassName();
-            Class<?> pluginClass = Class.forName(className, false, pluginClassLoader);
+    /**
+     * 扫描插件 jar 内所有 Spring 注解类，注册为 BeanDefinition。
+     */
+    private void scanAndRegister(BeanDefinitionRegistry registry) throws Exception {
+        File pluginDir = new File(pluginScanPath);
+        File[] jars = pluginDir.listFiles((dir, name) -> name.endsWith(".jar"));
+        if (jars == null) return;
 
-            ShiroPlugin annotation = pluginClass.getAnnotation(ShiroPlugin.class);
-
-            String[] basePackages = new String[]{
-                    pluginClass.getPackage().getName()
-            };// 默认用当前类包
-            if(annotation != null) {
-                String[] scanBasePackages = annotation.scanBasePackages();
-                if (scanBasePackages.length != 0) {
-                    basePackages=scanBasePackages;
+        int count = 0;
+        for (File jar : jars) {
+            try (JarFile jarFile = new JarFile(jar)) {
+                for (JarEntry entry : jarFile.stream().toList()) {
+                    if (!entry.getName().endsWith(".class") || entry.isDirectory()) continue;
+                    String className = entry.getName().replace("/", ".").replace(".class", "");
+                    try {
+                        Class<?> clazz = Class.forName(className, false, pluginClassLoader);
+                        if (isBean(clazz)) {
+                            // 检查类是否由插件 ClassLoader 加载，若由父加载器加载说明主程序已存在同名类
+                            if (clazz.getClassLoader() != pluginClassLoader) {
+                                log.warn("插件 JAR 中的类 {} 被主程序已加载的同名类覆盖(ClassLoader 为父加载器)，"
+                                        + "JAR 中的版本将被忽略。"
+                                        + "请检查主程序是否已存在包名类名完全相同的类，考虑重命名插件中的类或移除主程序中的重复类。",
+                                        className);
+                                continue;
+                            }
+                            registerBeanDefinition(clazz, registry);
+                            count++;
+                        }
+                    } catch (Throwable e) {
+                        log.debug("跳过类: {}", className);
+                    }
                 }
             }
-
-            log.info("加载插件入口: {}", className);
-
-            // ✅ 用 Spring Scanner 扫描这个插件
-            ClassPathBeanDefinitionScanner springScanner =
-                    new ClassPathBeanDefinitionScanner(registry, true);
-
-            springScanner.setResourceLoader(
-                    new PathMatchingResourcePatternResolver(pluginClassLoader)
-            );
-
-            int count = springScanner.scan(basePackages);
-
-            if (BotPlugin.class.isAssignableFrom(pluginClass)) {
-                shiroProperties.getPluginList().add((Class<? extends BotPlugin>) pluginClass);
-            }
-            log.info("插件 {} 注册 {} 个 Bean", className, count);
         }
+        log.info("插件 BeanDefinition 注册完成，共 {} 个", count);
     }
 
     /**
-     * 收集所有 jar + 依赖
+     * 使用 ServiceLoader 发现并注册 BotPlugin 实现。
+     * 必须在 ApplicationContext 完全刷新后调用，因为需要 ShiroProperties 已完成 YAML 绑定。
+     */
+    private void registerBotPlugins(ShiroProperties shiroProperties) {
+        ServiceLoader<BotPlugin> loader = ServiceLoader.load(BotPlugin.class, pluginClassLoader);
+        int count = 0;
+
+        DefaultListableBeanFactory beanFactory =
+                (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+
+        for (BotPlugin plugin : loader) {
+            Class<? extends BotPlugin> pluginClass = plugin.getClass().asSubclass(BotPlugin.class);
+
+            // 检查 BotPlugin 实现类是否由插件 ClassLoader 加载
+            if (pluginClass.getClassLoader() != pluginClassLoader) {
+                log.warn("[SPI] BotPlugin {} 被主程序的类加载器加载(非插件 ClassLoader)，"
+                        + "说明主程序中已存在包名类名完全相同的 BotPlugin 实现，"
+                        + "JAR 中的版本将被跳过。请检查主程序是否重复定义了该类。",
+                        pluginClass.getName());
+                continue;
+            }
+
+            String beanName = generateBeanName(pluginClass);
+
+            beanFactory.autowireBean(plugin);
+            beanFactory.registerSingleton(beanName, plugin);
+
+            shiroProperties.getPluginList().add(pluginClass);
+            log.info("[SPI] 注册 BotPlugin: {} (bean: {})", pluginClass.getName(), beanName);
+            count++;
+        }
+        log.info("SPI 成功加载 {} 个 BotPlugin", count);
+    }
+
+    private void printPluginSummary() {
+        ShiroProperties shiroProperties = applicationContext.getBean(ShiroProperties.class);
+        List<Class<? extends BotPlugin>> allPlugins = shiroProperties.getPluginList();
+        if (allPlugins.isEmpty()) {
+            log.warn("当前没有任何 BotPlugin 被注册（YAML 和 SPI 均为空），请检查配置");
+        } else {
+            log.info("BotPlugin 汇总 (共 {} 个): {}", allPlugins.size(),
+                    allPlugins.stream().map(Class::getName).collect(Collectors.joining(", ")));
+        }
+    }
+
+    // ==================== JAR 收集与依赖解析 ====================
+    /**
+     * 收集所有 jar + 依赖，过滤主应用已有的框架级 jar。
      */
     private List<URL> collectAllPluginUrls() throws Exception {
-        Map<String, URL> urlMap = new LinkedHashMap<>();
+        LinkedHashMap<String, URL> urlMap = new LinkedHashMap<>();
 
-        File pluginDir = new File(shiroProperties.getPluginScanPath());
+        File pluginDir = new File(pluginScanPath);
         if (!pluginDir.exists()) return List.of();
 
         File[] jars = pluginDir.listFiles((d, n) -> n.endsWith(".jar"));
         if (jars == null) return List.of();
+
         for (File jar : jars) {
             log.info("加载插件: {}", jar.getName());
             Set<String> deps = parseDependencies(jar);
+            int skipped = 0, kept = 0;
+
             for (String dep : deps) {
                 List<File> files = dependencyResolver.resolveDependency(dep);
-
                 for (File file : files) {
-                    String key = file.getName(); //按文件名去重
+                    String key = file.getName();
                     urlMap.putIfAbsent(key, file.toURI().toURL());
+                    kept++;
                 }
             }
+            log.info("插件 {} 依赖过滤: 保留 {} 个, 跳过 {} 个", jar.getName(), kept, skipped);
 
             urlMap.putIfAbsent(jar.getName(), jar.toURI().toURL());
         }
 
+        log.info("插件 ClassLoader 最终包含 {} 个 jar: {}",
+                urlMap.size(),
+                urlMap.keySet().stream().sorted().collect(Collectors.joining(", ")));
         return new ArrayList<>(urlMap.values());
     }
 
     private Set<String> parseDependencies(File jarFile) throws IOException {
         Set<String> dependencies = new HashSet<>();
-
         try (JarFile jar = new JarFile(jarFile)) {
             Manifest manifest = jar.getManifest();
             if (manifest != null) {
@@ -165,6 +262,46 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
         return dependencies;
     }
 
-    @Override
-    public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory beanFactory) {}
+    // ==================== 静态工具方法 ====================
+    private static boolean isBean(Class<?> clazz) {
+        if (clazz.isInterface() || clazz.isEnum() || clazz.isAnnotation()
+                || Modifier.isAbstract(clazz.getModifiers())) {
+            return false;
+        }
+        return clazz.isAnnotationPresent(Component.class)
+                || clazz.isAnnotationPresent(Service.class)
+                || clazz.isAnnotationPresent(Repository.class)
+                || clazz.isAnnotationPresent(Controller.class)
+                || clazz.isAnnotationPresent(RestController.class);
+    }
+
+    private static void registerBeanDefinition(Class<?> clazz, BeanDefinitionRegistry registry) {
+        String beanName = generateBeanName(clazz);
+        if (registry.containsBeanDefinition(beanName)) {
+            BeanDefinition existing = registry.getBeanDefinition(beanName);
+            String existingClassName = existing.getBeanClassName();
+            if (existingClassName == null && existing instanceof GenericBeanDefinition gbd) {
+                // 尝试从已解析的 beanClass 获取类名
+                existingClassName = gbd.getBeanClass() != null ? gbd.getBeanClass().getName() : "未知";
+            }
+            log.warn("Bean 名冲突: 插件中的类 {} (bean: {}) 无法注册，"
+                    + "因为同名的 bean 已被 {} 注册。"
+                    + "这通常是由于主程序中已存在包名类名完全相同的类，或不同包下存在同名的 @Component 类。",
+                    clazz.getName(), beanName, existingClassName);
+            return;
+        }
+        GenericBeanDefinition bd = new GenericBeanDefinition();
+        // 直接设置已解析的 Class 对象而非类名字符串，避免后续 Spring 用 beanFactory 的
+        // ClassLoader（已恢复为 originalClassLoader）去解析插件 JAR 内的类时找不到
+        bd.setBeanClass(clazz);
+        bd.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
+        bd.setLazyInit(false);
+        registry.registerBeanDefinition(beanName, bd);
+        log.debug("成功注册bean:{}",beanName);
+    }
+
+    private static String generateBeanName(Class<?> clazz) {
+        String simpleName = clazz.getSimpleName();
+        return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
+    }
 }

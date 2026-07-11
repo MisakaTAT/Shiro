@@ -1,6 +1,6 @@
 package com.mikuac.shiro.plugin;
 
-import com.mikuac.shiro.properties.ShiroProperties;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,7 +46,7 @@ public class DependencyResolver {
 
     private final ConcurrentHashMap<String, Boolean> downloadingArtifacts = new ConcurrentHashMap<>();
 
-    public DependencyResolver(ShiroProperties properties) {
+    public DependencyResolver(String pluginMavenRepositoryUrl) {
         log.info("Initializing dependency resolver");
         this.repositorySystem = createRepositorySystem();
         this.session = MavenRepositorySystemUtils.newSession();
@@ -55,9 +55,9 @@ public class DependencyResolver {
                 repositorySystem.newLocalRepositoryManager(session, localRepo));
         session.setTransferListener(new ImprovedTransferListener());
 
-        String repoUrl = properties.getPluginMavenRepositoryUrl();
+        String repoUrl = pluginMavenRepositoryUrl;
         if (repoUrl == null || repoUrl.isEmpty()) {
-            repoUrl = "https://repo.maven.apache.org/maven2/";
+            repoUrl = "https://repo.maven.aliyun.com/repository/public";
         }
 
         RemoteRepository mavenRepo = new RemoteRepository.Builder(
