@@ -80,12 +80,14 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
                 beanFactory.setBeanClassLoader(pluginClassLoader);
             }
 
-            Thread.currentThread().setContextClassLoader(pluginClassLoader);
-
-            log.info("插件 ClassLoader 初始化完成");
-
-            // 扫描 jar 内所有 Spring 注解类，注册为 BeanDefinition
-            scanAndRegister(registry);
+            withPluginClassLoader(() -> {
+                log.info("插件 ClassLoader 初始化完成");
+                try {
+                    scanAndRegister(registry);
+                } catch (Exception e) {
+                    log.error("插件 BeanDefinition 注册失败", e);
+                }
+            });
 
             // registerBotPlugins 延后到 onApplicationEvent(ContextRefreshedEvent)
             // 因为此时 ShiroProperties 的 @ConfigurationProperties 绑定还未发生
@@ -113,17 +115,12 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
             return;
         }
 
-        try {
-            Thread.currentThread().setContextClassLoader(pluginClassLoader);
-
+        withPluginClassLoader(() -> {
             // 此时 ShiroProperties 已由 Spring 正常初始化完成，@ConfigurationProperties 已绑定
             ShiroProperties shiroProperties = applicationContext.getBean(ShiroProperties.class);
             registerBotPlugins(shiroProperties);
             printPluginSummary();
-
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
-        }
+        });
     }
 
     // ==================== 插件扫描与注册 ====================
@@ -142,27 +139,40 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
                 for (JarEntry entry : jarFile.stream().toList()) {
                     if (!entry.getName().endsWith(".class") || entry.isDirectory()) continue;
                     String className = entry.getName().replace("/", ".").replace(".class", "");
-                    try {
-                        Class<?> clazz = Class.forName(className, false, pluginClassLoader);
-                        if (isBean(clazz)) {
-                            // 检查类是否由插件 ClassLoader 加载，若由父加载器加载说明主程序已存在同名类
-                            if (clazz.getClassLoader() != pluginClassLoader) {
-                                log.warn("插件 JAR 中的类 {} 被主程序已加载的同名类覆盖(ClassLoader 为父加载器)，"
-                                        + "JAR 中的版本将被忽略。"
-                                        + "请检查主程序是否已存在包名类名完全相同的类，考虑重命名插件中的类或移除主程序中的重复类。",
-                                        className);
-                                continue;
-                            }
-                            registerBeanDefinition(clazz, registry);
-                            count++;
-                        }
-                    } catch (Throwable e) {
-                        log.debug("跳过类: {}", className);
+                    Class<?> clazz = loadPluginBeanClass(className);
+                    if (clazz != null) {
+                        registerBeanDefinition(clazz, registry);
+                        count++;
                     }
                 }
             }
         }
         log.info("插件 BeanDefinition 注册完成，共 {} 个", count);
+    }
+
+    /**
+     * 尝试从插件 ClassLoader 加载一个 Spring bean 类。
+     * 若非 bean、由父加载器加载或加载失败，则返回 null 并记录相应日志。
+     */
+    private Class<?> loadPluginBeanClass(String className) {
+        try {
+            Class<?> clazz = Class.forName(className, false, pluginClassLoader);
+            if (!isBean(clazz)) {
+                return null;
+            }
+            // 检查类是否由插件 ClassLoader 加载，若由父加载器加载说明主程序已存在同名类
+            if (clazz.getClassLoader() != pluginClassLoader) {
+                log.warn("插件 JAR 中的类 {} 被主程序已加载的同名类覆盖(ClassLoader 为父加载器)，"
+                        + "JAR 中的版本将被忽略。"
+                        + "请检查主程序是否已存在包名类名完全相同的类，考虑重命名插件中的类或移除主程序中的重复类。",
+                        className);
+                return null;
+            }
+            return clazz;
+        } catch (Throwable e) {
+            log.debug("跳过类: {}", className);
+            return null;
+        }
     }
 
     /**
@@ -231,10 +241,18 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
 
             for (String dep : deps) {
                 List<File> files = dependencyResolver.resolveDependency(dep);
+                if (files == null || files.isEmpty()) {
+                    skipped++;
+                    continue;
+                }
                 for (File file : files) {
                     String key = file.getName();
-                    urlMap.putIfAbsent(key, file.toURI().toURL());
-                    kept++;
+                    URL previous = urlMap.putIfAbsent(key, file.toURI().toURL());
+                    if (previous == null) {
+                        kept++;
+                    } else {
+                        skipped++;
+                    }
                 }
             }
             log.info("插件 {} 依赖过滤: 保留 {} 个, 跳过 {} 个", jar.getName(), kept, skipped);
@@ -261,6 +279,21 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
         return dependencies;
     }
 
+    // ==================== ClassLoader 切换工具 ====================
+
+    /**
+     * 在插件 ClassLoader 上下文中执行操作，执行完毕后自动恢复原始 ClassLoader。
+     */
+    private void withPluginClassLoader(Runnable action) {
+        ClassLoader original = Thread.currentThread().getContextClassLoader();
+        try {
+            Thread.currentThread().setContextClassLoader(pluginClassLoader);
+            action.run();
+        } finally {
+            Thread.currentThread().setContextClassLoader(original);
+        }
+    }
+
     // ==================== 静态工具方法 ====================
     private static boolean isBean(Class<?> clazz) {
         if (clazz.isInterface() || clazz.isEnum() || clazz.isAnnotation()
@@ -277,12 +310,7 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
     private static void registerBeanDefinition(Class<?> clazz, BeanDefinitionRegistry registry) {
         String beanName = generateBeanName(clazz);
         if (registry.containsBeanDefinition(beanName)) {
-            BeanDefinition existing = registry.getBeanDefinition(beanName);
-            String existingClassName = existing.getBeanClassName();
-            if (existingClassName == null && existing instanceof GenericBeanDefinition gbd) {
-                // 尝试从已解析的 beanClass 获取类名
-                existingClassName = gbd.getBeanClass() != null ? gbd.getBeanClass().getName() : "未知";
-            }
+            String existingClassName = resolveExistingClassName(registry.getBeanDefinition(beanName));
             log.warn("Bean 名冲突: 插件中的类 {} (bean: {}) 无法注册，"
                     + "因为同名的 bean 已被 {} 注册。"
                     + "这通常是由于主程序中已存在包名类名完全相同的类，或不同包下存在同名的 @Component 类。",
@@ -296,7 +324,18 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
         bd.setAutowireMode(AbstractBeanDefinition.AUTOWIRE_BY_TYPE);
         bd.setLazyInit(false);
         registry.registerBeanDefinition(beanName, bd);
-        log.debug("成功注册bean:{}",beanName);
+        log.debug("成功注册bean:{}", beanName);
+    }
+
+    /**
+     * 从已有的 BeanDefinition 中解析出类名，用于冲突诊断日志。
+     */
+    private static String resolveExistingClassName(BeanDefinition existing) {
+        String existingClassName = existing.getBeanClassName();
+        if (existingClassName == null && existing instanceof GenericBeanDefinition gbd)  {
+            existingClassName = gbd.getBeanClass() != null ? gbd.getBeanClass().getName() : "未知";
+        }
+        return existingClassName;
     }
 
     private static String generateBeanName(Class<?> clazz) {
