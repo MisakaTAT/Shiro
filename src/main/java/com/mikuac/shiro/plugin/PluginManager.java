@@ -5,6 +5,7 @@ import com.mikuac.shiro.properties.ShiroProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.DisposableBean;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.support.*;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Component
 public class PluginManager implements BeanDefinitionRegistryPostProcessor, ApplicationContextAware,
-        ApplicationListener<ContextRefreshedEvent> {
+        ApplicationListener<ContextRefreshedEvent>, DisposableBean {
 
     /**
      * 从 Environment 直接读取（非从 ShiroProperties），避免 getBean 触发 ShiroProperties 在
@@ -42,7 +43,7 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
     private String pluginScanPath;
     private DependencyResolver dependencyResolver;
     private ApplicationContext applicationContext;
-    private List<URL> pluginUrls = List.of();
+    private URLClassLoader pluginClassLoader;
 
     @Override
     public void setApplicationContext(@NonNull ApplicationContext applicationContext) throws BeansException {
@@ -58,75 +59,62 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
     @Override
     public void postProcessBeanDefinitionRegistry(@NonNull BeanDefinitionRegistry registry) throws BeansException {
         ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-
-        List<URL> urls;
-        try {
-            urls = collectAllPluginUrls();
-            pluginUrls = List.copyOf(urls);
+        DefaultListableBeanFactory beanFactory = registry instanceof DefaultListableBeanFactory factory
+                ? factory
+                : null;
+        try (ClassLoaderScope ignored = new ClassLoaderScope(beanFactory, originalClassLoader)) {
+            List<URL> urls = collectAllPluginUrls();
 
             if (urls.isEmpty()) {
                 log.warn("No external plugin JARs detected");
                 return;
             }
 
-            try (URLClassLoader pluginClassLoader = new URLClassLoader(
+            pluginClassLoader = new URLClassLoader(
                     urls.toArray(URL[]::new),
-                    originalClassLoader
-            )) {
-                if (registry instanceof DefaultListableBeanFactory beanFactory) {
-                    beanFactory.setBeanClassLoader(pluginClassLoader);
-                }
-
-                withPluginClassLoader(pluginClassLoader, () -> {
-                    log.info("Plugin ClassLoader initialized");
-                    try {
-                        scanAndRegister(registry, pluginClassLoader);
-                    } catch (Exception e) {
-                        log.error("Plugin BeanDefinition registration failed", e);
-                    }
-                });
+                    originalClassLoader);
+            if (beanFactory != null) {
+                beanFactory.setBeanClassLoader(pluginClassLoader);
             }
+
+            withPluginClassLoader(pluginClassLoader, () -> {
+                log.info("Plugin ClassLoader initialized");
+                try {
+                    scanAndRegister(registry, pluginClassLoader);
+                } catch (Exception e) {
+                    log.error("Plugin BeanDefinition registration failed", e);
+                }
+            });
 
             // registerBotPlugins 延后到 onApplicationEvent(ContextRefreshedEvent)
             // 因为此时 ShiroProperties 的 @ConfigurationProperties 绑定还未发生
         } catch (Exception e) {
             log.error("Plugin BeanDefinition registration failed", e);
-        } finally {
-            Thread.currentThread().setContextClassLoader(originalClassLoader);
-            if (registry instanceof DefaultListableBeanFactory beanFactory) {
-                beanFactory.setBeanClassLoader(originalClassLoader);
-            }
         }
     }
 
     @Override
     public void postProcessBeanFactory(@NonNull ConfigurableListableBeanFactory beanFactory) {
-        // No-op: plugin bean definitions are registered in postProcessBeanDefinitionRegistry.
+        // No-op: plugin bean definitions are registered in
+        // postProcessBeanDefinitionRegistry.
     }
 
-    // ==================== ApplicationListener<ContextRefreshedEvent> ====================
+    // ==================== ApplicationListener<ContextRefreshedEvent>
+    // ====================
     @Override
     public void onApplicationEvent(@NonNull ContextRefreshedEvent event) {
         // 没有外部插件 JAR 时跳过，但依然打印汇总（显示 YAML 插件）
-        if (pluginUrls.isEmpty()) {
+        if (pluginClassLoader == null) {
             printPluginSummary();
             return;
         }
 
-        ClassLoader originalClassLoader = Thread.currentThread().getContextClassLoader();
-        try (URLClassLoader pluginClassLoader = new URLClassLoader(
-                pluginUrls.toArray(URL[]::new),
-                originalClassLoader
-        )) {
-            withPluginClassLoader(pluginClassLoader, () -> {
-                // 此时 ShiroProperties 已由 Spring 正常初始化完成，@ConfigurationProperties 已绑定
-                ShiroProperties shiroProperties = applicationContext.getBean(ShiroProperties.class);
-                registerBotPlugins(shiroProperties, pluginClassLoader);
-                printPluginSummary();
-            });
-        } catch (IOException e) {
-            log.error("Plugin BotPlugin registration failed", e);
-        }
+        withPluginClassLoader(pluginClassLoader, () -> {
+            // 此时 ShiroProperties 已由 Spring 正常初始化完成，@ConfigurationProperties 已绑定
+            ShiroProperties shiroProperties = applicationContext.getBean(ShiroProperties.class);
+            registerBotPlugins(shiroProperties, pluginClassLoader);
+            printPluginSummary();
+        });
     }
 
     // ==================== 插件扫描与注册 ====================
@@ -180,7 +168,7 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
                 return null;
             }
             return clazz;
-        } catch (ClassNotFoundException | LinkageError e) {
+        } catch (Throwable e) {
             log.debug("Skipping class: {}", className, e);
             return null;
         }
@@ -194,8 +182,8 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
         ServiceLoader<BotPlugin> loader = ServiceLoader.load(BotPlugin.class, pluginClassLoader);
         int count = 0;
 
-        DefaultListableBeanFactory beanFactory
-                = (DefaultListableBeanFactory) applicationContext.getAutowireCapableBeanFactory();
+        DefaultListableBeanFactory beanFactory = (DefaultListableBeanFactory) applicationContext
+                .getAutowireCapableBeanFactory();
 
         for (BotPlugin plugin : loader) {
             Class<? extends BotPlugin> pluginClass = plugin.getClass().asSubclass(BotPlugin.class);
@@ -372,6 +360,31 @@ public class PluginManager implements BeanDefinitionRegistryPostProcessor, Appli
     private static String generateBeanName(Class<?> clazz) {
         String simpleName = clazz.getSimpleName();
         return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
+    }
+
+    @Override
+    public void destroy() throws IOException {
+        if (pluginClassLoader != null) {
+            pluginClassLoader.close();
+        }
+    }
+
+    private static final class ClassLoaderScope implements AutoCloseable {
+        private final DefaultListableBeanFactory beanFactory;
+        private final ClassLoader originalClassLoader;
+
+        private ClassLoaderScope(DefaultListableBeanFactory beanFactory, ClassLoader originalClassLoader) {
+            this.beanFactory = beanFactory;
+            this.originalClassLoader = originalClassLoader;
+        }
+
+        @Override
+        public void close() {
+            Thread.currentThread().setContextClassLoader(originalClassLoader);
+            if (beanFactory != null) {
+                beanFactory.setBeanClassLoader(originalClassLoader);
+            }
+        }
     }
 
     private record DependencyStats(int kept, int skipped) {
