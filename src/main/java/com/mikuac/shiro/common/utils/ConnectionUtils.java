@@ -31,7 +31,8 @@ public class ConnectionUtils {
         if (statusObj instanceof SessionStatusEnum status) {
             return status;
         }
-        // this type of exception will not occur unless there are external modifications to session.getAttributes()
+        // this type of exception will not occur unless there are external modifications
+        // to session.getAttributes()
         throw new ShiroException("Session status type wrong");
     }
 
@@ -74,8 +75,11 @@ public class ConnectionUtils {
     public static boolean isLiveDuplicateByHeartbeat(WebSocketSession session, int missCount) {
         var attrs = session.getAttributes();
         Object onlineFlag = attrs.get(Connection.LAST_HEARTBEAT_ONLINE_KEY);
-        if (onlineFlag instanceof Boolean b && !b) {
-            return false;
+        if (onlineFlag instanceof Boolean onlineFlagValue) {
+            boolean online = onlineFlagValue;
+            if (!online) {
+                return false;
+            }
         }
         if (missCount <= 0) {
             return true;
@@ -106,8 +110,7 @@ public class ConnectionUtils {
     public static Bot handleFirstConnect(
             long xSelfId, WebSocketSession session,
             BotFactory botFactory, CoreEvent coreEvent,
-            ThreadPoolTaskExecutor shiroTaskExecutor
-    ) {
+            ThreadPoolTaskExecutor shiroTaskExecutor) {
         // if the session has never connected
         // or has been handled
         log.info("Account {} connected", xSelfId);

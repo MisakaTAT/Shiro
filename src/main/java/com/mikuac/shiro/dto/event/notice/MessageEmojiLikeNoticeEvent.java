@@ -30,8 +30,11 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
 
     /**
      * 操作者ID
+     *
+     * @deprecated 请改用 {@link #userId}
      */
-    @Deprecated
+    @SuppressWarnings("java:S1133")
+    @Deprecated(since = "2.5.4", forRemoval = false)
     @JsonProperty("operator_id")
     private Long operatorId;
 
@@ -53,11 +56,19 @@ public class MessageEmojiLikeNoticeEvent extends NoticeEvent {
     @JsonProperty("is_add")
     private boolean add;
 
-    @Deprecated
+    /**
+     * 获取操作者ID。
+     *
+     * @return 优先返回 {@code operatorId}，否则返回 {@code userId}
+     * @deprecated 请改用 {@link #getUserId()}
+     */
+    @SuppressWarnings("java:S1133")
+    @Deprecated(since = "2.5.4", forRemoval = false)
     public Long getOperatorId() {
         return operatorId != null ? operatorId : userId;
     }
 
+    @Override
     public Long getUserId() {
         return userId != null ? userId : operatorId;
     }
