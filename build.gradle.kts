@@ -61,6 +61,7 @@ dependencies {
     api("org.springframework.boot:spring-boot-starter-websocket")
 
     api("org.apache.maven:maven-resolver-provider:$mavenResolverProvider")
+    api("org.apache.maven.resolver:maven-resolver-supplier:$mavenArtifactResolver")
     api("org.apache.maven.resolver:maven-resolver-connector-basic:$mavenArtifactResolver")
     api("org.apache.maven.resolver:maven-resolver-transport-file:$mavenArtifactResolver")
     api("org.apache.maven.resolver:maven-resolver-transport-http:$mavenArtifactResolver")

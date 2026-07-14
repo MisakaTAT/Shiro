@@ -1,6 +1,5 @@
 package com.mikuac.shiro.plugin;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -10,19 +9,14 @@ import org.eclipse.aether.RepositorySystem;
 import org.eclipse.aether.artifact.Artifact;
 import org.eclipse.aether.artifact.DefaultArtifact;
 import org.eclipse.aether.collection.CollectRequest;
-import org.eclipse.aether.connector.basic.BasicRepositoryConnectorFactory;
 import org.eclipse.aether.graph.Dependency;
 import org.eclipse.aether.graph.DependencyFilter;
-import org.eclipse.aether.impl.DefaultServiceLocator;
 import org.eclipse.aether.repository.LocalRepository;
 import org.eclipse.aether.repository.RemoteRepository;
 import org.eclipse.aether.resolution.*;
-import org.eclipse.aether.spi.connector.RepositoryConnectorFactory;
-import org.eclipse.aether.spi.connector.transport.TransporterFactory;
+import org.eclipse.aether.supplier.RepositorySystemSupplier;
 import org.eclipse.aether.transfer.TransferEvent;
 import org.eclipse.aether.transfer.TransferListener;
-import org.eclipse.aether.transport.file.FileTransporterFactory;
-import org.eclipse.aether.transport.http.HttpTransporterFactory;
 import org.eclipse.aether.util.filter.DependencyFilterUtils;
 
 import java.io.File;
@@ -31,11 +25,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * <h2>依赖解析器</h2>
  */
 @Slf4j
-//@Component
 public class DependencyResolver {
 
     public static final File DEPENDENCIES_DIR = Paths.get("dependencies").toFile();
@@ -66,13 +60,8 @@ public class DependencyResolver {
         this.repositories = Collections.singletonList(mavenRepo);
     }
 
-    @SuppressWarnings("deprecation")
     private static RepositorySystem createRepositorySystem() {
-        DefaultServiceLocator locator = MavenRepositorySystemUtils.newServiceLocator();
-        locator.addService(RepositoryConnectorFactory.class, BasicRepositoryConnectorFactory.class);
-        locator.addService(TransporterFactory.class, FileTransporterFactory.class);
-        locator.addService(TransporterFactory.class, HttpTransporterFactory.class);
-        return locator.getService(RepositorySystem.class);
+        return new RepositorySystemSupplier().get();
     }
 
     public List<File> resolveDependency(String coordinates) {
@@ -89,7 +78,7 @@ public class DependencyResolver {
             collectRequest.setRepositories(repositories);
 
             DependencyFilter filter = DependencyFilterUtils.classpathFilter("runtime");
-            DependencyRequest dependencyRequest = new DependencyRequest(collectRequest,filter);
+            DependencyRequest dependencyRequest = new DependencyRequest(collectRequest, filter);
 
             DependencyResult dependencyResult = repositorySystem.resolveDependencies(session, dependencyRequest);
 
@@ -97,21 +86,22 @@ public class DependencyResolver {
                 Artifact a = r.getArtifact();
                 if (a != null && a.getFile() != null) {
                     resultFiles.add(a.getFile());
-                    log.debug("成功解析依赖: {}", a);
+                    log.debug("Resolved dependency: {}", a);
                 }
             });
 
-            log.info("依赖解析完成: {} -> {} 个 jar", coordinates, resultFiles.size());
+            log.info("Dependency resolution completed: {} -> {} JAR(s)", coordinates, resultFiles.size());
             return resultFiles;
         } catch (DependencyResolutionException e) {
             log.error("Dependency resolution failed: {}", e.getMessage());
-            return null;
+            return List.of();
         } finally {
             downloadingArtifacts.remove(coordinates);
         }
     }
 
     private static class ImprovedTransferListener implements TransferListener {
+
         private static final int PROGRESS_BAR_WIDTH = 50;
         private static final int[] MILESTONE_PERCENTAGES = {5, 25, 50, 75, 90, 100};
         private final ConcurrentHashMap<String, DownloadStatus> downloads = new ConcurrentHashMap<>();
@@ -120,7 +110,7 @@ public class DependencyResolver {
         public void transferInitiated(TransferEvent event) {
             String resourceName = event.getResource().getResourceName();
             if (resourceName.endsWith(".jar") || resourceName.endsWith(".pom")) {
-                log.info("开始下载: {}", resourceName);
+                log.info("Started downloading: {}", resourceName);
                 downloads.put(resourceName, new DownloadStatus());
             }
         }
@@ -134,12 +124,16 @@ public class DependencyResolver {
         public void transferProgressed(TransferEvent event) {
             String resourceName = event.getResource().getResourceName();
             DownloadStatus status = downloads.get(resourceName);
-            if (status == null) return;
+            if (status == null) {
+                return;
+            }
 
             long contentLength = event.getResource().getContentLength();
             long transferred = event.getTransferredBytes();
 
-            if (contentLength <= 0) return;
+            if (contentLength <= 0) {
+                return;
+            }
 
             double progress = (double) transferred / contentLength;
             status.setProgress(progress);
@@ -191,7 +185,7 @@ public class DependencyResolver {
         }
 
         private void logProgress(String fileName, String progressBar, double progress,
-                                 String transferredStr, String totalStr) {
+                String transferredStr, String totalStr) {
             log.info("Downloading: {} {} {}% ({}/{})",
                     truncateFileName(fileName),
                     progressBar,
@@ -220,7 +214,7 @@ public class DependencyResolver {
         @Override
         public void transferCorrupted(TransferEvent event) {
             String resourceName = event.getResource().getResourceName();
-            log.error("下载损坏: {}", resourceName);
+            log.error("Downloaded artifact is corrupted: {}", resourceName);
             downloads.remove(resourceName);
         }
 
@@ -232,20 +226,21 @@ public class DependencyResolver {
                 long contentLength = event.getResource().getContentLength();
                 String totalStr = formatSize(contentLength);
 
-                log.info("下载完成: {} ({})", resourceName, totalStr);
+                log.info("Download completed: {} ({})", resourceName, totalStr);
             }
         }
 
         @Override
         public void transferFailed(TransferEvent event) {
             String resourceName = event.getResource().getResourceName();
-            log.error("下载失败: {} - {}", resourceName, event.getException().getMessage());
+            log.error("Download failed: {} - {}", resourceName, event.getException().getMessage());
             downloads.remove(resourceName);
         }
 
         @Getter
         @Setter
         private static class DownloadStatus {
+
             private double progress = 0;
             private double lastLoggedProgress = 0;
         }
