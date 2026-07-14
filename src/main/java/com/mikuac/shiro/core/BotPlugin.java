@@ -10,13 +10,14 @@ import com.mikuac.shiro.dto.event.request.GroupAddRequestEvent;
 import org.springframework.stereotype.Component;
 
 /**
- * <p>BotPlugin class.</p>
+ * <p>
+ * BotPlugin class.
+ * </p>
  *
  * @author Zero
  * @version $Id: $Id
  */
 @Component
-@SuppressWarnings("unused")
 public class BotPlugin {
 
     /**

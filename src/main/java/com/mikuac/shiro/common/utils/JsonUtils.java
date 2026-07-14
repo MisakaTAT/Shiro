@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 @Slf4j
-@SuppressWarnings("unused")
 public class JsonUtils {
 
     private static final ObjectMapper DEFAULT_OBJECT_MAPPER = createConfiguredObjectMapper();
@@ -74,7 +73,8 @@ public class JsonUtils {
     }
 
     public static boolean isValid(String jsonString) {
-        if (jsonString == null) return false;
+        if (jsonString == null)
+            return false;
         try {
             getObjectMapper().readTree(jsonString);
             return true;

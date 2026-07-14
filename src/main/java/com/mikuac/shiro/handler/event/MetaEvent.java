@@ -19,7 +19,6 @@ import java.util.function.BiConsumer;
  * @author zero
  */
 @Component
-@SuppressWarnings("unused")
 public class MetaEvent {
 
     /**

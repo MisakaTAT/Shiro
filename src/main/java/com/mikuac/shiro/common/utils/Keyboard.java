@@ -13,7 +13,6 @@ import java.util.List;
  */
 @Getter
 @Setter
-@SuppressWarnings("unused")
 public class Keyboard {
 
     public static final int STYLE_GREY = 0;

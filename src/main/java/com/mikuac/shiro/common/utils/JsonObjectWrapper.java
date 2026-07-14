@@ -1,6 +1,8 @@
 package com.mikuac.shiro.common.utils;
 
 import com.mikuac.shiro.exception.ShiroException;
+
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.node.ObjectNode;
@@ -8,7 +10,6 @@ import tools.jackson.databind.node.ObjectNode;
 import java.util.HashMap;
 import java.util.Map;
 
-@SuppressWarnings("unused")
 public class JsonObjectWrapper {
 
     private static final ObjectMapper OBJECT_MAPPER = JsonUtils.getObjectMapper();
@@ -62,14 +63,16 @@ public class JsonObjectWrapper {
 
     public Object get(String key) {
         JsonNode node = objectNode.get(key);
-        if (node == null || node.isNull()) return null;
+        if (node == null || node.isNull())
+            return null;
         return switch (node.getNodeType()) {
             case STRING -> node.asString();
             case NUMBER -> {
                 if (node.isInt()) {
                     yield node.asInt();
                 } else {
-                    if (node.isLong()) yield node.asLong();
+                    if (node.isLong())
+                        yield node.asLong();
                     yield node.asDouble();
                 }
             }
@@ -123,7 +126,7 @@ public class JsonObjectWrapper {
     public <T> T to(Class<T> clazz) {
         try {
             return OBJECT_MAPPER.treeToValue(objectNode, clazz);
-        } catch (Exception e) {
+        } catch (JacksonException e) {
             throw new ShiroException("Cannot convert to class: " + clazz.getName(), e);
         }
     }
@@ -131,7 +134,7 @@ public class JsonObjectWrapper {
     public String toJSONString() {
         try {
             return OBJECT_MAPPER.writeValueAsString(objectNode);
-        } catch (Exception e) {
+        } catch (JacksonException e) {
             throw new ShiroException("JSON serialization failed", e);
         }
     }

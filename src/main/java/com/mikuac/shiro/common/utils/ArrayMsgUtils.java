@@ -6,7 +6,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-@SuppressWarnings({"unused", "java:S1192"})
+@SuppressWarnings({ "java:S1192" })
 public class ArrayMsgUtils {
 
     private final List<ArrayMsg> builder = new ArrayList<>();
@@ -136,7 +136,8 @@ public class ArrayMsgUtils {
         return this;
     }
 
-    public ArrayMsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source, String icon) {
+    public ArrayMsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight,
+            String source, String icon) {
         builder.add(getJsonData("cardimage", m -> {
             m.put("file", ShiroUtils.escape(file));
             m.put("minwidth", String.valueOf(minWidth));
@@ -193,14 +194,13 @@ public class ArrayMsgUtils {
 
     /**
      * <pre>{@code
-     *     Keyboard keyboard = Keyboard.Builder()
-     *     .addRow()
-     *     .addButton(Keyboard.TextButtonBuilder()
-     *          .label("+1")
-     *          .data("md2")
-     *          .build()
-     *          )
-     *     .build();
+     * Keyboard keyboard = Keyboard.Builder()
+     *         .addRow()
+     *         .addButton(Keyboard.TextButtonBuilder()
+     *                 .label("+1")
+     *                 .data("md2")
+     *                 .build())
+     *         .build();
      * }</pre>
      */
     public ArrayMsgUtils keyboard(Keyboard keyboard) {

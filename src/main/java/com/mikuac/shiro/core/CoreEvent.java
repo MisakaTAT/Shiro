@@ -4,13 +4,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketSession;
 
 /**
- * <p>CoreEvent class.</p>
+ * <p>
+ * CoreEvent class.
+ * </p>
  *
  * @author zero
  * @version $Id: $Id
  */
 @Component
-@SuppressWarnings({"unused", "BooleanMethodIsAlwaysInverted"})
+@SuppressWarnings({ "BooleanMethodIsAlwaysInverted" })
 public class CoreEvent {
 
     /**

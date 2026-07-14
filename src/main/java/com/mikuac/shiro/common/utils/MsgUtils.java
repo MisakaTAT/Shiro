@@ -8,7 +8,6 @@ import java.util.Map;
  *
  * @author Zero
  */
-@SuppressWarnings("unused")
 public class MsgUtils {
 
     private final StringBuilder builder = new StringBuilder();
@@ -35,7 +34,8 @@ public class MsgUtils {
 
     /**
      * 图片
-     * 支持本地图片、网络图片、Base64 详见 <a href="https://misakatat.github.io/shiro-docs/advanced.html#">消息构建工具</a>
+     * 支持本地图片、网络图片、Base64 详见
+     * <a href="https://misakatat.github.io/shiro-docs/advanced.html#">消息构建工具</a>
      *
      * @param img 图片
      * @return {@link MsgUtils}
@@ -97,7 +97,8 @@ public class MsgUtils {
 
     /**
      * QQ 表情
-     * <a href="https://github.com/kyubotics/coolq-http-api/wiki/%E8%A1%A8%E6%83%85-CQ-%E7%A0%81-ID-%E8%A1%A8">对照表</a>
+     * <a href=
+     * "https://github.com/kyubotics/coolq-http-api/wiki/%E8%A1%A8%E6%83%85-CQ-%E7%A0%81-ID-%E8%A1%A8">对照表</a>
      *
      * @param id QQ 表情 ID
      * @return {@link MsgUtils}
@@ -292,11 +293,12 @@ public class MsgUtils {
      * @param icon      分享来源的 icon 图标 url, 可以留空
      * @return {@link MsgUtils}
      */
-    public MsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source, String icon) {
-        String code =
-                String.format("[CQ:cardimage,file=%s,minwidth=%s,minheight=%s,maxwidth=%s,maxheight=%s,source=%s,icon=%s]",
-                        ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, ShiroUtils.escape(source),
-                        ShiroUtils.escape(icon));
+    public MsgUtils cardImage(String file, long minWidth, long minHeight, long maxWidth, long maxHeight, String source,
+            String icon) {
+        String code = String.format(
+                "[CQ:cardimage,file=%s,minwidth=%s,minheight=%s,maxwidth=%s,maxheight=%s,source=%s,icon=%s]",
+                ShiroUtils.escape(file), minWidth, minHeight, maxWidth, maxHeight, ShiroUtils.escape(source),
+                ShiroUtils.escape(icon));
         builder.append(code);
         return this;
     }

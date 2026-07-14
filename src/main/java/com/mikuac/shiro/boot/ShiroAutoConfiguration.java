@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
-import org.springframework.lang.Nullable;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.WebSocketHandler;
@@ -66,8 +65,7 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer, HandshakeInt
             ShiroProperties shiroProperties,
             ScheduledTask scheduledTask,
             Optional<WebSocketServerHandler> webSocketServerHandler,
-            Optional<WebSocketClientHandler> webSocketClientHandler
-    ) {
+            Optional<WebSocketClientHandler> webSocketClientHandler) {
 
         this.wsServerProp = wsServerProp;
         this.wsClientProp = wsClientProp;
@@ -111,7 +109,8 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer, HandshakeInt
         if (!Objects.equals(wsProp.getAccessToken(), "")) {
             headers.add("Authorization", wsProp.getAccessToken());
         }
-        WebSocketConnectionManager manager = new WebSocketConnectionManager(client, webSocketClientHandler, wsClientProp.getUrl());
+        WebSocketConnectionManager manager = new WebSocketConnectionManager(client, webSocketClientHandler,
+                wsClientProp.getUrl());
         manager.setHeaders(headers);
         manager.setAutoStartup(true);
 
@@ -123,7 +122,8 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer, HandshakeInt
     }
 
     @Override
-    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) throws Exception {
+    public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Map<String, Object> attributes) throws Exception {
         var headers = request.getHeaders();
         String selfIdStr = getAttributes(headers, attributes, Connection.X_SELF_ID, "no number");
         long selfId;
@@ -140,7 +140,8 @@ public class ShiroAutoConfiguration implements WebSocketConfigurer, HandshakeInt
     }
 
     @Override
-    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, @Nullable Exception exception) {
+    public void afterHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler,
+            Exception exception) {
         // ignore
     }
 

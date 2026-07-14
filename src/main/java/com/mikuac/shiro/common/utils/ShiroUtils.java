@@ -15,7 +15,7 @@ import java.util.Map;
  * @author Zero
  * @version $Id: $Id
  */
-@SuppressWarnings({"unused", "squid:S1192", "Duplicates"})
+@SuppressWarnings({ "squid:S1192", "Duplicates" })
 public class ShiroUtils {
 
     private ShiroUtils() {
@@ -151,7 +151,8 @@ public class ShiroUtils {
      * @param uin      发送者QQ号
      * @param name     发送者显示名字
      * @param contents 消息列表，每个元素视为一个消息节点
-     *                 <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
+     *                 <a href=
+     *                 "https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return 消息结构
      */
     public static List<Map<String, Object>> generateForwardMsg(long uin, String name, List<String> contents) {
@@ -218,7 +219,10 @@ public class ShiroUtils {
      * @param name 指定的显示的QQ昵称
      * @param msg  消息内容
      * @return 消息结构
-     * <p>使用 {@link com.mikuac.shiro.core.Bot#sendGroupForwardMsg(long, List, String, String, String, List)}和{@link com.mikuac.shiro.core.Bot#sendPrivateForwardMsg(long, List, String, String, String, List)}来发送生成后的聊天记录</p>
+     *         <p>
+     *         使用
+     *         {@link com.mikuac.shiro.core.Bot#sendGroupForwardMsg(long, List, String, String, String, List)}和{@link com.mikuac.shiro.core.Bot#sendPrivateForwardMsg(long, List, String, String, String, List)}来发送生成后的聊天记录
+     *         </p>
      */
     public static Map<String, Object> generateSingleMsg(long uin, String name, String msg) {
 

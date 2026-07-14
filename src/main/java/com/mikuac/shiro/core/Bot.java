@@ -37,8 +37,9 @@ import java.util.function.Consumer;
  */
 @Getter
 @Setter
-@SuppressWarnings({"unused", "Duplicates"})
-public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend, LLOneBotExtend, NapCatExtend, Closeable {
+@SuppressWarnings({ "Duplicates" })
+public class Bot
+        implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExtend, LLOneBotExtend, NapCatExtend, Closeable {
 
     private long selfId;
 
@@ -54,7 +55,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     private Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor;
 
-    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler, List<Class<? extends BotPlugin>> pluginList, BotFactory.AnnotationMethodContainer annotationMethodContainer, Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
+    public Bot(long selfId, WebSocketSession session, ActionHandler actionHandler,
+            List<Class<? extends BotPlugin>> pluginList, BotFactory.AnnotationMethodContainer annotationMethodContainer,
+            Class<? extends BotMessageEventInterceptor> botMessageEventInterceptor) {
         this.selfId = selfId;
         this.session = session;
         this.actionHandler = actionHandler;
@@ -245,7 +248,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * 发送群消息
      *
      * @param groupId    群号
-     * @param userId     调用者的QQ号 , 在QQ开放平台中用于设定@对象，如果不设置此参数会导致: 在bot返回前如果被不同用户多次调用，只会@最后一次调用的用户
+     * @param userId     调用者的QQ号 , 在QQ开放平台中用于设定@对象，如果不设置此参数会导致:
+     *                   在bot返回前如果被不同用户多次调用，只会@最后一次调用的用户
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return result {@link ActionData} of {@link MsgId}
@@ -266,7 +270,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * 发送群消息
      *
      * @param groupId    群号
-     * @param userId     调用者的QQ号 , 在QQ开放平台中用于设定@对象，如果不设置此参数会导致: 在bot返回前如果被不同用户多次调用，只会@最后一次调用的用户
+     * @param userId     调用者的QQ号 , 在QQ开放平台中用于设定@对象，如果不设置此参数会导致:
+     *                   在bot返回前如果被不同用户多次调用，只会@最后一次调用的用户
      * @param msg        要发送的内容
      * @param autoEscape 消息内容是否作为纯文本发送 ( 即不解析 CQ 码 ) , 只在 message 字段是字符串时有效
      * @return result {@link ActionData} of {@link MsgId}
@@ -790,8 +795,9 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
 
     /**
      * @return result {@link ActionData} of {@link VersionInfoResp}
-     * @see <a href="https://docs.go-cqhttp.org/api/#%E8%8E%B7%E5%8F%96%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF">获取版本信息</a>
-     * 获取版本信息
+     * @see <a href=
+     *      "https://docs.go-cqhttp.org/api/#%E8%8E%B7%E5%8F%96%E7%89%88%E6%9C%AC%E4%BF%A1%E6%81%AF">获取版本信息</a>
+     *      获取版本信息
      */
     @Override
     public ActionData<VersionInfoResp> getVersionInfo() {
@@ -805,7 +811,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * 获取群荣誉信息
      *
      * @param groupId 群号
-     * @param type    要获取的群荣誉类型, 可传入 talkative performer legend strong_newbie emotion 以分别获取单个类型的群荣誉数据, 或传入 all 获取所有数据
+     * @param type    要获取的群荣誉类型, 可传入 talkative performer legend strong_newbie
+     *                emotion 以分别获取单个类型的群荣誉数据, 或传入 all 获取所有数据
      * @return result {@link ActionData} of {@link GroupHonorInfoResp}
      */
     @Override
@@ -1026,7 +1033,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      *
      * @param groupId 群号
      * @param msg     自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
-     *                <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
+     *                <a href=
+     *                "https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return result {@link ActionRaw}
      */
     @Override
@@ -1141,7 +1149,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      *
      * @param userId 目标用户
      * @param msg    自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
-     *               <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
+     *               <a href=
+     *               "https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return result {@link ActionRaw}
      */
     @Override
@@ -1159,7 +1168,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      *
      * @param event 事件
      * @param msg   自定义转发消息 (可使用 ShiroUtils.generateForwardMsg() 方法创建)
-     *              <a href="https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
+     *              <a href=
+     *              "https://docs.go-cqhttp.org/cqcode/#%E5%90%88%E5%B9%B6%E8%BD%AC%E5%8F%91">参考文档</a>
      * @return result {@link ActionRaw}
      */
     @Override
@@ -1186,9 +1196,14 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @param source  为顶部文本
      * @param summary 为底部文本
      * @param news    为外显的摘要消息，最多三条；内容的构建参考消息节点。一般来说key为text,value为文本内容
-     *                <p>参考 {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}</p>来生成单条聊天记录
+     *                <p>
+     *                参考
+     *                {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}
+     *                </p>
+     *                来生成单条聊天记录
      */
-    public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg, String prompt, String source, String summary, List<Map<String, String>> news) {
+    public ActionData<MsgId> sendGroupForwardMsg(long groupId, List<Map<String, Object>> msg, String prompt,
+            String source, String summary, List<Map<String, String>> news) {
         Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
         params.put(ActionParams.MESSAGES, msg);
@@ -1210,9 +1225,14 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @param source  为顶部文本
      * @param summary 为底部文本
      * @param news    为外显的摘要消息，最多三条；内容的构建参考消息节点。一般来说key为text,value为文本内容
-     *                <p>参考 {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}</p>来生成单条聊天记录
+     *                <p>
+     *                参考
+     *                {@link com.mikuac.shiro.common.utils.ShiroUtils#generateSingleMsg(long, String, String)}
+     *                </p>
+     *                来生成单条聊天记录
      */
-    public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg, String prompt, String source, String summary, List<Map<String, String>> news) {
+    public ActionData<MsgId> sendPrivateForwardMsg(long userId, List<Map<String, Object>> msg, String prompt,
+            String source, String summary, List<Map<String, String>> news) {
         Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
         params.put(ActionParams.MESSAGES, msg);
@@ -1261,6 +1281,7 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @param image 图片ID
      * @return result {@link ActionData} of {@link OcrResp}
      */
+    @Override
     public ActionData<OcrResp> ocrImage(String image) {
         Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.IMAGE, image);
@@ -1483,10 +1504,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      */
 
     @Override
-    public ActionData<GetMsgListResp> getGroupMsgHistory(long groupId, Long messageSeq, int count, boolean reverseOrder) {
+    public ActionData<GetMsgListResp> getGroupMsgHistory(long groupId, Long messageSeq, int count,
+            boolean reverseOrder) {
         Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.GROUP_ID, groupId);
-        if (messageSeq != null) params.put(ActionParams.MESSAGE_SEQ, messageSeq);
+        if (messageSeq != null)
+            params.put(ActionParams.MESSAGE_SEQ, messageSeq);
         params.put(ActionParams.COUNT, count);
         params.put(ActionParams.REVERSE_ORDER, reverseOrder);
         JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_GROUP_MSG_HISTORY, params);
@@ -1504,10 +1527,12 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
      * @return 返回的消息列表
      */
     @Override
-    public ActionData<GetMsgListResp> getFriendMsgHistory(long userId, Long messageSeq, int count, boolean reverseOrder) {
+    public ActionData<GetMsgListResp> getFriendMsgHistory(long userId, Long messageSeq, int count,
+            boolean reverseOrder) {
         Map<String, Object> params = new HashMap<>();
         params.put(ActionParams.USER_ID, userId);
-        if (messageSeq != null) params.put(ActionParams.MESSAGE_SEQ, messageSeq);
+        if (messageSeq != null)
+            params.put(ActionParams.MESSAGE_SEQ, messageSeq);
         params.put(ActionParams.COUNT, count);
         params.put(ActionParams.REVERSE_ORDER, reverseOrder);
         JsonObjectWrapper result = actionHandler.action(session, ActionPathEnum.GET_FRIEND_MSG_HISTORY, params);
@@ -1622,7 +1647,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         JsonObjectWrapper result = actionHandler.action(session, action, params);
         try {
             return result != null ? JsonUtils.getObjectMapper().readValue(result.toJSONString(),
-                    JsonUtils.getObjectMapper().getTypeFactory().constructParametricType(ActionData.class, clazz)) : null;
+                    JsonUtils.getObjectMapper().getTypeFactory().constructParametricType(ActionData.class, clazz))
+                    : null;
         } catch (Exception e) {
             return null;
         }
@@ -1652,7 +1678,8 @@ public class Bot implements OneBot, GoCQHTTPExtend, GensokyoExtend, LagrangeExte
         JsonObjectWrapper result = actionHandler.rawAction(session, action, params);
         try {
             return result != null ? JsonUtils.getObjectMapper().readValue(result.toJSONString(),
-                    JsonUtils.getObjectMapper().getTypeFactory().constructParametricType(ActionData.class, clazz)) : null;
+                    JsonUtils.getObjectMapper().getTypeFactory().constructParametricType(ActionData.class, clazz))
+                    : null;
         } catch (Exception e) {
             return null;
         }
