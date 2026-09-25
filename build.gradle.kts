@@ -14,7 +14,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("org.jreleaser") version "1.26.0"
-    id("io.freefair.lombok") version "9.5.0"
+    id("io.freefair.lombok") version "9.7.0"
     id("org.springframework.boot") version "4.1.1"
     id("io.spring.dependency-management") version "1.1.7"
 }
