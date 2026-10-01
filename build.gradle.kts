@@ -6,7 +6,7 @@ group = "com.mikuac"
 version = "2.5.5"
 
 val mavenArtifactResolver = "1.9.27"
-val mavenResolverProvider = "3.9.15"
+val mavenResolverProvider = "3.10.0"
 val junit = "6.1.3"
 
 plugins {
