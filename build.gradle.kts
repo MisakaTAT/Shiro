@@ -50,6 +50,13 @@ tasks {
     named("bootJar") {
         enabled = false
     }
+
+    // Gradle 并行执行时，命令行的任务顺序不再保证：jreleaserDeploy 可能先于 publish 启动，
+    // 导致本地 staging 仓库尚未生成，报 "stagingRepository does not exist: build/staging-deploy"。
+    // 显式声明依赖，保证先 publish 生成 build/staging-deploy，再执行 jreleaserDeploy。
+    named("jreleaserDeploy") {
+        dependsOn("publish")
+    }
 }
 
 repositories {
